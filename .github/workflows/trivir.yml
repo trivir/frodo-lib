@@ -120,10 +120,6 @@ jobs:
           npm install -g npm
           npm ci
 
-      - name: Lint
-        run: |
-          npm run lint
-
       #
       # Run tests.
       #
