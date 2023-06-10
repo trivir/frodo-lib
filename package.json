@@ -3,25 +3,33 @@
   "version": "0.19.3-trivir.0",
   "type": "commonjs",
   "main": "./cjs/index.js",
-  "module": "./esm/index.mjs",
+  "module": "./esm/index.js",
   "types": "./types/index.d.ts",
   "exports": {
     ".": {
       "require": "./cjs/index.js",
-      "default": "./esm/index.mjs",
-      "import": "./esm/index.mjs"
+      "default": "./esm/index.js",
+      "import": "./esm/index.js"
     }
   },
   "scripts": {
-    "test": "npx gulp && node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --silent",
+    "test": "npm run build && node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --silent",
     "test:only": "node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --silent",
     "test:debug": "node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --verbose=true --silent=false",
     "test:record": "FRODO_POLLY_MODE=record node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --verbose=true --silent=false --runInBand --updateSnapshot --testPathIgnorePatterns cjs --testPathPattern",
     "test:record_noauth": "FRODO_POLLY_MODE=record_noauth node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --verbose=true --silent=false --updateSnapshot --testPathIgnorePatterns cjs --testPathPattern",
     "test:update": "node --no-warnings --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --verbose=true --silent=false --updateSnapshot --testPathPattern",
-    "lint": "npx eslint --ext .ts --ignore-path .gitignore .",
-    "build": "npx gulp",
-    "watch": "npx gulp watch"
+    "lint": "eslint --ext .ts --ignore-path .gitignore .",
+    "clean-esm": "rimraf esm",
+    "transpile-esm": "babel --out-dir esm --extensions \".ts\" --source-maps --config-file ./babel.config.esm.json --copy-files src && echo {\\\"type\\\": \\\"module\\\"} > esm/package.json",
+    "resources-esm": "",
+    "clean-cjs": "rimraf cjs",
+    "transpile-cjs": "babel --out-dir cjs --extensions \".ts\" --source-maps --config-file ./babel.config.cjs.json --copy-files src",
+    "resources-cjs": "",
+    "clean-types": "rimraf types",
+    "generate-types": "tsc",
+    "build": "npm run clean-esm && npm run transpile-esm && npm run clean-cjs && npm run transpile-cjs && npm run clean-types && npm run generate-types",
+    "watch": "babel --watch --out-dir esm --extensions \".ts\" --source-maps --config-file ./babel.config.esm.json src"
   },
   "jest": {
     "testTimeout": 30000,
@@ -31,8 +39,7 @@
       "<rootDir>/cjs/"
     ],
     "testMatch": [
-      "**/?(*.)(test).js",
-      "**/?(*.)(test).mjs"
+      "**/?(*.)(test).js"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -102,6 +109,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@babel/cli": "^7.22.5",
     "@pollyjs/adapter-node-http": "^6.0.5",
     "@pollyjs/core": "^6.0.5",
     "@pollyjs/persister-fs": "^6.0.5",
@@ -150,11 +158,6 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jest": "^27.1.5",
     "eslint-plugin-prettier": "^4.2.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sourcemaps": "^3.0.0",
-    "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^29.3.1",
     "jest-jasmine2": "^29.3.1",
     "loglevel": "^1.8.1",
