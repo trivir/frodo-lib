@@ -61,7 +61,7 @@ jobs:
         run: npm audit --omit=dev
 
       - name: Zip build artifacts
-        run: zip -r build.zip esm cjs package.json package-lock.json
+        run: zip -r build.zip esm cjs package.json package-lock.json snapshotResolve.js
 
       - uses: actions/upload-artifact@v3
         with:
