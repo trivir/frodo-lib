@@ -45,7 +45,7 @@
       "/node_modules/",
       "/dist/"
     ],
-    "snapshotResolver": "<rootDir>/src/utils/snapshotResolve.ts",
+    "snapshotResolver": "<rootDir>/snapshotResolve.js",
     "verbose": false
   },
   "description": "A library to manage ForgeRock Identity Cloud tenants, ForgeOps deployments, and classic deployments.",
