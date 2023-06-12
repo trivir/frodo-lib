@@ -65,7 +65,7 @@ jobs:
         run: npm audit --omit=dev
 
       - name: Zip build artifacts
-        run: zip -r build.zip esm cjs package.json package-lock.json snapshotResolve.js
+        run: zip -r build.zip esm cjs package.json package-lock.json
 
       - uses: actions/upload-artifact@v3
         with:
@@ -103,15 +103,14 @@ jobs:
       # Need to check out repo to get .snap and .har files for unit tests
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
 
       - uses: actions/download-artifact@v3
         with:
           name: build
 
+      # need -o to overwrite package.json
       - name: Unzip build artifact
-        run: unzip build.zip
+        run: unzip -o build.zip
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -206,8 +205,9 @@ jobs:
         with:
           name: build
 
+      # need -o to overwrite package.json
       - name: Unzip build artifact
-        run: unzip build.zip
+        run: unzip -o build.zip
 
       - name: 'Github SHA'
         id: github-sha
