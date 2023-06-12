@@ -100,10 +100,11 @@ jobs:
           - 3128:3128
 
     steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v3
-#        with:
-#          ref: ${{ github.ref }}
+      # Need to check out repo to get .snap and .har files for unit tests
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
       - uses: actions/download-artifact@v3
         with:
