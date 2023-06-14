@@ -2,9 +2,12 @@ name: 'TriVir Frodo Library Release Pipeline'
 
 on:
   workflow_dispatch:
-  push:
+  #  push:
+  #    branches:
+  #      - trivir
+  pull_request:
     branches:
-      - 'trivir'
+      - trivir
 
 jobs:
   build:
