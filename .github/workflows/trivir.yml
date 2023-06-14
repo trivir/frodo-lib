@@ -152,7 +152,7 @@ jobs:
           npm audit --omit=dev
 
   npm-release:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/trivir'
     needs: [build, smoke-tests]
     runs-on: ubuntu-latest
     steps:
@@ -194,7 +194,7 @@ jobs:
           npm dist-tag add @trivir/frodo-lib@${{ needs.build.outputs.newVersion }} next
 
   release:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/trivir'
     #    needs: [build, linux-binary-release, linux-arm64-binary-release, macos-binary-release, npm-release, windows-binary-release]
     needs: [build, npm-release]
     name: 'Release'
