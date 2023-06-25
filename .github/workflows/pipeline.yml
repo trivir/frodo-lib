@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Need to specify ref and repository for PRs from forked repos
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - uses: actions/setup-node@v3
         with:
@@ -108,6 +112,10 @@ jobs:
       # Need to check out repo to get .snap and .har files for unit tests
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Need to specify ref and repository for PRs from forked repos
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - uses: actions/download-artifact@v3
         with:
