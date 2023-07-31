@@ -3,6 +3,7 @@ import {
   AmServiceSkeleton,
   CircleOfTrustSkeleton,
   EmailTemplateSkeleton,
+  IdObjectSkeletonInterface,
   NodeSkeleton,
   Saml2ProviderSkeleton,
   ScriptSkeleton,
@@ -110,6 +111,16 @@ export interface TreeExportResolverInterface {
 export interface ScriptExportInterface {
   meta?: ExportMetaData;
   script: Record<string, ScriptSkeleton>;
+}
+
+export interface SecretsExportInterface {
+  meta?: ExportMetaData;
+  secrets: Record<string, IdObjectSkeletonInterface>
+}
+
+export interface VariablesExportInterface {
+  meta?: ExportMetaData;
+  variables: Record<string, IdObjectSkeletonInterface>
 }
 
 export type NodeClassificationType =
