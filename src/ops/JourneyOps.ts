@@ -77,6 +77,7 @@ import { type ExportMetaData } from './OpsTypes';
 import { readSaml2ProviderStubs } from './Saml2Ops';
 import { updateScript } from './ScriptOps';
 import { readThemes, type ThemeSkeleton, updateThemes } from './ThemeOps';
+import axios, {AxiosError} from "axios";
 
 export type Journey = {
   /**
@@ -342,6 +343,7 @@ export default (state: State): Journey => {
       options: TreeExportOptions = {
         useStringArrays: true,
         deps: true,
+        coords: true,
       }
     ): Promise<SingleTreeExportInterface> {
       return exportJourney({ journeyId: treeId, options, state });
@@ -593,6 +595,49 @@ function createMultiTreeExportTemplate({
     meta: getMetadata({ state }),
     trees: {},
   } as MultiTreeExportInterface;
+}
+
+/**
+ * Updates coordinates of the nodes in a tree to the same as the nodes on the server if the nodes on the tree do not exist.
+ * @param {TreeSkeleton} tree The tree being imported
+ * @param {string} nodesAttributeName The name (key) of the attribute on the tree that has nodes
+ * @param {TreeSkeleton} serverTree The current tree on the server
+ * @returns {TreeSkeleton} The current tree on the server
+ */
+export async function updateCoordinates({
+  tree,
+  nodesAttributeName,
+  serverTree,
+  state
+}: {
+  tree: TreeSkeleton,
+  nodesAttributeName: string,
+  serverTree: TreeSkeleton | null,
+  state: State
+}): Promise<TreeSkeleton | null> {
+  const nodeEntries = Object.entries(tree[nodesAttributeName] as NodeRefSkeletonInterface | StaticNodeRefSkeletonInterface)
+    .filter(([, nodeInfo]) => nodeInfo.x === undefined || nodeInfo.y === undefined);
+  if (nodeEntries.length === 0) {
+    return serverTree;
+  }
+  if (serverTree === null) {
+    try {
+      serverTree = await getTree({id: tree._id, state: state});
+    } catch (e) {
+      if (!axios.isAxiosError(e) || (e as AxiosError).response.status !== 404) {
+        throw e;
+      }
+    }
+  }
+  nodeEntries.forEach(([nodeId, nodeInfo]) => {
+    const coords = serverTree == undefined || serverTree[nodesAttributeName] == undefined || serverTree[nodesAttributeName][nodeId] == undefined ? {
+      x: 0,
+      y: 0
+    } : serverTree[nodesAttributeName][nodeId];
+    nodeInfo.x = nodeInfo.x === undefined ? (coords.x == undefined ? 0 : coords.x) : nodeInfo.x;
+    nodeInfo.y = nodeInfo.y === undefined ? (coords.y == undefined ? 0 : coords.y) : nodeInfo.y;
+  });
+  return serverTree;
 }
 
 /**
@@ -1845,6 +1890,21 @@ export async function importJourney({
         state,
       });
   }
+
+  // Process tree nodes
+  let serverTreeObject = await updateCoordinates({
+    tree: importData.tree,
+    nodesAttributeName: "nodes",
+    serverTree: null,
+    state: state
+  })
+  // Process tree static nodes
+  await updateCoordinates({
+    tree: importData.tree,
+    nodesAttributeName: "staticNodes",
+    serverTree: serverTreeObject,
+    state: state
+  });
 
   delete importData.tree._rev;
   try {
