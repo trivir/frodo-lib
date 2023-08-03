@@ -483,6 +483,10 @@ export interface TreeExportOptions {
    * Include any dependencies (scripts, email templates, SAML entity providers and circles of trust, social identity providers, themes).
    */
   deps: boolean;
+  /**
+   * Include x and y coordinate positions of the journey/tree nodes.
+   */
+  coords: boolean;
 }
 
 /**
@@ -699,6 +703,7 @@ export async function exportJourney({
   options = {
     useStringArrays: true,
     deps: true,
+    coords: true,
   },
   state,
 }: {
@@ -710,7 +715,7 @@ export async function exportJourney({
   const errors = [];
   try {
     const treeObject = await getTree({ id: journeyId, state });
-    const { useStringArrays, deps } = options;
+    const { useStringArrays, deps, coords } = options;
     const verbose = state.getDebug();
 
     if (verbose)
@@ -756,6 +761,16 @@ export async function exportJourney({
       nodePromises.push(
         getNode({ nodeId, nodeType: nodeInfo['nodeType'], state })
       );
+      if (!coords) {
+        delete nodeInfo['x'];
+        delete nodeInfo['y'];
+      }
+    }
+    if (!coords) {
+      for (const [, nodeInfo] of Object.entries(treeObject.staticNodes)) {
+        delete nodeInfo['x'];
+        delete nodeInfo['y'];
+      }
     }
     if (verbose && nodePromises.length > 0)
       printMessage({ message: '  - Nodes:', state });
@@ -2185,6 +2200,7 @@ export const onlineTreeExportResolver: TreeExportResolverInterface =
       options: {
         deps: false,
         useStringArrays: false,
+        coords: true,
       },
       state,
     });
