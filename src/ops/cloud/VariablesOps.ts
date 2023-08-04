@@ -103,7 +103,7 @@ export function createVariablesExportTemplate({
  * @param variableId variable id/name
  * @returns {Promise<VariablesExportInterface>} Promise resolving to a VariablesExportInterface object.
  */
-async function exportVariable({
+export async function exportVariable({
   variableId,
   state,
 }: {
@@ -124,7 +124,7 @@ async function exportVariable({
  * Export all variables
  * @returns {Promise<VariablesExportInterface>} Promise resolving to an VariablesExportInterface object.
  */
-async function exportVariables({
+export async function exportVariables({
   state,
 }: {
   state: State;

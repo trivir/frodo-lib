@@ -198,9 +198,7 @@ export async function exportSecret({
  * Export all secrets
  * @returns {Promise<SecretsExportInterface>} Promise resolving to an SecretsExportInterface object.
  */
-export
-
-async function exportSecrets({
+export async function exportSecrets({
   state,
 }: {
   state: State;
