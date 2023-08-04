@@ -11,6 +11,7 @@ import {
   getNode,
   type InnerNodeRefSkeletonInterface,
   type NodeRefSkeletonInterface,
+  type StaticNodeRefSkeletonInterface,
   type NodeSkeleton,
   putNode,
 } from '../api/NodeApi';
