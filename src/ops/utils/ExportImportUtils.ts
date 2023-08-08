@@ -96,6 +96,15 @@ export default (state: State) => {
     },
 
     /**
+     * Save metadata to a given file
+     * @param filename file name
+     * @return {boolean} true if successful, false otherwise
+     */
+    saveMetadataToFile(filename: string) {
+      return saveMetadataToFile({ filename, state });
+    },
+
+    /**
      * Append text data to file
      * @param {String} data text data
      * @param {String} filename file name
@@ -315,6 +324,25 @@ export function saveJsonToFile({
   return saveTextToFile({
     filename,
     data: JSON.stringify(exportData, null, 2),
+    state
+  });
+}
+
+/**
+ * Write metadata to a given file
+ * @param filename file name
+ * @return {boolean} true if successful, false otherwise
+ */
+export function saveMetadataToFile({
+  filename,
+  state,
+}: {
+  filename: string,
+  state: State
+}) {
+  return saveTextToFile({
+    filename,
+    data: JSON.stringify(getMetadata({ state }), null, 2),
     state
   });
 }
