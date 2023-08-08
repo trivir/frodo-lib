@@ -60,6 +60,10 @@ export default (state: State) => {
       return getWorkingDirectory({ state });
     },
 
+    saveTextToFile(data: string, filename: string) {
+      return saveTextToFile({ data, filename, state })
+    },
+
     saveToFile(
       type: string,
       data: object,
@@ -187,6 +191,14 @@ export function validateImport(metadata): boolean {
   return metadata || true;
 }
 
+/**
+ * Get a typed filename. E.g. "my-script.script.json"
+ *
+ * @param name The name of the file
+ * @param type The type of the file, e.g. script, idp, etc.
+ * @param suffix The suffix of the file, e.g. json, xml, etc. Defaults to json.
+ * @returns The typed filename
+ */
 export function getTypedFilename(name: string, type: string, suffix = 'json') {
   const slug = slugify(name.replace(/^http(s?):\/\//, ''), {
     remove: /[^\w\s$*_+~.()'"!\-@]+/g,
@@ -208,6 +220,34 @@ export function getWorkingDirectory({ state }: { state: State }) {
     }
   }
   return wd;
+}
+
+/**
+ * Save text data to file
+ * @param data text data
+ * @param filename file name
+ * @return true if successful, false otherwise
+ */
+export function saveTextToFile({
+  data,
+  filename,
+  state
+}: {
+  data: string,
+  filename: string,
+  state: State
+}): boolean {
+  try {
+    fs.writeFileSync(filename, data);
+    return true;
+  } catch (error) {
+    printMessage({
+      message: `ERROR - can't save ${filename}`,
+      state,
+      type: 'error',
+    })
+    return false;
+  }
 }
 
 export function saveToFile({
