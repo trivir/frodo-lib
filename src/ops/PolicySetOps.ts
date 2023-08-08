@@ -14,7 +14,6 @@ import {
   ResourceTypeSkeleton,
   ScriptSkeleton,
 } from '../api/ApiTypes';
-import { getMetadata } from './utils/ExportImportUtils';
 import { debugMessage } from './utils/Console';
 import { getResourceType, putResourceType } from '../api/ResourceTypesApi';
 import {
@@ -172,13 +171,8 @@ export interface PolicySetImportOptions {
  * Create an empty export template
  * @returns {PolicySetExportInterface} an empty export template
  */
-function createPolicySetExportTemplate({
-  state,
-}: {
-  state: State;
-}): PolicySetExportInterface {
+function createPolicySetExportTemplate(): PolicySetExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     policy: {},
     resourcetype: {},
@@ -319,7 +313,7 @@ export async function exportPolicySet({
   state: State;
 }): Promise<PolicySetExportInterface> {
   debugMessage({ message: `PolicySetOps.exportPolicySet: start`, state });
-  const exportData = createPolicySetExportTemplate({ state });
+  const exportData = createPolicySetExportTemplate();
   const errors = [];
   try {
     const policySetData = await getPolicySet({ policySetName, state });
@@ -375,7 +369,7 @@ export async function exportPolicySets({
   state: State;
 }): Promise<PolicySetExportInterface> {
   debugMessage({ message: `PolicySetOps.exportPolicySet: start`, state });
-  const exportData = createPolicySetExportTemplate({ state });
+  const exportData = createPolicySetExportTemplate();
   const errors = [];
   try {
     const policySets = await getPolicySets({ state });

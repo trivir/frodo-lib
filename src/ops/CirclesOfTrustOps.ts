@@ -5,7 +5,6 @@ import {
   createCircleOfTrust,
   updateCircleOfTrust,
 } from '../api/CirclesOfTrustApi';
-import { getMetadata } from './utils/ExportImportUtils';
 import State from '../shared/State';
 import { CirclesOfTrustExportInterface } from './OpsTypes';
 import { CircleOfTrustSkeleton } from '../api/ApiTypes';
@@ -17,7 +16,7 @@ export default (state: State) => {
      * @returns {CirclesOfTrustExportInterface} an empty agent export template
      */
     createCirclesOfTrustExportTemplate() {
-      return createCirclesOfTrustExportTemplate({ state });
+      return createCirclesOfTrustExportTemplate();
     },
 
     /**
@@ -88,13 +87,8 @@ export default (state: State) => {
  * Create an empty agent export template
  * @returns {CirclesOfTrustExportInterface} an empty agent export template
  */
-export function createCirclesOfTrustExportTemplate({
-  state,
-}: {
-  state: State;
-}) {
+export function createCirclesOfTrustExportTemplate() {
   return {
-    meta: getMetadata({ state }),
     script: {},
     saml: {
       hosted: {},
@@ -131,7 +125,7 @@ export async function exportCircleOfTrust({
     message: `CirclesOfTrustOps.exportCircleOfTrust: start`,
     state,
   });
-  const exportData = createCirclesOfTrustExportTemplate({ state });
+  const exportData = createCirclesOfTrustExportTemplate();
   const errors = [];
   try {
     const cotData = await getCircleOfTrust({
@@ -174,7 +168,7 @@ export async function exportCirclesOfTrust({
     message: `CirclesOfTrustOps.exportCirclesOfTrust: start`,
     state,
   });
-  const exportData = createCirclesOfTrustExportTemplate({ state });
+  const exportData = createCirclesOfTrustExportTemplate();
   const errors = [];
   try {
     const cots = await getCirclesOfTrust({ state });

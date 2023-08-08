@@ -15,7 +15,6 @@ import {
   ResourceTypeSkeleton,
   ScriptSkeleton,
 } from '../api/ApiTypes';
-import { getMetadata } from './utils/ExportImportUtils';
 import { debugMessage } from './utils/Console';
 import { getResourceType } from '../api/ResourceTypesApi';
 import { createPolicySet, getPolicySet, updatePolicySet } from './PolicySetOps';
@@ -198,13 +197,8 @@ export interface PolicyImportOptions {
  * Create an empty export template
  * @returns {PolicyExportInterface} an empty export template
  */
-function createPolicyExportTemplate({
-  state,
-}: {
-  state: State;
-}): PolicyExportInterface {
+function createPolicyExportTemplate(): PolicyExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     policy: {},
     resourcetype: {},
@@ -450,7 +444,7 @@ export async function exportPolicy({
 }): Promise<PolicyExportInterface> {
   debugMessage({ message: `PolicyOps.exportPolicy: start`, state });
   const policyData = await getPolicy({ policyId, state });
-  const exportData = createPolicyExportTemplate({ state });
+  const exportData = createPolicyExportTemplate();
   exportData.policy[policyData._id] = policyData;
   if (options.prereqs) {
     await exportPolicyPrerequisites({ policyData, exportData, state });
@@ -479,7 +473,7 @@ export async function exportPolicies({
   state: State;
 }): Promise<PolicyExportInterface> {
   debugMessage({ message: `PolicyOps.exportPolicies: start`, state });
-  const exportData = createPolicyExportTemplate({ state });
+  const exportData = createPolicyExportTemplate();
   const errors = [];
   try {
     const policies = await getPolicies({ state });
@@ -536,7 +530,7 @@ export async function exportPoliciesByPolicySet({
   state: State;
 }): Promise<PolicyExportInterface> {
   debugMessage({ message: `PolicyOps.exportPolicies: start`, state });
-  const exportData = createPolicyExportTemplate({ state });
+  const exportData = createPolicyExportTemplate();
   const errors = [];
   try {
     const policies = await getPoliciesByPolicySet({

@@ -17,7 +17,6 @@ import {
 import {
   convertBase64TextToArray,
   convertTextArrayToBase64,
-  getMetadata,
 } from './utils/ExportImportUtils';
 import { ScriptSkeleton } from '../api/ApiTypes';
 import { ExportMetaData } from '../ops/OpsTypes';
@@ -125,13 +124,8 @@ export interface ScriptExportInterface {
  * Create an empty idp export template
  * @returns {ScriptExportInterface} an empty idp export template
  */
-export function createScriptExportTemplate({
-  state,
-}: {
-  state: State;
-}): ScriptExportInterface {
+export function createScriptExportTemplate(): ScriptExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
   } as ScriptExportInterface;
 }
@@ -229,7 +223,7 @@ export async function exportScript({
   debugMessage({ message: `ScriptOps.exportScriptById: start`, state });
   const scriptData = await getScript({ scriptId, state });
   scriptData.script = convertBase64TextToArray(scriptData.script);
-  const exportData = createScriptExportTemplate({ state });
+  const exportData = createScriptExportTemplate();
   exportData.script[scriptData._id] = scriptData;
   debugMessage({ message: `ScriptOps.exportScriptById: end`, state });
   return exportData;
@@ -250,7 +244,7 @@ export async function exportScriptByName({
   debugMessage({ message: `ScriptOps.exportScriptByName: start`, state });
   const scriptData = await getScriptByName({ scriptName, state });
   scriptData.script = convertBase64TextToArray(scriptData.script as string);
-  const exportData = createScriptExportTemplate({ state });
+  const exportData = createScriptExportTemplate();
   exportData.script[scriptData._id] = scriptData;
   debugMessage({ message: `ScriptOps.exportScriptByName: end`, state });
   return exportData;
@@ -266,7 +260,7 @@ export async function exportScripts({
   state: State;
 }): Promise<ScriptExportInterface> {
   const scriptList = await getScripts({ state });
-  const exportData = createScriptExportTemplate({ state });
+  const exportData = createScriptExportTemplate();
   createProgressIndicator({
     total: scriptList.length,
     message: `Exporting ${scriptList.length} scripts...`,

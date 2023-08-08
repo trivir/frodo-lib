@@ -8,7 +8,6 @@ import {
   convertTextArrayToBase64,
   convertTextArrayToBase64Url,
   findFilesByName,
-  getMetadata,
 } from './utils/ExportImportUtils';
 import { getRealmManagedUser, replaceAll } from './utils/OpsUtils';
 import {
@@ -79,7 +78,7 @@ export default (state: State) => {
      * @returns {SingleTreeExportInterface} an empty single tree export template
      */
     createSingleTreeExportTemplate(): SingleTreeExportInterface {
-      return createSingleTreeExportTemplate({ state });
+      return createSingleTreeExportTemplate();
     },
 
     /**
@@ -87,7 +86,7 @@ export default (state: State) => {
      * @returns {MultiTreeExportInterface} an empty multi tree export template
      */
     createMultiTreeExportTemplate(): MultiTreeExportInterface {
-      return createMultiTreeExportTemplate({ state });
+      return createMultiTreeExportTemplate();
     },
 
     /**
@@ -365,13 +364,8 @@ const emptyScriptPlaceholder = '[Empty]';
  * Create an empty single tree export template
  * @returns {SingleTreeExportInterface} an empty single tree export template
  */
-function createSingleTreeExportTemplate({
-  state,
-}: {
-  state: State;
-}): SingleTreeExportInterface {
+function createSingleTreeExportTemplate(): SingleTreeExportInterface {
   return {
-    meta: getMetadata({ state }),
     innerNodes: {},
     nodes: {},
     scripts: {},
@@ -388,13 +382,8 @@ function createSingleTreeExportTemplate({
  * Create an empty multi tree export template
  * @returns {MultiTreeExportInterface} an empty multi tree export template
  */
-function createMultiTreeExportTemplate({
-  state,
-}: {
-  state: State;
-}): MultiTreeExportInterface {
+function createMultiTreeExportTemplate(): MultiTreeExportInterface {
   return {
-    meta: getMetadata({ state }),
     trees: {},
   } as MultiTreeExportInterface;
 }
@@ -504,7 +493,7 @@ export async function exportJourney({
   options?: TreeExportOptions;
   state: State;
 }): Promise<SingleTreeExportInterface> {
-  const exportData = createSingleTreeExportTemplate({ state });
+  const exportData = createSingleTreeExportTemplate();
   try {
     const treeObject = await getTree({ id: treeId, state });
     const { useStringArrays, deps } = options;
@@ -1814,7 +1803,7 @@ export const onlineTreeExportResolver: TreeExportResolverInterface =
 export const fileByIdTreeExportResolver: TreeExportResolverInterface =
   async function (treeId: string, state: State) {
     debugMessage({ message: `fileByIdTreeExportResolver(${treeId})`, state });
-    let treeExport = createSingleTreeExportTemplate({ state });
+    let treeExport = createSingleTreeExportTemplate();
     const files = findFilesByName(getTypedFilename(`${treeId}`, 'journey'));
     try {
       const file = files.pop();
@@ -1857,7 +1846,7 @@ export function createFileParamTreeExportResolver(
         state,
       });
       let treeExport: SingleTreeExportInterface =
-        createSingleTreeExportTemplate({ state });
+        createSingleTreeExportTemplate();
       try {
         const jsonData = JSON.parse(fs.readFileSync(file, 'utf8'));
         // did we resolve the tree we were asked to resolved?

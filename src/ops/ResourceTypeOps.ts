@@ -8,7 +8,6 @@ import {
 } from '../api/ResourceTypesApi';
 import { ExportMetaData } from './OpsTypes';
 import { ResourceTypeSkeleton } from '../api/ApiTypes';
-import { getMetadata } from './utils/ExportImportUtils';
 import { debugMessage } from './utils/Console';
 import State from '../shared/State';
 
@@ -158,13 +157,8 @@ export interface ResourceTypeExportInterface {
  * Create an empty export template
  * @returns {ResourceTypeExportInterface} an empty export template
  */
-function createResourceTypeExportTemplate({
-  state,
-}: {
-  state: State;
-}): ResourceTypeExportInterface {
+function createResourceTypeExportTemplate(): ResourceTypeExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     policy: {},
     policyset: {},
@@ -260,7 +254,7 @@ export async function exportResourceType({
   state: State;
 }): Promise<ResourceTypeExportInterface> {
   debugMessage({ message: `ResourceTypeOps.exportResourceType: start`, state });
-  const exportData = createResourceTypeExportTemplate({ state });
+  const exportData = createResourceTypeExportTemplate();
   const errors = [];
   try {
     const resourceTypeData = await getResourceType({
@@ -303,7 +297,7 @@ export async function exportResourceTypeByName({
     message: `ResourceTypeOps.exportResourceTypeByName: start`,
     state,
   });
-  const exportData = createResourceTypeExportTemplate({ state });
+  const exportData = createResourceTypeExportTemplate();
   const errors = [];
   try {
     const resourceTypeData = await getResourceTypeByName({
@@ -335,7 +329,7 @@ export async function exportResourceTypes({
   state: State;
 }): Promise<ResourceTypeExportInterface> {
   debugMessage({ message: `ResourceTypeOps.exportResourceType: start`, state });
-  const exportData = createResourceTypeExportTemplate({ state });
+  const exportData = createResourceTypeExportTemplate();
   const errors = [];
   try {
     const resourceTypes = await getResourceTypes({ state });

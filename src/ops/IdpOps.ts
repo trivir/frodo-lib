@@ -21,7 +21,6 @@ import {
   ScriptSkeleton,
   SocialIdpSkeleton,
 } from '../api/ApiTypes';
-import { getMetadata } from './utils/ExportImportUtils';
 import State from '../shared/State';
 import { debugMessage } from './utils/Console';
 
@@ -129,13 +128,8 @@ export interface SocialProviderExportInterface {
  * Create an empty idp export template
  * @returns {SocialProviderExportInterface} an empty idp export template
  */
-function createIdpExportTemplate({
-  state,
-}: {
-  state: State;
-}): SocialProviderExportInterface {
+function createIdpExportTemplate(): SocialProviderExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     idp: {},
   } as SocialProviderExportInterface;
@@ -284,7 +278,7 @@ export async function exportSocialProvider({
 }): Promise<SocialProviderExportInterface> {
   debugMessage({ message: `IdpOps.exportSocialProvider: start`, state });
   const idpData = await getSocialProvider({ providerId, state });
-  const exportData = createIdpExportTemplate({ state });
+  const exportData = createIdpExportTemplate();
   exportData.idp[idpData._id] = idpData;
   if (idpData.transform) {
     const scriptData = await getScript({ scriptId: idpData.transform, state });
@@ -304,7 +298,7 @@ export async function exportSocialProviders({
 }: {
   state: State;
 }): Promise<SocialProviderExportInterface> {
-  const exportData = createIdpExportTemplate({ state });
+  const exportData = createIdpExportTemplate();
   const allIdpsData = await getSocialIdentityProviders({ state });
   createProgressIndicator({
     total: allIdpsData.length,

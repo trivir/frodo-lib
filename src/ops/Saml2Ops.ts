@@ -29,7 +29,6 @@ import {
   convertBase64UrlTextToArray,
   convertTextArrayToBase64,
   convertTextArrayToBase64Url,
-  getMetadata,
 } from './utils/ExportImportUtils';
 import State from '../shared/State';
 
@@ -154,13 +153,8 @@ export default (state: State) => {
 };
 
 // use a function vs a template variable to avoid problems in loops
-export function createSaml2ExportTemplate({
-  state,
-}: {
-  state: State;
-}): Saml2ExportInterface {
+export function createSaml2ExportTemplate(): Saml2ExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     saml: {
       hosted: {},
@@ -424,7 +418,7 @@ export async function exportSaml2Provider({
     message: `Saml2Ops.exportSaml2Provider: start [entityId=${entityId}]`,
     state,
   });
-  const exportData = createSaml2ExportTemplate({ state });
+  const exportData = createSaml2ExportTemplate();
   const stub = await getSaml2ProviderStub({ entityId, state });
   const { location } = stub;
   const id = stub._id;
@@ -455,7 +449,7 @@ export async function exportSaml2Providers({
 }: {
   state: State;
 }): Promise<Saml2ExportInterface> {
-  const fileData = createSaml2ExportTemplate({ state });
+  const fileData = createSaml2ExportTemplate();
   const stubs = await getSaml2ProviderStubs({ state });
   for (const stub of stubs) {
     const providerData = await getProviderByLocationAndId({

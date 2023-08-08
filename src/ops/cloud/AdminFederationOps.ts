@@ -8,7 +8,6 @@ import {
   AdminFederationConfigSkeleton,
   SocialIdpSkeleton,
 } from '../../api/ApiTypes';
-import { getMetadata } from '../utils/ExportImportUtils';
 import { debugMessage } from '../utils/Console';
 import { getConfigEntity, putConfigEntity } from '../../api/IdmConfigApi';
 import State from '../../shared/State';
@@ -20,7 +19,7 @@ export default (state: State) => {
      * @returns {AdminFederationExportInterface} an empty idp export template
      */
     createAdminFederationExportTemplate(): AdminFederationExportInterface {
-      return createAdminFederationExportTemplate({ state });
+      return createAdminFederationExportTemplate();
     },
 
     /**
@@ -136,13 +135,8 @@ const ADMIN_FED_CONFIG_ID_PREFIX = 'fidc/federation-';
  * Create an empty idp export template
  * @returns {AdminFederationExportInterface} an empty idp export template
  */
-export function createAdminFederationExportTemplate({
-  state,
-}: {
-  state: State;
-}): AdminFederationExportInterface {
+export function createAdminFederationExportTemplate(): AdminFederationExportInterface {
   return {
-    meta: getMetadata({ state }),
     config: {},
     idp: {},
   } as AdminFederationExportInterface;
@@ -294,7 +288,7 @@ export async function exportAdminFederationProvider({
     message: `AdminFederationOps.exportAdminFederationProvider: start`,
     state,
   });
-  const exportData = createAdminFederationExportTemplate({ state });
+  const exportData = createAdminFederationExportTemplate();
   const errors = [];
   try {
     const idpData = await getAdminFederationProvider({ providerId, state });
@@ -331,7 +325,7 @@ export async function exportAdminFederationProviders({
     message: `AdminFederationOps.exportAdminFederationProviders: start`,
     state,
   });
-  const exportData = createAdminFederationExportTemplate({ state });
+  const exportData = createAdminFederationExportTemplate();
   const errors = [];
   try {
     const allIdpsData = await getAdminFederationProviders({ state });

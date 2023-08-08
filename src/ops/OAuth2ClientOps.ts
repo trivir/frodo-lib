@@ -10,7 +10,6 @@ import {
   OAuth2ClientSkeleton,
   ScriptSkeleton,
 } from '../api/ApiTypes';
-import { getMetadata } from './utils/ExportImportUtils';
 import { debugMessage, printMessage } from './utils/Console';
 import { convertBase64TextToArray } from './utils/ExportImportUtils';
 import { getOAuth2Provider } from './OAuth2ProviderOps';
@@ -159,13 +158,8 @@ export interface OAuth2ClientExportInterface {
  * Create an empty OAuth2 client export template
  * @returns {OAuth2ClientExportInterface} an empty OAuth2 client export template
  */
-function createOAuth2ClientExportTemplate({
-  state,
-}: {
-  state: State;
-}): OAuth2ClientExportInterface {
+function createOAuth2ClientExportTemplate(): OAuth2ClientExportInterface {
   return {
-    meta: getMetadata({ state }),
     script: {},
     application: {},
   } as OAuth2ClientExportInterface;
@@ -339,7 +333,7 @@ export async function exportOAuth2Clients({
     message: `OAuth2ClientOps.exportOAuth2Clients: start`,
     state,
   });
-  const exportData = createOAuth2ClientExportTemplate({ state });
+  const exportData = createOAuth2ClientExportTemplate();
   const errors = [];
   try {
     const provider = await getOAuth2Provider({ state });
@@ -387,7 +381,7 @@ export async function exportOAuth2Client({
   state: State;
 }): Promise<OAuth2ClientExportInterface> {
   debugMessage({ message: `OAuth2ClientOps.exportOAuth2Client: start`, state });
-  const exportData = createOAuth2ClientExportTemplate({ state });
+  const exportData = createOAuth2ClientExportTemplate();
   const errors = [];
   try {
     const clientData = await getOAuth2Client({ clientId, state });
