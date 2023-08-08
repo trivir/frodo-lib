@@ -24,6 +24,14 @@ export interface TreeExportOptions {
    * Include any dependencies (scripts, email templates, SAML entity providers and circles of trust, social identity providers, themes).
    */
   deps: boolean;
+  /**
+   * Include metadata in export
+   */
+  includeMeta: boolean;
+  /**
+   * File to store metadata in
+   */
+  metadataFile: string;
 }
 
 /**

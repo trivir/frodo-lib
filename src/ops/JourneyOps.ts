@@ -100,6 +100,8 @@ export default (state: State) => {
       options: TreeExportOptions = {
         useStringArrays: true,
         deps: true,
+        includeMeta: true,
+        metadataFile: undefined
       }
     ): Promise<SingleTreeExportInterface> {
       return exportJourney({ treeId, options, state });
@@ -486,6 +488,8 @@ export async function exportJourney({
   options = {
     useStringArrays: true,
     deps: true,
+    includeMeta: true,
+    metadataFile: undefined
   },
   state,
 }: {
@@ -1789,6 +1793,8 @@ export const onlineTreeExportResolver: TreeExportResolverInterface =
       options: {
         deps: false,
         useStringArrays: false,
+        includeMeta: true,
+        metadataFile: undefined
       },
       state,
     });
