@@ -68,6 +68,7 @@ export default (state: State) => {
       type: string,
       data: object,
       identifier: string,
+      includeMeta: boolean,
       filename: string
     ) {
       return saveToFile({
@@ -75,6 +76,7 @@ export default (state: State) => {
         data,
         identifier,
         filename,
+        includeMeta,
         state,
       });
     },
@@ -255,16 +257,17 @@ export function saveToFile({
   data,
   identifier,
   filename,
+  includeMeta = true,
   state,
 }: {
   type: string;
   data: object;
   identifier: string;
   filename: string;
+  includeMeta: boolean;
   state: State;
 }) {
   const exportData = {};
-  exportData['meta'] = getMetadata({ state });
   exportData[type] = {};
 
   if (Array.isArray(data)) {
@@ -274,16 +277,20 @@ export function saveToFile({
   } else {
     exportData[type][data[identifier]] = data;
   }
-  fs.writeFile(filename, JSON.stringify(exportData, null, 2), (err) => {
-    if (err) {
-      return printMessage({
-        message: `ERROR - can't save ${type} to file`,
-        state,
-        type: 'error',
-      });
-    }
-    return '';
-  });
+
+  if (!saveJsonToFile({
+    data: exportData,
+    filename,
+    includeMeta,
+    state
+  })) {
+    return printMessage({
+      message: `ERROR - can't save ${type} to file`,
+      state,
+      type: 'error',
+    });
+  }
+  return '';
 }
 
 /**
@@ -305,17 +312,11 @@ export function saveJsonToFile({
 }): boolean {
   const exportData = data;
   if (includeMeta) exportData['meta'] = getMetadata({ state });
-  try {
-    fs.writeFileSync(filename, JSON.stringify(exportData, null, 2));
-    return true;
-  } catch (err) {
-    printMessage({
-      message: `ERROR - can't save ${filename}`,
-      type: 'error',
-      state,
-    });
-    return false;
-  }
+  return saveTextToFile({
+    filename,
+    data: JSON.stringify(exportData, null, 2),
+    state
+  });
 }
 
 /**
