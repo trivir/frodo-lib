@@ -65,6 +65,8 @@ export default (state: State) => {
         deps: true,
         prereqs: false,
         useStringArrays: true,
+        includeMeta: true,
+        metadataFile: undefined
       }
     ): Promise<PolicyExportInterface> {
       return exportPolicy({ policyId, options, state });
@@ -80,6 +82,8 @@ export default (state: State) => {
         deps: true,
         prereqs: false,
         useStringArrays: true,
+        includeMeta: true,
+        metadataFile: undefined
       }
     ): Promise<PolicyExportInterface> {
       return exportPolicies({ options, state });
@@ -97,6 +101,8 @@ export default (state: State) => {
         deps: true,
         prereqs: false,
         useStringArrays: true,
+        includeMeta: true,
+        metadataFile: undefined
       }
     ): Promise<PolicyExportInterface> {
       return exportPoliciesByPolicySet({
@@ -173,6 +179,14 @@ export interface PolicyExportOptions {
    * Use string arrays to store multi-line text in scripts.
    */
   useStringArrays: boolean;
+  /**
+   * Include metadata in export
+   */
+  includeMeta: boolean;
+  /**
+   * File to store metadata in
+   */
+  metadataFile: string;
 }
 
 /**
@@ -435,6 +449,8 @@ export async function exportPolicy({
     deps: true,
     prereqs: false,
     useStringArrays: true,
+    includeMeta: true,
+    metadataFile: undefined
   },
   state,
 }: {
@@ -466,6 +482,8 @@ export async function exportPolicies({
     deps: true,
     prereqs: false,
     useStringArrays: true,
+    includeMeta: true,
+    metadataFile: undefined
   },
   state,
 }: {
@@ -522,6 +540,8 @@ export async function exportPoliciesByPolicySet({
     deps: true,
     prereqs: false,
     useStringArrays: true,
+    includeMeta: true,
+    metadataFile: undefined
   },
   state,
 }: {

@@ -60,7 +60,12 @@ export default (state: State) => {
      * @returns {OAuth2ClientExportInterface} export data
      */
     async exportOAuth2Clients(
-      options: OAuth2ClientExportOptions = { useStringArrays: true, deps: true }
+      options: OAuth2ClientExportOptions = {
+        useStringArrays: true,
+        deps: true,
+        includeMeta: true,
+        metadataFile: undefined
+      }
     ): Promise<OAuth2ClientExportInterface> {
       return exportOAuth2Clients({ options, state });
     },
@@ -73,7 +78,12 @@ export default (state: State) => {
      */
     async exportOAuth2Client(
       clientId: string,
-      options: OAuth2ClientExportOptions = { useStringArrays: true, deps: true }
+      options: OAuth2ClientExportOptions = {
+        useStringArrays: true,
+        deps: true,
+        includeMeta: true,
+        metadataFile: undefined
+      }
     ): Promise<OAuth2ClientExportInterface> {
       return exportOAuth2Client({ clientId, options, state });
     },
@@ -136,6 +146,14 @@ export interface OAuth2ClientExportOptions {
    * Include any dependencies (scripts).
    */
   deps: boolean;
+  /**
+   * Include metadata in export
+   */
+  includeMeta: boolean;
+  /**
+   * File to store metadata in
+   */
+  metadataFile: string;
 }
 
 /**
@@ -323,7 +341,12 @@ async function exportOAuth2ClientDependencies(
  * @returns {OAuth2ClientExportInterface} export data
  */
 export async function exportOAuth2Clients({
-  options = { useStringArrays: true, deps: true },
+  options = {
+    useStringArrays: true,
+    deps: true,
+    includeMeta: true,
+    metadataFile: undefined
+  },
   state,
 }: {
   options?: OAuth2ClientExportOptions;
@@ -373,7 +396,12 @@ export async function exportOAuth2Clients({
  */
 export async function exportOAuth2Client({
   clientId,
-  options = { useStringArrays: true, deps: true },
+  options = {
+    useStringArrays: true,
+    deps: true,
+    includeMeta: true,
+    metadataFile: undefined
+  },
   state,
 }: {
   clientId: string;
