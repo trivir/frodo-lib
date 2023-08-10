@@ -112,7 +112,6 @@ exports[`JourneyOps exportJourney() 1: Export journey 'FrodoTestJourney3' w/o de
       "passwordAttribute": "password",
     },
   },
-  "meta": Any<Object>,
   "nodes": {
     "46643303-aeb2-4873-9df1-59db4958cc34": {
       "_id": "46643303-aeb2-4873-9df1-59db4958cc34",
@@ -626,7 +625,6 @@ a{
       "passwordAttribute": "password",
     },
   },
-  "meta": Any<Object>,
   "nodes": {
     "46643303-aeb2-4873-9df1-59db4958cc34": {
       "_id": "46643303-aeb2-4873-9df1-59db4958cc34",

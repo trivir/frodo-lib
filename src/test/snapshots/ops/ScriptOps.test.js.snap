@@ -2,14 +2,12 @@
 
 exports[`ScriptOps createScriptExportTemplate() 1: Create script export template 1`] = `
 {
-  "meta": Any<Object>,
   "script": {},
 }
 `;
 
 exports[`ScriptOps exportScript() 1: Export script by id c9cb4b1e-1cd3-4e5b-8f56-140f83ba9f6d 1`] = `
 {
-  "meta": Any<Object>,
   "script": {
     "c9cb4b1e-1cd3-4e5b-8f56-140f83ba9f6d": {
       "_id": "c9cb4b1e-1cd3-4e5b-8f56-140f83ba9f6d",
@@ -52,7 +50,6 @@ exports[`ScriptOps exportScript() 1: Export script by id c9cb4b1e-1cd3-4e5b-8f56
 
 exports[`ScriptOps exportScriptByName() 1: Export script by name FrodoTestScript1 1`] = `
 {
-  "meta": Any<Object>,
   "script": {
     "c9cb4b1e-1cd3-4e5b-8f56-140f83ba9f6d": {
       "_id": "c9cb4b1e-1cd3-4e5b-8f56-140f83ba9f6d",
@@ -95,7 +92,6 @@ exports[`ScriptOps exportScriptByName() 1: Export script by name FrodoTestScript
 
 exports[`ScriptOps exportScripts() 1: Export all scripts 1`] = `
 {
-  "meta": Any<Object>,
   "script": {
     "01e1a3c0-038b-4c16-956a-6c9d89328cff": {
       "_id": "01e1a3c0-038b-4c16-956a-6c9d89328cff",

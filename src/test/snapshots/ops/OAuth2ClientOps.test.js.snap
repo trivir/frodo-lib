@@ -2087,7 +2087,6 @@ exports[`OAuth2ClientOps exportOAuth2Client() 1: Export oauth2 client FrodoTestO
       },
     },
   },
-  "meta": Any<Object>,
   "script": {},
 }
 `;
@@ -5337,7 +5336,6 @@ exports[`OAuth2ClientOps exportOAuth2Clients() 1: Export all oauth2 clients 1`] 
       },
     },
   },
-  "meta": Any<Object>,
   "script": {},
 }
 `;

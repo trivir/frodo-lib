@@ -84,6 +84,7 @@ describe.skip('file system based tests', () => {
       data,
       identifier: 'id',
       filename: PATH_TO_ARTIFACT,
+      includeMeta: true,
       state,
     });
     const resultingJSON = JSON.parse(readFileSync(PATH_TO_ARTIFACT, 'utf8'));
@@ -108,6 +109,7 @@ describe.skip('file system based tests', () => {
       data,
       identifier: 'id',
       filename: PATH_TO_ARTIFACT,
+      includeMeta: true,
       state,
     });
     const resultingJSON = JSON.parse(readFileSync(PATH_TO_ARTIFACT, 'utf8'));

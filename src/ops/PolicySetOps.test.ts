@@ -356,12 +356,12 @@ describe('PolicySetOps', () => {
             deps: false,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test(`2: Export existing policy set w/ deps [${set9.name}]`, async () => {
@@ -371,12 +371,12 @@ describe('PolicySetOps', () => {
             deps: true,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test('3: Export non-existing policy set [DoesNotExist]', async () => {
@@ -388,6 +388,8 @@ describe('PolicySetOps', () => {
               deps: false,
               prereqs: false,
               useStringArrays: true,
+              includeMeta: true,
+              metadataFile: undefined
             },
             state,
           });
@@ -408,12 +410,12 @@ describe('PolicySetOps', () => {
             deps: true,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 

@@ -2451,9 +2451,7 @@ describe('OAuth2ClientOps', () => {
         clientId: client1.id,
         state,
       });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 
@@ -2464,9 +2462,7 @@ describe('OAuth2ClientOps', () => {
 
     test('1: Export all oauth2 clients', async () => {
       const response = await OAuth2ClientOps.exportOAuth2Clients({ state });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 

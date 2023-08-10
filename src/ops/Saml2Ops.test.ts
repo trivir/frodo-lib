@@ -226,10 +226,8 @@ describe('Saml2Ops', () => {
       });
 
       test('1: Create saml2 export template', () => {
-        const response = Saml2Ops.createSaml2ExportTemplate({ state });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        const response = Saml2Ops.createSaml2ExportTemplate();
+        expect(response).toMatchSnapshot();
       });
     });
 
@@ -388,9 +386,7 @@ describe('Saml2Ops', () => {
           entityId: provider1.entityId,
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test(`2: Export remote provider '${provider4.entityId}'`, async () => {
@@ -398,9 +394,7 @@ describe('Saml2Ops', () => {
           entityId: provider4.entityId,
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 
@@ -411,9 +405,7 @@ describe('Saml2Ops', () => {
 
       test('1: Export saml2 entity providers', async () => {
         const response = await Saml2Ops.exportSaml2Providers({ state });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 

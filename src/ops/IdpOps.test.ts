@@ -1009,9 +1009,7 @@ describe('IdpOps', () => {
         providerId: idp1.id,
         state,
       });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 
@@ -1022,9 +1020,7 @@ describe('IdpOps', () => {
 
     test('1: Export all social providers', async () => {
       const response = await IdpOps.exportSocialProviders({ state });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 

@@ -429,9 +429,7 @@ describe('ResourceTypeOps', () => {
           resourceTypeUuid: type9.uuid,
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test('2: Export non-existing resource type by uuid [00000000-0000-0000-0000-000000000000]', async () => {
@@ -457,9 +455,7 @@ describe('ResourceTypeOps', () => {
           resourceTypeName: type10.name,
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test('2: Export non-existing resource type by name [DoesNotExist]', async () => {
@@ -482,9 +478,7 @@ describe('ResourceTypeOps', () => {
 
       test('1: Export all resource types', async () => {
         const response = await ResourceTypeOps.exportResourceTypes({ state });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 

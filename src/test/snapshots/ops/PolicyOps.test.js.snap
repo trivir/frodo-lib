@@ -17,7 +17,6 @@ exports[`PolicyOps deletePolicy() 2: Delete non-existing policy [DoesNotExist] 1
 
 exports[`PolicyOps exportPolicies() 1: Export all policies w/o deps 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "Allow Everything": {
       "_id": "Allow Everything",
@@ -716,7 +715,6 @@ exports[`PolicyOps exportPolicies() 1: Export all policies w/o deps 1`] = `
 
 exports[`PolicyOps exportPolicies() 2: Export all policies w/ deps 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "Allow Everything": {
       "_id": "Allow Everything",
@@ -1728,7 +1726,6 @@ exports[`PolicyOps exportPolicies() 2: Export all policies w/ deps 1`] = `
 
 exports[`PolicyOps exportPoliciesByPolicySet() 1: Export all policies in policy set FrodoTestPolicySet1 w/o deps 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "FrodoTestPolicy1": {
       "_id": "FrodoTestPolicy1",
@@ -2117,7 +2114,6 @@ exports[`PolicyOps exportPoliciesByPolicySet() 1: Export all policies in policy 
 
 exports[`PolicyOps exportPoliciesByPolicySet() 2: Export all policies in policy set FrodoTestPolicySet1 w/ deps 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "FrodoTestPolicy1": {
       "_id": "FrodoTestPolicy1",
@@ -2819,7 +2815,6 @@ exports[`PolicyOps exportPoliciesByPolicySet() 2: Export all policies in policy 
 
 exports[`PolicyOps exportPolicy() 1: Export existing policy w/o deps [FrodoTestPolicy9] 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "FrodoTestPolicy9": {
       "_id": "FrodoTestPolicy9",
@@ -2893,7 +2888,6 @@ exports[`PolicyOps exportPolicy() 1: Export existing policy w/o deps [FrodoTestP
 
 exports[`PolicyOps exportPolicy() 2: Export existing policy w/ deps [FrodoTestPolicy9] 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "FrodoTestPolicy9": {
       "_id": "FrodoTestPolicy9",

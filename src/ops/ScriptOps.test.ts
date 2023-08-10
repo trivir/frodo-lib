@@ -330,10 +330,8 @@ describe('ScriptOps', () => {
     });
 
     test(`1: Create script export template`, async () => {
-      const response = ScriptOps.createScriptExportTemplate({ state });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      const response = ScriptOps.createScriptExportTemplate();
+      expect(response).toMatchSnapshot();
     });
   });
 
@@ -401,9 +399,7 @@ describe('ScriptOps', () => {
         scriptId: script1.id,
         state,
       });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 
@@ -417,9 +413,7 @@ describe('ScriptOps', () => {
         scriptName: script1.name,
         state,
       });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 
@@ -430,9 +424,7 @@ describe('ScriptOps', () => {
 
     test('1: Export all scripts', async () => {
       const response = await ScriptOps.exportScripts({ state });
-      expect(response).toMatchSnapshot({
-        meta: expect.any(Object),
-      });
+      expect(response).toMatchSnapshot();
     });
   });
 

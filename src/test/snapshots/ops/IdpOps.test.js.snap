@@ -43,7 +43,6 @@ exports[`IdpOps exportSocialProvider() 1: Export social provider FrodoTestIdp1 1
       "userInfoEndpoint": "https://graph.facebook.com/me?fields=id,name,picture,email,first_name,last_name,locale",
     },
   },
-  "meta": Any<Object>,
   "script": {
     "bae1d54a-e97d-4997-aa5d-c027f21af82c": {
       "_id": "bae1d54a-e97d-4997-aa5d-c027f21af82c",
@@ -522,7 +521,6 @@ exports[`IdpOps exportSocialProviders() 1: Export all social providers 1`] = `
       "wellKnownEndpoint": "https://trial-5735851.okta.com/.well-known/openid-configuration",
     },
   },
-  "meta": Any<Object>,
   "script": {
     "23143919-6b78-40c3-b25e-beca19b229e0": {
       "_id": "23143919-6b78-40c3-b25e-beca19b229e0",

@@ -873,12 +873,12 @@ describe('PolicyOps', () => {
             deps: false,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test(`2: Export existing policy w/ deps [${policy9._id}]`, async () => {
@@ -888,12 +888,12 @@ describe('PolicyOps', () => {
             deps: true,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test('3: Export non-existing policy [DoesNotExist]', async () => {
@@ -905,6 +905,8 @@ describe('PolicyOps', () => {
               deps: false,
               prereqs: false,
               useStringArrays: true,
+              includeMeta: true,
+              metadataFile: undefined
             },
             state,
           });
@@ -925,12 +927,12 @@ describe('PolicyOps', () => {
             deps: false,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test('2: Export all policies w/ deps', async () => {
@@ -939,12 +941,12 @@ describe('PolicyOps', () => {
             deps: true,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 
@@ -960,12 +962,12 @@ describe('PolicyOps', () => {
             deps: false,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test(`2: Export all policies in policy set ${set1.name} w/ deps`, async () => {
@@ -975,12 +977,12 @@ describe('PolicyOps', () => {
             deps: true,
             prereqs: false,
             useStringArrays: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 

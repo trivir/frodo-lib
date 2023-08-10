@@ -74,7 +74,6 @@ exports[`PolicySetOps deletePolicySet() 2: Delete non-existing policy set [DoesN
 
 exports[`PolicySetOps exportPolicySet() 1: Export existing policy set w/o deps [FrodoTestPolicySet9] 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {},
   "policyset": {
     "FrodoTestPolicySet9": {
@@ -136,7 +135,6 @@ exports[`PolicySetOps exportPolicySet() 1: Export existing policy set w/o deps [
 
 exports[`PolicySetOps exportPolicySet() 2: Export existing policy set w/ deps [FrodoTestPolicySet9] 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {},
   "policyset": {
     "FrodoTestPolicySet9": {
@@ -203,7 +201,6 @@ Request failed with status code 404"
 
 exports[`PolicySetOps exportPolicySets() 1: Export all policy sets 1`] = `
 {
-  "meta": Any<Object>,
   "policy": {
     "Allow Everything": {
       "_id": "Allow Everything",

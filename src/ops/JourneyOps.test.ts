@@ -169,12 +169,12 @@ describe('JourneyOps', () => {
           options: {
             useStringArrays: false,
             deps: false,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
 
       test(`2: Export journey '${journey3.id}' w/ dependencies`, async () => {
@@ -183,12 +183,12 @@ describe('JourneyOps', () => {
           options: {
             useStringArrays: false,
             deps: true,
+            includeMeta: true,
+            metadataFile: undefined
           },
           state,
         });
-        expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
-        });
+        expect(response).toMatchSnapshot();
       });
     });
 
