@@ -3,6 +3,7 @@ import { generateIdmApi } from './BaseApi';
 import { getTenantURL } from './utils/ApiUtils';
 import State from '../shared/State';
 import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
+import {createProgressIndicator, printMessage, stopProgressIndicator} from "../ops/utils/Console";
 
 const idmAllConfigURLTemplate = '%s/openidm/config';
 const idmConfigURLTemplate = '%s/openidm/config/%s';
@@ -63,6 +64,104 @@ export async function getConfigEntity({
   );
   const { data } = await generateIdmApi({ state }).get(urlString);
   return data;
+}
+
+/**
+ * Export all IDM config entities
+ */
+export async function exportConfigEntities({
+  state
+}: {
+  state: State;
+}) {
+  try {
+    const { configurations } = await getAllConfigEntities({ state });
+    createProgressIndicator(
+      {
+        type: 'indeterminate',
+        total: undefined,
+        message: 'Exporting config objects...',
+        state
+      }
+    );
+    const entityPromises = [];
+    for (const configEntity of configurations) {
+      entityPromises.push(
+        getConfigEntity({ entityId: configEntity._id, state }).catch((getConfigEntityError) => {
+          if (
+            !(
+              getConfigEntityError.response?.status === 403 &&
+              getConfigEntityError.response?.data?.message ===
+              'This operation is not available in ForgeRock Identity Cloud.'
+            ) &&
+            !(
+              // list of config entities, which do not exist by default or ever.
+              (
+                [
+                  'script',
+                  'notificationFactory',
+                  'apiVersion',
+                  'metrics',
+                  'repo.init',
+                  'endpoint/validateQueryFilter',
+                  'endpoint/oauthproxy',
+                  'external.rest',
+                  'scheduler',
+                  'org.apache.felix.fileinstall/openidm',
+                  'cluster',
+                  'endpoint/mappingDetails',
+                  'fieldPolicy/teammember',
+                ].includes(configEntity._id) &&
+                getConfigEntityError.response?.status === 404 &&
+                getConfigEntityError.response?.data?.reason === 'Not Found'
+              )
+            ) &&
+            // https://bugster.forgerock.org/jira/browse/OPENIDM-18270
+            !(
+              getConfigEntityError.response?.status === 404 &&
+              getConfigEntityError.response?.data?.message ===
+              'No configuration exists for id org.apache.felix.fileinstall/openidm'
+            )
+          ) {
+            printMessage({
+              message: getConfigEntityError.response?.data,
+              type: 'error',
+              state
+            });
+            printMessage({
+              message: `Error getting config entity ${configEntity._id}: ${getConfigEntityError}`,
+              type: 'error',
+              state
+            });
+          }
+        })
+      );
+    }
+    const results = await Promise.all(entityPromises);
+    stopProgressIndicator({
+      message: 'Exported config objects.',
+      status: 'success',
+      state
+    });
+    const exportData = {};
+    for (const result of results) {
+      if (result != null) {
+        exportData[result._id] = result;
+      }
+    }
+    return exportData;
+  } catch (getAllConfigEntitiesError) {
+    printMessage({
+      message: getAllConfigEntitiesError,
+      type: 'error',
+      state
+    });
+    printMessage({
+      message: `Error getting config entities: ${getAllConfigEntitiesError}`,
+      type: 'error',
+      state
+  });
+  }
 }
 
 /**

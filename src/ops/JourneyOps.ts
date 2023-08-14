@@ -107,6 +107,18 @@ export default (state: State) => {
     },
 
     /**
+     * Create export data for all trees/journeys with all their nodes and dependencies. The export data can be written to a file as is.
+     * @param {TreeExportOptions} options export options
+     * @returns {Promise<SingleTreeExportInterface>} a promise that resolves to an object containing the trees and all their nodes and dependencies
+     */
+    async exportJourneys(options: TreeExportOptions = {
+      useStringArrays: true,
+      deps: true,
+    }): Promise<MultiTreeExportInterface> {
+      return exportJourneys({ options, state })
+    },
+
+    /**
      * Get all the journeys/trees without all their nodes and dependencies.
      * @returns {Promise<TreeSkeleton[]>} a promise that resolves to an array of journey objects
      */
@@ -937,6 +949,43 @@ export async function exportJourney({
   }
 
   return exportData;
+}
+
+/**
+ * Create export data for all trees/journeys with all their nodes and dependencies. The export data can be written to a file as is.
+ * @param {TreeExportOptions} options export options
+ * @returns {Promise<SingleTreeExportInterface>} a promise that resolves to an object containing the trees and all their nodes and dependencies
+ */
+export async function exportJourneys({
+  options = {
+    useStringArrays: true,
+    deps: true,
+  },
+  state,
+}: {
+  options?: TreeExportOptions;
+  state: State;
+}): Promise<MultiTreeExportInterface> {
+  const trees = await getJourneys({ state });
+  const multiTreeExport = createMultiTreeExportTemplate({ state });
+  for (const tree of trees) {
+    try {
+      const exportData: SingleTreeExportInterface = await exportJourney({
+        treeId: tree._id,
+        options,
+        state
+      });
+      delete exportData.meta;
+      multiTreeExport.trees[tree._id] = exportData;
+    } catch (error) {
+      printMessage({
+        message: `Error exporting journey ${tree._id}: ${error}`,
+        type: 'error',
+        state
+      });
+    }
+  }
+  return multiTreeExport;
 }
 
 /**

@@ -4,8 +4,9 @@ import {
   getOAuth2Clients,
   getOAuth2Client,
   putOAuth2Client,
+  exportOAuth2Clients,
 } from '../ops/OAuth2ClientOps';
-import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
+import {exportConfigEntities, getConfigEntity, putConfigEntity} from '../api/IdmConfigApi';
 import { isEqualJson, getRealmManagedUser } from './utils/OpsUtils';
 import { getRealmManagedOrganization } from './OrganizationOps';
 import { getOAuth2Provider } from '../ops/OAuth2ProviderOps';
@@ -20,6 +21,20 @@ import {
   ReadableStrings,
   WritableStrings,
 } from '../api/ApiTypes';
+import {exportSaml2Providers} from "./Saml2Ops";
+import {exportAgents} from "./AgentOps";
+import {getEmailTemplates} from "./EmailTemplateOps";
+import {exportSocialProviders} from "./IdpOps";
+import {exportPolicies} from "./PolicyOps";
+import {exportPolicySets} from "./PolicySetOps";
+import {exportResourceTypes} from "./ResourceTypeOps";
+import {exportCirclesOfTrust} from "./CirclesOfTrustOps";
+import {exportScripts} from "./ScriptOps";
+import {exportServices} from "./ServiceOps";
+import {getThemes} from "./ThemeOps";
+import {exportJourneys} from "./JourneyOps";
+import {FullExportInterface} from "./OpsTypes";
+import {getRecordFromArray} from "./utils/ExportImportUtils";
 
 export default (state: State) => {
   return {
@@ -224,6 +239,13 @@ export default (state: State) => {
         dryRun,
         state,
       });
+    },
+
+    /**
+     * Export full configuration
+     */
+    async exportFullConfiguration(globalConfig: boolean, useStringArrays: boolean): Promise<FullExportInterface> {
+      return exportFullConfiguration({ state, globalConfig, useStringArrays });
     },
   };
 };
@@ -1389,6 +1411,44 @@ export async function repairOrgModel({
       type: 'warn',
       state,
     });
+  }
+}
+
+/**
+ * Export full configuration
+ */
+async function exportFullConfiguration({
+  state,
+  globalConfig,
+  useStringArrays
+}: {
+  state: State,
+  globalConfig: boolean,
+  useStringArrays: boolean,
+}): Promise<FullExportInterface> {
+  //TODO: Admin federation export (maybe covered by idp export). DO NOT include ESV exports
+  //Export saml2 providers
+  const saml = (await exportSaml2Providers({ state })).saml;
+  //Create full export
+  return {
+    agents: (await exportAgents({ state })).agents,
+    application: (await exportOAuth2Clients({ options: { deps: false, useStringArrays }, state })).application,
+    config: (await exportConfigEntities({ state })),
+    emailTemplate: getRecordFromArray((await getEmailTemplates({ state })).result, '_id'),
+    idp: (await exportSocialProviders({ state })).idp,
+    policy: (await exportPolicies({ options: { deps: false, prereqs: false, useStringArrays }, state })).policy,
+    policyset: (await exportPolicySets({ options: { deps: false, prereqs: false, useStringArrays }, state })).policyset,
+    resourcetype: (await exportResourceTypes({ state })).resourcetype,
+    saml: {
+      hosted: saml.hosted,
+      remote: saml.remote,
+      metadata: saml.metadata,
+      cot: (await exportCirclesOfTrust({ state })).saml.cot
+    },
+    script: (await exportScripts({ state })).script,
+    service: (await exportServices({ globalConfig, state })).service,
+    theme: getRecordFromArray(await getThemes({ state }), '_id'),
+    trees: (await exportJourneys({ options: { deps: false, useStringArrays }, state })).trees,
   }
 }
 

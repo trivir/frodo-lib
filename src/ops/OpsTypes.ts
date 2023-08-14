@@ -4,6 +4,10 @@ import {
   CircleOfTrustSkeleton,
   EmailTemplateSkeleton,
   NodeSkeleton,
+  OAuth2ClientSkeleton,
+  PolicySetSkeleton,
+  PolicySkeleton,
+  ResourceTypeSkeleton,
   Saml2ProviderSkeleton,
   ScriptSkeleton,
   SocialIdpSkeleton,
@@ -47,6 +51,27 @@ export interface ExportMetaData {
   exportDate: string;
   exportTool: string;
   exportToolVersion: string;
+}
+
+export interface FullExportInterface {
+  agents: Record<string, AgentSkeleton>;
+  application: Record<string, OAuth2ClientSkeleton>;
+  config: Record<string, object>;
+  emailTemplate: Record<string, EmailTemplateSkeleton>;
+  idp: Record<string, SocialIdpSkeleton>;
+  policy: Record<string, PolicySkeleton>;
+  policyset: Record<string, PolicySetSkeleton>;
+  resourcetype: Record<string, ResourceTypeSkeleton>;
+  saml: {
+    hosted: Record<string, Saml2ProviderSkeleton>;
+    remote: Record<string, Saml2ProviderSkeleton>;
+    metadata: Record<string, string[]>;
+    cot: Record<string, CircleOfTrustSkeleton>;
+  };
+  script: Record<string, ScriptSkeleton>;
+  service: Record<string, AmServiceSkeleton>;
+  theme: Record<string, ThemeSkeleton>;
+  trees: Record<string, SingleTreeExportInterface>;
 }
 
 export interface SingleTreeExportInterface {

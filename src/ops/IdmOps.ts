@@ -9,6 +9,7 @@ import {
   putConfigEntity,
   getConfigEntitiesByType,
   queryAllManagedObjectsByType,
+  exportConfigEntities,
 } from '../api/IdmConfigApi';
 import {
   testConnectorServers as _testConnectorServers,
@@ -28,6 +29,10 @@ export default (state: State) => {
 
     getConfigEntity(entityId: string) {
       return getConfigEntity({ entityId, state });
+    },
+
+    async exportConfigEntities() {
+      return exportConfigEntities({ state });
     },
 
     putConfigEntity(
