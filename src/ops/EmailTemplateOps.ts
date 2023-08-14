@@ -5,9 +5,9 @@ import {
   putConfigEntity,
 } from '../api/IdmConfigApi';
 import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
+import { createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
-import { readConfigEntitiesByType } from './IdmConfigOps';
+import { exportConfigEntities, readConfigEntitiesByType } from './IdmConfigOps';
 import { ExportMetaData } from './OpsTypes';
 
 export type EmailTemplate = {
@@ -31,6 +31,11 @@ export type EmailTemplate = {
    * @returns {Promise<EmailTemplateSkeleton>} a promise that resolves an email template object
    */
   readEmailTemplate(templateId: string): Promise<EmailTemplateSkeleton>;
+  /**
+   * Export all email templates. The response can be saved to file as is.
+   * @returns {Promise<EmailTemplateExportInterface>} Promise resolving to a EmailTemplateExportInterface object.
+   */
+  exportEmailTemplates(): Promise<EmailTemplateExportInterface>;
   /**
    * Create email template
    * @param {string} templateId id/name of the email template without the type prefix
@@ -115,6 +120,9 @@ export default (state: State): EmailTemplate => {
     },
     async readEmailTemplate(templateId: string): Promise<any> {
       return readEmailTemplate({ templateId, state });
+    },
+    async exportEmailTemplates(): Promise<EmailTemplateExportInterface> {
+      return exportEmailTemplates({ state });
     },
     async createEmailTemplate(
       templateId: string,
@@ -217,6 +225,39 @@ export async function readEmailTemplate({
     entityId: `${EMAIL_TEMPLATE_TYPE}/${templateId}`,
     state,
   });
+}
+
+/**
+ * Export all email templates. The response can be saved to file as is.
+ * @returns {Promise<EmailTemplateExportInterface>} Promise resolving to a EmailTemplateExportInterface object.
+ */
+export async function exportEmailTemplates({
+  state
+}: {
+  state: State
+}): Promise<EmailTemplateExportInterface> {
+  debugMessage({ message: `EmailTemplateOps.exportEmailTemplates: start`, state });
+  const exportData = createEmailTemplateExportTemplate({ state });
+  const emailTemplates = await readEmailTemplates({ state });
+  createProgressIndicator({
+    total: emailTemplates.length,
+    message: 'Exporting email templates...',
+    state,
+  });
+  for (const emailTemplate of emailTemplates) {
+    const templateId = emailTemplate._id.replace(`${EMAIL_TEMPLATE_TYPE}/`, '');
+    updateProgressIndicator({
+      message: `Exporting email template ${templateId}`,
+      state,
+    });
+    exportData.emailTemplate[templateId] = emailTemplate;
+  }
+  stopProgressIndicator({
+    message: `Exported ${emailTemplates.length} email templates.`,
+    state,
+  });
+  debugMessage({ message: `EmailTemplateOps.exportEmailTemplates: end`, state });
+  return exportData;
 }
 
 /**
