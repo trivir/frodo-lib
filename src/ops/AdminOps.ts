@@ -8,6 +8,7 @@ import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
 import { clientCredentialsGrant } from '../api/OAuth2OIDCApi';
 import {
+  exportOAuth2Clients,
   readOAuth2Client,
   readOAuth2Clients,
   updateOAuth2Client,
@@ -18,6 +19,20 @@ import { printMessage } from '../utils/Console';
 import { getCurrentRealmManagedUser } from '../utils/ForgeRockUtils';
 import { get, isEqualJson } from '../utils/JsonUtils';
 import { getRealmManagedOrganization } from './OrganizationOps';
+import { exportSaml2Providers } from "./Saml2Ops";
+import { exportAgents } from "./AgentOps";
+import { FullExportInterface } from "../api/AdminApi";
+import { exportConfigEntities } from "./IdmConfigOps";
+import { exportSocialProviders } from "./IdpOps";
+import { exportPolicies } from "./PolicyOps";
+import { exportPolicySets } from "./PolicySetOps";
+import { exportResourceTypes } from "./ResourceTypeOps";
+import { exportCirclesOfTrust } from "./CirclesOfTrustOps";
+import { exportScripts } from "./ScriptOps";
+import { exportServices } from "./ServiceOps";
+import { exportJourneys } from "./JourneyOps";
+import { exportEmailTemplates } from "./EmailTemplateOps";
+import { exportThemes } from "./ThemeOps";
 
 export type Admin = {
   listOAuth2CustomClients(): Promise<any>;
@@ -51,6 +66,11 @@ export type Admin = {
     extendPermissions: boolean,
     dryRun: boolean
   ): Promise<void>;
+  exportFullConfiguration(
+    globalConfig: boolean,
+    useStringArrays: boolean,
+    state
+  ): Promise<FullExportInterface>;
 };
 
 export default (state: State): Admin => {
@@ -256,6 +276,14 @@ export default (state: State): Admin => {
         dryRun,
         state,
       });
+    },
+
+    async exportFullConfiguration(
+      globalConfig = false,
+      useStringArrays = true,
+      state,
+    ) {
+      return exportFullConfiguration({ globalConfig, useStringArrays, state })
     },
   };
 };
@@ -1421,6 +1449,45 @@ export async function repairOrgModel({
       type: 'warn',
       state,
     });
+  }
+}
+
+/**
+ * Export full configuration
+ * @param globalConfig true if the list of global services is requested, false otherwise. Default: false.
+ * @param useStringArrays Where applicable, use string arrays to store multi-line text (e.g. scripts). Default: true.
+ */
+async function exportFullConfiguration({
+  globalConfig = false,
+  useStringArrays = true,
+  state,
+}: {
+  globalConfig: boolean,
+  useStringArrays: boolean,
+  state: State,
+}): Promise<FullExportInterface> {
+  //Export saml2 providers
+  const saml = (await exportSaml2Providers({ state })).saml;
+  //Create full export
+  return {
+    agents: (await exportAgents({ state })).agents,
+    application: (await exportOAuth2Clients({ options: { deps: false, useStringArrays }, state })).application,
+    config: (await exportConfigEntities({ state })).config,
+    emailTemplate: (await exportEmailTemplates({ state })).emailTemplate,
+    idp: (await exportSocialProviders({ state })).idp,
+    policy: (await exportPolicies({ options: { deps: false, prereqs: false, useStringArrays }, state })).policy,
+    policyset: (await exportPolicySets({ options: { deps: false, prereqs: false, useStringArrays }, state })).policyset,
+    resourcetype: (await exportResourceTypes({ state })).resourcetype,
+    saml: {
+      hosted: saml.hosted,
+      remote: saml.remote,
+      metadata: saml.metadata,
+      cot: (await exportCirclesOfTrust({ state })).saml.cot
+    },
+    script: (await exportScripts({ state })).script,
+    service: (await exportServices({ globalConfig, state })).service,
+    theme: (await exportThemes({ state })).theme,
+    trees: (await exportJourneys({ options: { deps: false, useStringArrays }, state })).trees,
   }
 }
 
