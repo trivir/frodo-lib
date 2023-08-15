@@ -10,7 +10,13 @@ import {
   putServiceNextDescendent,
 } from '../api/ServiceApi';
 import { State } from '../shared/State';
-import { debugMessage, printMessage } from '../utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  printMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from '../utils/Console';
 import { type ExportMetaData } from './OpsTypes';
 
 export type Service = {
@@ -592,9 +598,22 @@ export async function exportServices({
   const exportData = createServiceExportTemplate();
   try {
     const services = await getFullServices({ globalConfig, state });
+    createProgressIndicator({
+      total: services.length,
+      message: 'Exporting services...',
+      state,
+    });
     for (const service of services) {
+      updateProgressIndicator({
+        message: `Exporting service ${service._id}`,
+        state,
+      });
       exportData.service[service._type._id] = service;
     }
+    stopProgressIndicator({
+      message: `Exported ${services.length} services.`,
+      state,
+    });
   } catch (error) {
     const message = error.response?.data?.message;
     printMessage({
