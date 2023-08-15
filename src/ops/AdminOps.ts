@@ -33,6 +33,7 @@ import { exportServices } from "./ServiceOps";
 import { exportJourneys } from "./JourneyOps";
 import { exportEmailTemplates } from "./EmailTemplateOps";
 import { exportThemes } from "./ThemeOps";
+import {getMetadata} from "../utils/ExportImportUtils";
 
 export type Admin = {
   listOAuth2CustomClients(): Promise<any>;
@@ -1457,7 +1458,7 @@ export async function repairOrgModel({
  * @param globalConfig true if the list of global services is requested, false otherwise. Default: false.
  * @param useStringArrays Where applicable, use string arrays to store multi-line text (e.g. scripts). Default: true.
  */
-async function exportFullConfiguration({
+export async function exportFullConfiguration({
   globalConfig = false,
   useStringArrays = true,
   state,
@@ -1470,6 +1471,7 @@ async function exportFullConfiguration({
   const saml = (await exportSaml2Providers({ state })).saml;
   //Create full export
   return {
+    meta: getMetadata({ state }),
     agents: (await exportAgents({ state })).agents,
     application: (await exportOAuth2Clients({ options: { deps: false, useStringArrays }, state })).application,
     config: (await exportConfigEntities({ state })).config,
