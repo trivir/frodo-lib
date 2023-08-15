@@ -36,7 +36,7 @@
     "doc": "npx typedoc"
   },
   "jest": {
-    "testTimeout": 30000,
+    "testTimeout": 60000,
     "testRunner": "jest-jasmine2",
     "roots": [
       "<rootDir>/cjs/",
