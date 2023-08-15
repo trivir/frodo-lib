@@ -1416,7 +1416,7 @@ export async function repairOrgModel({
 /**
  * Export full configuration
  */
-async function exportFullConfiguration({
+export async function exportFullConfiguration({
   state,
   globalConfig,
   useStringArrays

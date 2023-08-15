@@ -369,6 +369,17 @@ describe('ThemeOps', () => {
       });
     });
 
+    describe('exportThemes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(ThemeOps.exportThemes).toBeDefined();
+      });
+
+      test('1: Export themes', async () => {
+        const response = await ThemeOps.exportThemes({ state });
+        expect(response).toMatchSnapshot();
+      });
+    });
+
     describe('getTheme()', () => {
       test('0: Method is implemented', async () => {
         expect(ThemeOps.getTheme).toBeDefined();
