@@ -344,9 +344,3 @@ export async function readFilesRecursive(directory: string): Promise<string[]> {
 
   return filePathsNested.flat();
 }
-
-export function getRecordFromArray<T>(array: T[], identifier: string): Record<string, T> {
-  const record = {};
-  array.forEach(element => record[element[identifier]] = element);
-  return record;
-}

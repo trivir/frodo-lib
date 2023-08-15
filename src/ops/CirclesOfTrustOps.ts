@@ -1,4 +1,4 @@
-import { debugMessage } from './utils/Console';
+import {createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator} from './utils/Console';
 import {
   getCirclesOfTrust as _getCirclesOfTrust,
   getCircleOfTrust,
@@ -178,9 +178,22 @@ export async function exportCirclesOfTrust({
   const errors = [];
   try {
     const cots = await getCirclesOfTrust({ state });
+    createProgressIndicator({
+      total: cots.length,
+      message: 'Exporting circles of trust',
+      state,
+    });
     for (const cot of cots) {
+      updateProgressIndicator({
+        message: `Exporting circle of trust ${cot._id}`,
+        state,
+      });
       exportData.saml.cot[cot._id] = cot;
     }
+    stopProgressIndicator({
+      message: `${cots.length} circles of trust exported.`,
+      state,
+    });
   } catch (error) {
     errors.push(error);
   }

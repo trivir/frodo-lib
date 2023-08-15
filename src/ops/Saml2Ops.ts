@@ -23,7 +23,13 @@ import {
 } from '../api/utils/Base64';
 import { MultiOpStatusInterface, Saml2ExportInterface } from './OpsTypes';
 import { putScript } from './ScriptOps';
-import { debugMessage, printMessage } from './utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  printMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from './utils/Console';
 import {
   convertBase64TextToArray,
   convertBase64UrlTextToArray,
@@ -457,7 +463,16 @@ export async function exportSaml2Providers({
 }): Promise<Saml2ExportInterface> {
   const fileData = createSaml2ExportTemplate({ state });
   const stubs = await getSaml2ProviderStubs({ state });
+  createProgressIndicator({
+    total: stubs.length,
+    message: 'Exporting SAML2 providers',
+    state,
+  });
   for (const stub of stubs) {
+    updateProgressIndicator({
+      message: `Exporting SAML2 provider ${stub._id}`,
+      state,
+    });
     const providerData = await getProviderByLocationAndId({
       location: stub.location,
       entityId64: stub._id,
@@ -470,6 +485,10 @@ export async function exportSaml2Providers({
     }
     fileData.saml[stub.location][providerData._id] = providerData;
   }
+  stopProgressIndicator({
+    message: `${stubs.length} SAML2 providers exported.`,
+    state,
+  });
   return fileData;
 }
 

@@ -9,7 +9,7 @@ import {
 import { ExportMetaData } from './OpsTypes';
 import { ResourceTypeSkeleton } from '../api/ApiTypes';
 import { getMetadata } from './utils/ExportImportUtils';
-import { debugMessage } from './utils/Console';
+import {createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator} from './utils/Console';
 import State from '../shared/State';
 
 export default (state: State) => {
@@ -339,9 +339,22 @@ export async function exportResourceTypes({
   const errors = [];
   try {
     const resourceTypes = await getResourceTypes({ state });
+    createProgressIndicator({
+      total: resourceTypes.length,
+      message: 'Exporting resource types',
+      state,
+    });
     for (const resourceTypeData of resourceTypes) {
+      updateProgressIndicator({
+        message: `Exporting resource type ${resourceTypeData._id}`,
+        state,
+      });
       exportData.resourcetype[resourceTypeData.uuid] = resourceTypeData;
     }
+    stopProgressIndicator({
+      message: `${resourceTypes.length} resource types exported.`,
+      state,
+    });
   } catch (error) {
     errors.push(error);
   }

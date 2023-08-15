@@ -968,7 +968,16 @@ export async function exportJourneys({
 }): Promise<MultiTreeExportInterface> {
   const trees = await getJourneys({ state });
   const multiTreeExport = createMultiTreeExportTemplate({ state });
+  createProgressIndicator({
+    total: trees.length,
+    message: 'Exporting journeys',
+    state,
+  });
   for (const tree of trees) {
+    updateProgressIndicator({
+      message: `Exporting journey ${tree._id}`,
+      state,
+    });
     try {
       const exportData: SingleTreeExportInterface = await exportJourney({
         treeId: tree._id,
@@ -985,6 +994,10 @@ export async function exportJourneys({
       });
     }
   }
+  stopProgressIndicator({
+    message: `${trees.length} journeys exported.`,
+    state,
+  });
   return multiTreeExport;
 }
 

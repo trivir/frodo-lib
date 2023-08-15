@@ -3,7 +3,12 @@ import { generateIdmApi } from './BaseApi';
 import { getTenantURL } from './utils/ApiUtils';
 import State from '../shared/State';
 import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
-import {createProgressIndicator, printMessage, stopProgressIndicator} from "../ops/utils/Console";
+import {
+  createProgressIndicator,
+  printMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from "../ops/utils/Console";
 
 const idmAllConfigURLTemplate = '%s/openidm/config';
 const idmConfigURLTemplate = '%s/openidm/config/%s';
@@ -78,14 +83,17 @@ export async function exportConfigEntities({
     const { configurations } = await getAllConfigEntities({ state });
     createProgressIndicator(
       {
-        type: 'indeterminate',
-        total: undefined,
+        total: configurations.length,
         message: 'Exporting config objects...',
         state
       }
     );
     const entityPromises = [];
     for (const configEntity of configurations) {
+      updateProgressIndicator({
+        message: `Exporting config object ${configEntity._id}`,
+        state,
+      });
       entityPromises.push(
         getConfigEntity({ entityId: configEntity._id, state }).catch((getConfigEntityError) => {
           if (

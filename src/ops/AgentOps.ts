@@ -1,4 +1,10 @@
-import { debugMessage, printMessage } from './utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  printMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from './utils/Console';
 import {
   getAgentsByType,
   getAgentByTypeAndId as _getAgentByTypeAndId,
@@ -638,9 +644,22 @@ export async function exportAgents({
   debugMessage({ message: `AgentOps.exportAgents: start`, state });
   const exportData = createAgentExportTemplate();
   const agents = await getAgents({ state });
+  createProgressIndicator({
+    total: agents.length,
+    message: 'Exporting agents',
+    state,
+  });
   for (const agent of agents) {
+    updateProgressIndicator({
+      message: `Exporting agent ${agent._id}`,
+      state,
+    });
     exportData.agents[agent._id] = agent;
   }
+  stopProgressIndicator({
+    message: `${agents.length} agents exported.`,
+    state,
+  });
   debugMessage({ message: `AgentOps.exportAgents: end`, state });
   return exportData;
 }

@@ -15,7 +15,7 @@ import {
   ScriptSkeleton,
 } from '../api/ApiTypes';
 import { getMetadata } from './utils/ExportImportUtils';
-import { debugMessage } from './utils/Console';
+import {createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator} from './utils/Console';
 import { getResourceType, putResourceType } from '../api/ResourceTypesApi';
 import {
   findScriptUuids,
@@ -379,7 +379,16 @@ export async function exportPolicySets({
   const errors = [];
   try {
     const policySets = await getPolicySets({ state });
+    createProgressIndicator({
+      total: policySets.length,
+      message: 'Exporting policy sets',
+      state,
+    });
     for (const policySetData of policySets) {
+      updateProgressIndicator({
+        message: `Exporting policy set ${policySetData._id}`,
+        state,
+      });
       exportData.policyset[policySetData.name] = policySetData;
       if (options.prereqs) {
         try {
@@ -405,6 +414,10 @@ export async function exportPolicySets({
         }
       }
     }
+    stopProgressIndicator({
+      message: `${policySets.length} policy sets exported.`,
+      state,
+    });
   } catch (error) {
     errors.push(error);
   }

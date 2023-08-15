@@ -16,7 +16,7 @@ import {
   ScriptSkeleton,
 } from '../api/ApiTypes';
 import { getMetadata } from './utils/ExportImportUtils';
-import { debugMessage } from './utils/Console';
+import {createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator} from './utils/Console';
 import { getResourceType } from '../api/ResourceTypesApi';
 import { createPolicySet, getPolicySet, updatePolicySet } from './PolicySetOps';
 import { createResourceType, updateResourceType } from './ResourceTypeOps';
@@ -483,7 +483,16 @@ export async function exportPolicies({
   const errors = [];
   try {
     const policies = await getPolicies({ state });
+    createProgressIndicator({
+      total: policies.length,
+      message: 'Exporting policies',
+      state,
+    });
     for (const policyData of policies) {
+      updateProgressIndicator({
+        message: `Exporting policy ${policyData._id}`,
+        state,
+      });
       exportData.policy[policyData._id] = policyData;
       if (options.prereqs) {
         try {
@@ -505,6 +514,10 @@ export async function exportPolicies({
         }
       }
     }
+    stopProgressIndicator({
+      message: `${policies.length} policies exported.`,
+      state,
+    });
   } catch (error) {
     errors.push(error);
   }

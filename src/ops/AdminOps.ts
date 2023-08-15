@@ -23,7 +23,7 @@ import {
 } from '../api/ApiTypes';
 import {exportSaml2Providers} from "./Saml2Ops";
 import {exportAgents} from "./AgentOps";
-import {getEmailTemplates} from "./EmailTemplateOps";
+import {exportEmailTemplates} from "./EmailTemplateOps";
 import {exportSocialProviders} from "./IdpOps";
 import {exportPolicies} from "./PolicyOps";
 import {exportPolicySets} from "./PolicySetOps";
@@ -31,10 +31,9 @@ import {exportResourceTypes} from "./ResourceTypeOps";
 import {exportCirclesOfTrust} from "./CirclesOfTrustOps";
 import {exportScripts} from "./ScriptOps";
 import {exportServices} from "./ServiceOps";
-import {getThemes} from "./ThemeOps";
+import {exportThemes} from "./ThemeOps";
 import {exportJourneys} from "./JourneyOps";
 import {FullExportInterface} from "./OpsTypes";
-import {getRecordFromArray} from "./utils/ExportImportUtils";
 
 export default (state: State) => {
   return {
@@ -1426,7 +1425,7 @@ async function exportFullConfiguration({
   globalConfig: boolean,
   useStringArrays: boolean,
 }): Promise<FullExportInterface> {
-  //TODO: Admin federation export (maybe covered by idp export). DO NOT include ESV exports
+  //TODO: Admin federation export (maybe covered by idp export).
   //Export saml2 providers
   const saml = (await exportSaml2Providers({ state })).saml;
   //Create full export
@@ -1434,7 +1433,7 @@ async function exportFullConfiguration({
     agents: (await exportAgents({ state })).agents,
     application: (await exportOAuth2Clients({ options: { deps: false, useStringArrays }, state })).application,
     config: (await exportConfigEntities({ state })),
-    emailTemplate: getRecordFromArray((await getEmailTemplates({ state })).result, '_id'),
+    emailTemplate: (await exportEmailTemplates({ state })).emailTemplate,
     idp: (await exportSocialProviders({ state })).idp,
     policy: (await exportPolicies({ options: { deps: false, prereqs: false, useStringArrays }, state })).policy,
     policyset: (await exportPolicySets({ options: { deps: false, prereqs: false, useStringArrays }, state })).policyset,
@@ -1447,7 +1446,7 @@ async function exportFullConfiguration({
     },
     script: (await exportScripts({ state })).script,
     service: (await exportServices({ globalConfig, state })).service,
-    theme: getRecordFromArray(await getThemes({ state }), '_id'),
+    theme: (await exportThemes({ state })).theme,
     trees: (await exportJourneys({ options: { deps: false, useStringArrays }, state })).trees,
   }
 }

@@ -11,7 +11,13 @@ import {
   ScriptSkeleton,
 } from '../api/ApiTypes';
 import { getMetadata } from './utils/ExportImportUtils';
-import { debugMessage, printMessage } from './utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  printMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from './utils/Console';
 import { convertBase64TextToArray } from './utils/ExportImportUtils';
 import { getOAuth2Provider } from './OAuth2ProviderOps';
 import State from '../shared/State';
@@ -344,7 +350,16 @@ export async function exportOAuth2Clients({
   try {
     const provider = await getOAuth2Provider({ state });
     const clients = await getOAuth2Clients({ state });
+    createProgressIndicator({
+      total: clients.length,
+      message: 'Exporting OAuth2 clients',
+      state,
+    });
     for (const client of clients) {
+      updateProgressIndicator({
+        message: `Exporting OAuth2 client ${client._id}`,
+        state,
+      });
       try {
         client._provider = provider;
         exportData.application[client._id] = client;
@@ -360,6 +375,10 @@ export async function exportOAuth2Clients({
         errors.push(error);
       }
     }
+    stopProgressIndicator({
+      message: `${clients.length} OAuth2 clients exported.`,
+      state,
+    });
   } catch (error) {
     errors.push(error);
   }

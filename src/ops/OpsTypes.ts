@@ -109,6 +109,11 @@ export interface CirclesOfTrustExportInterface {
   };
 }
 
+export interface EmailTemplateExportInterface {
+  meta?: ExportMetaData;
+  emailTemplate: Record<string, EmailTemplateSkeleton>;
+}
+
 export interface Saml2ExportInterface {
   meta?: ExportMetaData;
   script: Record<string, ScriptSkeleton>;
@@ -122,6 +127,11 @@ export interface Saml2ExportInterface {
 export interface ServiceExportInterface {
   meta?: Record<string, ExportMetaData>;
   service: Record<string, AmServiceSkeleton>;
+}
+
+export interface ThemeExportInterface {
+  meta?: ExportMetaData;
+  theme: Record<string, ThemeSkeleton>;
 }
 
 export interface TreeDependencyMapInterface {

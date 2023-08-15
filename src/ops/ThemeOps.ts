@@ -1,8 +1,14 @@
 import { ThemeSkeleton, UiThemeRealmObject } from '../api/ApiTypes';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { getCurrentRealmName } from '../api/utils/ApiUtils';
-import { debugMessage } from '../ops/utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  stopProgressIndicator,
+  updateProgressIndicator
+} from '../ops/utils/Console';
 import State from '../shared/State';
+import { ThemeExportInterface } from "./OpsTypes";
 
 export const THEMEREALM_ID = 'ui/themerealm';
 
@@ -41,6 +47,14 @@ export default (state: State) => {
       realm: string = state.getRealm()
     ): Promise<ThemeSkeleton> {
       return getThemeByName({ themeName, realm, state });
+    },
+
+    /**
+     * Export all themes. The response can be saved to file as is.
+     * @returns {Promise<ThemeExportInterface>} Promise resolving to a ThemeExportInterface object.
+     */
+    async exportThemes(): Promise<ThemeExportInterface> {
+      return exportThemes({ state });
     },
 
     /**
@@ -123,6 +137,17 @@ export default (state: State) => {
     },
   };
 };
+
+/**
+ * Create an empty theme export template
+ * @returns {ThemeExportInterface} an empty theme export template
+ */
+export function createThemeExportTemplate(): ThemeExportInterface {
+  return {
+    meta: {},
+    theme: {},
+  } as ThemeExportInterface;
+}
 
 /**
  * Get realm themes
@@ -220,6 +245,38 @@ export async function getThemeByName({
     );
   }
   throw new Error(`Theme '${themeName}' not found in realm '${realm}'!`);
+}
+
+/**
+ * Export all themes. The response can be saved to file as is.
+ * @returns {Promise<ThemeExportInterface>} Promise resolving to a ThemeExportInterface object.
+ */
+export async function exportThemes({
+  state,
+}: {
+  state: State;
+}): Promise<ThemeExportInterface> {
+  debugMessage({ message: `ThemeOps.exportThemes: start`, state });
+  const exportData = createThemeExportTemplate();
+  const themes = await getThemes({ state });
+  createProgressIndicator({
+    total: themes.length,
+    message: 'Exporting themes',
+    state,
+  });
+  for (const theme of themes) {
+    updateProgressIndicator({
+      message: `Exporting theme ${theme._id}`,
+      state,
+    });
+    exportData.theme[theme._id] = theme;
+  }
+  stopProgressIndicator({
+    message: `${themes.length} themes exported.`,
+    state,
+  });
+  debugMessage({ message: `ThemeOps.exportThemes: end`, state });
+  return exportData;
 }
 
 /**
