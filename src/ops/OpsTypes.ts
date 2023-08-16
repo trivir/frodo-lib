@@ -54,6 +54,7 @@ export interface ExportMetaData {
 }
 
 export interface FullExportInterface {
+  meta?: ExportMetaData;
   agents: Record<string, AgentSkeleton>;
   application: Record<string, OAuth2ClientSkeleton>;
   config: Record<string, object>;
