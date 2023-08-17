@@ -155,8 +155,8 @@ export async function putScript({
 
 /**
  * Delete script by id
- * @param {String} scriptId script uuid/name
- * @returns {Promise} a promise that resolves to a script object
+ * @param {String} scriptId script uuid
+ * @returns {Promise<ScriptSkeleton>>} a promise that resolves to a script object
  */
 export async function deleteScript({
   scriptId,
@@ -164,7 +164,7 @@ export async function deleteScript({
 }: {
   scriptId: string;
   state: State;
-}) {
+}): Promise<ScriptSkeleton> {
   const urlString = util.format(
     scriptURLTemplate,
     state.getHost(),
@@ -178,4 +178,45 @@ export async function deleteScript({
     withCredentials: true,
   });
   return data;
+}
+
+/**
+ * Delete script by name
+ * @param {String} scriptId script name
+ * @returns {Promise<ScriptSkeleton>} a promise that resolves to a script object
+ */
+export async function deleteScriptByName({
+  scriptName,
+  state
+}: {
+  scriptName: string;
+  state: State;
+}): Promise<ScriptSkeleton> {
+  const { result } = await getScriptByName({scriptName, state});
+  const scriptId = result[0]._id;
+  return deleteScript({
+    scriptId,
+    state
+  });
+}
+
+/**
+ * Delete all non-default scripts
+ * @returns {Promise<ScriptSkeleton[]>>} a promise that resolves to an array of script objects
+ */
+export async function deleteScripts({
+  state
+}: {
+  state: State
+}): Promise<ScriptSkeleton[]> {
+  const { result } = await getScripts({ state });
+  const scripts = result.filter(s => !s.default);
+  const deletedScripts = [];
+  for (const script of scripts) {
+    deletedScripts.push(await deleteScript({
+      scriptId: script._id,
+      state,
+    }));
+  }
+  return deletedScripts;
 }
