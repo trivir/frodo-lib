@@ -462,4 +462,41 @@ describe('ScriptOps', () => {
       expect(outcome).toBeTruthy();
     });
   });
+
+  describe('deleteScript()', () => {
+    test('0: Method is implemented', async () => {
+      expect(ScriptOps.deleteScript).toBeDefined();
+    });
+
+    test(`1: delete script by id`, async () => {
+      expect.assertions(1);
+      const outcome = await ScriptOps.deleteScript({scriptId: script1.id, state});
+      expect(outcome).toBeTruthy();
+    });
+  });
+
+  describe('deleteScriptByName()', () => {
+    test('0: Method is implemented', async () => {
+      expect(ScriptOps.deleteScriptByName).toBeDefined();
+    });
+
+    test(`1: delete script by name`, async () => {
+      expect.assertions(1);
+      const outcome = await ScriptOps.deleteScriptByName({scriptName: script2.name, state});
+      expect(outcome).toBeTruthy();
+    });
+  });
+
+  describe('deleteScripts()', () => {
+    test('0: Method is implemented', async () => {
+      expect(ScriptOps.deleteScripts).toBeDefined();
+    });
+
+    test(`1: delete all scripts`, async () => {
+      //TODO: Find a way to test this without risking loss of data
+      /*expect.assertions(1);
+      const outcome = await ScriptOps.deleteScripts({state});
+      expect(outcome).toBeTruthy();*/
+    });
+  });
 });
