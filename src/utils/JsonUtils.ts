@@ -37,6 +37,12 @@ export type Json = {
   getPaths(o: any, prefix?: string, delim?: string): string[];
   findInArray(objs: any[], predicate: any): any;
   get(obj: any, path: string[], defaultValue?: any): any;
+  /**
+   * Sort a JSON object and all its sub-objects by key (arrays are not sorted)
+   * @param obj JSON object to sort
+   * @returns The sorted JSON object
+   */
+  sortJson(obj: any): any;
 };
 
 export default (): Json => {
@@ -65,6 +71,9 @@ export default (): Json => {
     },
     get(obj: any, path: string[], defaultValue: any = undefined): any {
       return get(obj, path, defaultValue);
+    },
+    sortJson(obj: any): any {
+      return sortJson(obj);
     },
   };
 };
@@ -203,4 +212,16 @@ export function get(
     if (!result) return defaultValue;
   }
   return result;
+}
+
+/**
+ * Sort a JSON object and all its sub-objects by key (arrays are not sorted)
+ * @param obj JSON object to sort
+ * @returns The sorted JSON object
+ */
+export function sortJson(obj: any): any {
+  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+    return obj;
+  }
+  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, sortJson(value)]).sort());
 }

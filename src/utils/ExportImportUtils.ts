@@ -15,6 +15,7 @@ import {
   encodeBase64Url,
 } from './Base64Utils';
 import { debugMessage, printMessage } from './Console';
+import {sortJson} from "./JsonUtils";
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;
@@ -39,19 +40,23 @@ export type ExportImport = {
     type: string,
     data: object,
     identifier: string,
-    filename: string
+    filename: string,
+    includeMeta?: boolean,
+    sort?: boolean,
   ): void;
   /**
    * Save JSON object to file
    * @param {Object} data data object
    * @param {String} filename file name
    * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
+   * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
    * @return {boolean} true if successful, false otherwise
    */
   saveJsonToFile(
     data: object,
     filename: string,
-    includeMeta?: boolean
+    includeMeta?: boolean,
+    sort?: boolean,
   ): boolean;
   /**
    * Save text data to file
@@ -149,13 +154,17 @@ export default (state: State): ExportImport => {
       type: string,
       data: object,
       identifier: string,
-      filename: string
+      filename: string,
+      includeMeta = true,
+      sort = false,
     ): void {
       return saveToFile({
         type,
         data,
         identifier,
         filename,
+        includeMeta,
+        sort,
         state,
       });
     },
@@ -165,14 +174,16 @@ export default (state: State): ExportImport => {
      * @param {Object} data data object
      * @param {String} filename file name
      * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
+     * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
      * @return {boolean} true if successful, false otherwise
      */
     saveJsonToFile(
       data: object,
       filename: string,
-      includeMeta = true
+      includeMeta = true,
+      sort = false,
     ): boolean {
-      return saveJsonToFile({ data, filename, includeMeta, state });
+      return saveJsonToFile({ data, filename, includeMeta, sort, state });
     },
 
     /**
@@ -330,12 +341,16 @@ export function saveToFile({
   data,
   identifier,
   filename,
+  includeMeta,
+  sort,
   state,
 }: {
   type: string;
   data: object;
   identifier: string;
   filename: string;
+  includeMeta: boolean;
+  sort: boolean;
   state: State;
 }): void {
   const exportData = {};
@@ -350,7 +365,8 @@ export function saveToFile({
   }
   saveJsonToFile({
     data: exportData,
-    includeMeta: true,
+    includeMeta,
+    sort,
     filename,
     state,
   });
@@ -361,23 +377,26 @@ export function saveToFile({
  * @param {Object} data data object
  * @param {String} filename file name
  * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
+ * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
  * @return {boolean} true if successful, false otherwise
  */
 export function saveJsonToFile({
   data,
   filename,
   includeMeta = true,
+  sort = false,
   state,
 }: {
   data: object;
   filename: string;
   includeMeta?: boolean;
+  sort: boolean;
   state: State;
 }): boolean {
   const exportData = data;
-  if (includeMeta) exportData['meta'] = getMetadata({ state });
+  if (includeMeta && !exportData['meta']) exportData['meta'] = getMetadata({ state });
   return saveTextToFile({
-    data: JSON.stringify(exportData, null, 2),
+    data: JSON.stringify(sort ? sortJson(exportData) : exportData, null, 2),
     filename,
     state
   })
