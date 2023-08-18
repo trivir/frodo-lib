@@ -566,6 +566,7 @@ export async function saveConnectionProfile({
     data: orderedProfiles,
     filename,
     includeMeta: false,
+    sort: false,
     state,
   });
   verboseMessage({
