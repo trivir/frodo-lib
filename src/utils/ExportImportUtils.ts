@@ -339,7 +339,6 @@ export function saveToFile({
   state: State;
 }): void {
   const exportData = {};
-  exportData['meta'] = getMetadata({ state });
   exportData[type] = {};
 
   if (Array.isArray(data)) {
@@ -349,15 +348,11 @@ export function saveToFile({
   } else {
     exportData[type][data[identifier]] = data;
   }
-  fs.writeFile(filename, JSON.stringify(exportData, null, 2), (err) => {
-    if (err) {
-      return printMessage({
-        message: `ERROR - can't save ${type} to file`,
-        type: 'error',
-        state,
-      });
-    }
-    return '';
+  saveJsonToFile({
+    data: exportData,
+    includeMeta: true,
+    filename,
+    state,
   });
 }
 
@@ -381,17 +376,11 @@ export function saveJsonToFile({
 }): boolean {
   const exportData = data;
   if (includeMeta) exportData['meta'] = getMetadata({ state });
-  try {
-    fs.writeFileSync(filename, JSON.stringify(exportData, null, 2));
-    return true;
-  } catch (err) {
-    printMessage({
-      message: `ERROR - can't save ${filename}`,
-      type: 'error',
-      state,
-    });
-    return false;
-  }
+  return saveTextToFile({
+    data: JSON.stringify(exportData, null, 2),
+    filename,
+    state
+  })
 }
 
 /**
