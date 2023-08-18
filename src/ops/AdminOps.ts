@@ -69,8 +69,7 @@ export type Admin = {
   ): Promise<void>;
   exportFullConfiguration(
     globalConfig: boolean,
-    useStringArrays: boolean,
-    state
+    useStringArrays: boolean
   ): Promise<FullExportInterface>;
 };
 
@@ -281,8 +280,7 @@ export default (state: State): Admin => {
 
     async exportFullConfiguration(
       globalConfig = false,
-      useStringArrays = true,
-      state,
+      useStringArrays = true
     ) {
       return exportFullConfiguration({ globalConfig, useStringArrays, state })
     },
