@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { lstat, readdir } from 'fs/promises';
+import { lstat, readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import { Reader } from 'properties-reader';
 import replaceall from 'replaceall';
@@ -25,6 +25,14 @@ export type ExportImport = {
   convertTextArrayToBase64(textArray: string[]): string;
   convertTextArrayToBase64Url(textArray: string[]): any;
   validateImport(metadata: any): boolean;
+  /**
+   * Get a typed filename. E.g. "my-script.script.json"
+   *
+   * @param name The name of the file
+   * @param type The type of the file, e.g. script, idp, etc.
+   * @param suffix The suffix of the file, e.g. json, xml, etc. Defaults to json.
+   * @returns The typed filename
+   */
   getTypedFilename(name: string, type: string, suffix?: string): string;
   getWorkingDirectory(): string;
   saveToFile(
@@ -37,6 +45,7 @@ export type ExportImport = {
    * Save JSON object to file
    * @param {Object} data data object
    * @param {String} filename file name
+   * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
    * @return {boolean} true if successful, false otherwise
    */
   saveJsonToFile(
@@ -44,6 +53,13 @@ export type ExportImport = {
     filename: string,
     includeMeta?: boolean
   ): boolean;
+  /**
+   * Save text data to file
+   * @param data text data
+   * @param filename file name
+   * @return true if successful, false otherwise
+   */
+  saveTextToFile(data: string, filename: string): boolean;
   /**
    * Append text data to file
    * @param {String} data text data
@@ -64,7 +80,10 @@ export type ExportImport = {
    * @param directory directory to search
    * @returns list of files
    */
-  readFilesRecursive(directory: string): Promise<string[]>;
+  readFiles(directory: string): Promise<{
+    path: string;
+    content: string;
+  }[]>;
 
   substituteEnvParams(input: string, reader: Reader): string;
 
@@ -110,7 +129,15 @@ export default (state: State): ExportImport => {
       return validateImport(metadata);
     },
 
-    getTypedFilename(name: string, type: string, suffix = 'json') {
+    /**
+     * Get a typed filename. E.g. "my-script.script.json"
+     *
+     * @param name The name of the file
+     * @param type The type of the file, e.g. script, idp, etc.
+     * @param suffix The suffix of the file, e.g. json, xml, etc. Defaults to json.
+     * @returns The typed filename
+     */
+    getTypedFilename(name: string, type: string, suffix = 'json'): string {
       return getTypedFilename(name, type, suffix);
     },
 
@@ -123,7 +150,7 @@ export default (state: State): ExportImport => {
       data: object,
       identifier: string,
       filename: string
-    ) {
+    ): void {
       return saveToFile({
         type,
         data,
@@ -137,6 +164,7 @@ export default (state: State): ExportImport => {
      * Save JSON object to file
      * @param {Object} data data object
      * @param {String} filename file name
+     * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
      * @return {boolean} true if successful, false otherwise
      */
     saveJsonToFile(
@@ -145,6 +173,16 @@ export default (state: State): ExportImport => {
       includeMeta = true
     ): boolean {
       return saveJsonToFile({ data, filename, includeMeta, state });
+    },
+
+    /**
+     * Save text data to file
+     * @param data text data
+     * @param filename file name
+     * @return true if successful, false otherwise
+     */
+    saveTextToFile(data: string, filename: string): boolean {
+      return saveTextToFile({ data, filename, state })
     },
 
     /**
@@ -173,8 +211,11 @@ export default (state: State): ExportImport => {
      * @param directory directory to search
      * @returns list of files
      */
-    async readFilesRecursive(directory: string): Promise<string[]> {
-      return readFilesRecursive(directory);
+    async readFiles(directory: string): Promise<{
+      path: string;
+      content: string;
+    }[]> {
+      return readFiles(directory);
     },
 
     substituteEnvParams(input: string, reader: Reader): string {
@@ -253,7 +294,15 @@ export function validateImport(metadata): boolean {
   return metadata || true;
 }
 
-export function getTypedFilename(name: string, type: string, suffix = 'json') {
+/**
+ * Get a typed filename. E.g. "my-script.script.json"
+ *
+ * @param name The name of the file
+ * @param type The type of the file, e.g. script, idp, etc.
+ * @param suffix The suffix of the file, e.g. json, xml, etc. Defaults to json.
+ * @returns The typed filename
+ */
+export function getTypedFilename(name: string, type: string, suffix = 'json'): string {
   const slug = slugify(name.replace(/^http(s?):\/\//, ''), {
     remove: /[^\w\s$*_+~.()'"!\-@]+/g,
   });
@@ -288,7 +337,7 @@ export function saveToFile({
   identifier: string;
   filename: string;
   state: State;
-}) {
+}): void {
   const exportData = {};
   exportData['meta'] = getMetadata({ state });
   exportData[type] = {};
@@ -304,8 +353,8 @@ export function saveToFile({
     if (err) {
       return printMessage({
         message: `ERROR - can't save ${type} to file`,
-        state,
         type: 'error',
+        state,
       });
     }
     return '';
@@ -316,6 +365,7 @@ export function saveToFile({
  * Save JSON object to file
  * @param {Object} data data object
  * @param {String} filename file name
+ * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
  * @return {boolean} true if successful, false otherwise
  */
 export function saveJsonToFile({
@@ -339,6 +389,34 @@ export function saveJsonToFile({
       message: `ERROR - can't save ${filename}`,
       type: 'error',
       state,
+    });
+    return false;
+  }
+}
+
+/**
+ * Save text data to file
+ * @param data text data
+ * @param filename file name
+ * @return true if successful, false otherwise
+ */
+export function saveTextToFile({
+  data,
+  filename,
+  state,
+}: {
+  data: string;
+  filename: string;
+  state: State;
+}): boolean {
+  try {
+    fs.writeFileSync(filename, data);
+    return true;
+  } catch (error) {
+    printMessage({
+      message: `ERROR - can't save ${filename}`,
+      type: 'error',
+      state
     });
     return false;
   }
@@ -393,7 +471,12 @@ export function findFilesByName(
  * @param directory directory to search
  * @returns list of files
  */
-export async function readFilesRecursive(directory: string): Promise<string[]> {
+export async function readFiles(
+  directory: string
+): Promise<{
+  path: string;
+  content: string;
+}[]> {
   const items = await readdir(directory);
 
   const filePathsNested = await Promise.all(
@@ -402,9 +485,12 @@ export async function readFilesRecursive(directory: string): Promise<string[]> {
       const isDirectory = (await lstat(path)).isDirectory();
 
       if (isDirectory) {
-        return readFilesRecursive(path);
+        return readFiles(path);
       }
-      return path;
+      return {
+        path,
+        content: await readFile(path, 'utf8'),
+      };
     })
   );
 
