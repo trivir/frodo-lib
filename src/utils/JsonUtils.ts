@@ -224,7 +224,11 @@ export function sortJson(obj: any): any {
     return obj;
   }
   if (Array.isArray(obj)) {
-    return obj.map(value => sortJson(value));
+    return obj.map((value) => sortJson(value));
   }
-  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, sortJson(value)]).sort());
+  return Object.fromEntries(
+    Object.entries(obj)
+      .map(([key, value]) => [key, sortJson(value)])
+      .sort()
+  );
 }

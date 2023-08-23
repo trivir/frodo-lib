@@ -15,7 +15,7 @@ import {
   encodeBase64Url,
 } from './Base64Utils';
 import { debugMessage, printMessage } from './Console';
-import {sortJson} from "./JsonUtils";
+import { sortJson } from './JsonUtils';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;
@@ -42,7 +42,7 @@ export type ExportImport = {
     identifier: string,
     filename: string,
     includeMeta?: boolean,
-    sort?: boolean,
+    sort?: boolean
   ): void;
   /**
    * Save JSON object to file
@@ -56,7 +56,7 @@ export type ExportImport = {
     data: object,
     filename: string,
     includeMeta?: boolean,
-    sort?: boolean,
+    sort?: boolean
   ): boolean;
   /**
    * Save text data to file
@@ -85,10 +85,12 @@ export type ExportImport = {
    * @param directory directory to search
    * @returns list of files
    */
-  readFiles(directory: string): Promise<{
-    path: string;
-    content: string;
-  }[]>;
+  readFiles(directory: string): Promise<
+    {
+      path: string;
+      content: string;
+    }[]
+  >;
 
   substituteEnvParams(input: string, reader: Reader): string;
 
@@ -156,7 +158,7 @@ export default (state: State): ExportImport => {
       identifier: string,
       filename: string,
       includeMeta = true,
-      sort = false,
+      sort = false
     ): void {
       return saveToFile({
         type,
@@ -181,7 +183,7 @@ export default (state: State): ExportImport => {
       data: object,
       filename: string,
       includeMeta = true,
-      sort = false,
+      sort = false
     ): boolean {
       return saveJsonToFile({ data, filename, includeMeta, sort, state });
     },
@@ -193,7 +195,7 @@ export default (state: State): ExportImport => {
      * @return true if successful, false otherwise
      */
     saveTextToFile(data: string, filename: string): boolean {
-      return saveTextToFile({ data, filename, state })
+      return saveTextToFile({ data, filename, state });
     },
 
     /**
@@ -222,10 +224,12 @@ export default (state: State): ExportImport => {
      * @param directory directory to search
      * @returns list of files
      */
-    async readFiles(directory: string): Promise<{
-      path: string;
-      content: string;
-    }[]> {
+    async readFiles(directory: string): Promise<
+      {
+        path: string;
+        content: string;
+      }[]
+    > {
       return readFiles(directory);
     },
 
@@ -313,7 +317,11 @@ export function validateImport(metadata): boolean {
  * @param suffix The suffix of the file, e.g. json, xml, etc. Defaults to json.
  * @returns The typed filename
  */
-export function getTypedFilename(name: string, type: string, suffix = 'json'): string {
+export function getTypedFilename(
+  name: string,
+  type: string,
+  suffix = 'json'
+): string {
   const slug = slugify(name.replace(/^http(s?):\/\//, ''), {
     remove: /[^\w\s$*_+~.()'"!\-@]+/g,
   });
@@ -394,13 +402,14 @@ export function saveJsonToFile({
   state: State;
 }): boolean {
   const exportData = data;
-  if (includeMeta && !exportData['meta']) exportData['meta'] = getMetadata({ state });
+  if (includeMeta && !exportData['meta'])
+    exportData['meta'] = getMetadata({ state });
   if (!includeMeta && exportData['meta']) delete exportData['meta'];
   return saveTextToFile({
     data: JSON.stringify(sort ? sortJson(exportData) : exportData, null, 2),
     filename,
-    state
-  })
+    state,
+  });
 }
 
 /**
@@ -425,7 +434,7 @@ export function saveTextToFile({
     printMessage({
       message: `ERROR - can't save ${filename}`,
       type: 'error',
-      state
+      state,
     });
     return false;
   }
@@ -480,12 +489,12 @@ export function findFilesByName(
  * @param directory directory to search
  * @returns list of files
  */
-export async function readFiles(
-  directory: string
-): Promise<{
-  path: string;
-  content: string;
-}[]> {
+export async function readFiles(directory: string): Promise<
+  {
+    path: string;
+    content: string;
+  }[]
+> {
   const items = await readdir(directory);
 
   const filePathsNested = await Promise.all(
