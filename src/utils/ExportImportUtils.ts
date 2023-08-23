@@ -49,7 +49,7 @@ export type ExportImport = {
    * @param {Object} data data object
    * @param {String} filename file name
    * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
-   * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
+   * @param {boolean} sort true to sort the json object alphabetically before writing it to the file, false otherwise. Default: false
    * @return {boolean} true if successful, false otherwise
    */
   saveJsonToFile(
@@ -174,7 +174,7 @@ export default (state: State): ExportImport => {
      * @param {Object} data data object
      * @param {String} filename file name
      * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
-     * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
+     * @param {boolean} sort true to sort the json object alphabetically before writing it to the file, false otherwise. Default: false
      * @return {boolean} true if successful, false otherwise
      */
     saveJsonToFile(
@@ -377,7 +377,7 @@ export function saveToFile({
  * @param {Object} data data object
  * @param {String} filename file name
  * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
- * @param {boolean} sort sort the json object alphabetically before writing it to the file. Default: false
+ * @param {boolean} sort true to sort the json object alphabetically before writing it to the file, false otherwise. Default: false
  * @return {boolean} true if successful, false otherwise
  */
 export function saveJsonToFile({
@@ -395,6 +395,7 @@ export function saveJsonToFile({
 }): boolean {
   const exportData = data;
   if (includeMeta && !exportData['meta']) exportData['meta'] = getMetadata({ state });
+  if (!includeMeta && exportData['meta']) delete exportData['meta'];
   return saveTextToFile({
     data: JSON.stringify(sort ? sortJson(exportData) : exportData, null, 2),
     filename,
