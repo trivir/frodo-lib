@@ -8,10 +8,10 @@ import {
   VariableSkeleton,
 } from '../../api/cloud/VariablesApi';
 import { State } from '../../shared/State';
+import { decode } from '../../utils/Base64Utils';
 import { debugMessage } from '../../utils/Console';
-import { decode } from "../../utils/Base64Utils";
-import { getMetadata } from "../../utils/ExportImportUtils";
-import { ExportMetaData } from "../OpsTypes";
+import { getMetadata } from '../../utils/ExportImportUtils';
+import { ExportMetaData } from '../OpsTypes';
 
 export type Variable = {
   /**
@@ -145,7 +145,9 @@ export default (state: State): Variable => {
     readVariables(): Promise<VariableSkeleton[]> {
       return readVariables({ state });
     },
-    async exportVariable(variableId: string): Promise<VariablesExportInterface> {
+    async exportVariable(
+      variableId: string
+    ): Promise<VariablesExportInterface> {
       return exportVariable({ variableId, state });
     },
     exportVariables(): Promise<VariablesExportInterface> {
@@ -230,7 +232,7 @@ export default (state: State): Variable => {
 
 export interface VariablesExportInterface {
   meta?: ExportMetaData;
-  variables: Record<string, VariableSkeleton>
+  variables: Record<string, VariableSkeleton>;
 }
 
 export function createVariablesExportTemplate({
@@ -271,7 +273,7 @@ export async function exportVariable({
 }): Promise<VariablesExportInterface> {
   debugMessage({ message: `VariablesOps.exportVariable: start`, state });
   const exportData = createVariablesExportTemplate({ state });
-  const variable = await readVariable({ variableId, state })
+  const variable = await readVariable({ variableId, state });
   variable.value = decode(variable.valueBase64);
   delete variable.valueBase64;
   exportData.variables[variable._id] = variable;

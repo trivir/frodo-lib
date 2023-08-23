@@ -14,9 +14,9 @@ import {
   VersionOfSecretStatus,
 } from '../../api/cloud/SecretsApi';
 import { State } from '../../shared/State';
-import { debugMessage } from "../../utils/Console";
-import { getMetadata } from "../../utils/ExportImportUtils";
-import { ExportMetaData } from "../OpsTypes";
+import { debugMessage } from '../../utils/Console';
+import { getMetadata } from '../../utils/ExportImportUtils';
+import { ExportMetaData } from '../OpsTypes';
 
 export type Secret = {
   /**
@@ -360,7 +360,7 @@ export default (state: State): Secret => {
 
 export interface SecretsExportInterface {
   meta?: ExportMetaData;
-  secrets: Record<string, SecretSkeleton>
+  secrets: Record<string, SecretSkeleton>;
 }
 
 export function createSecretsExportTemplate({
@@ -383,7 +383,7 @@ export async function exportSecret({
 }): Promise<SecretsExportInterface> {
   debugMessage({ message: `VariablesOps.exportSecret: start`, state });
   const exportData = createSecretsExportTemplate({ state });
-  const secret = await readSecret({ secretId, state })
+  const secret = await readSecret({ secretId, state });
   exportData.secrets[secret._id] = secret;
   debugMessage({ message: `VariablesOps.exportSecret: end`, state });
   return exportData;
