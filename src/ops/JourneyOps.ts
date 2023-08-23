@@ -1,3 +1,4 @@
+import axios, { AxiosError } from 'axios';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,9 +12,9 @@ import {
   getNode,
   type InnerNodeRefSkeletonInterface,
   type NodeRefSkeletonInterface,
-  type StaticNodeRefSkeletonInterface,
   type NodeSkeleton,
   putNode,
+  type StaticNodeRefSkeletonInterface,
 } from '../api/NodeApi';
 import {
   createProvider,
@@ -78,7 +79,6 @@ import { type ExportMetaData } from './OpsTypes';
 import { readSaml2ProviderStubs } from './Saml2Ops';
 import { updateScript } from './ScriptOps';
 import { readThemes, type ThemeSkeleton, updateThemes } from './ThemeOps';
-import axios, {AxiosError} from "axios";
 
 export type Journey = {
   /**
@@ -609,21 +609,26 @@ export async function updateCoordinates({
   tree,
   nodesAttributeName,
   serverTree,
-  state
+  state,
 }: {
-  tree: TreeSkeleton,
-  nodesAttributeName: string,
-  serverTree: TreeSkeleton | null,
-  state: State
+  tree: TreeSkeleton;
+  nodesAttributeName: string;
+  serverTree: TreeSkeleton | null;
+  state: State;
 }): Promise<TreeSkeleton | null> {
-  const nodeEntries = Object.entries(tree[nodesAttributeName] as NodeRefSkeletonInterface | StaticNodeRefSkeletonInterface)
-    .filter(([, nodeInfo]) => nodeInfo.x === undefined || nodeInfo.y === undefined);
+  const nodeEntries = Object.entries(
+    tree[nodesAttributeName] as
+      | NodeRefSkeletonInterface
+      | StaticNodeRefSkeletonInterface
+  ).filter(
+    ([, nodeInfo]) => nodeInfo.x === undefined || nodeInfo.y === undefined
+  );
   if (nodeEntries.length === 0) {
     return serverTree;
   }
   if (serverTree === null) {
     try {
-      serverTree = await getTree({id: tree._id, state: state});
+      serverTree = await getTree({ id: tree._id, state: state });
     } catch (e) {
       if (!axios.isAxiosError(e) || (e as AxiosError).response.status !== 404) {
         throw e;
@@ -631,12 +636,27 @@ export async function updateCoordinates({
     }
   }
   nodeEntries.forEach(([nodeId, nodeInfo]) => {
-    const coords = serverTree == undefined || serverTree[nodesAttributeName] == undefined || serverTree[nodesAttributeName][nodeId] == undefined ? {
-      x: 0,
-      y: 0
-    } : serverTree[nodesAttributeName][nodeId];
-    nodeInfo.x = nodeInfo.x === undefined ? (coords.x == undefined ? 0 : coords.x) : nodeInfo.x;
-    nodeInfo.y = nodeInfo.y === undefined ? (coords.y == undefined ? 0 : coords.y) : nodeInfo.y;
+    const coords =
+      serverTree == undefined ||
+      serverTree[nodesAttributeName] == undefined ||
+      serverTree[nodesAttributeName][nodeId] == undefined
+        ? {
+            x: 0,
+            y: 0,
+          }
+        : serverTree[nodesAttributeName][nodeId];
+    nodeInfo.x =
+      nodeInfo.x === undefined
+        ? coords.x == undefined
+          ? 0
+          : coords.x
+        : nodeInfo.x;
+    nodeInfo.y =
+      nodeInfo.y === undefined
+        ? coords.y == undefined
+          ? 0
+          : coords.y
+        : nodeInfo.y;
   });
   return serverTree;
 }
@@ -1893,18 +1913,18 @@ export async function importJourney({
   }
 
   // Process tree nodes
-  let serverTreeObject = await updateCoordinates({
+  const serverTreeObject = await updateCoordinates({
     tree: importData.tree,
-    nodesAttributeName: "nodes",
+    nodesAttributeName: 'nodes',
     serverTree: null,
-    state: state
-  })
+    state: state,
+  });
   // Process tree static nodes
   await updateCoordinates({
     tree: importData.tree,
-    nodesAttributeName: "staticNodes",
+    nodesAttributeName: 'staticNodes',
     serverTree: serverTreeObject,
-    state: state
+    state: state,
   });
 
   delete importData.tree._rev;
