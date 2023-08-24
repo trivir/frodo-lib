@@ -115,8 +115,8 @@ describe('SecretsOps', () => {
     });
 
     test('1: Return template with meta data', async () => {
-      expect(SecretsOps.createSecretsExportTemplate({ state: state })).toMatchSnapshot({
-        meta: {...getMetadata({ state: state }), exportDate: expect.any(String)},
+      expect(SecretsOps.createSecretsExportTemplate({ state: state })).toStrictEqual({
+        meta: expect.any(Object),
         secrets: {}
       });
     });

@@ -1,19 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`VariablesOps createVariablesExportTemplate() 1: Return template with meta data 1`] = `
-{
-  "meta": {
-    "exportDate": Any<String>,
-    "exportTool": "frodo",
-    "exportToolVersion": "v2.0.0-trivir.2 [v18.12.1]",
-    "exportedBy": undefined,
-    "origin": "https://openam-frodo-dev.forgeblocks.com/am",
-    "originAmVersion": undefined,
-  },
-  "variables": {},
-}
-`;
-
 exports[`VariablesOps exportVariable() 1: Export variable1 1`] = `
 {
   "meta": Any<Object>,

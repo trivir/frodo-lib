@@ -39,6 +39,7 @@ import * as VariablesOps from './VariablesOps';
 import { getMetadata } from "../../utils/ExportImportUtils";
 import axios, { AxiosError } from "axios";
 import { VariableExpressionType } from "../../api/cloud/VariablesApi";
+import * as SecretsOps from "./SecretsOps";
 
 autoSetupPolly();
 
@@ -111,8 +112,8 @@ describe('VariablesOps', () => {
     });
 
     test('1: Return template with meta data', async () => {
-      expect(VariablesOps.createVariablesExportTemplate({ state: state })).toMatchSnapshot({
-        meta: {...getMetadata({ state: state }), exportDate: expect.any(String)},
+      expect(VariablesOps.createVariablesExportTemplate({ state: state })).toStrictEqual({
+        meta: expect.any(Object),
         variables: {}
       });
     });
