@@ -204,10 +204,10 @@ export default (state: State): Script => {
       return deleteScript({ scriptId, state });
     },
     async deleteScriptByName(scriptName: string): Promise<ScriptSkeleton> {
-      return deleteScriptByName({ scriptName, state })
+      return deleteScriptByName({ scriptName, state });
     },
     async deleteScripts(): Promise<ScriptSkeleton[]> {
-      return deleteScripts({ state })
+      return deleteScripts({ state });
     },
     async exportScript(scriptId: string): Promise<ScriptExportInterface> {
       return exportScript({ scriptId, state });
@@ -419,7 +419,7 @@ export async function deleteScript({
  */
 export async function deleteScriptByName({
   scriptName,
-  state
+  state,
 }: {
   scriptName: string;
   state: State;
@@ -432,9 +432,9 @@ export async function deleteScriptByName({
  * @returns {Promise<ScriptSkeleton[]>>} a promise that resolves to an array of script objects
  */
 export async function deleteScripts({
-  state
+  state,
 }: {
-  state: State
+  state: State;
 }): Promise<ScriptSkeleton[]> {
   return _deleteScripts({ state });
 }

@@ -187,16 +187,16 @@ export async function deleteScript({
  */
 export async function deleteScriptByName({
   scriptName,
-  state
+  state,
 }: {
   scriptName: string;
   state: State;
 }): Promise<ScriptSkeleton> {
-  const { result } = await getScriptByName({scriptName, state});
+  const { result } = await getScriptByName({ scriptName, state });
   const scriptId = result[0]._id;
   return deleteScript({
     scriptId,
-    state
+    state,
   });
 }
 
@@ -205,18 +205,20 @@ export async function deleteScriptByName({
  * @returns {Promise<ScriptSkeleton[]>>} a promise that resolves to an array of script objects
  */
 export async function deleteScripts({
-  state
+  state,
 }: {
-  state: State
+  state: State;
 }): Promise<ScriptSkeleton[]> {
   const { result } = await getScripts({ state });
-  const scripts = result.filter(s => !s.default);
+  const scripts = result.filter((s) => !s.default);
   const deletedScripts = [];
   for (const script of scripts) {
-    deletedScripts.push(await deleteScript({
-      scriptId: script._id,
-      state,
-    }));
+    deletedScripts.push(
+      await deleteScript({
+        scriptId: script._id,
+        state,
+      })
+    );
   }
   return deletedScripts;
 }
