@@ -1,19 +1,18 @@
-import {ExportMetaData} from "../ops/OpsTypes";
-import {AgentSkeleton} from "./AgentApi";
-import {OAuth2ClientSkeleton} from "./OAuth2ClientApi";
-import {EmailTemplateSkeleton} from "../ops/EmailTemplateOps";
-import {SocialIdpSkeleton} from "./SocialIdentityProvidersApi";
-import {PolicySkeleton} from "./PoliciesApi";
-import {PolicySetSkeleton} from "./PolicySetApi";
-import {ResourceTypeSkeleton} from "./ResourceTypesApi";
-import {Saml2ProviderSkeleton} from "./Saml2Api";
-import {CircleOfTrustSkeleton} from "./CirclesOfTrustApi";
-import {ScriptSkeleton} from "./ScriptApi";
-import {AmServiceSkeleton} from "./ServiceApi";
-import {ThemeSkeleton} from "../ops/ThemeOps";
-import {SingleTreeExportInterface} from "../ops/JourneyOps";
-import {IdObjectSkeletonInterface} from "./ApiTypes";
-
+import { EmailTemplateSkeleton } from '../ops/EmailTemplateOps';
+import { SingleTreeExportInterface } from '../ops/JourneyOps';
+import { ExportMetaData } from '../ops/OpsTypes';
+import { ThemeSkeleton } from '../ops/ThemeOps';
+import { AgentSkeleton } from './AgentApi';
+import { IdObjectSkeletonInterface } from './ApiTypes';
+import { CircleOfTrustSkeleton } from './CirclesOfTrustApi';
+import { OAuth2ClientSkeleton } from './OAuth2ClientApi';
+import { PolicySkeleton } from './PoliciesApi';
+import { PolicySetSkeleton } from './PolicySetApi';
+import { ResourceTypeSkeleton } from './ResourceTypesApi';
+import { Saml2ProviderSkeleton } from './Saml2Api';
+import { ScriptSkeleton } from './ScriptApi';
+import { AmServiceSkeleton } from './ServiceApi';
+import { SocialIdpSkeleton } from './SocialIdentityProvidersApi';
 
 export interface FullExportInterface {
   meta?: ExportMetaData;

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { FullExportInterface } from '../api/AdminApi';
 import { type ReadableStrings, type WritableStrings } from '../api/ApiTypes';
 import { putSecret } from '../api/cloud/SecretsApi';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
@@ -16,24 +17,23 @@ import {
 import { readOAuth2Provider } from '../ops/OAuth2ProviderOps';
 import { State } from '../shared/State';
 import { printMessage } from '../utils/Console';
+import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmManagedUser } from '../utils/ForgeRockUtils';
 import { get, isEqualJson } from '../utils/JsonUtils';
+import { exportAgents } from './AgentOps';
+import { exportCirclesOfTrust } from './CirclesOfTrustOps';
+import { exportEmailTemplates } from './EmailTemplateOps';
+import { exportConfigEntities } from './IdmConfigOps';
+import { exportSocialProviders } from './IdpOps';
+import { exportJourneys } from './JourneyOps';
 import { getRealmManagedOrganization } from './OrganizationOps';
-import { exportSaml2Providers } from "./Saml2Ops";
-import { exportAgents } from "./AgentOps";
-import { FullExportInterface } from "../api/AdminApi";
-import { exportConfigEntities } from "./IdmConfigOps";
-import { exportSocialProviders } from "./IdpOps";
-import { exportPolicies } from "./PolicyOps";
-import { exportPolicySets } from "./PolicySetOps";
-import { exportResourceTypes } from "./ResourceTypeOps";
-import { exportCirclesOfTrust } from "./CirclesOfTrustOps";
-import { exportScripts } from "./ScriptOps";
-import { exportServices } from "./ServiceOps";
-import { exportJourneys } from "./JourneyOps";
-import { exportEmailTemplates } from "./EmailTemplateOps";
-import { exportThemes } from "./ThemeOps";
-import {getMetadata} from "../utils/ExportImportUtils";
+import { exportPolicies } from './PolicyOps';
+import { exportPolicySets } from './PolicySetOps';
+import { exportResourceTypes } from './ResourceTypeOps';
+import { exportSaml2Providers } from './Saml2Ops';
+import { exportScripts } from './ScriptOps';
+import { exportServices } from './ServiceOps';
+import { exportThemes } from './ThemeOps';
 
 export type Admin = {
   listOAuth2CustomClients(): Promise<any>;
@@ -282,7 +282,7 @@ export default (state: State): Admin => {
       globalConfig = false,
       useStringArrays = true
     ) {
-      return exportFullConfiguration({ globalConfig, useStringArrays, state })
+      return exportFullConfiguration({ globalConfig, useStringArrays, state });
     },
   };
 };
@@ -1461,9 +1461,9 @@ export async function exportFullConfiguration({
   useStringArrays = true,
   state,
 }: {
-  globalConfig: boolean,
-  useStringArrays: boolean,
-  state: State,
+  globalConfig: boolean;
+  useStringArrays: boolean;
+  state: State;
 }): Promise<FullExportInterface> {
   //Export saml2 providers
   const saml = (await exportSaml2Providers({ state })).saml;
@@ -1471,24 +1471,41 @@ export async function exportFullConfiguration({
   return {
     meta: getMetadata({ state }),
     agents: (await exportAgents({ state })).agents,
-    application: (await exportOAuth2Clients({ options: { deps: false, useStringArrays }, state })).application,
+    application: (
+      await exportOAuth2Clients({
+        options: { deps: false, useStringArrays },
+        state,
+      })
+    ).application,
     config: (await exportConfigEntities({ state })).config,
     emailTemplate: (await exportEmailTemplates({ state })).emailTemplate,
     idp: (await exportSocialProviders({ state })).idp,
-    policy: (await exportPolicies({ options: { deps: false, prereqs: false, useStringArrays }, state })).policy,
-    policyset: (await exportPolicySets({ options: { deps: false, prereqs: false, useStringArrays }, state })).policyset,
+    policy: (
+      await exportPolicies({
+        options: { deps: false, prereqs: false, useStringArrays },
+        state,
+      })
+    ).policy,
+    policyset: (
+      await exportPolicySets({
+        options: { deps: false, prereqs: false, useStringArrays },
+        state,
+      })
+    ).policyset,
     resourcetype: (await exportResourceTypes({ state })).resourcetype,
     saml: {
       hosted: saml.hosted,
       remote: saml.remote,
       metadata: saml.metadata,
-      cot: (await exportCirclesOfTrust({ state })).saml.cot
+      cot: (await exportCirclesOfTrust({ state })).saml.cot,
     },
     script: (await exportScripts({ state })).script,
     service: (await exportServices({ globalConfig, state })).service,
     theme: (await exportThemes({ state })).theme,
-    trees: (await exportJourneys({ options: { deps: false, useStringArrays }, state })).trees,
-  }
+    trees: (
+      await exportJourneys({ options: { deps: false, useStringArrays }, state })
+    ).trees,
+  };
 }
 
 // suggested by John K.

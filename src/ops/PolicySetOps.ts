@@ -14,9 +14,8 @@ import { State } from '../shared/State';
 import {
   createProgressIndicator,
   debugMessage,
-  printMessage,
   stopProgressIndicator,
-  updateProgressIndicator
+  updateProgressIndicator,
 } from '../utils/Console';
 import {
   convertBase64TextToArray,

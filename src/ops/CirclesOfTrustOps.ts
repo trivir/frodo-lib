@@ -13,7 +13,7 @@ import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
-  updateProgressIndicator
+  updateProgressIndicator,
 } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
 import { type ExportMetaData } from './OpsTypes';
