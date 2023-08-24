@@ -18,7 +18,7 @@ import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
-  updateProgressIndicator
+  updateProgressIndicator,
 } from '../utils/Console';
 import {
   convertBase64TextToArray,

@@ -1,7 +1,12 @@
 import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { State } from '../shared/State';
-import { createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator } from '../utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  stopProgressIndicator,
+  updateProgressIndicator,
+} from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { ExportMetaData } from './OpsTypes';

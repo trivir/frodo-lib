@@ -1230,7 +1230,7 @@ export async function exportJourneys({
       const exportData: SingleTreeExportInterface = await exportJourney({
         journeyId: tree._id,
         options,
-        state
+        state,
       });
       delete exportData.meta;
       multiTreeExport.trees[tree._id] = exportData;
@@ -1238,7 +1238,7 @@ export async function exportJourneys({
       printMessage({
         message: `Error exporting journey ${tree._id}: ${error}`,
         type: 'error',
-        state
+        state,
       });
     }
   }

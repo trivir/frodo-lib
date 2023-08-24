@@ -15,7 +15,7 @@ import {
   debugMessage,
   printMessage,
   stopProgressIndicator,
-  updateProgressIndicator
+  updateProgressIndicator,
 } from '../utils/Console';
 import { type ExportMetaData } from './OpsTypes';
 

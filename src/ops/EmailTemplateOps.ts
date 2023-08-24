@@ -5,9 +5,14 @@ import {
   putConfigEntity,
 } from '../api/IdmConfigApi';
 import { State } from '../shared/State';
-import { createProgressIndicator, debugMessage, stopProgressIndicator, updateProgressIndicator } from '../utils/Console';
+import {
+  createProgressIndicator,
+  debugMessage,
+  stopProgressIndicator,
+  updateProgressIndicator,
+} from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
-import { exportConfigEntities, readConfigEntitiesByType } from './IdmConfigOps';
+import { readConfigEntitiesByType } from './IdmConfigOps';
 import { ExportMetaData } from './OpsTypes';
 
 export type EmailTemplate = {
@@ -232,11 +237,14 @@ export async function readEmailTemplate({
  * @returns {Promise<EmailTemplateExportInterface>} Promise resolving to a EmailTemplateExportInterface object.
  */
 export async function exportEmailTemplates({
-  state
+  state,
 }: {
-  state: State
+  state: State;
 }): Promise<EmailTemplateExportInterface> {
-  debugMessage({ message: `EmailTemplateOps.exportEmailTemplates: start`, state });
+  debugMessage({
+    message: `EmailTemplateOps.exportEmailTemplates: start`,
+    state,
+  });
   const exportData = createEmailTemplateExportTemplate({ state });
   const emailTemplates = await readEmailTemplates({ state });
   createProgressIndicator({
@@ -256,7 +264,10 @@ export async function exportEmailTemplates({
     message: `Exported ${emailTemplates.length} email templates.`,
     state,
   });
-  debugMessage({ message: `EmailTemplateOps.exportEmailTemplates: end`, state });
+  debugMessage({
+    message: `EmailTemplateOps.exportEmailTemplates: end`,
+    state,
+  });
   return exportData;
 }
 
