@@ -6,7 +6,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { isEqualJson, get } from './JsonUtils';
+import { isEqualJson, get, sortJson } from './JsonUtils';
 
 describe('JsonUtils', () => {
   describe('isEqualJson()', () => {
@@ -135,6 +135,61 @@ describe('JsonUtils', () => {
     test('3: resolve a non-existing value w/ defaultValue', () => {
       const obj = { a: [{ b: { c: 3 } }] };
       expect(get(obj, ['a', 'b', 'c'], 'default')).toEqual('default');
+    });
+  });
+
+  describe('sortJson()', () => {
+    test('0: Method is implemented', async () => {
+      expect(sortJson).toBeDefined();
+    });
+
+    test('1: Should sort object', async () => {
+      const unsortedObject = {
+        z: "test",
+        x: 2,
+        y: 3,
+        b: false,
+        w: {
+          z: 'hello',
+          w: 4,
+          y: 3,
+          x: [
+            "first",
+            null,
+            undefined,
+            {
+              c: "a",
+              b: "b",
+              a: 8
+            },
+            true
+          ]
+        }
+      };
+      const sortedObject = {
+        b: false,
+        w: {
+          w: 4,
+          x: [
+            "first",
+            null,
+            undefined,
+            {
+              a: 8,
+              b: 'b',
+              c: 'a'
+            },
+            true
+          ],
+          y: 3,
+          z: 'hello'
+        },
+        x: 2,
+        y: 3,
+        z: "test"
+      };
+      const actualObject = sortJson(unsortedObject);
+      expect(JSON.stringify(actualObject)).toStrictEqual(JSON.stringify(sortedObject));
     });
   });
 });

@@ -38,6 +38,12 @@ export type Json = {
   findInArray(objs: any[], predicate: any): any;
   get(obj: any, path: string[], defaultValue?: any): any;
   /**
+   * Sort a JSON object and all its sub-objects by key
+   * @param obj JSON object to sort
+   * @returns If obj is an object, the sorted object. If obj is an array, the array with each object sorted recursively. If the obj is anything else, obj is returned
+   */
+  sortJson(obj: any): any;
+  /**
    * Deterministic stringify
    * @param {any} obj json object to stringify deterministically
    * @returns {string} stringified json object
@@ -71,6 +77,9 @@ export default (): Json => {
     },
     get(obj: any, path: string[], defaultValue: any = undefined): any {
       return get(obj, path, defaultValue);
+    },
+    sortJson(obj: any): any {
+      return sortJson(obj);
     },
     stringify(obj: any): string {
       return stringify(obj);
@@ -212,6 +221,25 @@ export function get(
     if (!result) return defaultValue;
   }
   return result;
+}
+
+/**
+ * Sort a JSON object and all its sub-objects by key
+ * @param obj JSON object to sort
+ * @returns If obj is an object, the sorted object. If obj is an array, the array with each object sorted recursively. If the obj is anything else, obj is returned
+ */
+export function sortJson(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((value) => sortJson(value));
+  }
+  return Object.fromEntries(
+    Object.entries(obj)
+      .map(([key, value]) => [key, sortJson(value)])
+      .sort()
+  );
 }
 
 /**
