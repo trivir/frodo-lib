@@ -2,23 +2,55 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { type ReadableStrings, type WritableStrings } from '../api/ApiTypes';
 import { step } from '../api/AuthenticateApi';
+import { AgentSkeleton } from '../api/AgentApi';
+import {
+  IdObjectSkeletonInterface,
+  type ReadableStrings,
+  type WritableStrings,
+} from '../api/ApiTypes';
+import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { putSecret } from '../api/cloud/SecretsApi';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
 import { clientCredentialsGrant } from '../api/OAuth2OIDCApi';
+import { PolicySkeleton } from '../api/PoliciesApi';
+import { PolicySetSkeleton } from '../api/PolicySetApi';
+import { ResourceTypeSkeleton } from '../api/ResourceTypesApi';
+import { Saml2ProviderSkeleton } from '../api/Saml2Api';
+import { ScriptSkeleton } from '../api/ScriptApi';
+import { AmServiceSkeleton } from '../api/ServiceApi';
+import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi';
 import {
+  EmailTemplateSkeleton,
+  exportEmailTemplates,
+} from '../ops/EmailTemplateOps';
+import { exportJourneys, SingleTreeExportInterface } from '../ops/JourneyOps';
+import {
+  exportOAuth2Clients,
   readOAuth2Client,
   readOAuth2Clients,
   updateOAuth2Client,
 } from '../ops/OAuth2ClientOps';
 import { readOAuth2Provider } from '../ops/OAuth2ProviderOps';
+import { ExportMetaData } from '../ops/OpsTypes';
+import { exportThemes, ThemeSkeleton } from '../ops/ThemeOps';
 import { State } from '../shared/State';
 import { printMessage } from '../utils/Console';
+import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmManagedUser } from '../utils/ForgeRockUtils';
 import { get, isEqualJson } from '../utils/JsonUtils';
+import { exportAgents } from './AgentOps';
+import { exportCirclesOfTrust } from './CirclesOfTrustOps';
+import { exportConfigEntities } from './IdmConfigOps';
+import { exportSocialProviders } from './IdpOps';
 import { getRealmManagedOrganization } from './OrganizationOps';
+import { exportPolicies } from './PolicyOps';
+import { exportPolicySets } from './PolicySetOps';
+import { exportResourceTypes } from './ResourceTypeOps';
+import { exportSaml2Providers } from './Saml2Ops';
+import { exportScripts } from './ScriptOps';
+import { exportServices } from './ServiceOps';
 
 export type Admin = {
   listOAuth2CustomClients(): Promise<any>;
@@ -61,6 +93,10 @@ export type Admin = {
     loginsPerUser?: number,
     service?: string
   ): Promise<void>;
+  exportFullConfiguration(
+    globalConfig: boolean,
+    useStringArrays: boolean
+  ): Promise<FullExportInterface>;
 };
 
 export default (state: State): Admin => {
@@ -167,8 +203,36 @@ export default (state: State): Admin => {
         state,
       });
     },
+    async exportFullConfiguration(
+      globalConfig = false,
+      useStringArrays = true
+    ) {
+      return exportFullConfiguration({ globalConfig, useStringArrays, state });
+    },
   };
 };
+
+export interface FullExportInterface {
+  meta?: ExportMetaData;
+  agents: Record<string, AgentSkeleton>;
+  application: Record<string, OAuth2ClientSkeleton>;
+  config: Record<string, IdObjectSkeletonInterface>;
+  emailTemplate: Record<string, EmailTemplateSkeleton>;
+  idp: Record<string, SocialIdpSkeleton>;
+  policy: Record<string, PolicySkeleton>;
+  policyset: Record<string, PolicySetSkeleton>;
+  resourcetype: Record<string, ResourceTypeSkeleton>;
+  saml: {
+    hosted: Record<string, Saml2ProviderSkeleton>;
+    remote: Record<string, Saml2ProviderSkeleton>;
+    metadata: Record<string, string[]>;
+    cot: Record<string, CircleOfTrustSkeleton>;
+  };
+  script: Record<string, ScriptSkeleton>;
+  service: Record<string, AmServiceSkeleton>;
+  theme: Record<string, ThemeSkeleton>;
+  trees: Record<string, SingleTreeExportInterface>;
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -1497,6 +1561,63 @@ export async function trainAA({
       // }
     }
   }
+}
+
+/**
+ * Export full configuration
+ * @param globalConfig true if the list of global services is requested, false otherwise. Default: false.
+ * @param useStringArrays Where applicable, use string arrays to store multi-line text (e.g. scripts). Default: true.
+ */
+export async function exportFullConfiguration({
+  globalConfig = false,
+  useStringArrays = true,
+  state,
+}: {
+  globalConfig: boolean;
+  useStringArrays: boolean;
+  state: State;
+}): Promise<FullExportInterface> {
+  //Export saml2 providers
+  const saml = (await exportSaml2Providers({ state })).saml;
+  //Create full export
+  return {
+    meta: getMetadata({ state }),
+    agents: (await exportAgents({ state })).agents,
+    application: (
+      await exportOAuth2Clients({
+        options: { deps: false, useStringArrays },
+        state,
+      })
+    ).application,
+    config: (await exportConfigEntities({ state })).config,
+    emailTemplate: (await exportEmailTemplates({ state })).emailTemplate,
+    idp: (await exportSocialProviders({ state })).idp,
+    policy: (
+      await exportPolicies({
+        options: { deps: false, prereqs: false, useStringArrays },
+        state,
+      })
+    ).policy,
+    policyset: (
+      await exportPolicySets({
+        options: { deps: false, prereqs: false, useStringArrays },
+        state,
+      })
+    ).policyset,
+    resourcetype: (await exportResourceTypes({ state })).resourcetype,
+    saml: {
+      hosted: saml.hosted,
+      remote: saml.remote,
+      metadata: saml.metadata,
+      cot: (await exportCirclesOfTrust({ state })).saml.cot,
+    },
+    script: (await exportScripts({ state })).script,
+    service: (await exportServices({ globalConfig, state })).service,
+    theme: (await exportThemes({ state })).theme,
+    trees: (
+      await exportJourneys({ options: { deps: false, useStringArrays }, state })
+    ).trees,
+  };
 }
 
 // suggested by John K.
