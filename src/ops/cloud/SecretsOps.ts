@@ -381,7 +381,7 @@ export async function exportSecret({
   secretId: string;
   state: State;
 }): Promise<SecretsExportInterface> {
-  debugMessage({ message: `VariablesOps.exportSecret: start`, state });
+  debugMessage({ message: `SecretsOps.exportSecret: start`, state });
   const exportData = createSecretsExportTemplate({ state });
   const secret = await readSecret({ secretId, state });
   exportData.secrets[secret._id] = secret;
