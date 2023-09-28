@@ -373,8 +373,8 @@ export async function deleteVariable({
 }
 
 export {
-  _getVariable as readVariable,
   _getVariables as getVariables,
   _putVariable as putVariable,
+  _getVariable as readVariable,
   _setVariableDescription as setVariableDescription,
 };

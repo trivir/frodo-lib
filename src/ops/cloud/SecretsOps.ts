@@ -17,7 +17,6 @@ import { State } from '../../shared/State';
 import { debugMessage } from '../../utils/Console';
 import { getMetadata } from '../../utils/ExportImportUtils';
 import { ExportMetaData } from '../OpsTypes';
-import {getVariables as _getVariables} from "../../api/cloud/VariablesApi";
 
 export type Secret = {
   /**
