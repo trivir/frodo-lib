@@ -17,6 +17,7 @@ import { State } from '../../shared/State';
 import { debugMessage } from '../../utils/Console';
 import { getMetadata } from '../../utils/ExportImportUtils';
 import { ExportMetaData } from '../OpsTypes';
+import {getVariables as _getVariables} from "../../api/cloud/VariablesApi";
 
 export type Secret = {
   /**
@@ -250,7 +251,7 @@ export default (state: State): Secret => {
       return readSecrets({ state });
     },
     async readSecret(secretId: string) {
-      return readSecret({ secretId, state });
+      return _getSecret({ secretId, state });
     },
     async exportSecret(secretId: string): Promise<SecretsExportInterface> {
       return exportSecret({ secretId, state });
@@ -383,7 +384,7 @@ export async function exportSecret({
 }): Promise<SecretsExportInterface> {
   debugMessage({ message: `SecretsOps.exportSecret: start`, state });
   const exportData = createSecretsExportTemplate({ state });
-  const secret = await readSecret({ secretId, state });
+  const secret = await _getSecret({ secretId, state });
   exportData.secrets[secret._id] = secret;
   debugMessage({ message: `VariablesOps.exportSecret: end`, state });
   return exportData;
@@ -438,23 +439,12 @@ export async function disableVersionOfSecret({
   });
 }
 
-export async function readSecret({
-  secretId,
-  state,
-}: {
-  secretId: string;
-  state: State;
-}): Promise<SecretSkeleton> {
-  return await _getSecret({ secretId, state });
-}
-
 export async function readSecrets({
   state,
 }: {
   state: State;
 }): Promise<SecretSkeleton[]> {
-  const { result } = await _getSecrets({ state });
-  return result;
+  return (await _getSecrets({ state })).result;
 }
 
 export {
@@ -462,6 +452,7 @@ export {
   _createNewVersionOfSecret as createVersionOfSecret,
   _deleteSecret as deleteSecret,
   _deleteVersionOfSecret as deleteVersionOfSecret,
+  _getSecret as readSecret,
   _getVersionOfSecret as readVersionOfSecret,
   _getSecretVersions as readVersionsOfSecret,
   _setSecretDescription as updateSecretDescription,

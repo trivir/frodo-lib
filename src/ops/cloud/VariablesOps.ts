@@ -140,7 +140,7 @@ export type Variable = {
 export default (state: State): Variable => {
   return {
     readVariable(variableId: string): Promise<VariableSkeleton> {
-      return readVariable({ variableId, state });
+      return _getVariable({ variableId, state });
     },
     readVariables(): Promise<VariableSkeleton[]> {
       return readVariables({ state });
@@ -198,7 +198,7 @@ export default (state: State): Variable => {
     // Deprecated
 
     getVariable(variableId: string): Promise<VariableSkeleton> {
-      return readVariable({ variableId, state });
+      return _getVariable({ variableId, state });
     },
     getVariables(): Promise<VariableSkeleton[]> {
       return readVariables({ state });
@@ -246,16 +246,6 @@ export function createVariablesExportTemplate({
   } as VariablesExportInterface;
 }
 
-export async function readVariable({
-  variableId,
-  state,
-}: {
-  variableId: string;
-  state: State;
-}): Promise<VariableSkeleton> {
-  return _getVariable({ variableId, state });
-}
-
 export async function readVariables({
   state,
 }: {
@@ -273,7 +263,7 @@ export async function exportVariable({
 }): Promise<VariablesExportInterface> {
   debugMessage({ message: `VariablesOps.exportVariable: start`, state });
   const exportData = createVariablesExportTemplate({ state });
-  const variable = await readVariable({ variableId, state });
+  const variable = await _getVariable({ variableId, state });
   variable.value = decode(variable.valueBase64);
   delete variable.valueBase64;
   exportData.variables[variable._id] = variable;
@@ -383,7 +373,7 @@ export async function deleteVariable({
 }
 
 export {
-  _getVariable as getVariable,
+  _getVariable as readVariable,
   _getVariables as getVariables,
   _putVariable as putVariable,
   _setVariableDescription as setVariableDescription,
