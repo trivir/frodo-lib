@@ -32,7 +32,7 @@
 import { state } from '../index';
 import * as ScriptOps from './ScriptOps';
 import { autoSetupPolly, filterRecording } from '../utils/AutoSetupPolly';
-import { type ScriptSkeleton } from '../../types/api/ScriptApi';
+import { type ScriptSkeleton } from '../api/ScriptApi';
 
 const ctx = autoSetupPolly();
 
@@ -437,7 +437,14 @@ describe('ScriptOps', () => {
     });
 
     test('1: Export all scripts', async () => {
-      const response = await ScriptOps.exportScripts({ state });
+      const response = await ScriptOps.exportScripts({ includeDefault: false, state });
+      expect(response).toMatchSnapshot({
+        meta: expect.any(Object),
+      });
+    });
+
+    test('2: Export all scripts including default scripts', async () => {
+      const response = await ScriptOps.exportScripts({ includeDefault: true, state });
       expect(response).toMatchSnapshot({
         meta: expect.any(Object),
       });

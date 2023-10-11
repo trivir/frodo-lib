@@ -79,9 +79,10 @@ export type Script = {
   deleteScript(scriptId: string): Promise<ScriptSkeleton>;
   /**
    * Export all scripts
+   * @param {boolean} includeDefault true to include default scripts in export, false otherwise
    * @returns {Promise<ScriptExportInterface>} a promise that resolved to a ScriptExportInterface object
    */
-  exportScripts(): Promise<ScriptExportInterface>;
+  exportScripts(includeDefault: boolean): Promise<ScriptExportInterface>;
   /**
    * Export script by id
    * @param {string} scriptId script uuid
@@ -99,13 +100,15 @@ export type Script = {
    * @param {string} scriptName Optional name of script. If supplied, only the script of that name is imported
    * @param {ScriptExportInterface} importData Script import data
    * @param {boolean} reUuid true to generate a new uuid for each script on import, false otherwise
+   * @param {boolean} includeDefault true to include default scripts in the import, false otherwise
    * @returns {Promise<ScriptSkeleton[]>} true if no errors occurred during import, false otherwise
    */
   importScripts(
     scriptName: string,
     importData: ScriptExportInterface,
     reUuid?: boolean,
-    validate?: boolean
+    validate?: boolean,
+    includeDefault?: boolean
   ): Promise<ScriptSkeleton[]>;
 
   // Deprecated
@@ -198,20 +201,24 @@ export default (state: State): Script => {
     ): Promise<ScriptExportInterface> {
       return exportScriptByName({ scriptName, state });
     },
-    async exportScripts(): Promise<ScriptExportInterface> {
-      return exportScripts({ state });
+    async exportScripts(
+      includeDefault: boolean
+    ): Promise<ScriptExportInterface> {
+      return exportScripts({ includeDefault, state });
     },
     async importScripts(
       scriptName: string,
       importData: ScriptExportInterface,
       reUuid = false,
-      validate = false
+      validate = false,
+      includeDefault = false
     ): Promise<ScriptSkeleton[]> {
       return importScripts({
         scriptName,
         importData,
         reUuid,
         validate,
+        includeDefault,
         state,
       });
     },
@@ -437,14 +444,19 @@ export async function exportScriptByName({
 
 /**
  * Export all scripts
+ * @param {boolean} includeDefault true to include default scripts in export, false otherwise
  * @returns {Promise<ScriptExportInterface>} a promise that resolved to a ScriptExportInterface object
  */
 export async function exportScripts({
+  includeDefault,
   state,
 }: {
+  includeDefault: boolean;
   state: State;
 }): Promise<ScriptExportInterface> {
-  const scriptList = await readScripts({ state });
+  const scriptList = (await readScripts({ state })).filter(
+    (s) => !s.default || includeDefault
+  );
   const exportData = createScriptExportTemplate({ state });
   createProgressIndicator({
     total: scriptList.length,
@@ -475,6 +487,7 @@ export async function exportScripts({
  * @param {string} scriptName Optional name of script. If supplied, only the script of that name is imported
  * @param {ScriptExportInterface} importData Script import data
  * @param {boolean} reUuid true to generate a new uuid for each script on import, false otherwise
+ * @param {boolean} includeDefault true to include default scripts in the import, false otherwise
  * @returns {Promise<boolean>} true if no errors occurred during import, false otherwise
  */
 export async function importScripts({
@@ -482,18 +495,27 @@ export async function importScripts({
   importData,
   reUuid = false,
   validate = false,
+  includeDefault = false,
   state,
 }: {
   scriptName: string;
   importData: ScriptExportInterface;
   reUuid?: boolean;
   validate?: boolean;
+  includeDefault?: boolean;
   state: State;
 }): Promise<ScriptSkeleton[]> {
   debugMessage({ message: `ScriptOps.importScripts: start`, state });
   const response = [];
   const errors = [];
   const imported = [];
+  // noinspection TypeScriptValidateTypes - Types are correct
+  importData.script = Object.fromEntries(
+    Object.entries(importData.script).filter(
+      // @ts-expect-error - Types are correct
+      (_key: string, value: ScriptSkeleton) => !value.default || includeDefault
+    )
+  );
   for (const existingId of Object.keys(importData.script)) {
     try {
       const scriptData = importData.script[existingId];
