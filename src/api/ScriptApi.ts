@@ -193,6 +193,9 @@ export async function deleteScriptByName({
   state: State;
 }): Promise<ScriptSkeleton> {
   const { result } = await getScriptByName({ scriptName, state });
+  if (!result[0]) {
+    throw new Error(`Script with name ${scriptName} does not exist.`)
+  }
   const scriptId = result[0]._id;
   return deleteScript({
     scriptId,
@@ -210,15 +213,25 @@ export async function deleteScripts({
   state: State;
 }): Promise<ScriptSkeleton[]> {
   const { result } = await getScripts({ state });
+  //Unable to delete default scripts, so filter them out
   const scripts = result.filter((s) => !s.default);
   const deletedScripts = [];
+  const errors = [];
   for (const script of scripts) {
-    deletedScripts.push(
-      await deleteScript({
-        scriptId: script._id,
-        state,
-      })
-    );
+    try {
+      deletedScripts.push(
+        await deleteScript({
+          scriptId: script._id,
+          state,
+        })
+      );
+    } catch (error) {
+      errors.push(error);
+    }
+  }
+  if (errors.length) {
+    const errorMessages = errors.map((error) => error.message).join('\n');
+    throw new Error(`Export error:\n${errorMessages}`);
   }
   return deletedScripts;
 }
