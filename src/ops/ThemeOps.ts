@@ -10,6 +10,7 @@ import {
 import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { ExportMetaData } from './OpsTypes';
+import { v4 as uuidv4 } from 'uuid';
 
 export type ThemeSkeleton = IdObjectSkeletonInterface & {
   name: string;
@@ -451,8 +452,9 @@ export async function exportThemes({
     state,
   });
   for (const theme of themes) {
+    if (!theme._id) theme._id = uuidv4();
     updateProgressIndicator({
-      message: `Exporting theme ${theme._id}`,
+      message: `Exporting theme ${theme.name}`,
       state,
     });
     exportData.theme[theme._id] = theme;
