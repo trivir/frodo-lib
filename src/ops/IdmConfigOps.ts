@@ -22,9 +22,8 @@ import {
   updateProgressIndicator,
 } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
-import { ExportMetaData } from './OpsTypes';
 import { testConnectorServers as _testConnectorServers } from './IdmSystemOps';
-
+import { ExportMetaData } from './OpsTypes';
 
 export type IdmConfig = {
   /**

@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { step } from '../api/AuthenticateApi';
 import { AgentSkeleton } from '../api/AgentApi';
 import {
   IdObjectSkeletonInterface,
   type ReadableStrings,
   type WritableStrings,
 } from '../api/ApiTypes';
+import { step } from '../api/AuthenticateApi';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { putSecret } from '../api/cloud/SecretsApi';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
