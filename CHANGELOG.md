@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0-trivir.4] - 2023-10-31
+
 ## [2.0.0-trivir.3] - 2023-10-31
 
 ## [2.0.0-47] - 2023-11-02
@@ -1314,7 +1316,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Fixed problem with adding connection profiles
 -   Miscellaneous bug fixes
 
-[Unreleased]: https://github.com/trivir/frodo-lib/compare/v2.0.0-trivir.3...HEAD
+[Unreleased]: https://github.com/trivir/frodo-lib/compare/v2.0.0-trivir.4...HEAD
+
+[2.0.0-trivir.4]: https://github.com/trivir/frodo-lib/compare/v2.0.0-trivir.3...v2.0.0-trivir.4
 
 [2.0.0-trivir.3]: https://github.com/trivir/frodo-lib/compare/v2.0.0-46...v2.0.0-trivir.3
 
