@@ -1086,9 +1086,22 @@ export async function exportIdentityGatewayAgents({
   });
   const exportData = createAgentExportTemplate();
   const agents = await readIdentityGatewayAgents({ state });
+  createProgressIndicator({
+    total: agents.length,
+    message: 'Exporting IG agents...',
+    state,
+  });
   for (const agent of agents) {
+    updateProgressIndicator({
+      message: `Exporting IG agent ${agent._id}`,
+      state,
+    });
     exportData.agents[agent._id] = agent;
   }
+  stopProgressIndicator({
+    message: `Exported ${agents.length} IG agents.`,
+    state,
+  });
   debugMessage({ message: `AgentOps.exportIdentityGatewayAgents: end`, state });
   return exportData;
 }
@@ -1105,9 +1118,22 @@ export async function exportJavaAgents({
   debugMessage({ message: `AgentOps.exportJavaAgents: start`, state });
   const exportData = createAgentExportTemplate();
   const agents = await readJavaAgents({ state });
+  createProgressIndicator({
+    total: agents.length,
+    message: 'Exporting Java agents...',
+    state,
+  });
   for (const agent of agents) {
+    updateProgressIndicator({
+      message: `Exporting Java agent ${agent._id}`,
+      state,
+    });
     exportData.agents[agent._id] = agent;
   }
+  stopProgressIndicator({
+    message: `Exported ${agents.length} Java agents.`,
+    state,
+  });
   debugMessage({ message: `AgentOps.exportJavaAgents: end`, state });
   return exportData;
 }
@@ -1124,9 +1150,22 @@ export async function exportWebAgents({
   debugMessage({ message: `AgentOps.exportWebAgents: start`, state });
   const exportData = createAgentExportTemplate();
   const agents = await readWebAgents({ state });
+  createProgressIndicator({
+    total: agents.length,
+    message: 'Exporting web agents...',
+    state,
+  });
   for (const agent of agents) {
+    updateProgressIndicator({
+      message: `Exporting web agent ${agent._id}`,
+      state,
+    });
     exportData.agents[agent._id] = agent;
   }
+  stopProgressIndicator({
+    message: `Exported ${agents.length} web agents.`,
+    state,
+  });
   debugMessage({ message: `AgentOps.exportWebAgents: end`, state });
   return exportData;
 }

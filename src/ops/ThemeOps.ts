@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { State } from '../shared/State';
@@ -10,7 +12,6 @@ import {
 import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { ExportMetaData } from './OpsTypes';
-import { v4 as uuidv4 } from 'uuid';
 
 export type ThemeSkeleton = IdObjectSkeletonInterface & {
   name: string;

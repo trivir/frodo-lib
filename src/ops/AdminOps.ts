@@ -10,7 +10,8 @@ import {
 } from '../api/ApiTypes';
 import { step } from '../api/AuthenticateApi';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
-import { putSecret } from '../api/cloud/SecretsApi';
+import { putSecret, SecretSkeleton } from '../api/cloud/SecretsApi';
+import { VariableSkeleton } from '../api/cloud/VariablesApi';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
 import { clientCredentialsGrant } from '../api/OAuth2OIDCApi';
@@ -41,7 +42,10 @@ import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmManagedUser } from '../utils/ForgeRockUtils';
 import { get, isEqualJson } from '../utils/JsonUtils';
 import { exportAgents } from './AgentOps';
+import { ApplicationSkeleton, exportApplications } from './ApplicationOps';
 import { exportCirclesOfTrust } from './CirclesOfTrustOps';
+import { exportSecrets } from './cloud/SecretsOps';
+import { exportVariables } from './cloud/VariablesOps';
 import { exportConfigEntities } from './IdmConfigOps';
 import { exportSocialProviders } from './IdpOps';
 import { getRealmManagedOrganization } from './OrganizationOps';
@@ -94,8 +98,7 @@ export type Admin = {
     service?: string
   ): Promise<void>;
   exportFullConfiguration(
-    globalConfig: boolean,
-    useStringArrays: boolean
+    options: FullExportOptions
   ): Promise<FullExportInterface>;
 };
 
@@ -204,13 +207,26 @@ export default (state: State): Admin => {
       });
     },
     async exportFullConfiguration(
-      globalConfig = false,
-      useStringArrays = true
+      options: FullExportOptions = { useStringArrays: true, noDecode: false }
     ) {
-      return exportFullConfiguration({ globalConfig, useStringArrays, state });
+      return exportFullConfiguration({ options, state });
     },
   };
 };
+
+/**
+ * Full export options
+ */
+export interface FullExportOptions {
+  /**
+   * Use string arrays to store multi-line text in scripts.
+   */
+  useStringArrays: boolean;
+  /**
+   * Do not include decoded variable value in export
+   */
+  noDecode: boolean;
+}
 
 export interface FullExportInterface {
   meta?: ExportMetaData;
@@ -219,6 +235,7 @@ export interface FullExportInterface {
   config: Record<string, IdObjectSkeletonInterface>;
   emailTemplate: Record<string, EmailTemplateSkeleton>;
   idp: Record<string, SocialIdpSkeleton>;
+  managedApplication: Record<string, ApplicationSkeleton>;
   policy: Record<string, PolicySkeleton>;
   policyset: Record<string, PolicySetSkeleton>;
   resourcetype: Record<string, ResourceTypeSkeleton>;
@@ -229,9 +246,11 @@ export interface FullExportInterface {
     cot: Record<string, CircleOfTrustSkeleton>;
   };
   script: Record<string, ScriptSkeleton>;
+  secrets: Record<string, SecretSkeleton>;
   service: Record<string, AmServiceSkeleton>;
   theme: Record<string, ThemeSkeleton>;
   trees: Record<string, SingleTreeExportInterface>;
+  variables: Record<string, VariableSkeleton>;
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -1565,18 +1584,16 @@ export async function trainAA({
 
 /**
  * Export full configuration
- * @param globalConfig true if the list of global services is requested, false otherwise. Default: false.
- * @param useStringArrays Where applicable, use string arrays to store multi-line text (e.g. scripts). Default: true.
+ * @param {FullExportOptions} options export options
  */
 export async function exportFullConfiguration({
-  globalConfig = false,
-  useStringArrays = true,
+  options = { useStringArrays: true, noDecode: false },
   state,
 }: {
-  globalConfig: boolean;
-  useStringArrays: boolean;
+  options: FullExportOptions;
   state: State;
 }): Promise<FullExportInterface> {
+  const { useStringArrays, noDecode } = options;
   //Export saml2 providers
   const saml = (await exportSaml2Providers({ state })).saml;
   //Create full export
@@ -1592,6 +1609,12 @@ export async function exportFullConfiguration({
     config: (await exportConfigEntities({ state })).config,
     emailTemplate: (await exportEmailTemplates({ state })).emailTemplate,
     idp: (await exportSocialProviders({ state })).idp,
+    managedApplication: (
+      await exportApplications({
+        options: { deps: false, useStringArrays },
+        state,
+      })
+    ).managedApplication,
     policy: (
       await exportPolicies({
         options: { deps: false, prereqs: false, useStringArrays },
@@ -1612,11 +1635,16 @@ export async function exportFullConfiguration({
       cot: (await exportCirclesOfTrust({ state })).saml.cot,
     },
     script: (await exportScripts({ state })).script,
-    service: (await exportServices({ globalConfig, state })).service,
+    secrets: (await exportSecrets({ state })).secrets,
+    service: {
+      ...(await exportServices({ globalConfig: true, state })).service,
+      ...(await exportServices({ globalConfig: false, state })).service,
+    },
     theme: (await exportThemes({ state })).theme,
     trees: (
       await exportJourneys({ options: { deps: false, useStringArrays }, state })
     ).trees,
+    variables: (await exportVariables({ noDecode, state })).variables,
   };
 }
 

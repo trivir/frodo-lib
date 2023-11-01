@@ -635,7 +635,7 @@ export async function exportSaml2Providers({
     try {
       await exportDependencies({ providerData, fileData, state });
     } catch (error) {
-      printMessage({ message: error, type: 'error', state });
+      printMessage({ message: error.message, type: 'error', state });
     }
     fileData.saml[stub.location][providerData._id] = providerData;
   }

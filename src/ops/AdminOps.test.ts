@@ -45,8 +45,15 @@ describe('AdminOps', () => {
       expect(AdminOps.exportFullConfiguration).toBeDefined();
     });
 
-    test('1: Export everything', async () => {
-      const response = await AdminOps.exportFullConfiguration({ globalConfig: true, useStringArrays: true, state });
+    test('1: Export everything with string arrays and decoding', async () => {
+      const response = await AdminOps.exportFullConfiguration({ options: { useStringArrays: true, noDecode: false }, state });
+      expect(response).toMatchSnapshot({
+        meta: expect.any(Object)
+      });
+    });
+
+    test('2: Export everything without string arrays and decoding', async () => {
+      const response = await AdminOps.exportFullConfiguration({ options: { useStringArrays: false, noDecode: true }, state });
       expect(response).toMatchSnapshot({
         meta: expect.any(Object)
       });
