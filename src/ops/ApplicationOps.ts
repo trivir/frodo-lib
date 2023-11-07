@@ -8,7 +8,8 @@ import { State } from '../shared/State';
 import { decode } from '../utils/Base64Utils';
 import {
   createProgressIndicator,
-  debugMessage, printMessage,
+  debugMessage,
+  printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../utils/Console';
