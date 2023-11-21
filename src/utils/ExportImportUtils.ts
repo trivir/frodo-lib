@@ -15,7 +15,7 @@ import {
   encodeBase64Url,
 } from './Base64Utils';
 import { debugMessage, printMessage } from './Console';
-import { deleteDeepByKey, sortJson } from './JsonUtils';
+import { deleteDeepByKey, sortJson, stringify } from './JsonUtils';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;
@@ -399,7 +399,7 @@ export function saveJsonToFile({
   if (!includeMeta && exportData['meta']) delete exportData['meta'];
   deleteDeepByKey(exportData, '_rev');
   return saveTextToFile({
-    data: JSON.stringify(sort ? sortJson(exportData) : exportData, null, 2),
+    data: stringify(sort ? sortJson(exportData) : exportData),
     filename,
     state,
   });
