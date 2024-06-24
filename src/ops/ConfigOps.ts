@@ -1,5 +1,8 @@
 import { AgentSkeleton } from '../api/AgentApi';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
+import {
+  AmConfigEntityInterface,
+  IdObjectSkeletonInterface,
+} from '../api/ApiTypes';
 import { AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { SecretSkeleton } from '../api/cloud/SecretsApi';
@@ -28,6 +31,7 @@ import {
 } from '../utils/ExportImportUtils';
 import { getRealmUsingExportFormat } from '../utils/ForgeRockUtils';
 import { exportAgents, importAgents } from './AgentOps';
+import { exportAmConfigEntities } from './AmConfigOps';
 import {
   ApplicationSkeleton,
   exportApplications,
@@ -190,6 +194,7 @@ export interface FullExportInterface {
 export interface FullGlobalExportInterface {
   agents: Record<string, AgentSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
+  other: Record<string, Record<string, AmConfigEntityInterface>> | undefined;
   realm: Record<string, RealmSkeleton> | undefined;
   scripttype: Record<string, ScriptTypeSkeleton> | undefined;
   secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
@@ -205,6 +210,7 @@ export interface FullRealmExportInterface {
   idp: Record<string, SocialIdpSkeleton> | undefined;
   managedApplication: Record<string, ApplicationSkeleton> | undefined;
   node: Record<string, NodeSkeleton> | undefined;
+  other: Record<string, Record<string, AmConfigEntityInterface>> | undefined;
   policy: Record<string, PolicySkeleton> | undefined;
   policyset: Record<string, PolicySetSkeleton> | undefined;
   resourcetype: Record<string, ResourceTypeSkeleton> | undefined;
@@ -263,6 +269,8 @@ export async function exportFullConfiguration({
     state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
 
+  const otherConfig = await exportAmConfigEntities(stateObj);
+
   //Export global config
   const globalConfig: FullGlobalExportInterface = {
     agents: isClassicDeployment
@@ -283,6 +291,7 @@ export async function exportFullConfiguration({
           )
         )?.authentication
       : undefined,
+    other: otherConfig.global,
     realm: (
       await exportOrImportWithErrorHandling(exportRealms, stateObj, errors)
     )?.realm,
@@ -390,6 +399,7 @@ export async function exportFullConfiguration({
       node: (
         await exportOrImportWithErrorHandling(exportNodes, stateObj, errors)
       )?.node,
+      other: otherConfig.realm[realm],
       policy: (
         await exportOrImportWithErrorHandling(
           exportPolicies,

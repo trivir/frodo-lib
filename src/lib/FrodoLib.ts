@@ -1,6 +1,7 @@
 // instantiable modules
 import AdminOps, { Admin } from '../ops/AdminOps';
 import AgentOps, { Agent } from '../ops/AgentOps';
+import AmConfigOps, { AmConfig } from '../ops/AmConfigOps';
 import ApplicationOps, { Application } from '../ops/ApplicationOps';
 import AuthenticateOps, { Authenticate } from '../ops/AuthenticateOps';
 import AuthenticationSettingsOps, {
@@ -76,6 +77,11 @@ export type Frodo = {
   state: State;
   admin: Admin;
   agent: Agent;
+
+  am: {
+    config: AmConfig;
+  };
+
   app: Application;
 
   authn: {
@@ -224,6 +230,11 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     state: state,
     admin: AdminOps(state),
     agent: AgentOps(state),
+
+    am: {
+      config: AmConfigOps(state),
+    },
+
     app: ApplicationOps(state),
 
     authn: {
