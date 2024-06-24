@@ -12,6 +12,7 @@ import { RealmSkeleton } from '../api/RealmApi';
 import { ResourceTypeSkeleton } from '../api/ResourceTypesApi';
 import { Saml2ProviderSkeleton } from '../api/Saml2Api';
 import { ScriptSkeleton } from '../api/ScriptApi';
+import { ScriptTypeSkeleton } from '../api/ScriptTypeApi';
 import { AmServiceSkeleton } from '../api/ServiceApi';
 import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi';
 import Constants from '../shared/Constants';
@@ -68,8 +69,15 @@ import { exportRealms } from './RealmOps';
 import { exportResourceTypes, importResourceTypes } from './ResourceTypeOps';
 import { exportSaml2Providers, importSaml2Providers } from './Saml2Ops';
 import { exportScripts, importScripts } from './ScriptOps';
+import { exportScriptTypes } from './ScriptTypeOps';
+import {
+  exportSecretStores,
+  SecretStoreExportSkeleton,
+} from './SecretStoreOps';
+import { exportServers, ServerExportSkeleton } from './ServerOps';
 import { exportServices, importServices } from './ServiceOps';
 import { exportThemes, importThemes, ThemeSkeleton } from './ThemeOps';
+import { exportUsers, UserExportSkeleton } from './UserOps';
 
 export type Config = {
   /**
@@ -183,6 +191,9 @@ export interface FullGlobalExportInterface {
   agents: Record<string, AgentSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
   realm: Record<string, RealmSkeleton> | undefined;
+  scripttype: Record<string, ScriptTypeSkeleton> | undefined;
+  secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
+  server: Record<string, ServerExportSkeleton> | undefined;
   service: Record<string, AmServiceSkeleton> | undefined;
 }
 
@@ -207,9 +218,11 @@ export interface FullRealmExportInterface {
     | undefined;
   script: Record<string, ScriptSkeleton> | undefined;
   secrets: Record<string, SecretSkeleton> | undefined;
+  secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
   service: Record<string, AmServiceSkeleton> | undefined;
   theme: Record<string, ThemeSkeleton> | undefined;
   trees: Record<string, SingleTreeExportInterface> | undefined;
+  user: Record<string, UserExportSkeleton> | undefined;
   variables: Record<string, VariableSkeleton> | undefined;
 }
 
@@ -273,6 +286,22 @@ export async function exportFullConfiguration({
     realm: (
       await exportOrImportWithErrorHandling(exportRealms, stateObj, errors)
     )?.realm,
+    scripttype: (
+      await exportOrImportWithErrorHandling(exportScriptTypes, stateObj, errors)
+    )?.scripttype,
+    secretstore: isClassicDeployment
+      ? (
+          await exportOrImportWithErrorHandling(
+            exportSecretStores,
+            globalStateObj,
+            errors
+          )
+        )?.secretstore
+      : undefined,
+    server: isClassicDeployment
+      ? (await exportOrImportWithErrorHandling(exportServers, stateObj, errors))
+          ?.server
+      : undefined,
     service: (
       await exportOrImportWithErrorHandling(
         exportServices,
@@ -412,6 +441,15 @@ export async function exportFullConfiguration({
             )
           )?.secrets
         : undefined,
+      secretstore: isClassicDeployment
+        ? (
+            await exportOrImportWithErrorHandling(
+              exportSecretStores,
+              realmStateObj,
+              errors
+            )
+          )?.secretstore
+        : undefined,
       service: (
         await exportOrImportWithErrorHandling(
           exportServices,
@@ -438,6 +476,9 @@ export async function exportFullConfiguration({
           errors
         )
       )?.trees,
+      user: (
+        await exportOrImportWithErrorHandling(exportUsers, stateObj, errors)
+      )?.user,
       variables: isCloudDeployment
         ? (
             await exportOrImportWithErrorHandling(

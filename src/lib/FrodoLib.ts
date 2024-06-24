@@ -49,10 +49,14 @@ import ReconOps, { Recon } from '../ops/ReconOps';
 import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
 import Saml2Ops, { Saml2 } from '../ops/Saml2Ops';
 import ScriptOps, { Script } from '../ops/ScriptOps';
+import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps';
+import SecretStoreOps, { SecretStore } from '../ops/SecretStoreOps';
+import ServerOps, { Server } from '../ops/ServerOps';
 import ServiceOps, { Service } from '../ops/ServiceOps';
 import SessionOps, { Session } from '../ops/SessionOps';
 import ThemeOps, { Theme } from '../ops/ThemeOps';
 import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
+import UserOps, { User } from '../ops/UserOps';
 import VersionUtils, { Version } from '../ops/VersionUtils';
 // non-instantiable modules
 import ConstantsImpl, { Constants } from '../shared/Constants';
@@ -135,10 +139,15 @@ export type Frodo = {
   };
 
   script: Script;
+  scriptType: ScriptType;
+  secretStore: SecretStore;
+  server: Server;
   service: Service;
   session: Session;
 
   theme: Theme;
+
+  user: User;
 
   utils: FRUtils &
     ScriptValidation &
@@ -278,10 +287,15 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     },
 
     script: ScriptOps(state),
+    scriptType: ScriptTypeOps(state),
+    secretStore: SecretStoreOps(state),
+    server: ServerOps(state),
     service: ServiceOps(state),
     session: SessionOps(state),
 
     theme: ThemeOps(state),
+
+    user: UserOps(state),
 
     utils: {
       ...ForgeRockUtils(state),
