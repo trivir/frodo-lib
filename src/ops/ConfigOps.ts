@@ -4,9 +4,11 @@ import { AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { SecretSkeleton } from '../api/cloud/SecretsApi';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
+import { NodeSkeleton } from '../api/NodeApi';
 import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
 import { PolicySkeleton } from '../api/PoliciesApi';
 import { PolicySetSkeleton } from '../api/PolicySetApi';
+import { RealmSkeleton } from '../api/RealmApi';
 import { ResourceTypeSkeleton } from '../api/ResourceTypesApi';
 import { Saml2ProviderSkeleton } from '../api/Saml2Api';
 import { ScriptSkeleton } from '../api/ScriptApi';
@@ -57,10 +59,12 @@ import {
   importJourneys,
   SingleTreeExportInterface,
 } from './JourneyOps';
+import { exportNodes } from './NodeOps';
 import { exportOAuth2Clients, importOAuth2Clients } from './OAuth2ClientOps';
 import { ExportMetaData } from './OpsTypes';
 import { exportPolicies, importPolicies } from './PolicyOps';
 import { exportPolicySets, importPolicySets } from './PolicySetOps';
+import { exportRealms } from './RealmOps';
 import { exportResourceTypes, importResourceTypes } from './ResourceTypeOps';
 import { exportSaml2Providers, importSaml2Providers } from './Saml2Ops';
 import { exportScripts, importScripts } from './ScriptOps';
@@ -178,6 +182,7 @@ export interface FullExportInterface {
 export interface FullGlobalExportInterface {
   agents: Record<string, AgentSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
+  realm: Record<string, RealmSkeleton> | undefined;
   service: Record<string, AmServiceSkeleton> | undefined;
 }
 
@@ -188,6 +193,7 @@ export interface FullRealmExportInterface {
   emailTemplate: Record<string, EmailTemplateSkeleton> | undefined;
   idp: Record<string, SocialIdpSkeleton> | undefined;
   managedApplication: Record<string, ApplicationSkeleton> | undefined;
+  node: Record<string, NodeSkeleton> | undefined;
   policy: Record<string, PolicySkeleton> | undefined;
   policyset: Record<string, PolicySetSkeleton> | undefined;
   resourcetype: Record<string, ResourceTypeSkeleton> | undefined;
@@ -264,6 +270,9 @@ export async function exportFullConfiguration({
           )
         )?.authentication
       : undefined,
+    realm: (
+      await exportOrImportWithErrorHandling(exportRealms, stateObj, errors)
+    )?.realm,
     service: (
       await exportOrImportWithErrorHandling(
         exportServices,
@@ -349,6 +358,9 @@ export async function exportFullConfiguration({
             )
           )?.managedApplication
         : undefined,
+      node: (
+        await exportOrImportWithErrorHandling(exportNodes, stateObj, errors)
+      )?.node,
       policy: (
         await exportOrImportWithErrorHandling(
           exportPolicies,

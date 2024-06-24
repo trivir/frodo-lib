@@ -7,7 +7,16 @@ import {
   RealmSkeleton,
 } from '../api/RealmApi';
 import { State } from '../shared/State';
+import {
+  createProgressIndicator,
+  debugMessage,
+  stopProgressIndicator,
+  updateProgressIndicator,
+} from '../utils/Console';
+import { getMetadata } from '../utils/ExportImportUtils';
 import { getRealmName } from '../utils/ForgeRockUtils';
+import { FrodoError } from './FrodoError';
+import { ExportMetaData } from './OpsTypes';
 
 export type Realm = {
   /**
@@ -27,6 +36,11 @@ export type Realm = {
    * @returns {Promise<RealmSkeleton>} a promise resolving to a realm object
    */
   readRealmByName(realmName: string): Promise<RealmSkeleton>;
+  /**
+   * Export all realms. The response can be saved to file as is.
+   * @returns {Promise<RealmExportInterface>} Promise resolving to a RealmExportInterface object.
+   */
+  exportRealms(): Promise<RealmExportInterface>;
   /**
    * Create realm
    * @param {string} realmName realm name
@@ -123,6 +137,9 @@ export default (state: State): Realm => {
     readRealmByName(realmName: string): Promise<RealmSkeleton> {
       return getRealmByName({ realmName, state });
     },
+    exportRealms(): Promise<RealmExportInterface> {
+      return exportRealms({ state });
+    },
     createRealm(
       realmName: string,
       realmData?: RealmSkeleton
@@ -171,6 +188,26 @@ export default (state: State): Realm => {
   };
 };
 
+export interface RealmExportInterface {
+  meta?: ExportMetaData;
+  realm: Record<string, RealmSkeleton>;
+}
+
+/**
+ * Create an empty realm export template
+ * @returns {RealmExportInterface} an empty realm export template
+ */
+export function createRealmExportTemplate({
+  state,
+}: {
+  state: State;
+}): RealmExportInterface {
+  return {
+    meta: getMetadata({ state }),
+    realm: {},
+  };
+}
+
 /**
  * Get all realms
  * @returns {Promise} a promise that resolves to an object containing an array of realm objects
@@ -178,6 +215,51 @@ export default (state: State): Realm => {
 export async function getRealms({ state }: { state: State }) {
   const { result } = await _getRealms({ state });
   return result;
+}
+
+/**
+ * Export all realms. The response can be saved to file as is.
+ * @returns {Promise<RealmExportInterface>} Promise resolving to a RealmExportInterface object.
+ */
+export async function exportRealms({
+  state,
+}: {
+  state: State;
+}): Promise<RealmExportInterface> {
+  let indicatorId: string;
+  try {
+    debugMessage({ message: `RealmOps.exportRealms: start`, state });
+    const exportData = createRealmExportTemplate({ state });
+    const realms = await getRealms({ state });
+    indicatorId = createProgressIndicator({
+      total: realms.length,
+      message: 'Exporting realms...',
+      state,
+    });
+    for (const realm of realms) {
+      updateProgressIndicator({
+        id: indicatorId,
+        message: `Exporting realm ${realm.name}`,
+        state,
+      });
+      exportData.realm[realm._id] = realm;
+    }
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Exported ${realms.length} realms.`,
+      state,
+    });
+    debugMessage({ message: `RealmOps.exportRealms: end`, state });
+    return exportData;
+  } catch (error) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error exporting realms.`,
+      status: 'fail',
+      state,
+    });
+    throw new FrodoError(`Error reading realms`, error);
+  }
 }
 
 /**
