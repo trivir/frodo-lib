@@ -5,6 +5,7 @@ import {
   findAgentById,
   findAgentByTypeAndId,
   getAgentByTypeAndId as _getAgentByTypeAndId,
+  getAgents,
   getAgentsByType,
   putAgentByTypeAndId,
 } from '../api/AgentApi';
@@ -27,15 +28,17 @@ export type Agent = {
   createAgentExportTemplate(): AgentExportInterface;
   /**
    * Read all agents.
+   * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<TreeSkeleton[]>} a promise that resolves to an array of agent objects
    */
-  readAgents(): Promise<AgentSkeleton[]>;
+  readAgents(globalConfig: boolean): Promise<AgentSkeleton[]>;
   /**
    * Read agent
    * @param {string} agentId agent id/name
+   * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<AgentSkeleton>} a promise that resolves to an agent object
    */
-  readAgent(agentId: string): Promise<AgentSkeleton>;
+  readAgent(agentId: string, globalConfig: boolean): Promise<AgentSkeleton>;
   /**
    * Read agent by type and id
    * @param {string} agentType agent type (IdentityGatewayAgent, J2EEAgent, WebAgent)
@@ -141,9 +144,10 @@ export type Agent = {
   ): Promise<AgentSkeleton>;
   /**
    * Export all agents. The response can be saved to file as is.
+   * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<AgentExportInterface>} Promise resolving to an AgentExportInterface object.
    */
-  exportAgents(): Promise<AgentExportInterface>;
+  exportAgents(globalConfig: boolean): Promise<AgentExportInterface>;
   /**
    * Export all identity gateway agents. The response can be saved to file as is.
    * @returns {Promise<AgentExportInterface} Promise resolving to an AgentExportInterface object.
@@ -162,9 +166,13 @@ export type Agent = {
   /**
    * Export agent. The response can be saved to file as is.
    * @param agentId agent id/name
+   * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<AgentExportInterface} Promise resolving to an AgentExportInterface object.
    */
-  exportAgent(agentId: string): Promise<AgentExportInterface>;
+  exportAgent(
+    agentId: string,
+    globalConfig: boolean
+  ): Promise<AgentExportInterface>;
   /**
    * Export identity gateway agent. The response can be saved to file as is.
    * @param agentId agent id/name
@@ -433,11 +441,14 @@ export default (state: State): Agent => {
     createAgentExportTemplate(): AgentExportInterface {
       return createAgentExportTemplate({ state });
     },
-    async readAgents(): Promise<AgentSkeleton[]> {
-      return readAgents({ state });
+    async readAgents(globalConfig = false): Promise<AgentSkeleton[]> {
+      return readAgents({ state, globalConfig });
     },
-    async readAgent(agentId: string): Promise<AgentSkeleton> {
-      return readAgent({ agentId, state });
+    async readAgent(
+      agentId: string,
+      globalConfig = false
+    ): Promise<AgentSkeleton> {
+      return readAgent({ agentId, globalConfig, state });
     },
     async readAgentByTypeAndId(
       agentType: AgentType,
@@ -507,8 +518,8 @@ export default (state: State): Agent => {
     ): Promise<AgentSkeleton> {
       return updateWebAgent({ agentId, agentData, state });
     },
-    async exportAgents(): Promise<AgentExportInterface> {
-      return exportAgents({ state });
+    async exportAgents(globalConfig = false): Promise<AgentExportInterface> {
+      return exportAgents({ state, globalConfig });
     },
     async exportIdentityGatewayAgents(): Promise<AgentExportInterface> {
       return exportIdentityGatewayAgents({ state });
@@ -519,8 +530,11 @@ export default (state: State): Agent => {
     async exportWebAgents(): Promise<AgentExportInterface> {
       return exportWebAgents({ state });
     },
-    async exportAgent(agentId: string): Promise<AgentExportInterface> {
-      return exportAgent({ agentId, state });
+    async exportAgent(
+      agentId: string,
+      globalConfig = false
+    ): Promise<AgentExportInterface> {
+      return exportAgent({ agentId, globalConfig, state });
     },
     async exportIdentityGatewayAgent(
       agentId: string
@@ -594,10 +608,10 @@ export default (state: State): Agent => {
     // Deprecated
 
     async getAgents(): Promise<AgentSkeleton[]> {
-      return readAgents({ state });
+      return readAgents({ state, globalConfig: false });
     },
     async getAgent(agentId: string) {
-      return readAgent({ agentId, state });
+      return readAgent({ agentId, globalConfig: false, state });
     },
     async getAgentByTypeAndId(agentType: AgentType, agentId: string) {
       return readAgentByTypeAndId({ agentType, agentId, state });
@@ -667,24 +681,32 @@ export function createAgentExportTemplate({
 
 /**
  * Get all agents. Results are sorted alphabetically.
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<TreeSkeleton[]>} a promise that resolves to an array of agent objects
  */
 export async function readAgents({
   state,
+  globalConfig = false,
 }: {
   state: State;
+  globalConfig: boolean;
 }): Promise<AgentSkeleton[]> {
   try {
     debugMessage({ message: `AgentOps.readAgents: start`, state });
     let agents = [];
-    const resolved = await Promise.all([
-      getAgentsByType({ agentType: 'IdentityGatewayAgent', state }),
-      getAgentsByType({ agentType: 'J2EEAgent', state }),
-      getAgentsByType({ agentType: 'WebAgent', state }),
-    ]);
-    agents = agents.concat(resolved[0].result);
-    agents = agents.concat(resolved[1].result);
-    agents = agents.concat(resolved[2].result);
+    if (globalConfig) {
+      const resolved = await getAgents({ state, globalConfig });
+      agents = agents.concat(resolved.result);
+    } else {
+      const resolved = await Promise.all([
+        getAgentsByType({ agentType: 'IdentityGatewayAgent', state }),
+        getAgentsByType({ agentType: 'J2EEAgent', state }),
+        getAgentsByType({ agentType: 'WebAgent', state }),
+      ]);
+      agents = agents.concat(resolved[0].result);
+      agents = agents.concat(resolved[1].result);
+      agents = agents.concat(resolved[2].result);
+    }
     agents.sort((a, b) => a._id.localeCompare(b._id));
     debugMessage({ message: `AgentOps.readAgents: end`, state });
     return agents;
@@ -696,19 +718,22 @@ export async function readAgents({
 /**
  * Get agent
  * @param {string} agentId agent id/name
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<AgentSkeleton>} a promise that resolves to an agent object
  */
 export async function readAgent({
   agentId,
+  globalConfig = false,
   state,
 }: {
   agentId: string;
+  globalConfig: boolean;
   state: State;
 }): Promise<AgentSkeleton> {
   let agents = [];
   try {
     debugMessage({ message: `AgentOps.readAgent: start`, state });
-    agents = await findAgentById({ agentId, state });
+    agents = await findAgentById({ agentId, globalConfig, state });
     if (agents.length === 1) {
       const result = await _getAgentByTypeAndId({
         agentType: agents[0]._type,
@@ -1126,18 +1151,21 @@ export async function updateWebAgent({
 
 /**
  * Export all agents. The response can be saved to file as is.
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<AgentExportInterface>} Promise resolving to an AgentExportInterface object.
  */
 export async function exportAgents({
   state,
+  globalConfig = false,
 }: {
   state: State;
+  globalConfig: boolean;
 }): Promise<AgentExportInterface> {
   let indicatorId: string;
   try {
     debugMessage({ message: `AgentOps.exportAgents: start`, state });
     const exportData = createAgentExportTemplate({ state });
-    const agents = await readAgents({ state });
+    const agents = await readAgents({ state, globalConfig });
     indicatorId = createProgressIndicator({
       total: agents.length,
       message: 'Exporting agents...',
@@ -1313,19 +1341,22 @@ export async function exportWebAgents({
 /**
  * Export agent. The response can be saved to file as is.
  * @param agentId agent id/name
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<AgentExportInterface} Promise resolving to an AgentExportInterface object.
  */
 export async function exportAgent({
   agentId,
+  globalConfig = false,
   state,
 }: {
   agentId: string;
+  globalConfig: boolean;
   state: State;
 }): Promise<AgentExportInterface> {
   try {
     debugMessage({ message: `AgentOps.exportAgent: start`, state });
     const exportData = createAgentExportTemplate({ state });
-    const agentObject = await readAgent({ agentId, state });
+    const agentObject = await readAgent({ agentId, globalConfig, state });
     exportData.agents[agentId] = agentObject;
     debugMessage({ message: `AgentOps.exportAgent: end`, state });
     return exportData;
@@ -1776,7 +1807,7 @@ export async function deleteAgents({ state }: { state: State }) {
   const errors: Error[] = [];
   try {
     debugMessage({ message: `AgentOps.deleteAgents: start`, state });
-    const agents = await readAgents({ state });
+    const agents = await readAgents({ state, globalConfig: false });
     for (const agent of agents) {
       try {
         debugMessage({
@@ -1952,7 +1983,7 @@ export async function deleteAgent({
 }) {
   try {
     debugMessage({ message: `AgentOps.deleteAgent: start`, state });
-    const agents = await findAgentById({ agentId, state });
+    const agents = await findAgentById({ agentId, globalConfig: false, state });
     if (agents.length == 0) {
       throw new FrodoError(`Agent '${agentId}' not found!`);
     }

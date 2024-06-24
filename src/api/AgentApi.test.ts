@@ -439,7 +439,7 @@ describe('AgentApi', () => {
     });
 
     test('1: Get all agents', async () => {
-      const response = await AgentApi.getAgents({ state });
+      const response = await AgentApi.getAgents({ state, globalConfig: false });
       expect(response).toMatchSnapshot();
     });
   });
@@ -452,6 +452,7 @@ describe('AgentApi', () => {
     test(`1: Find agent '${gateway1.id}'`, async () => {
       const response = await AgentApi.findAgentById({
         agentId: gateway1.id,
+        globalConfig: false,
         state,
       });
       expect(response).toMatchSnapshot();
@@ -460,6 +461,7 @@ describe('AgentApi', () => {
     test(`2: Find agent '${java1.id}'`, async () => {
       const response = await AgentApi.findAgentById({
         agentId: java1.id,
+        globalConfig: false,
         state,
       });
       expect(response).toMatchSnapshot();
@@ -468,6 +470,7 @@ describe('AgentApi', () => {
     test(`3: Find agent '${web1.id}'`, async () => {
       const response = await AgentApi.findAgentById({
         agentId: web1.id,
+        globalConfig: false,
         state,
       });
       expect(response).toMatchSnapshot();

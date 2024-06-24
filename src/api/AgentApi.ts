@@ -2,17 +2,19 @@ import util from 'util';
 
 import { State } from '../shared/State';
 import { debugMessage } from '../utils/Console';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
+import {
+  getConfigPath,
+  getCurrentRealmPath,
+  getRealmPathGlobal,
+} from '../utils/ForgeRockUtils';
 import { deleteDeepByKey } from '../utils/JsonUtils';
 import { type AmConfigEntityInterface } from './ApiTypes';
 import { generateAmApi } from './BaseApi';
 
 const getAgentTypesURLTemplate =
   '%s/json%s/realm-config/agents?_action=getAllTypes';
-const getAllAgentsURLTemplate =
-  '%s/json%s/realm-config/agents?_action=nextdescendents';
-const queryAgentURLTemplate =
-  "%s/json%s/realm-config/agents?_queryFilter=_id+eq+'%s'";
+const getAllAgentsURLTemplate = '%s/json%s/%s/agents?_action=nextdescendents';
+const queryAgentURLTemplate = "%s/json%s/%s/agents?_queryFilter=_id+eq+'%s'";
 const queryAgentByTypeURLTemplate =
   "%s/json%s/realm-config/agents/%s?_queryFilter=_id+eq+'%s'";
 const agentURLTemplate = '%s/json%s/realm-config/agents/%s/%s';
@@ -88,14 +90,22 @@ export async function getAgentsByType({
 
 /**
  * Get all agents
+ * @param {boolean} globalConfig true if the global agents is the target of the operation, false otherwise. default: false
  * @returns {Promise} a promise that resolves to an object containing an array of agent objects
  */
-export async function getAgents({ state }: { state: State }) {
+export async function getAgents({
+  state,
+  globalConfig = false,
+}: {
+  state: State;
+  globalConfig?: boolean;
+}) {
   debugMessage({ message: `AgentApi.getAgents: start`, state });
   const urlString = util.format(
     getAllAgentsURLTemplate,
     state.getHost(),
-    getCurrentRealmPath(state)
+    getRealmPathGlobal(globalConfig, state),
+    getConfigPath(globalConfig)
   );
   const { data } = await generateAmApi({
     resource: getApiConfig(),
@@ -114,20 +124,24 @@ export async function getAgents({ state }: { state: State }) {
 /**
  * Find agent by id
  * @param {string} agentId agent id
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise} a promise that resolves to an array with one or zero agent objects
  */
 export async function findAgentById({
   agentId,
+  globalConfig = false,
   state,
 }: {
   agentId: string;
+  globalConfig: boolean;
   state: State;
 }) {
   debugMessage({ message: `AgentApi.findAgentById: start`, state });
   const urlString = util.format(
     queryAgentURLTemplate,
     state.getHost(),
-    getCurrentRealmPath(state),
+    getRealmPathGlobal(globalConfig, state),
+    getConfigPath(globalConfig),
     agentId
   );
   const { data } = await generateAmApi({ resource: getApiConfig(), state }).get(

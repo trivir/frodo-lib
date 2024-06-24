@@ -299,7 +299,7 @@ describe('AgentOps', () => {
       });
 
       test('1: Read all agents', async () => {
-        const response = await AgentOps.readAgents({ state });
+        const response = await AgentOps.readAgents({ state, globalConfig: false, });
         expect(response).toMatchSnapshot();
       });
     });
@@ -312,18 +312,19 @@ describe('AgentOps', () => {
       test(`1: Read agent '${gateway1.id}' (${gateway1.type})`, async () => {
         const response = await AgentOps.readAgent({
           agentId: gateway1.id,
+          globalConfig: false,
           state,
         });
         expect(response).toMatchSnapshot();
       });
 
       test(`2: Read agent '${java1.id}' (${java1.type})`, async () => {
-        const response = await AgentOps.readAgent({ agentId: java1.id, state });
+        const response = await AgentOps.readAgent({ agentId: java1.id, globalConfig: false, state });
         expect(response).toMatchSnapshot();
       });
 
       test(`3: Read agent '${web1.id}' (${web1.type})`, async () => {
-        const response = await AgentOps.readAgent({ agentId: web1.id, state });
+        const response = await AgentOps.readAgent({ agentId: web1.id, globalConfig: false, state });
         expect(response).toMatchSnapshot();
       });
     });
@@ -487,7 +488,7 @@ describe('AgentOps', () => {
       });
 
       test('1: Export all agents', async () => {
-        const response = await AgentOps.exportAgents({ state });
+        const response = await AgentOps.exportAgents({ state, globalConfig: false });
         expect(response).toMatchSnapshot({
           meta: expect.any(Object),
         });
@@ -541,6 +542,7 @@ describe('AgentOps', () => {
       test(`1: Export agent '${gateway1.id}' (${gateway1.type})`, async () => {
         const response = await AgentOps.exportAgent({
           agentId: gateway1.id,
+          globalConfig: false,
           state,
         });
         expect(response).toMatchSnapshot({
@@ -551,6 +553,7 @@ describe('AgentOps', () => {
       test(`2: Export agent '${java1.id}' (${java1.type})`, async () => {
         const response = await AgentOps.exportAgent({
           agentId: java1.id,
+          globalConfig: false,
           state,
         });
         expect(response).toMatchSnapshot({
@@ -561,6 +564,7 @@ describe('AgentOps', () => {
       test(`3: Export agent '${web1.id}' (${web1.type})`, async () => {
         const response = await AgentOps.exportAgent({
           agentId: web1.id,
+          globalConfig: false,
           state,
         });
         expect(response).toMatchSnapshot({

@@ -12,9 +12,12 @@ import { type ExportMetaData } from './OpsTypes';
 export type AuthenticationSettings = {
   /**
    * Read authentication settings
+   * @param {boolean} globalConfig true if global authentication settings is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<AuthenticationSettingsSkeleton>} a promise that resolves an authentication settings object
    */
-  readAuthenticationSettings(): Promise<AuthenticationSettingsSkeleton>;
+  readAuthenticationSettings(
+    globalConfig: boolean
+  ): Promise<AuthenticationSettingsSkeleton>;
   /**
    * Update authentication settings
    * @param {AuthenticationSettingsSkeleton} settings authentication settings data
@@ -25,9 +28,12 @@ export type AuthenticationSettings = {
   ): Promise<AuthenticationSettingsSkeleton>;
   /**
    * Export authentication settings
+   * @param {boolean} globalConfig true if global authentication settings is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<AuthenticationSettingsExportInterface>} a promise that resolves to an AuthenticationSettingsExportInterface object
    */
-  exportAuthenticationSettings(): Promise<AuthenticationSettingsExportInterface>;
+  exportAuthenticationSettings(
+    globalConfig: boolean
+  ): Promise<AuthenticationSettingsExportInterface>;
   /**
    * Import authentication settings
    * @param {AuthenticationSettingsExportInterface} importData import data
@@ -39,8 +45,8 @@ export type AuthenticationSettings = {
 
 export default (state: State): AuthenticationSettings => {
   return {
-    async readAuthenticationSettings() {
-      return readAuthenticationSettings({ state });
+    async readAuthenticationSettings(globalConfig = false) {
+      return readAuthenticationSettings({ state, globalConfig });
     },
     async updateAuthenticationSettings(
       settings: AuthenticationSettingsSkeleton
@@ -50,8 +56,10 @@ export default (state: State): AuthenticationSettings => {
         state,
       });
     },
-    async exportAuthenticationSettings(): Promise<AuthenticationSettingsExportInterface> {
-      return exportAuthenticationSettings({ state });
+    async exportAuthenticationSettings(
+      globalConfig = false
+    ): Promise<AuthenticationSettingsExportInterface> {
+      return exportAuthenticationSettings({ state, globalConfig });
     },
     async importAuthenticationSettings(
       importData: AuthenticationSettingsExportInterface
@@ -83,15 +91,18 @@ function createAuthenticationSettingsExportTemplate({
 
 /**
  * Read authentication settings
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise} a promise that resolves to an object containing an array of authentication settingss
  */
 export async function readAuthenticationSettings({
   state,
+  globalConfig = false,
 }: {
   state: State;
+  globalConfig: boolean;
 }): Promise<AuthenticationSettingsSkeleton> {
   try {
-    const settings = await _getAuthenticationSettings({ state });
+    const settings = await _getAuthenticationSettings({ state, globalConfig });
     return settings;
   } catch (error) {
     throw new FrodoError(`Error reading authentication settings`, error);
@@ -126,19 +137,25 @@ export async function updateAuthenticationSettings({
 
 /**
  * Export authentication settings
+ * @param {boolean} globalConfig true if global agent is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<AuthenticationSettingsExportInterface>} a promise that resolves to a AuthenticationSettingsExportInterface object
  */
 export async function exportAuthenticationSettings({
   state,
+  globalConfig = false,
 }: {
   state: State;
+  globalConfig: boolean;
 }): Promise<AuthenticationSettingsExportInterface> {
   try {
     debugMessage({
       message: `AuthenticationSettingsOps.exportAuthenticationSettings: start`,
       state,
     });
-    const settingsData = await readAuthenticationSettings({ state });
+    const settingsData = await readAuthenticationSettings({
+      state,
+      globalConfig,
+    });
     const exportData = createAuthenticationSettingsExportTemplate({ state });
     exportData.authentication = settingsData;
     debugMessage({
