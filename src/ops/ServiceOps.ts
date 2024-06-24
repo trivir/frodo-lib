@@ -29,7 +29,7 @@ export type Service = {
    */
   getListOfServices(
     globalConfig?: boolean
-  ): Promise<import('../api/ServiceApi').ServiceListItem[]>;
+  ): Promise<import('../api/ServiceApi').AmServiceSkeleton[]>;
   /**
    * Get all services including their descendents.
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
@@ -255,16 +255,31 @@ export async function getListOfServices({
   globalConfig: boolean;
   state: State;
 }) {
-  try {
-    debugMessage({ message: `ServiceOps.getListOfServices: start`, state });
-    const services = (await _getListOfServices({ globalConfig, state })).result;
-    debugMessage({ message: `ServiceOps.getListOfServices: end`, state });
-    return services;
-  } catch (error) {
-    throw new FrodoError(
-      `Error getting list of ${globalConfig ? 'global' : 'realm'} services`,
-      error
-    );
+  // Attempt to get all services numberOfAttempts times. The reason for this is that occasionally a 502 error occurs when doing a global export of the services in cloud, so redoing it a couple times should result in a success, otherwise give up.
+  const numberOfAttempts = 5;
+  debugMessage({ message: `ServiceOps.getListOfServices: start`, state });
+  for (let i = 0; i < numberOfAttempts; i++) {
+    try {
+      // Filter the Scripting service entities since they consist of scripts, which are handled in ScriptOps.
+      const services = (
+        await _getListOfServices({ globalConfig, state })
+      ).result.filter((s) => !(s._type && s._type.name === 'Scripting'));
+      debugMessage({ message: `ServiceOps.getListOfServices: end`, state });
+      return services;
+    } catch (error) {
+      if (error.httpStatus !== 502 && error.response?.status !== 502) {
+        throw new FrodoError(
+          `Error getting list of ${globalConfig ? 'global' : 'realm'} services`,
+          error
+        );
+      }
+      if (i === numberOfAttempts - 1) {
+        throw new FrodoError(
+          `Attempted ${numberOfAttempts} times to get all services, but got HTTP 502 error every time.`,
+          error
+        );
+      }
+    }
   }
 }
 

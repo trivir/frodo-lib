@@ -9,28 +9,14 @@ const serviceURLTemplate = '%s/json%s/%s/services/%s';
 const serviceURLNextDescendentsTemplate =
   '%s/json%s/%s/services/%s?_action=nextdescendents';
 const serviceURLNextDescendentTemplate = '%s/json%s/%s/services/%s/%s/%s';
-const serviceListURLTemplate = '%s/json%s/%s/services?_queryFilter=true';
+//Use _action=nextdescendents since it works on all deployments
+const serviceListURLTemplate = '%s/json%s/%s/services?_action=nextdescendents';
 const apiVersion = 'protocol=2.0,resource=1.0';
 
 function getApiConfig() {
   return {
     apiVersion,
   };
-}
-
-export interface ServiceListItem {
-  /**
-   * The identifier for the service - used to construct the subpath for the service
-   */
-  _id: string;
-  /**
-   * The user-facing name of the service
-   */
-  name: string;
-  /**
-   * The revision number of the service
-   */
-  _rev: string;
 }
 
 export type AmServiceSkeleton = AmConfigEntityInterface & {
@@ -62,18 +48,23 @@ export async function getListOfServices({
 }: {
   globalConfig: boolean;
   state: State;
-}): Promise<PagedResult<ServiceListItem>> {
+}): Promise<PagedResult<AmServiceSkeleton>> {
   const urlString = util.format(
     serviceListURLTemplate,
     state.getHost(),
     getRealmPathGlobal(globalConfig, state),
     getConfigPath(globalConfig)
   );
-  const { data } = await generateAmApi({ resource: getApiConfig(), state }).get<
-    PagedResult<ServiceListItem>
-  >(urlString, {
-    withCredentials: true,
-  });
+  const { data } = await generateAmApi({
+    resource: getApiConfig(),
+    state,
+  }).post<PagedResult<AmServiceSkeleton>>(
+    urlString,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
   return data;
 }
 
@@ -133,9 +124,13 @@ export async function getServiceDescendents({
   const { data } = await generateAmApi({
     resource: getApiConfig(),
     state,
-  }).post<ServiceNextDescendentResponse>(urlString, {
-    withCredentials: true,
-  });
+  }).post<ServiceNextDescendentResponse>(
+    urlString,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
   return data.result as ServiceNextDescendent[];
 }
 

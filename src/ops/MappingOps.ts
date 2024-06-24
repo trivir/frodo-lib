@@ -88,14 +88,21 @@ export type Mapping = {
   /**
    * Export mapping
    * @param {string} mappingId id of the mapping (new: 'mapping/\<name>', legacy: 'sync/\<name>')
+   * @param {MappingExportOptions} options export options
    * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
    */
-  exportMapping(mappingId: string): Promise<MappingExportInterface>;
+  exportMapping(
+    mappingId: string,
+    options?: MappingExportOptions
+  ): Promise<MappingExportInterface>;
   /**
    * Export all mappings
+   * @param {MappingExportOptions} options export options
    * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
    */
-  exportMappings(): Promise<MappingExportInterface>;
+  exportMappings(
+    options?: MappingExportOptions
+  ): Promise<MappingExportInterface>;
   /**
    * Import mapping
    * @param {string} mappingId id of the mapping (new: 'mapping/\<name>', legacy: 'sync/\<name>')
@@ -184,11 +191,16 @@ export default (state: State): Mapping => {
     async deleteMapping(mappingId: string): Promise<MappingSkeleton> {
       return deleteMapping({ mappingId, state });
     },
-    async exportMapping(mappingId: string): Promise<MappingExportInterface> {
-      return exportMapping({ mappingId, state });
+    async exportMapping(
+      mappingId: string,
+      options: MappingExportOptions = { deps: true, useStringArrays: true }
+    ): Promise<MappingExportInterface> {
+      return exportMapping({ mappingId, options, state });
     },
-    async exportMappings(): Promise<MappingExportInterface> {
-      return exportMappings({ state });
+    async exportMappings(
+      options: MappingExportOptions = { deps: true, useStringArrays: true }
+    ): Promise<MappingExportInterface> {
+      return exportMappings({ options, state });
     },
     async importMapping(
       mappingId: string,
@@ -268,6 +280,14 @@ export interface MappingExportOptions {
    * Include any dependencies.
    */
   deps: boolean;
+  /**
+   * limit mappings to connector
+   */
+  connectorId?: string;
+  /**
+   * limit mappings to managed object type
+   */
+  moType?: string;
 }
 
 /**
@@ -324,6 +344,38 @@ export async function readSyncMappings({
 }
 
 /**
+ * Read the new mappings that are not legacy (i.e. from sync.json)
+ * @returns {Promise<MappingSkeleton[]>} a promise that resolves to an array of mapping objects
+ */
+export async function readNewMappings({
+  state,
+}: {
+  state: State;
+}): Promise<MappingSkeleton[]> {
+  try {
+    debugMessage({
+      message: `MappingOps.readNewMappings: start`,
+      state,
+    });
+    const mapping = (await readConfigEntitiesByType({
+      type: 'mapping',
+      state,
+    })) as MappingSkeleton[];
+    const mappings = mapping.map((it) => {
+      it._id = `mapping/${it.name}`;
+      return it;
+    });
+    debugMessage({
+      message: `MappingOps.readNewMappings: end`,
+      state,
+    });
+    return mappings;
+  } catch (error) {
+    throw new FrodoError(`Error reading new mappings`, error);
+  }
+}
+
+/**
  * Read mappings
  * @param {string} connectorId limit mappings to connector
  * @param {string} moType limit mappings to managed object type
@@ -345,10 +397,7 @@ export async function readMappings({
       }, moType=${moType ? moType : 'all'}]`,
       state,
     });
-    let mappings = (await readConfigEntitiesByType({
-      type: 'mapping',
-      state,
-    })) as MappingSkeleton[];
+    let mappings = await readNewMappings({ state });
     const legacyMappings = await readSyncMappings({ state });
     mappings = mappings.concat(legacyMappings);
     if (connectorId)
@@ -385,23 +434,20 @@ export async function readMapping({
   mappingId: string;
   state: State;
 }): Promise<MappingSkeleton> {
+  let mappings;
   if (mappingId.startsWith('sync/')) {
-    const mappings = await readSyncMappings({ state });
-    for (const mapping of mappings) {
-      if (mapping._id === mappingId) return mapping;
-    }
-    throw new FrodoError(`Mapping '${mappingId}' not found!`);
+    mappings = await readSyncMappings({ state });
   } else if (mappingId.startsWith('mapping/')) {
-    const mapping = await readConfigEntity({
-      entityId: mappingId,
-      state,
-    });
-    return mapping as MappingSkeleton;
+    mappings = await readNewMappings({ state });
   } else {
     throw new FrodoError(
       `Invalid mapping id ${mappingId}. Must start with 'sync/' or 'mapping/'`
     );
   }
+  for (const mapping of mappings) {
+    if (mapping._id === mappingId) return mapping;
+  }
+  throw new FrodoError(`Mapping '${mappingId}' not found!`);
 }
 
 /**
@@ -464,7 +510,7 @@ export async function updateMapping({
 }): Promise<MappingSkeleton> {
   if (mappingId.startsWith('sync/')) {
     try {
-      let mappings = await readMappings({ state });
+      let mappings = await readSyncMappings({ state });
       mappings = mappings.map((mapping) => {
         if (mappingId === mapping._id) {
           // update existing mapping with incoming
@@ -695,7 +741,7 @@ export async function deleteMapping({
   try {
     debugMessage({ message: `MappingOps.deleteMapping: start`, state });
     if (mappingId.startsWith('sync/')) {
-      const mappings = await readMappings({ state });
+      const mappings = await readSyncMappings({ state });
       const mappingsToDelete = mappings.filter(
         (mapping) => mapping._id === mappingId
       );
@@ -771,19 +817,28 @@ export async function deleteMapping({
 /**
  * Export mapping
  * @param {string} mappingId id of the mapping (new: 'mapping/\<name>', legacy: 'sync/\<name>')
+ * @param {MappingExportOptions} options export options
  * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
  */
 export async function exportMapping({
   mappingId,
+  options = { deps: true, useStringArrays: true },
   state,
 }: {
   mappingId: string;
+  options?: MappingExportOptions;
   state: State;
 }): Promise<MappingExportInterface> {
   try {
     debugMessage({ message: `MappingOps.exportMapping: start`, state });
     const mappingData = await readMapping({ mappingId, state });
     const exportData = createMappingExportTemplate({ state });
+    if (options.deps) {
+      // TODO
+    }
+    if (options.useStringArrays) {
+      // TODO
+    }
     exportData.mapping[mappingData._id] = mappingData;
     debugMessage({ message: `MappingOps.exportMapping: end`, state });
     return exportData;
@@ -794,17 +849,24 @@ export async function exportMapping({
 
 /**
  * Export all mappings
+ * @param {MappingExportOptions} options export options
  * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
  */
 export async function exportMappings({
+  options = { deps: true, useStringArrays: true },
   state,
 }: {
+  options?: MappingExportOptions;
   state: State;
 }): Promise<MappingExportInterface> {
   let indicatorId: string;
   try {
     const exportData = createMappingExportTemplate({ state });
-    const allMappingsData = await readMappings({ state });
+    const allMappingsData = await readMappings({
+      connectorId: options.connectorId,
+      moType: options.moType,
+      state,
+    });
     indicatorId = createProgressIndicator({
       total: allMappingsData.length,
       message: 'Exporting mappings',
@@ -816,6 +878,12 @@ export async function exportMappings({
         message: `Exporting mapping ${mappingData._id}`,
         state,
       });
+      if (options.deps) {
+        // TODO
+      }
+      if (options.useStringArrays) {
+        // TODO
+      }
       exportData.mapping[mappingData._id] = mappingData;
     }
     stopProgressIndicator({
@@ -860,7 +928,7 @@ export async function importMapping({
     if (key === mappingId) {
       try {
         if (options.deps) {
-          //
+          // TODO
         }
         response = await updateMapping({
           mappingId,
@@ -903,7 +971,7 @@ export async function importFirstMapping({
   for (const key of Object.keys(importData.mapping)) {
     try {
       if (options.deps) {
-        //
+        // TODO
       }
       response = await updateMapping({
         mappingId: key,
@@ -945,7 +1013,7 @@ export async function importMappings({
   for (const key of Object.keys(importData.mapping)) {
     try {
       if (options.deps) {
-        //
+        // TODO
       }
       response.push(
         await updateMapping({

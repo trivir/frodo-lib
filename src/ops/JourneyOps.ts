@@ -930,9 +930,9 @@ export async function exportJourney({
 
       // frodo supports email templates in platform deployments
       if (
-        (deps &&
-          state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY) ||
-        state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY
+        deps &&
+        (state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
+          state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY)
       ) {
         if (emailTemplateNodes.includes(nodeType)) {
           try {
