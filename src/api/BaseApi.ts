@@ -10,15 +10,10 @@ import { randomUUID } from 'crypto';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import _curlirize from '../ext/axios-curlirize/curlirize';
-import StateImpl, { State } from '../shared/State';
+import { State } from '../shared/State';
 import { getUserAgent } from '../shared/Version';
 import { curlirizeMessage, printMessage } from '../utils/Console';
 import { mergeDeep } from '../utils/JsonUtils';
-import { setupPollyForFrodoLib } from '../utils/SetupPollyForFrodoLib';
-
-if (process.env.FRODO_MOCK) {
-  setupPollyForFrodoLib({ state: StateImpl({}) });
-}
 
 axiosRetry(axios, {
   retries: 3,
