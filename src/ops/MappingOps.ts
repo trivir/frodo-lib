@@ -466,13 +466,13 @@ export async function updateMapping({
     try {
       let mappings = await readMappings({ state });
       mappings = mappings.map((mapping) => {
-        if (mappingId == mapping._id) {
+        if (mappingId === mapping._id) {
           // update existing mapping with incoming
           return mappingData;
         }
         return mapping;
       });
-      if (mappings.findIndex((mapping) => mapping._id == mappingId) == -1) {
+      if (mappings.findIndex((mapping) => mapping._id === mappingId) === -1) {
         // incoming mapping does not exist, add it as new in the array
         mappings.push(mappingData);
       }

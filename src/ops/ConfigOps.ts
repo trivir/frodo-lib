@@ -69,7 +69,7 @@ export type Config = {
   /**
    * Export full configuration
    * @param {FullExportOptions} options export options
-   * @param {Error[]} collectErrors optional parameters to collect erros instead of having the function throw. Pass an empty array to collect errors and report on them but have the function perform all it can and return the export data even if it encounters errors.
+   * @param {Error[]} collectErrors optional parameters to collect errors instead of having the function throw. Pass an empty array to collect errors and report on them but have the function perform all it can and return the export data even if it encounters errors.
    * @returns {Promise<IdObjectSkeletonInterface>} a promise resolving to a full export object
    */
   exportFullConfiguration(
@@ -80,7 +80,7 @@ export type Config = {
    * Import full configuration
    * @param {FullExportInterface} importData import data
    * @param {FullImportOptions} options import options
-   * @param {Error[]} collectErrors optional parameters to collect erros instead of having the function throw. Pass an empty array to collect errors and report on them but have the function perform all it can and return the export data even if it encounters errors.
+   * @param {Error[]} collectErrors optional parameters to collect errors instead of having the function throw. Pass an empty array to collect errors and report on them but have the function perform all it can and return the export data even if it encounters errors.
    */
   importFullConfiguration(
     importData: FullExportInterface,
@@ -181,7 +181,7 @@ export interface FullExportInterface {
   agents: Record<string, AgentSkeleton> | undefined;
   application: Record<string, OAuth2ClientSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
-  config: Record<string, IdObjectSkeletonInterface> | undefined;
+  idm: Record<string, IdObjectSkeletonInterface> | undefined;
   emailTemplate: Record<string, EmailTemplateSkeleton> | undefined;
   idp: Record<string, SocialIdpSkeleton> | undefined;
   managedApplication: Record<string, ApplicationSkeleton> | undefined;
@@ -207,6 +207,7 @@ export interface FullExportInterface {
 /**
  * Export full configuration
  * @param {FullExportOptions} options export options
+ * @param {Error[]} collectErrors optional parameters to collect errors instead of having the function throw. Pass an empty array to collect errors and report on them but have the function perform all it can and return the export data even if it encounters errors.
  */
 export async function exportFullConfiguration({
   options = {
@@ -271,13 +272,13 @@ export async function exportFullConfiguration({
         errors
       )
     )?.authentication,
-    config: (
+    idm: (
       await exportOrImportWithErrorHandling(
         exportConfigEntities,
         stateObj,
         errors
       )
-    )?.config,
+    )?.idm,
     emailTemplate: (
       await exportOrImportWithErrorHandling(
         exportEmailTemplates,

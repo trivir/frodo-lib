@@ -61,6 +61,42 @@ export function applyNameCollisionPolicy(name: string): string {
 }
 
 /**
+ * Helper that gets the state realm from the realm export format
+ * @param realm realm in export format
+ */
+export function getRealmUsingExportFormat(realm: string): string {
+  if (realm === 'root') {
+    return '/';
+  }
+  return realm.replace('root-', '/').replaceAll('-', '/');
+}
+
+/**
+ * Helper function to get the config path required for the API call considering if the request
+ * should obtain the realm config or the global config of the service in question
+ * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise.
+ * @returns {string} The config path to be used for the request
+ */
+export function getConfigPath(globalConfig: boolean): string {
+  if (globalConfig) return 'global-config';
+  return 'realm-config';
+}
+
+/**
+ * Helper function to get the realm path required for the API call considering if the request
+ * should obtain the realm config or the global config of the service in question
+ * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise.
+ * @returns {string} The realm path to be used for the request
+ */
+export function getRealmPathGlobal(
+  globalConfig: boolean,
+  state: State
+): string {
+  if (globalConfig) return '';
+  return getCurrentRealmPath(state);
+}
+
+/**
  * Get realm path
  * @param {string} realm realm
  * @returns {string} a CREST-compliant realm path, e.g. /realms/root/realms/alpha

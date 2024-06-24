@@ -285,8 +285,7 @@ export async function getFullServices({
       message: `ServiceOps.getFullServices: start, globalConfig=${globalConfig}`,
       state,
     });
-    const serviceList = (await _getListOfServices({ globalConfig, state }))
-      .result;
+    const serviceList = await getListOfServices({ globalConfig, state });
 
     const fullServiceData = await Promise.all(
       serviceList.map(async (listItem) => {
@@ -580,8 +579,7 @@ export async function deleteFullServices({
     state,
   });
   try {
-    const serviceList = (await _getListOfServices({ globalConfig, state }))
-      .result;
+    const serviceList = await getListOfServices({ globalConfig, state });
 
     const deleted: AmServiceSkeleton[] = await Promise.all(
       serviceList.map(async (serviceListItem) => {

@@ -224,7 +224,7 @@ describe('IdmConfigOps', () => {
 
     test(`1: ImportConfigEntities no validate`, async () => {
       const importData = {
-        config: {
+        idm: {
           [configEntity1.id]: configEntity1,
           [configEntity2.id]: configEntity2,
           [configEntity3.id]: configEntity3
@@ -242,7 +242,7 @@ describe('IdmConfigOps', () => {
 
     test(`2: ImportConfigEntities validate`, async () => {
       const importData = {
-        config: {
+        idm: {
           [configEntity1.id]: configEntity1,
           [configEntity2.id]: configEntity2,
           [configEntity3.id]: configEntity3

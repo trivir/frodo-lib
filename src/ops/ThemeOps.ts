@@ -442,7 +442,6 @@ export async function readThemeByName({
   state: State;
 }): Promise<ThemeSkeleton> {
   try {
-    realm ? realm : getCurrentRealmName(state);
     const themes = await getConfigEntity({ entityId: THEMEREALM_ID, state });
     const found = getRealmThemes({ themes, realm }).filter(
       (theme) => theme.name === themeName
