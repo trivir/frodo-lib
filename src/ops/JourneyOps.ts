@@ -896,7 +896,7 @@ export async function exportJourney({
         delete nodeInfo['y'];
       }
     }
-    if (!coords) {
+    if (!coords && treeObject.staticNodes) {
       for (const [, nodeInfo] of Object.entries(treeObject.staticNodes)) {
         delete nodeInfo['x'];
         delete nodeInfo['y'];

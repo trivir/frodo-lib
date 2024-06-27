@@ -36,7 +36,8 @@
 import { state } from '../index';
 import * as IdmSystemApi from '../api/IdmSystemApi';
 import * as IdmSystemOps from './IdmSystemOps';
-import { autoSetupPolly, filterRecording } from '../utils/AutoSetupPolly';
+import { autoSetupPolly } from "../utils/AutoSetupPolly";
+import { filterRecording } from "../utils/PollyUtils";
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { SystemObjectPatchOperationInterface } from '../api/IdmSystemApi';
 import { decode } from '../utils/Base64Utils';

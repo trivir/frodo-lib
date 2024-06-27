@@ -54,7 +54,8 @@ import {
   getSaml2ProvidersImportData,
 } from '../test/mocks/ForgeRockApiMockEngine';
 import { encodeBase64Url } from '../utils/Base64Utils';
-import { autoSetupPolly, filterRecording } from '../utils/AutoSetupPolly';
+import { autoSetupPolly } from "../utils/AutoSetupPolly";
+import { filterRecording } from "../utils/PollyUtils";
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { getCircleOfTrustImportData } from '../test/mocks/ForgeRockApiMockEngine';
 

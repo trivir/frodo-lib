@@ -58,13 +58,9 @@ export async function getListOfServices({
   const { data } = await generateAmApi({
     resource: getApiConfig(),
     state,
-  }).post<PagedResult<AmServiceSkeleton>>(
-    urlString,
-    {},
-    {
-      withCredentials: true,
-    }
-  );
+  }).post<PagedResult<AmServiceSkeleton>>(urlString, undefined, {
+    withCredentials: true,
+  });
   return data;
 }
 
@@ -124,13 +120,9 @@ export async function getServiceDescendents({
   const { data } = await generateAmApi({
     resource: getApiConfig(),
     state,
-  }).post<ServiceNextDescendentResponse>(
-    urlString,
-    {},
-    {
-      withCredentials: true,
-    }
-  );
+  }).post<ServiceNextDescendentResponse>(urlString, undefined, {
+    withCredentials: true,
+  });
   return data.result as ServiceNextDescendent[];
 }
 

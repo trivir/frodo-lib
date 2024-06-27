@@ -50,13 +50,9 @@ export async function getSecretStores({
   const { data } = await generateAmApi({
     resource: getApiConfig(),
     state,
-  }).post(
-    urlString,
-    {},
-    {
-      withCredentials: true,
-    }
-  );
+  }).post(urlString, undefined, {
+    withCredentials: true,
+  });
   return data;
 }
 

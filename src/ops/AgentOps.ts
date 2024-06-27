@@ -733,11 +733,18 @@ export async function readAgent({
   let agents = [];
   try {
     debugMessage({ message: `AgentOps.readAgent: start`, state });
-    agents = await findAgentById({ agentId, globalConfig, state });
+    if (globalConfig) {
+      agents = (await readAgents({ globalConfig, state })).filter(
+        (a) => a._id === agentId
+      );
+    } else {
+      agents = await findAgentById({ agentId, state });
+    }
     if (agents.length === 1) {
       const result = await _getAgentByTypeAndId({
         agentType: agents[0]._type,
         agentId: agents[0]._id,
+        globalConfig,
         state,
       });
       debugMessage({ message: `AgentOps.readAgent: end`, state });
@@ -770,7 +777,12 @@ export async function readAgentByTypeAndId({
 }): Promise<AgentSkeleton> {
   try {
     debugMessage({ message: `AgentOps.readAgentByTypeAndId: start`, state });
-    const result = await _getAgentByTypeAndId({ agentType, agentId, state });
+    const result = await _getAgentByTypeAndId({
+      agentType,
+      agentId,
+      globalConfig: false,
+      state,
+    });
     debugMessage({ message: `AgentOps.readAgentByTypeAndId: start`, state });
     return result;
   } catch (error) {
@@ -1983,7 +1995,7 @@ export async function deleteAgent({
 }) {
   try {
     debugMessage({ message: `AgentOps.deleteAgent: start`, state });
-    const agents = await findAgentById({ agentId, globalConfig: false, state });
+    const agents = await findAgentById({ agentId, state });
     if (agents.length == 0) {
       throw new FrodoError(`Agent '${agentId}' not found!`);
     }

@@ -32,7 +32,8 @@
 import { state } from '../index';
 import * as IdmConfigApi from '../api/IdmConfigApi';
 import * as IdmConfigOps from './IdmConfigOps';
-import { autoSetupPolly, filterRecording } from '../utils/AutoSetupPolly';
+import { autoSetupPolly } from "../utils/AutoSetupPolly";
+import { filterRecording } from "../utils/PollyUtils";
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 
 const ctx = autoSetupPolly();

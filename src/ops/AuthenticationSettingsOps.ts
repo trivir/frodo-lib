@@ -78,7 +78,7 @@ export interface AuthenticationSettingsExportInterface {
  * Create an empty authentication settings export template
  * @returns {AuthenticationSettingsExportInterface} an empty authentication settings export template
  */
-function createAuthenticationSettingsExportTemplate({
+export function createAuthenticationSettingsExportTemplate({
   state,
 }: {
   state: State;

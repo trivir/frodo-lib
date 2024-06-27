@@ -158,13 +158,9 @@ export async function getUserConfig({
     const { data } = await generateAmApi({
       resource: getApiConfig(),
       state,
-    }).post(
-      serviceUrlString,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    }).post(serviceUrlString, undefined, {
+      withCredentials: true,
+    });
     userConfig.services = data.result;
   } catch (e) {
     printMessage({

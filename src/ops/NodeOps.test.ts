@@ -48,7 +48,8 @@
  */
 import { frodo, state } from '../index';
 import * as NodeOps from './NodeOps';
-import { autoSetupPolly, filterRecording } from '../utils/AutoSetupPolly';
+import { autoSetupPolly } from "../utils/AutoSetupPolly";
+import { filterRecording } from "../utils/PollyUtils";
 import Constants from '../shared/Constants';
 
 const ctx = autoSetupPolly();
@@ -85,23 +86,104 @@ describe('NodeOps', () => {
     (process.env.FRODO_POLLY_MODE === 'record' &&
       process.env.FRODO_RECORD_PHASE === '1')
   ) {
-    /*
-      TODO: Create tests for the following functions
 
-      readNodeTypes(): Promise<any>;
-      readNodes(): Promise<NodeSkeleton[]>;
-      readNodesByType(nodeType: string): Promise<NodeSkeleton[]>;
-      readNode(nodeId: string, nodeType: string): Promise<NodeSkeleton>;
-      createNode(nodeType: string, nodeData: NodeSkeleton): Promise<NodeSkeleton>;
-      updateNode(
-        nodeId: string,
-        nodeType: string,
-        nodeData: NodeSkeleton
-      ): Promise<NodeSkeleton>;
-      deleteNode(nodeId: string, nodeType: string): Promise<NodeSkeleton>;
-      findOrphanedNodes(): Promise<NodeSkeleton[]>;
-      removeOrphanedNodes(orphanedNodes: NodeSkeleton[]): Promise<NodeSkeleton[]>;
-    */
+    describe('createNodeExportTemplate()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.createNodeExportTemplate).toBeDefined();
+      });
+
+      test('1: Create Node Export Template', async () => {
+        const response = NodeOps.createNodeExportTemplate({ state });
+        expect(response).toMatchSnapshot({
+          meta: expect.any(Object),
+        });
+      });
+    });
+
+    describe('readNodeTypes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.readNodeTypes).toBeDefined();
+      });
+
+      test('1: Read node types', async () => {
+        const response = await NodeOps.readNodeTypes({ state });
+        expect(response).toMatchSnapshot();
+      });
+    });
+
+    describe('readNodes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.readNodes).toBeDefined();
+      });
+
+      test('1: Read nodes', async () => {
+        const response = await NodeOps.readNodes({ state });
+        expect(response).toMatchSnapshot();
+      });
+    });
+
+    describe('readNodesByType()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.readNodesByType).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('readNode()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.readNode).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('exportNodes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.exportNodes).toBeDefined();
+      });
+
+      test('1: Export nodes', async () => {
+        const response = await NodeOps.exportNodes({ state });
+        expect(response).toMatchSnapshot({
+          meta: expect.any(Object),
+        });
+      });
+    });
+
+    describe('createNode()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.createNode).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('updateNode()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.updateNode).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('deleteNode()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.deleteNode).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('findOrphanedNodes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.findOrphanedNodes).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
+    describe('removeOrphanedNodes()', () => {
+      test('0: Method is implemented', async () => {
+        expect(NodeOps.removeOrphanedNodes).toBeDefined();
+      });
+      //TODO: Create tests
+    });
+
     describe('isPremiumNode()', () => {
       test('0: Method is implemented', async () => {
         expect(NodeOps.isPremiumNode).toBeDefined();

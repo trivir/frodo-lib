@@ -20,7 +20,8 @@ const NEXT_DESCENDENTS_ACTION = 'nextdescendents';
 const TRUE_QUERY_FILTER = 'true';
 
 /**
- * Consists of all AM entities that are not currently being exported elsewhere in Frodo
+ * Consists of all AM entities that are not currently being exported elsewhere in Frodo.
+ * Information was scraped directly from the Amster entity reference documentation: https://backstage.forgerock.com/docs/amster/7.5/entity-reference/preface.html
  */
 const AM_ENTITIES: Record<string, EntityInfo> = {
   agentGroups: {

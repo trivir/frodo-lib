@@ -255,31 +255,19 @@ export async function getListOfServices({
   globalConfig: boolean;
   state: State;
 }) {
-  // Attempt to get all services numberOfAttempts times. The reason for this is that occasionally a 502 error occurs when doing a global export of the services in cloud, so redoing it a couple times should result in a success, otherwise give up.
-  const numberOfAttempts = 5;
-  debugMessage({ message: `ServiceOps.getListOfServices: start`, state });
-  for (let i = 0; i < numberOfAttempts; i++) {
-    try {
-      // Filter the Scripting service entities since they consist of scripts, which are handled in ScriptOps.
-      const services = (
-        await _getListOfServices({ globalConfig, state })
-      ).result.filter((s) => !(s._type && s._type.name === 'Scripting'));
-      debugMessage({ message: `ServiceOps.getListOfServices: end`, state });
-      return services;
-    } catch (error) {
-      if (error.httpStatus !== 502 && error.response?.status !== 502) {
-        throw new FrodoError(
-          `Error getting list of ${globalConfig ? 'global' : 'realm'} services`,
-          error
-        );
-      }
-      if (i === numberOfAttempts - 1) {
-        throw new FrodoError(
-          `Attempted ${numberOfAttempts} times to get all services, but got HTTP 502 error every time.`,
-          error
-        );
-      }
-    }
+  try {
+    debugMessage({ message: `ServiceOps.getListOfServices: start`, state });
+    // Filter out the Scripting service entities since they consist of scripts, which are handled in ScriptOps.
+    const services = (
+      await _getListOfServices({ globalConfig, state })
+    ).result.filter((s) => !(s._type && s._type.name === 'Scripting'));
+    debugMessage({ message: `ServiceOps.getListOfServices: end`, state });
+    return services;
+  } catch (error) {
+    throw new FrodoError(
+      `Error getting list of ${globalConfig ? 'global' : 'realm'} services`,
+      error
+    );
   }
 }
 
@@ -354,7 +342,7 @@ export async function getFullServices({
  * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
  * @returns promise resolving to a service object
  */
-async function putFullService({
+export async function putFullService({
   serviceId,
   fullServiceData,
   clean,
@@ -469,7 +457,7 @@ async function putFullService({
  * @param {boolean} realmConfig true if the current realm service is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<AmService[]>} promise resolving to an array of service objects
  */
-async function putFullServices({
+export async function putFullServices({
   serviceEntries,
   clean,
   globalConfig = false,
