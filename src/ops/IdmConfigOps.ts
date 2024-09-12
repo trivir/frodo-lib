@@ -1,3 +1,5 @@
+import replaceall from 'replaceall';
+
 import {
   IdObjectSkeletonInterface,
   NoIdObjectSkeletonInterface,
@@ -24,6 +26,7 @@ import {
   updateProgressIndicator,
 } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
+import { stringify } from '../utils/JsonUtils';
 import { areScriptHooksValid } from '../utils/ScriptValidationUtils';
 import { FrodoError } from './FrodoError';
 import { testConnectorServers as _testConnectorServers } from './IdmSystemOps';
@@ -59,9 +62,12 @@ export type IdmConfig = {
   readConfigEntity(entityId: string): Promise<IdObjectSkeletonInterface>;
   /**
    * Export all IDM config entities
+   * @param {IdmConfigEntityExportOptions} options export options
    * @returns {ConfigEntityExportInterface} promise resolving to a ConfigEntityExportInterface object
    */
-  exportConfigEntities(): Promise<ConfigEntityExportInterface>;
+  exportConfigEntities(
+    options?: IdmConfigEntityExportOptions
+  ): Promise<ConfigEntityExportInterface>;
   /**
    * Create config entity
    * @param {string} entityId config entity id/name
@@ -205,8 +211,13 @@ export default (state: State): IdmConfig => {
     ): Promise<IdObjectSkeletonInterface> {
       return readConfigEntity({ entityId, state });
     },
-    async exportConfigEntities(): Promise<ConfigEntityExportInterface> {
-      return exportConfigEntities({ state });
+    async exportConfigEntities(
+      options: IdmConfigEntityExportOptions = {
+        envReplaceParams: undefined,
+        entitiesToExport: undefined,
+      }
+    ): Promise<ConfigEntityExportInterface> {
+      return exportConfigEntities({ options, state });
     },
     async createConfigEntity(
       entityId: string,
@@ -271,6 +282,20 @@ export default (state: State): IdmConfig => {
     },
   };
 };
+
+/**
+ * Idm export options
+ */
+export interface IdmConfigEntityExportOptions {
+  /**
+   * Gives a list of entities to export. If undefined or empty, it will export all entities.
+   */
+  entitiesToExport?: string[];
+  /**
+   * Gives the list of key-value pairs of env replacements. Replaces each occurrence of the value with '${key}', where key is the correspond key to the value.
+   */
+  envReplaceParams: string[][];
+}
 
 /**
  * Config entity import options
@@ -403,18 +428,27 @@ const IDM_UNAVAILABLE_ENTITIES = [
   'endpoint/mappingDetails',
   'fieldPolicy/teammember',
 ];
+
 /**
  * Export all IDM config entities
+ * @param {IdmConfigEntityExportOptions} options export options
  * @returns {ConfigEntityExportInterface} promise resolving to a ConfigEntityExportInterface object
  */
 export async function exportConfigEntities({
+  options = { envReplaceParams: undefined, entitiesToExport: undefined },
   state,
 }: {
+  options?: IdmConfigEntityExportOptions;
   state: State;
 }): Promise<ConfigEntityExportInterface> {
   let indicatorId: string;
   try {
-    const configurations = await readConfigEntities({ state });
+    let configurations = await readConfigEntities({ state });
+    if (options.entitiesToExport && options.entitiesToExport.length > 0) {
+      configurations = configurations.filter((c) =>
+        options.entitiesToExport.includes(c._id)
+      );
+    }
     indicatorId = createProgressIndicator({
       total: configurations.length,
       message: 'Exporting config entities...',
@@ -432,11 +466,11 @@ export async function exportConfigEntities({
           (readConfigEntityError) => {
             const error: FrodoError = readConfigEntityError;
             if (
-              // operation is not available in ForgeRock Identity Cloud
+              // operation is not available in PingOne Advanced Identity Cloud
               !(
                 error.httpStatus === 403 &&
                 error.httpMessage ===
-                  'This operation is not available in ForgeRock Identity Cloud.'
+                  'This operation is not available in PingOne Advanced Identity Cloud.'
               ) &&
               // list of config entities, which do not exist by default or ever.
               !(
@@ -466,7 +500,20 @@ export async function exportConfigEntities({
         )
       );
     }
-    const results = await Promise.all(entityPromises);
+    const results = (await Promise.all(entityPromises)).filter((c) => c);
+    if (options.envReplaceParams && options.envReplaceParams.length > 0) {
+      for (let i = 0; i < results.length; i++) {
+        let configEntityString = stringify(results[i]);
+        options.envReplaceParams.forEach(([key, value]) => {
+          configEntityString = replaceall(
+            value,
+            `\${${key}}`,
+            configEntityString
+          );
+        });
+        results[i] = JSON.parse(configEntityString);
+      }
+    }
     const exportData = createConfigEntityExportTemplate({ state });
     for (const result of results) {
       if (result != null) {

@@ -15,7 +15,7 @@ import { generateAmApi } from './BaseApi';
 const oauth2ClientURLTemplate = '%s/json%s/realm-config/agents/OAuth2Client/%s';
 const oauth2ClientListURLTemplate =
   '%s/json%s/realm-config/agents/OAuth2Client?_queryFilter=true';
-const apiVersion = 'protocol=2.1,resource=1.0';
+const apiVersion = 'protocol=2.1,resource=2.0';
 const getApiConfig = () => {
   return {
     apiVersion,
