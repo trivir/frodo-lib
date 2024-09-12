@@ -1,3 +1,29 @@
+export type Polly = {
+  /**
+   * Returns the default configuration for matching requests
+   * @param {boolean} protocol The custom setting for matching protocol. Default: true
+   * @returns {RequestMatchers} The object for matching requests
+   */
+  defaultMatchRequestsBy(protocol: boolean): RequestMatchers;
+  /**
+   * Filters a Polly recording of a request and response by obfuscating or replacing sensitive data in headers, body, cookies, etc.
+   * @param {Recording} recording the Polly recording
+   */
+  filterRecording(recording: Recording): void;
+};
+
+export default (): Polly => {
+  return {
+    defaultMatchRequestsBy(protocol: boolean = true): RequestMatchers {
+      return defaultMatchRequestsBy(protocol);
+    },
+    filterRecording(recording: Recording): void {
+      return filterRecording(recording);
+    },
+  };
+};
+
+
 import { decode, encode, isBase64Encoded } from './Base64Utils';
 
 export type Recording = {
@@ -17,7 +43,29 @@ export type Recording = {
   };
 };
 
-export function defaultMatchRequestsBy(protocol: boolean = true) {
+export type RequestMatchers = {
+  method: boolean,
+  headers: boolean,
+  body: boolean,
+  order: boolean,
+  url: {
+    protocol: boolean,
+    username: boolean,
+    password: boolean,
+    hostname: boolean,
+    port: boolean,
+    pathname: boolean,
+    query: boolean,
+    hash: boolean
+  }
+}
+
+/**
+ * Returns the default configuration for matching requests
+ * @param {boolean} protocol The custom setting for matching protocol. Default: true
+ * @returns {RequestMatchers} The object for matching requests
+ */
+export function defaultMatchRequestsBy(protocol: boolean = true): RequestMatchers {
   return {
     method: true,
     headers: false, // do not match headers, because "Authorization" header is sent only at recording time
@@ -36,7 +84,11 @@ export function defaultMatchRequestsBy(protocol: boolean = true) {
   };
 }
 
-export function filterRecording(recording: Recording) {
+/**
+ * Filters a Polly recording of a request and response by obfuscating or replacing sensitive data in headers, body, cookies, etc.
+ * @param {Recording} recording the Polly recording
+ */
+export function filterRecording(recording: Recording): void {
   // request headers
   if (recording.request?.headers) {
     recording.request.headers.forEach(obfuscateHeader);
