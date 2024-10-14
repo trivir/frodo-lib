@@ -11,7 +11,7 @@ const treeByIdURLTemplate =
 const queryAllTreesURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/trees?_queryFilter=true';
 
-const apiVersion = 'protocol=2.1,resource=1.0';
+const apiVersion = 'protocol=2.1,resource=2.0';
 const getTreeApiConfig = () => {
   return {
     apiVersion,

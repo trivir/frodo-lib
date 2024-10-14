@@ -12,7 +12,7 @@ const createCircleOfTrustURLTemplate =
   '%s/json%s/realm-config/federation/circlesoftrust/?_action=create';
 const queryAllCirclesOfTrustURLTemplate =
   '%s/json%s/realm-config/federation/circlesoftrust?_queryFilter=true';
-const apiVersion = 'protocol=2.1,resource=1.0';
+const apiVersion = 'protocol=2.1,resource=2.0';
 const getApiConfig = () => {
   return {
     apiVersion,
@@ -76,7 +76,6 @@ export async function getCircleOfTrust({
 
 /**
  * Create a circle of trust
- * @param {string} cotId circle of trust id/name
  * @param {CircleOfTrustSkeleton} cotData Object representing a SAML circle of trust
  * @returns {Promise<CircleOfTrustSkeleton>} a promise that resolves to a saml2 circle of trust object
  */

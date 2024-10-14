@@ -9,6 +9,8 @@ const scriptURLTemplate = '%s/json%s/scripts/%s';
 const scriptListURLTemplate = '%s/json%s/scripts?_queryFilter=true';
 const scriptQueryURLTemplate =
   '%s/json%s/scripts?_queryFilter=name+eq+%%22%s%%22';
+const libraryConfigQueryURLTemplate =
+  '%s/json%s/libraries?_queryFilter=name+eq+%%22%s%%22';
 const apiVersion = 'protocol=2.0,resource=1.0';
 const getApiConfig = () => {
   return {
@@ -32,7 +34,8 @@ export type ScriptContext =
   | 'OIDC_CLAIMS'
   | 'SAML2_IDP_ADAPTER'
   | 'SAML2_IDP_ATTRIBUTE_MAPPER'
-  | 'OAUTH2_MAY_ACT';
+  | 'OAUTH2_MAY_ACT'
+  | 'LIBRARY';
 
 export type ScriptSkeleton = IdObjectSkeletonInterface & {
   name: string;
@@ -45,6 +48,20 @@ export type ScriptSkeleton = IdObjectSkeletonInterface & {
   creationDate: number;
   lastModifiedBy: string;
   lastModifiedDate: number;
+  exports?: {
+    arity?: number;
+    id: string;
+    type: string;
+  }[];
+};
+
+export type LibraryScriptConfigSkeleton = IdObjectSkeletonInterface & {
+  name: string;
+  exports: {
+    arity?: number;
+    id: string;
+    type: string;
+  }[];
 };
 
 /**
@@ -72,7 +89,7 @@ export async function getScripts({
 /**
  * Get script by name
  * @param {String} scriptName script name
- * @returns {Promise} a promise that resolves to an object containing a script object
+ * @returns {Promise<PagedResult<ScriptSkeleton>>} a promise that resolves to an object containing a script object
  */
 export async function getScriptByName({
   scriptName,
@@ -98,7 +115,7 @@ export async function getScriptByName({
 /**
  * Get script by id
  * @param {String} scriptId script uuid/name
- * @returns {Promise} a promise that resolves to a script object
+ * @returns {Promise<ScriptSkeleton>} a promise that resolves to a script object
  */
 export async function getScript({
   scriptId,
@@ -106,7 +123,7 @@ export async function getScript({
 }: {
   scriptId: string;
   state: State;
-}) {
+}): Promise<ScriptSkeleton> {
   const urlString = util.format(
     scriptURLTemplate,
     state.getHost(),
@@ -123,10 +140,36 @@ export async function getScript({
 }
 
 /**
+ * Get library script config by name
+ * @param {String} scriptName script name
+ * @returns {Promise<PagedResult<LibraryScriptConfigSkeleton>>} a promise that resolves to an object containing the library script config
+ */
+export async function getLibraryScriptConfigByName({
+  scriptName,
+  state,
+}: {
+  scriptName: string;
+  state: State;
+}): Promise<PagedResult<LibraryScriptConfigSkeleton>> {
+  const urlString = util.format(
+    libraryConfigQueryURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    encodeURIComponent(scriptName)
+  );
+  const { data } = await generateAmApi({ resource: getApiConfig(), state }).get<
+    PagedResult<LibraryScriptConfigSkeleton>
+  >(urlString, {
+    withCredentials: true,
+  });
+  return data;
+}
+
+/**
  * Put script
  * @param {string} scriptId script uuid
  * @param {Object} scriptData script object
- * @returns {Promise} a promise that resolves to an object containing a script object
+ * @returns {Promise<ScriptSkeleton>} a promise that resolves to an object containing a script object
  */
 export async function putScript({
   scriptId,
@@ -136,7 +179,7 @@ export async function putScript({
   scriptId: string;
   scriptData: ScriptSkeleton;
   state: State;
-}) {
+}): Promise<ScriptSkeleton> {
   const urlString = util.format(
     scriptURLTemplate,
     state.getHost(),
@@ -156,7 +199,7 @@ export async function putScript({
 /**
  * Delete script by id
  * @param {String} scriptId script uuid
- * @returns {Promise<ScriptSkeleton>>} a promise that resolves to a script object
+ * @returns {Promise<ScriptSkeleton>} a promise that resolves to a script object
  */
 export async function deleteScript({
   scriptId,
@@ -205,7 +248,7 @@ export async function deleteScriptByName({
 
 /**
  * Delete all non-default scripts
- * @returns {Promise<ScriptSkeleton[]>>} a promise that resolves to an array of script objects
+ * @returns {Promise<ScriptSkeleton[]>} a promise that resolves to an array of script objects
  */
 export async function deleteScripts({
   state,

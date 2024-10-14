@@ -1,12 +1,16 @@
-import { AgentSkeleton } from '../api/AgentApi';
+import { AgentGroupSkeleton, AgentSkeleton } from '../api/AgentApi';
+import { AmConfigEntitiesInterface } from '../api/AmConfigApi';
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
+import { SiteSkeleton } from '../api/classic/SiteApi';
 import { SecretSkeleton } from '../api/cloud/SecretsApi';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
 import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
+import { OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi';
 import { PolicySkeleton } from '../api/PoliciesApi';
 import { PolicySetSkeleton } from '../api/PolicySetApi';
+import { RealmSkeleton } from '../api/RealmApi';
 import { ResourceTypeSkeleton } from '../api/ResourceTypesApi';
 import { Saml2ProviderSkeleton } from '../api/Saml2Api';
 import { ScriptSkeleton } from '../api/ScriptApi';
@@ -23,11 +27,18 @@ import {
   getMetadata,
   importWithErrorHandling,
 } from '../utils/ExportImportUtils';
+import { getRealmUsingExportFormat } from '../utils/ForgeRockUtils';
 import {
-  getRealmsForExport,
-  getRealmUsingExportFormat,
-} from '../utils/ForgeRockUtils';
-import { exportAgents, importAgents } from './AgentOps';
+  exportAgentGroups,
+  exportAgents,
+  importAgentGroups,
+  importAgents,
+} from './AgentOps';
+import {
+  ConfigEntityExportInterface,
+  exportAmConfigEntities,
+  importAmConfigEntities,
+} from './AmConfigOps';
 import {
   ApplicationSkeleton,
   exportApplications,
@@ -42,6 +53,17 @@ import {
   exportCirclesOfTrust,
   importCirclesOfTrust,
 } from './CirclesOfTrustOps';
+import {
+  exportSecretStores,
+  importSecretStores,
+  SecretStoreExportSkeleton,
+} from './classic/SecretStoreOps';
+import {
+  exportServers,
+  importServers,
+  ServerExportInterface,
+} from './classic/ServerOps';
+import { exportSites, importSites } from './classic/SiteOps';
 import { exportSecrets, importSecrets } from './cloud/SecretsOps';
 import { exportVariables, importVariables } from './cloud/VariablesOps';
 import {
@@ -67,12 +89,22 @@ import {
   SyncSkeleton,
 } from './MappingOps';
 import { exportOAuth2Clients, importOAuth2Clients } from './OAuth2ClientOps';
+import {
+  exportOAuth2TrustedJwtIssuers,
+  importOAuth2TrustedJwtIssuers,
+} from './OAuth2TrustedJwtIssuerOps';
 import { ExportMetaData } from './OpsTypes';
 import { exportPolicies, importPolicies } from './PolicyOps';
 import { exportPolicySets, importPolicySets } from './PolicySetOps';
+import { exportRealms, importRealms } from './RealmOps';
 import { exportResourceTypes, importResourceTypes } from './ResourceTypeOps';
 import { exportSaml2Providers, importSaml2Providers } from './Saml2Ops';
 import { exportScripts, importScripts } from './ScriptOps';
+import {
+  exportScriptTypes,
+  importScriptTypes,
+  ScriptTypeExportSkeleton,
+} from './ScriptTypeOps';
 import { exportServices, importServices } from './ServiceOps';
 import { exportThemes, importThemes, ThemeSkeleton } from './ThemeOps';
 
@@ -97,7 +129,7 @@ export type Config = {
     importData: FullExportInterface,
     options: FullImportOptions,
     collectErrors?: Error[]
-  ): Promise<void>;
+  ): Promise<(object | any[])[]>;
 };
 
 export default (state: State): Config => {
@@ -124,7 +156,7 @@ export default (state: State): Config => {
         includeActiveValues: true,
       },
       collectErrors: Error[]
-    ) {
+    ): Promise<(object | any[])[]> {
       return importFullConfiguration({
         importData,
         options,
@@ -201,21 +233,30 @@ export interface FullExportInterface {
   realm: Record<string, FullRealmExportInterface>;
 }
 
-export interface FullGlobalExportInterface {
+export interface FullGlobalExportInterface extends AmConfigEntitiesInterface {
+  agent: Record<string, AgentSkeleton> | undefined;
+  authentication: AuthenticationSettingsSkeleton | undefined;
   emailTemplate: Record<string, EmailTemplateSkeleton> | undefined;
   idm: Record<string, IdObjectSkeletonInterface> | undefined;
   mapping: Record<string, MappingSkeleton> | undefined;
-  secrets: Record<string, SecretSkeleton> | undefined;
+  realm: Record<string, RealmSkeleton> | undefined;
+  scripttype: Record<string, ScriptTypeExportSkeleton> | undefined;
+  secret: Record<string, SecretSkeleton> | undefined;
+  secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
+  server: ServerExportInterface | undefined;
   service: Record<string, AmServiceSkeleton> | undefined;
+  site: Record<string, SiteSkeleton> | undefined;
   sync: SyncSkeleton | undefined;
-  variables: Record<string, VariableSkeleton> | undefined;
+  variable: Record<string, VariableSkeleton> | undefined;
 }
 
-export interface FullRealmExportInterface {
-  agents: Record<string, AgentSkeleton> | undefined;
+export interface FullRealmExportInterface extends AmConfigEntitiesInterface {
+  agentGroup: Record<string, AgentGroupSkeleton> | undefined;
+  agent: Record<string, AgentSkeleton> | undefined;
   application: Record<string, OAuth2ClientSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
   idp: Record<string, SocialIdpSkeleton> | undefined;
+  journey: Record<string, SingleTreeExportInterface> | undefined;
   managedApplication: Record<string, ApplicationSkeleton> | undefined;
   policy: Record<string, PolicySkeleton> | undefined;
   policyset: Record<string, PolicySetSkeleton> | undefined;
@@ -229,9 +270,10 @@ export interface FullRealmExportInterface {
       }
     | undefined;
   script: Record<string, ScriptSkeleton> | undefined;
+  secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
   service: Record<string, AmServiceSkeleton> | undefined;
   theme: Record<string, ThemeSkeleton> | undefined;
-  trees: Record<string, SingleTreeExportInterface> | undefined;
+  trustedJwtIssuer: Record<string, OAuth2TrustedJwtIssuerSkeleton> | undefined;
 }
 
 /**
@@ -272,11 +314,16 @@ export async function exportFullConfiguration({
   const stateObj = { state };
   const globalStateObj = { globalConfig: true, state };
   const realmStateObj = { globalConfig: false, state };
+  const isClassicDeployment =
+    state.getDeploymentType() === Constants.CLASSIC_DEPLOYMENT_TYPE_KEY;
   const isCloudDeployment =
     state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY;
   const isForgeOpsDeployment =
     state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
+
+  const config = await exportAmConfigEntities(stateObj);
+
   //Export mappings
   const mappings = await exportWithErrorHandling(
     exportMappings,
@@ -292,8 +339,36 @@ export async function exportFullConfiguration({
     errors,
     isPlatformDeployment
   );
+
+  //Export servers and server properties
+  const serverExport = await exportWithErrorHandling(
+    exportServers,
+    { options: { includeDefault: true }, state },
+    errors,
+    isClassicDeployment
+  );
+  if (serverExport) {
+    delete serverExport.meta;
+  }
+
   //Export global config
-  const globalConfig: FullGlobalExportInterface = {
+  const globalConfig = {
+    agent: (
+      await exportWithErrorHandling(
+        exportAgents,
+        globalStateObj,
+        errors,
+        isClassicDeployment
+      )
+    )?.agent,
+    authentication: (
+      await exportWithErrorHandling(
+        exportAuthenticationSettings,
+        globalStateObj,
+        errors,
+        isClassicDeployment
+      )
+    )?.authentication,
     emailTemplate: (
       await exportWithErrorHandling(
         exportEmailTemplates,
@@ -305,25 +380,53 @@ export async function exportFullConfiguration({
     idm: (
       await exportWithErrorHandling(
         exportConfigEntities,
-        stateObj,
+        {
+          options: {
+            envReplaceParams: undefined,
+            entitiesToExport: undefined,
+          },
+          state,
+        },
         errors,
         isPlatformDeployment
       )
     )?.idm,
     mapping: mappings?.mapping,
-    secrets: (
+    realm: (await exportWithErrorHandling(exportRealms, stateObj, errors))
+      ?.realm,
+    scripttype: (
+      await exportWithErrorHandling(exportScriptTypes, stateObj, errors)
+    )?.scripttype,
+    secret: (
       await exportWithErrorHandling(
         exportSecrets,
         { options: { includeActiveValues, target }, state },
         errors,
         isCloudDeployment
       )
-    )?.secrets,
+    )?.secret,
+    secretstore: (
+      await exportWithErrorHandling(
+        exportSecretStores,
+        globalStateObj,
+        errors,
+        isClassicDeployment
+      )
+    )?.secretstore,
+    server: serverExport,
     service: (
       await exportWithErrorHandling(exportServices, globalStateObj, errors)
     )?.service,
+    site: (
+      await exportWithErrorHandling(
+        exportSites,
+        stateObj,
+        errors,
+        isClassicDeployment
+      )
+    )?.site,
     sync: mappings?.sync,
-    variables: (
+    variable: (
       await exportWithErrorHandling(
         exportVariables,
         {
@@ -333,13 +436,27 @@ export async function exportFullConfiguration({
         errors,
         isCloudDeployment
       )
-    )?.variables,
+    )?.variable,
+    ...config.global,
   };
+
+  //Clean up duplicates
+  if (globalConfig.idm) {
+    Object.keys(globalConfig.idm)
+      .filter(
+        (k) =>
+          k === 'ui/themerealm' ||
+          k === 'sync' ||
+          k.startsWith('mapping/') ||
+          k.startsWith('emailTemplate/')
+      )
+      .forEach((k) => delete globalConfig.idm[k]);
+  }
 
   //Export realm configs
   const realmConfig = {};
   const currentRealm = state.getRealm();
-  for (const realm of await getRealmsForExport(stateObj)) {
+  for (const realm of Object.keys(config.realm)) {
     state.setRealm(getRealmUsingExportFormat(realm));
     //Export saml2 providers and circle of trusts
     let saml = (
@@ -360,9 +477,12 @@ export async function exportFullConfiguration({
       saml = cotExport?.saml;
     }
     realmConfig[realm] = {
-      agents: (
+      agentGroup: (
+        await exportWithErrorHandling(exportAgentGroups, stateObj, errors)
+      )?.agentGroup,
+      agent: (
         await exportWithErrorHandling(exportAgents, realmStateObj, errors)
-      )?.agents,
+      )?.agent,
       application: (
         await exportWithErrorHandling(
           exportOAuth2Clients,
@@ -387,6 +507,16 @@ export async function exportFullConfiguration({
           errors
         )
       )?.idp,
+      journey: (
+        await exportWithErrorHandling(
+          exportJourneys,
+          {
+            options: { deps: false, useStringArrays, coords },
+            state,
+          },
+          errors
+        )
+      )?.journey,
       managedApplication: (
         await exportWithErrorHandling(
           exportApplications,
@@ -436,6 +566,14 @@ export async function exportFullConfiguration({
           errors
         )
       )?.script,
+      secretstore: (
+        await exportWithErrorHandling(
+          exportSecretStores,
+          realmStateObj,
+          errors,
+          isClassicDeployment
+        )
+      )?.secretstore,
       service: (
         await exportWithErrorHandling(exportServices, realmStateObj, errors)
       )?.service,
@@ -449,16 +587,17 @@ export async function exportFullConfiguration({
           isPlatformDeployment
         )
       )?.theme,
-      trees: (
+      trustedJwtIssuer: (
         await exportWithErrorHandling(
-          exportJourneys,
+          exportOAuth2TrustedJwtIssuers,
           {
-            options: { deps: false, useStringArrays, coords },
+            options: { deps: false, useStringArrays },
             state,
           },
           errors
         )
-      )?.trees,
+      )?.trustedJwtIssuer,
+      ...config.realm[realm],
     };
   }
   state.setRealm(currentRealm);
@@ -469,7 +608,7 @@ export async function exportFullConfiguration({
 
   return {
     meta: getMetadata(stateObj),
-    global: globalConfig,
+    global: globalConfig as FullGlobalExportInterface,
     realm: realmConfig,
   };
 }
@@ -497,13 +636,16 @@ export async function importFullConfiguration({
   options: FullImportOptions;
   collectErrors?: Error[];
   state: State;
-}): Promise<void> {
+}): Promise<(object | any[])[]> {
+  const response: (object | any[])[] = [];
   let errors: Error[] = [];
   let throwErrors: boolean = true;
   if (collectErrors && Array.isArray(collectErrors)) {
     throwErrors = false;
     errors = collectErrors;
   }
+  const isClassicDeployment =
+    state.getDeploymentType() === Constants.CLASSIC_DEPLOYMENT_TYPE_KEY;
   const isCloudDeployment =
     state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY;
   const isForgeOpsDeployment =
@@ -519,81 +661,199 @@ export async function importFullConfiguration({
   } = options;
   // Import to global
   let indicatorId = createProgressIndicator({
-    total: 6,
+    total: 13,
     message: `Importing everything for global...`,
     state,
   });
-  await importWithErrorHandling(
-    importSecrets,
-    {
-      importData: importData.global,
-      options: {
-        includeActiveValues,
-        source,
+  response.push(
+    await importWithErrorHandling(
+      importServers,
+      {
+        serverId: '',
+        serverUrl: '',
+        importData: importData.global.server,
+        options: {
+          includeDefault: true,
+        },
+        state,
       },
-      state,
-    },
-    errors,
-    indicatorId,
-    'Secrets',
-    isCloudDeployment
+      errors,
+      indicatorId,
+      'Servers',
+      isClassicDeployment && !!importData.global.server
+    )
   );
-  await importWithErrorHandling(
-    importVariables,
-    {
-      importData: importData.global,
-      state,
-    },
-    errors,
-    indicatorId,
-    'Variables',
-    isCloudDeployment
+  response.push(
+    await importWithErrorHandling(
+      importSites,
+      {
+        siteId: '',
+        siteUrl: '',
+        importData: importData.global,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Sites',
+      isClassicDeployment && !!importData.global.site
+    )
   );
-  await importWithErrorHandling(
-    importConfigEntities,
-    {
-      importData: importData.global,
-      options: { validate: false },
-      state,
-    },
-    errors,
-    indicatorId,
-    'IDM Config Entities',
-    isPlatformDeployment
+  response.push(
+    await importWithErrorHandling(
+      importRealms,
+      {
+        realmId: '',
+        realmName: '',
+        importData: importData.global,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Realms',
+      isClassicDeployment && !!importData.global.realm
+    )
   );
-  await importWithErrorHandling(
-    importEmailTemplates,
-    {
-      importData: importData.global,
-      state,
-    },
-    errors,
-    indicatorId,
-    'Email Templates',
-    isPlatformDeployment
+  response.push(
+    await importWithErrorHandling(
+      importScriptTypes,
+      {
+        scriptTypeId: '',
+        importData: importData.global,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Script Types',
+      isClassicDeployment && !!importData.global.scripttype
+    )
   );
-  await importWithErrorHandling(
-    importMappings,
-    {
-      importData: importData.global,
-      options: { deps: false },
-      state,
-    },
-    errors,
-    indicatorId,
-    'Mappings',
-    isPlatformDeployment
+  response.push(
+    await importWithErrorHandling(
+      importSecretStores,
+      {
+        importData: importData.global,
+        globalConfig: true,
+        secretStoreId: '',
+        state,
+      },
+      errors,
+      indicatorId,
+      'Secret Stores',
+      isClassicDeployment && !!importData.global.secretstore
+    )
   );
-  await importWithErrorHandling(
-    importServices,
-    {
-      importData: importData.global,
-      options: { clean: cleanServices, global: true, realm: true },
-      state,
-    },
-    errors,
-    indicatorId,
-    'Services'
+  response.push(
+    await importWithErrorHandling(
+      importSecrets,
+      {
+        importData: importData.global,
+        options: {
+          includeActiveValues,
+          source,
+        },
+        state,
+      },
+      errors,
+      indicatorId,
+      'Secrets',
+      isCloudDeployment && !!importData.global.secret
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importVariables,
+      {
+        importData: importData.global,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Variables',
+      isCloudDeployment && !!importData.global.variable
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importConfigEntities,
+      {
+        importData: importData.global,
+        options: {
+          envReplaceParams: undefined,
+          entitiesToImport: undefined,
+          validate: false,
+        },
+        state,
+      },
+      errors,
+      indicatorId,
+      'IDM Config Entities',
+      isPlatformDeployment && !!importData.global.idm
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importEmailTemplates,
+      {
+        importData: importData.global,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Email Templates',
+      isPlatformDeployment && !!importData.global.emailTemplate
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importMappings,
+      {
+        importData: importData.global,
+        options: { deps: false },
+        state,
+      },
+      errors,
+      indicatorId,
+      'Mappings',
+      isPlatformDeployment
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importServices,
+      {
+        importData: importData.global,
+        options: { clean: cleanServices, global: true, realm: false },
+        state,
+      },
+      errors,
+      indicatorId,
+      'Services',
+      !!importData.global.service
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importAgents,
+      { importData: importData.global, globalConfig: true, state },
+      errors,
+      indicatorId,
+      'Agents',
+      !!importData.global.agent
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importAuthenticationSettings,
+      {
+        importData: importData.global,
+        globalConfig: true,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Authentication Settings',
+      isClassicDeployment && !!importData.global.authentication
+    )
   );
   stopProgressIndicator({
     id: indicatorId,
@@ -606,164 +866,243 @@ export async function importFullConfiguration({
   for (const realm of Object.keys(importData.realm)) {
     state.setRealm(getRealmUsingExportFormat(realm));
     indicatorId = createProgressIndicator({
-      total: 14,
+      total: 17,
       message: `Importing everything for ${realm} realm...`,
       state,
     });
     // Order of imports matter here since we want dependencies to be imported first. For example, journeys depend on a lot of things, so they are last, and many things depend on scripts, so they are first.
-    await importWithErrorHandling(
-      importScripts,
-      {
-        scriptName: '',
-        importData: importData.realm[realm],
-        options: {
-          deps: false,
-          reUuid: reUuidScripts,
-          includeDefault,
+    response.push(
+      await importWithErrorHandling(
+        importScripts,
+        {
+          scriptName: '',
+          importData: importData.realm[realm],
+          options: {
+            deps: false,
+            reUuid: reUuidScripts,
+            includeDefault,
+          },
+          validate: false,
+          state,
         },
-        validate: false,
-        state,
-      },
-      errors,
-      indicatorId,
-      'Scripts'
+        errors,
+        indicatorId,
+        'Scripts',
+        !!importData.realm[realm].script
+      )
     );
-    await importWithErrorHandling(
-      importThemes,
-      {
-        importData: importData.realm[realm],
-        state,
-      },
-      errors,
-      indicatorId,
-      'Themes',
-      isPlatformDeployment
+    response.push(
+      await importWithErrorHandling(
+        importThemes,
+        {
+          importData: importData.realm[realm],
+          state,
+        },
+        errors,
+        indicatorId,
+        'Themes',
+        isPlatformDeployment && !!importData.realm[realm].theme
+      )
     );
-    await importWithErrorHandling(
-      importAuthenticationSettings,
-      {
-        importData: importData.realm[realm],
-        state,
-      },
-      errors,
-      indicatorId,
-      'Authentication Settings'
+    response.push(
+      await importWithErrorHandling(
+        importSecretStores,
+        {
+          importData: importData.realm[realm],
+          globalConfig: false,
+          secretStoreId: '',
+          state,
+        },
+        errors,
+        indicatorId,
+        'Secret Stores',
+        isClassicDeployment && !!importData.realm[realm].secretstore
+      )
     );
-    await importWithErrorHandling(
-      importAgents,
-      { importData: importData.realm[realm], state },
-      errors,
-      indicatorId,
-      'Agents'
+    response.push(
+      await importWithErrorHandling(
+        importAgentGroups,
+        { importData: importData.realm[realm], state },
+        errors,
+        indicatorId,
+        'Agent Groups',
+        !!importData.realm[realm].agentGroup
+      )
     );
-    await importWithErrorHandling(
-      importResourceTypes,
-      {
-        importData: importData.realm[realm],
-        state,
-      },
-      errors,
-      indicatorId,
-      'Resource Types'
+    response.push(
+      await importWithErrorHandling(
+        importAgents,
+        { importData: importData.realm[realm], globalConfig: false, state },
+        errors,
+        indicatorId,
+        'Agents',
+        !!importData.realm[realm].agent
+      )
     );
-    await importWithErrorHandling(
-      importCirclesOfTrust,
-      {
-        importData: importData.realm[realm],
-        state,
-      },
-      errors,
-      indicatorId,
-      'Circles of Trust'
+    response.push(
+      await importWithErrorHandling(
+        importResourceTypes,
+        {
+          importData: importData.realm[realm],
+          state,
+        },
+        errors,
+        indicatorId,
+        'Resource Types',
+        !!importData.realm[realm].resourcetype
+      )
     );
-    await importWithErrorHandling(
-      importServices,
-      {
-        importData: importData.realm[realm],
-        options: { clean: cleanServices, global: false, realm: true },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Services'
+    response.push(
+      await importWithErrorHandling(
+        importCirclesOfTrust,
+        {
+          importData: importData.realm[realm],
+          state,
+        },
+        errors,
+        indicatorId,
+        'Circles of Trust',
+        !!importData.realm[realm].saml && !!importData.realm[realm].saml.cot
+      )
     );
-    await importWithErrorHandling(
-      importSaml2Providers,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Saml2 Providers'
+    response.push(
+      await importWithErrorHandling(
+        importSaml2Providers,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Saml2 Providers',
+        !!importData.realm[realm].saml
+      )
     );
-    await importWithErrorHandling(
-      importSocialIdentityProviders,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Social Identity Providers'
+    response.push(
+      await importWithErrorHandling(
+        importSocialIdentityProviders,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Social Identity Providers',
+        !!importData.realm[realm].idp
+      )
     );
-    await importWithErrorHandling(
-      importOAuth2Clients,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'OAuth2 Clients'
+    response.push(
+      await importWithErrorHandling(
+        importOAuth2Clients,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'OAuth2 Clients',
+        !!importData.realm[realm].application
+      )
     );
-    await importWithErrorHandling(
-      importApplications,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Applications',
-      isPlatformDeployment
+    response.push(
+      await importWithErrorHandling(
+        importOAuth2TrustedJwtIssuers,
+        {
+          importData: importData.realm[realm],
+          state,
+        },
+        errors,
+        indicatorId,
+        'Trusted JWT Issuers',
+        !!importData.realm[realm].trustedJwtIssuer
+      )
     );
-    await importWithErrorHandling(
-      importPolicySets,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false, prereqs: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Policy Sets'
+    response.push(
+      await importWithErrorHandling(
+        importApplications,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Applications',
+        isPlatformDeployment && !!importData.realm[realm].managedApplication
+      )
     );
-    await importWithErrorHandling(
-      importPolicies,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false, prereqs: false },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Policies'
+    response.push(
+      await importWithErrorHandling(
+        importPolicySets,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false, prereqs: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Policy Sets',
+        !!importData.realm[realm].policyset
+      )
     );
-    await importWithErrorHandling(
-      importJourneys,
-      {
-        importData: importData.realm[realm],
-        options: { deps: false, reUuid: reUuidJourneys },
-        state,
-      },
-      errors,
-      indicatorId,
-      'Journeys'
+    response.push(
+      await importWithErrorHandling(
+        importPolicies,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false, prereqs: false },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Policies',
+        !!importData.realm[realm].policy
+      )
+    );
+    response.push(
+      await importWithErrorHandling(
+        importJourneys,
+        {
+          importData: importData.realm[realm],
+          options: { deps: false, reUuid: reUuidJourneys },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Journeys',
+        !!importData.realm[realm].journey
+      )
+    );
+    response.push(
+      await importWithErrorHandling(
+        importServices,
+        {
+          importData: importData.realm[realm],
+          options: { clean: cleanServices, global: false, realm: true },
+          state,
+        },
+        errors,
+        indicatorId,
+        'Services',
+        !!importData.realm[realm].service
+      )
+    );
+    response.push(
+      await importWithErrorHandling(
+        importAuthenticationSettings,
+        {
+          importData: importData.realm[realm],
+          globalConfig: false,
+          state,
+        },
+        errors,
+        indicatorId,
+        'Authentication Settings',
+        !!importData.realm[realm].authentication
+      )
     );
     stopProgressIndicator({
       id: indicatorId,
@@ -773,7 +1112,33 @@ export async function importFullConfiguration({
     });
   }
   state.setRealm(currentRealm);
+  // Import everything else
+  indicatorId = createProgressIndicator({
+    total: 1,
+    message: `Importing all other AM config entities`,
+    state,
+  });
+  response.push(
+    await importWithErrorHandling(
+      importAmConfigEntities,
+      {
+        importData: importData as unknown as ConfigEntityExportInterface,
+        state,
+      },
+      errors,
+      indicatorId,
+      'Other AM Config Entities'
+    )
+  );
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Finished Importing all other AM config entities!`,
+    status: 'success',
+    state,
+  });
   if (throwErrors && errors.length > 0) {
     throw new FrodoError(`Error importing full config`, errors);
   }
+  // Filter out any null or empty results
+  return response.filter((o) => o && (!Array.isArray(o) || o.length > 0));
 }
