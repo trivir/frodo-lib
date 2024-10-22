@@ -12,7 +12,7 @@ const oAuth2ProviderServiceURLTemplate =
 const createOAuth2ProviderServiceURLTemplate =
   '%s/json%s/realm-config/services/oauth-oidc?_action=create';
 
-const apiVersion = 'protocol=2.1,resource=1.0';
+const apiVersion = 'protocol=2.1,resource=2.0';
 const getApiConfig = () => {
   return {
     apiVersion,

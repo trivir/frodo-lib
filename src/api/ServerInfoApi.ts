@@ -5,7 +5,7 @@ import { generateAmApi } from './BaseApi';
 
 const serverInfoUrlTemplate = '%s/json/serverinfo/%s';
 
-const serverInfoApiVersion = 'resource=1.1';
+const serverInfoApiVersion = 'resource=2.0';
 const serverVersionoApiVersion = 'resource=1.0';
 
 const getServerInfoApiConfig = () => ({

@@ -23,7 +23,7 @@ const nodeURLTemplate =
 const createNodeURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s?_action=create';
 
-const apiVersion = 'protocol=2.1,resource=1.0';
+const apiVersion = 'protocol=2.1,resource=2.0';
 const getNodeApiConfig = () => {
   return {
     apiVersion,

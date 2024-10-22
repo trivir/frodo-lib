@@ -8,7 +8,7 @@ import { generateAmApi } from './BaseApi';
 
 const authenticationSettingsURLTemplate =
   '%s/json%s/realm-config/authentication';
-const apiVersion = 'resource=1.0';
+const apiVersion = 'protocol=1.0,resource=2.0';
 const getApiConfig = () => {
   return {
     apiVersion,
