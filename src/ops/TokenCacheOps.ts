@@ -381,7 +381,11 @@ function getHostKey(state: State): string {
 
 function getRealmKey(state: State): string {
   // currently frodo only supports sessions and tokens minted in the root realm
-  return uuidv5('/' || state.getRealm(), UUIDV5_NAMESPACE);
+  debugMessage({
+    message: `Using root realm to get realm key instead of '${state.getRealm()}'`,
+    state,
+  });
+  return uuidv5('/', UUIDV5_NAMESPACE);
 }
 
 function getTypeKey(tokenType: tokenType): string {

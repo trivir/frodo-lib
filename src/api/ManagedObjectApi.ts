@@ -2,7 +2,11 @@ import util from 'util';
 
 import { State } from '../shared/State';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
+import {
+  IdObjectSkeletonInterface,
+  PagedResult,
+  PatchOperationInterface,
+} from './ApiTypes';
 import { generateIdmApi } from './BaseApi';
 
 const createManagedObjectURLTemplate = '%s/managed/%s?_action=create';
@@ -11,23 +15,6 @@ const queryAllManagedObjectURLTemplate = `%s/managed/%s?_queryFilter=true&_pageS
 const queryManagedObjectURLTemplate = `%s/managed/%s?_queryFilter=%s&_pageSize=%s`;
 
 export const DEFAULT_PAGE_SIZE: number = 1000;
-
-/**
- * See {@link https://backstage.forgerock.com/docs/idm/7/rest-api-reference/sec-about-crest.html#about-crest-patch}.
- */
-export interface ManagedObjectPatchOperationInterface {
-  operation:
-    | 'add'
-    | 'copy'
-    | 'increment'
-    | 'move'
-    | 'remove'
-    | 'replace'
-    | 'transform';
-  field: string;
-  value?: any;
-  from?: string;
-}
 
 /**
  * Get managed object
@@ -130,7 +117,7 @@ export async function putManagedObject({
  * Partially update a managed object, with an array of operations.
  * @param {string} type managed object type
  * @param {string} id managed object id
- * @param {ManagedObjectPatchOperationInterface[]} operations array of operations
+ * @param {PatchOperationInterface[]} operations array of operations
  * @param {string} rev revision
  * @param {State} state library state
  * @returns {Promise<IdObjectSkeletonInterface>} a promise that resolves to an object containing a managed object
@@ -144,7 +131,7 @@ export async function patchManagedObject({
 }: {
   type: string;
   id: string;
-  operations: ManagedObjectPatchOperationInterface[];
+  operations: PatchOperationInterface[];
   rev?: string;
   state: State;
 }): Promise<IdObjectSkeletonInterface> {

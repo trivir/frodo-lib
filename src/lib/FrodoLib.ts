@@ -1,6 +1,7 @@
 // instantiable modules
 import AdminOps, { Admin } from '../ops/AdminOps';
 import AgentOps, { Agent } from '../ops/AgentOps';
+import AmConfigOps, { AmConfig } from '../ops/AmConfigOps';
 import ApiOps, { ApiFactory } from '../ops/ApiFactoryOps';
 import ApplicationOps, { Application } from '../ops/ApplicationOps';
 import AuthenticateOps, { Authenticate } from '../ops/AuthenticateOps';
@@ -8,6 +9,9 @@ import AuthenticationSettingsOps, {
   AuthenticationSettings,
 } from '../ops/AuthenticationSettingsOps';
 import CirclesOfTrustOps, { CirclesOfTrust } from '../ops/CirclesOfTrustOps';
+import SecretStoreOps, { SecretStore } from '../ops/classic/SecretStoreOps';
+import ServerOps, { Server } from '../ops/classic/ServerOps';
+import SiteOps, { Site } from '../ops/classic/SiteOps';
 import AdminFederationOps, {
   AdminFederation,
 } from '../ops/cloud/AdminFederationOps';
@@ -53,6 +57,7 @@ import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps';
 import IdmSystemOps, { IdmSystem } from '../ops/IdmSystemOps';
 import IdpOps, { Idp } from '../ops/IdpOps';
 import InfoOps, { Info } from '../ops/InfoOps';
+import InternalRoleOps, { InternalRole } from '../ops/InternalRoleOps';
 import JoseOps, { Jose } from '../ops/JoseOps';
 import JourneyOps, { Journey } from '../ops/JourneyOps';
 import ManagedObjectOps, { ManagedObject } from '../ops/ManagedObjectOps';
@@ -72,10 +77,12 @@ import ReconOps, { Recon } from '../ops/ReconOps';
 import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
 import Saml2Ops, { Saml2 } from '../ops/Saml2Ops';
 import ScriptOps, { Script } from '../ops/ScriptOps';
+import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps';
 import ServiceOps, { Service } from '../ops/ServiceOps';
 import SessionOps, { Session } from '../ops/SessionOps';
 import ThemeOps, { Theme } from '../ops/ThemeOps';
 import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
+import UserOps, { User } from '../ops/UserOps';
 import VersionUtils, { Version } from '../ops/VersionUtils';
 // non-instantiable modules
 import ConstantsImpl, { Constants } from '../shared/Constants';
@@ -95,6 +102,11 @@ export type Frodo = {
   state: State;
   admin: Admin;
   agent: Agent;
+
+  am: {
+    config: AmConfig;
+  };
+
   app: Application;
 
   authn: {
@@ -168,16 +180,24 @@ export type Frodo = {
 
   realm: Realm;
 
+  role: InternalRole;
+
   saml2: {
     circlesOfTrust: CirclesOfTrust;
     entityProvider: Saml2;
   };
 
   script: Script;
+  scriptType: ScriptType;
+  secretStore: SecretStore;
+  server: Server;
   service: Service;
   session: Session;
+  site: Site;
 
   theme: Theme;
+
+  user: User;
 
   utils: FRUtils &
     ScriptValidation &
@@ -254,6 +274,11 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     state: state,
     admin: AdminOps(state),
     agent: AgentOps(state),
+
+    am: {
+      config: AmConfigOps(state),
+    },
+
     app: ApplicationOps(state),
 
     authn: {
@@ -326,16 +351,24 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
 
     realm: RealmOps(state),
 
+    role: InternalRoleOps(state),
+
     saml2: {
       circlesOfTrust: CirclesOfTrustOps(state),
       entityProvider: Saml2Ops(state),
     },
 
     script: ScriptOps(state),
+    scriptType: ScriptTypeOps(state),
+    secretStore: SecretStoreOps(state),
+    server: ServerOps(state),
     service: ServiceOps(state),
     session: SessionOps(state),
+    site: SiteOps(state),
 
     theme: ThemeOps(state),
+
+    user: UserOps(state),
 
     utils: {
       ...ForgeRockUtils(state),
