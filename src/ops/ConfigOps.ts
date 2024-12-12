@@ -146,6 +146,8 @@ export default (state: State): Config => {
         coords: true,
         includeDefault: false,
         includeActiveValues: true,
+        target: '',
+        includeReadOnly: false,
       },
       collectErrors: Error[]
     ) {
@@ -200,6 +202,10 @@ export interface FullExportOptions {
    * Host URL of target environment to encrypt secret values for
    */
   target?: string;
+  /**
+   * Include read only config in export if true
+   */
+  includeReadOnly: boolean;
 }
 
 /**
@@ -295,6 +301,7 @@ export async function exportFullConfiguration({
     includeDefault: false,
     includeActiveValues: true,
     target: '',
+    includeReadOnly: false,
   },
   collectErrors,
   state,
@@ -316,6 +323,7 @@ export async function exportFullConfiguration({
     includeDefault,
     includeActiveValues,
     target,
+    includeReadOnly,
   } = options;
   const stateObj = { state };
   const globalStateObj = { globalConfig: true, state };
@@ -328,7 +336,10 @@ export async function exportFullConfiguration({
     state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
 
-  const config = await exportAmConfigEntities(stateObj);
+  const config = await exportAmConfigEntities({
+    includeReadOnly,
+    state,
+  });
 
   //Export mappings
   const mappings = await exportWithErrorHandling(
@@ -406,10 +417,21 @@ export async function exportFullConfiguration({
       )
     )?.internalRole,
     mapping: mappings?.mapping,
-    realm: (await exportWithErrorHandling(exportRealms, stateObj, errors))
-      ?.realm,
+    realm: (
+      await exportWithErrorHandling(
+        exportRealms,
+        stateObj,
+        errors,
+        includeReadOnly || isClassicDeployment
+      )
+    )?.realm,
     scripttype: (
-      await exportWithErrorHandling(exportScriptTypes, stateObj, errors)
+      await exportWithErrorHandling(
+        exportScriptTypes,
+        stateObj,
+        errors,
+        includeReadOnly || isClassicDeployment
+      )
     )?.scripttype,
     secret: (
       await exportWithErrorHandling(
@@ -852,7 +874,7 @@ export async function importFullConfiguration({
       errors,
       indicatorId,
       'Agents',
-      !!importData.global.agent
+      isClassicDeployment && !!importData.global.agent
     )
   );
   response.push(

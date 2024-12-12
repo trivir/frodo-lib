@@ -269,11 +269,14 @@ export async function getConfigEntity({
 
 /**
  * Get all other AM config entities
+ * @param {boolean} includeReadOnly Include read only config in the export
  * @returns {Promise<ConfigSkeleton>} a promise that resolves to a config object containing global and realm config entities
  */
 export async function getConfigEntities({
+  includeReadOnly = false,
   state,
 }: {
+  includeReadOnly: boolean;
   state: State;
 }): Promise<ConfigSkeleton> {
   const realms = await getRealmsForExport({ state });
@@ -283,6 +286,9 @@ export async function getConfigEntities({
     realm: Object.fromEntries(realms.map((r) => [r, {}])),
   } as ConfigSkeleton;
   for (const [key, entityInfo] of Object.entries(AM_ENTITIES)) {
+    if (!includeReadOnly && entityInfo.readonly) {
+      continue;
+    }
     const deploymentAllowed =
       entityInfo.deployments &&
       entityInfo.deployments.includes(state.getDeploymentType());

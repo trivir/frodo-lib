@@ -98,9 +98,14 @@ describe('AmConfigOps', () => {
         });
 
         test('1: Export AM Config Entities', async () => {
-          // Set deployment type to cloud since it is necessary for exporting everything correctly. It does this automatically when recording the mock, but not when running the test after recording
-          state.setDeploymentType(Constants.CLOUD_DEPLOYMENT_TYPE_KEY);
-          const response = await AmConfigOps.exportAmConfigEntities({state});
+          const response = await AmConfigOps.exportAmConfigEntities({ includeReadOnly: true, state });
+          expect(response).toMatchSnapshot({
+            meta: expect.any(Object),
+          });
+        });
+
+        test('2: Export importable AM Config Entities', async () => {
+          const response = await AmConfigOps.exportAmConfigEntities({ includeReadOnly: false, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
@@ -129,10 +134,15 @@ describe('AmConfigOps', () => {
       });
 
       describe('exportAmConfigEntities()', () => {
-        test('2: Export AM Config Entities', async () => {
-          // Set deployment type to cloud since it is necessary for exporting everything correctly. It does this automatically when recording the mock, but not when running the test after recording
-          state.setDeploymentType(Constants.CLOUD_DEPLOYMENT_TYPE_KEY);
-          const response = await AmConfigOps.exportAmConfigEntities({state});
+        test('5: Export AM Config Entities', async () => {
+          const response = await AmConfigOps.exportAmConfigEntities({ includeReadOnly: true, state });
+          expect(response).toMatchSnapshot({
+            meta: expect.any(Object),
+          });
+        });
+
+        test('6: Export importable AM Config Entities', async () => {
+          const response = await AmConfigOps.exportAmConfigEntities({ includeReadOnly: false, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
