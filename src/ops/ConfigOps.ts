@@ -635,7 +635,7 @@ export async function exportFullConfiguration({
             exportSecretStores,
             realmStateObj,
             errors,
-            isClassicDeployment
+            isClassicDeployment || isCloudDeployment
           )
         )?.secretstore,
         service: (
@@ -1002,7 +1002,8 @@ export async function importFullConfiguration({
         errors,
         indicatorId,
         'Secret Stores',
-        isClassicDeployment && !!importData.realm[realm].secretstore
+        (isClassicDeployment || isCloudDeployment) &&
+          !!importData.realm[realm].secretstore
       )
     );
     response.push(
