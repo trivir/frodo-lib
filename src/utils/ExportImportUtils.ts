@@ -41,12 +41,14 @@ export type ExportImport = {
    * @param {Object} data data object
    * @param {String} filename file name
    * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
+   * @param {boolean} removeRev Remove the _rev key from objects. Default: true
    * @return {boolean} true if successful, false otherwise
    */
   saveJsonToFile(
     data: object,
     filename: string,
-    includeMeta?: boolean
+    includeMeta?: boolean,
+    removeRev?: boolean
   ): boolean;
   /**
    * Save text data to file
@@ -175,9 +177,10 @@ export default (state: State): ExportImport => {
     saveJsonToFile(
       data: object,
       filename: string,
-      includeMeta = true
+      includeMeta = true,
+      removeRev = false
     ): boolean {
-      return saveJsonToFile({ data, filename, includeMeta, state });
+      return saveJsonToFile({ data, filename, includeMeta, removeRev, state });
     },
     saveTextToFile(data: string, filename: string): boolean {
       return saveTextToFile({ data, filename, state });
@@ -386,24 +389,29 @@ export function saveToFile({
  * @param {object} data data object
  * @param {string} filename file name
  * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
+ * @param {boolean} removeRev Remove the _rev key from objects. Default: true
  * @return {boolean} true if successful, false otherwise
  */
 export function saveJsonToFile({
   data,
   filename,
   includeMeta = true,
+  removeRev = true,
   state,
 }: {
   data: object;
   filename: string;
   includeMeta?: boolean;
+  removeRev?: boolean;
   state: State;
 }): boolean {
   const exportData = data;
   if (includeMeta && !exportData['meta'])
     exportData['meta'] = getMetadata({ state });
   if (!includeMeta && exportData['meta']) delete exportData['meta'];
-  deleteDeepByKey(exportData, '_rev');
+  if (removeRev) {
+    deleteDeepByKey(exportData, '_rev');
+  }
   return saveTextToFile({
     data: stringify(exportData),
     filename,
