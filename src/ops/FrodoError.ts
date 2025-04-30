@@ -1,6 +1,5 @@
 export class FrodoError extends Error {
   originalErrors: Error[] = [];
-  partialResults: any = null;
 
   isHttpError: boolean = false;
   httpCode: string;
@@ -11,11 +10,7 @@ export class FrodoError extends Error {
   httpErrorReason: string;
   httpDescription: string;
 
-  constructor(
-    message: string,
-    originalErrors: Error | Error[] = null,
-    partialResults: any = null
-  ) {
+  constructor(message: string, originalErrors: Error | Error[] = null) {
     super(message);
     this.name = this.constructor.name;
 
@@ -30,8 +25,6 @@ export class FrodoError extends Error {
     } else if (originalErrors) {
       this.originalErrors = [originalErrors as Error];
     }
-
-    this.partialResults = partialResults;
 
     // determine if http error and set http error fields
     if (originalErrors) {
@@ -115,10 +108,6 @@ export class FrodoError extends Error {
     // if (this.originalErrors.slice(-1))
     //   combinedMessage += '\n  ' + this.originalErrors.slice(-1)[0].stack;
     return combinedMessage;
-  }
-
-  getPartialResults(): any {
-    return this.partialResults;
   }
 
   toString() {

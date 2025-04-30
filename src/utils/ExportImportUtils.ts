@@ -6,7 +6,7 @@ import replaceall from 'replaceall';
 import slugify from 'slugify';
 
 import { FrodoError } from '../ops/FrodoError';
-import { ExportMetaData } from '../ops/OpsTypes';
+import { ExportMetaData, ResultCallback } from '../ops/OpsTypes';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import {
@@ -120,19 +120,6 @@ export type ExportImport = {
    * @returns {boolean} true if a valid URL, false otherwise
    */
   isValidUrl(urlString: string): boolean;
-  /**
-   * Helper that calls a function that can return partial results. It returns any results of calling the function, including those that are part of the FrodoError if one is thrown, which error is also returned.
-   * @param func The function to call
-   * @param parameters The parameters for the function
-   * @returns The results of calling the function, along with the error if one was thrown
-   */
-  getResults<R>(
-    func: (...params: any) => Promise<R>,
-    ...parameters: any
-  ): Promise<{
-    result: R;
-    error: FrodoError | undefined;
-  }>;
 };
 
 export default (state: State): ExportImport => {
@@ -221,15 +208,6 @@ export default (state: State): ExportImport => {
     },
     isValidUrl(urlString: string): boolean {
       return isValidUrl(urlString);
-    },
-    getResults<R>(
-      func: (...params: any) => Promise<R>,
-      ...parameters: any
-    ): Promise<{
-      result: R;
-      error: FrodoError | undefined;
-    }> {
-      return getResults(func, ...parameters);
     },
   };
 };
@@ -642,14 +620,14 @@ async function exportOrImportWithErrorHandling<P extends { state: State }, R>(
   errors: Error[],
   perform: boolean = true
 ): Promise<R | null> {
-  if (!perform) {
+  try {
+    return perform ? await func(parameters) : null;
+  } catch (error) {
+    if (errors && Array.isArray(errors)) {
+      errors.push(error);
+    }
     return null;
   }
-  const results = await getResults(func, parameters);
-  if (results.error && errors && Array.isArray(errors)) {
-    errors.push(results.error);
-  }
-  return results.result;
 }
 
 /**
@@ -695,30 +673,43 @@ export async function importWithErrorHandling<P extends { state: State }, R>(
   return exportOrImportWithErrorHandling(func, parameters, errors, perform);
 }
 
-/**
- * Helper that calls a function that can return partial results. It returns any results of calling the function, including those that are part of the FrodoError if one is thrown, which error is also returned.
- * @param func The function to call
- * @param parameters The parameters for the function
- * @returns The results of calling the function, along with the error if one was thrown
- */
-export async function getResults<R>(
+export async function getResult<R>(
+  resultCallback: ResultCallback<R> | undefined,
+  errorMessage: string,
   func: (...params: any) => Promise<R>,
   ...parameters: any
-): Promise<{
-  result: R;
-  error: FrodoError | undefined;
-}> {
-  const retVal = {
-    result: undefined,
-    error: undefined,
-  };
+): Promise<R> {
   try {
-    retVal.result = await func(...parameters);
-  } catch (error) {
-    if (typeof error.getPartialResults === 'function') {
-      retVal.result = (error as FrodoError).getPartialResults();
+    const result = await func(parameters);
+    if (resultCallback) {
+      resultCallback(undefined, result);
     }
-    retVal.error = error;
+    return result;
+  } catch (e) {
+    const error = new FrodoError(errorMessage, e);
+    if (resultCallback) {
+      resultCallback(error, undefined);
+    } else {
+      throw error;
+    }
   }
-  return retVal;
+}
+
+/**
+ * Transforms a ResultCallback into another ResultCallback that handles only errors and ignores results.
+ * @param resultCallback The result callback function
+ * @returns The new result callback function that handles only errors
+ */
+export function getErrorCallback<R>(
+  resultCallback: ResultCallback<R>
+): ResultCallback<R> {
+  return (e: FrodoError) => {
+    if (e && resultCallback) {
+      resultCallback(e, undefined);
+      return;
+    }
+    if (e) {
+      throw e;
+    }
+  };
 }
