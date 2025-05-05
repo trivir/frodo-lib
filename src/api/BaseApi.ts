@@ -312,6 +312,10 @@ export function generateIdmApi({
         ...(state.getBearerToken() && {
           Authorization: `Bearer ${state.getBearerToken()}`,
         }),
+        ...(!state.getBearerToken() && {
+          'X-OpenIDM-Username': state.getUsername(),
+          'X-OpenIDM-Password': state.getPassword(),
+        }),
       },
       httpAgent: getHttpAgent(),
       httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
@@ -319,7 +323,6 @@ export function generateIdmApi({
     },
     requestOverride
   );
-
   const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
