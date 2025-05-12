@@ -349,10 +349,11 @@ export async function exportFullConfiguration({
   const isForgeOpsDeployment =
     state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
-  const isIdmDeployment = state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
-  let config = {} as ConfigEntityExportInterface 
+  const isIdmDeployment =
+    state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
+  let config = {} as ConfigEntityExportInterface;
   if (!isIdmDeployment) {
-      config = await exportAmConfigEntities({
+    config = await exportAmConfigEntities({
       includeReadOnly,
       onlyRealm,
       onlyGlobal,
@@ -474,7 +475,7 @@ export async function exportFullConfiguration({
       service: (
         await exportWithErrorHandling(
           exportServices,
-          globalStateObj, 
+          globalStateObj,
           errors,
           !isIdmDeployment
         )
@@ -524,7 +525,8 @@ export async function exportFullConfiguration({
       const currentRealm = getRealmUsingExportFormat(realm);
       if (
         onlyRealm &&
-        (activeRealm.startsWith('/') ? activeRealm : '/' + activeRealm) !== currentRealm
+        (activeRealm.startsWith('/') ? activeRealm : '/' + activeRealm) !==
+          currentRealm
       ) {
         continue;
       }
@@ -731,7 +733,8 @@ export async function importFullConfiguration({
   const isForgeOpsDeployment =
     state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
-  const isIdmDeployment = state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
+  const isIdmDeployment =
+    state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
 
   const {
     reUuidJourneys,
@@ -882,7 +885,8 @@ export async function importFullConfiguration({
       errors,
       indicatorId,
       'Email Templates',
-      (isPlatformDeployment || isIdmDeployment) && !!importData.global.emailTemplate
+      (isPlatformDeployment || isIdmDeployment) &&
+        !!importData.global.emailTemplate
     )
   );
   response.push(
@@ -947,7 +951,8 @@ export async function importFullConfiguration({
       errors,
       indicatorId,
       'Internal Roles',
-      (isPlatformDeployment || isIdmDeployment) && !!importData.global.internalRole
+      (isPlatformDeployment || isIdmDeployment) &&
+        !!importData.global.internalRole
     )
   );
   stopProgressIndicator({

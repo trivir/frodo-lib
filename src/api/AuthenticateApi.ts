@@ -1,6 +1,7 @@
 import util from 'util';
-import { debugMessage } from '../utils/Console';
+
 import { State } from '../shared/State';
+import { debugMessage } from '../utils/Console';
 import { getRealmPath } from '../utils/ForgeRockUtils';
 import { generateAmApi, generateIdmApi } from './BaseApi';
 
@@ -74,7 +75,6 @@ export async function step({
   return data;
 }
 
-
 /**
  *
  * @param {any} body POST request body
@@ -95,13 +95,12 @@ export async function stepIdm({
   service?: string;
   state: State;
 }): Promise<any> {
-
-   debugMessage({
-        message: `AuthenticateApi.stepIdm: function start `,
-        state,
-      })
+  debugMessage({
+    message: `AuthenticateApi.stepIdm: function start `,
+    state,
+  });
   const urlString = `${state.getHost()}/authentication?_action=login`;
-  const  response  = await generateIdmApi({
+  const response = await generateIdmApi({
     state,
   }).post(urlString, body, config);
   return response;

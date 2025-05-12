@@ -3,7 +3,7 @@ export type Constants = {
   CLASSIC_DEPLOYMENT_TYPE_KEY: string;
   CLOUD_DEPLOYMENT_TYPE_KEY: string;
   FORGEOPS_DEPLOYMENT_TYPE_KEY: string;
-  IDM_DEPLOYMENT_TYPE_KEY : string;
+  IDM_DEPLOYMENT_TYPE_KEY: string;
   DEPLOYMENT_TYPES: string[];
   DEPLOYMENT_TYPE_REALM_MAP: {
     classic: string;
@@ -20,7 +20,7 @@ const DEFAULT_REALM_KEY = '__default__realm__';
 const CLASSIC_DEPLOYMENT_TYPE_KEY = 'classic';
 const CLOUD_DEPLOYMENT_TYPE_KEY = 'cloud';
 const FORGEOPS_DEPLOYMENT_TYPE_KEY = 'forgeops';
-const IDM_DEPLOYMENT_TYPE_KEY  =  'idm'
+const IDM_DEPLOYMENT_TYPE_KEY = 'idm';
 const DEPLOYMENT_TYPES = [
   CLASSIC_DEPLOYMENT_TYPE_KEY,
   CLOUD_DEPLOYMENT_TYPE_KEY,

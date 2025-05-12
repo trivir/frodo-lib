@@ -1119,7 +1119,7 @@ export async function getTokens({
 
     // now that we have the full tenant URL we can lookup the cookie name
     state.setCookieName(await determineCookieName(state));
-    
+
     // use service account to login?
     if (
       !forceLoginAsUser &&

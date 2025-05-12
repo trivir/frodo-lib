@@ -15,8 +15,6 @@ import {
   getServiceAccount,
   SERVICE_ACCOUNT_DEFAULT_SCOPES,
 } from './cloud/ServiceAccountOps';
-import axios from 'axios';
-import https from 'https';
 import {
   getConnectionProfile,
   loadConnectionProfile,
@@ -41,8 +39,6 @@ import {
   saveUserBearerToken,
   saveUserSessionToken,
 } from './TokenCacheOps';
-import { getConfigEntities } from '../api/IdmConfigApi';
-import { generateIdmApi } from '../api/BaseApi';
 
 export type Authenticate = {
   /**
@@ -165,16 +161,6 @@ async function determineCookieName(state: State): Promise<string> {
     state,
   });
   return data.cookieName;
-}
-
-async function determineCookieValueIdm(state: State): Promise<string> {
-  const idmResponse = await stepIdm({ body: {}, config: {}, state });
-  const jwt = idmResponse.headers['set-cookie'][0].split(';')[0].split('=')[1];
-  debugMessage({
-    message: `AuthenticateOps.determineCookieNameIdm: cookieName = ${jwt}`,
-    state,
-  });
-  return jwt
 }
 
 /**
@@ -391,7 +377,6 @@ async function determineDeploymentType(state: State): Promise<string> {
 
       deploymentType = Constants.CLASSIC_DEPLOYMENT_TYPE_KEY;
       try {
-
         await authorize({
           amBaseUrl: state.getHost(),
           data: bodyFormData,
@@ -433,26 +418,35 @@ async function determineDeploymentType(state: State): Promise<string> {
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
               try {
-                //I need to check if it is idm here 
-                const idmresponse = await stepIdm({ body: {}, config: {}, state })
+                //I need to check if it is idm here
+                const idmresponse = await stepIdm({
+                  body: {},
+                  config: {},
+                  state,
+                });
                 verboseMessage({
                   message: `idm response =  ${JSON.stringify(idmresponse.status, null, 2)} + ${idmresponse.data.authorization.authLogin}`,
-                  state
-                })
-                if (idmresponse.status === 200 && idmresponse.data?.authorization.authLogin) {
+                  state,
+                });
+                if (
+                  idmresponse.status === 200 &&
+                  idmresponse.data?.authorization.authLogin
+                ) {
                   verboseMessage({
-                    message: `Ping Identity IDM deployment`['brightCyan'] + ` detected.`,
+                    message:
+                      `Ping Identity IDM deployment`['brightCyan'] +
+                      ` detected.`,
                     state,
                   });
-                  deploymentType = Constants.IDM_DEPLOYMENT_TYPE_KEY
+                  deploymentType = Constants.IDM_DEPLOYMENT_TYPE_KEY;
                   verboseMessage({
-                    message: "deployment type in determine =" + deploymentType,
-                    state,});
+                    message: 'deployment type in determine =' + deploymentType,
+                    state,
+                  });
                 } else {
                   throw new Error('Not IDM');
                 }
-              }
-              catch {
+              } catch {
                 verboseMessage({
                   message: `Classic deployment`['brightCyan'] + ` detected.`,
                   state,
@@ -494,9 +488,6 @@ export type UserSessionMetaType = {
   expires: number;
   from_cache?: boolean;
 };
-
-
-
 
 /**
  * Helper function to authenticate and obtain and store session cookie
@@ -839,7 +830,7 @@ function createPayload(serviceAccountId: string, host: string) {
   const u = parseUrl(host);
   const aud = `${u.origin}:${
     u.port ? u.port : u.protocol === 'https' ? '443' : '80'
-    }${u.pathname}/oauth2/access_token`;
+  }${u.pathname}/oauth2/access_token`;
 
   // Cross platform way of setting JWT expiry time 3 minutes in the future, expressed as number of seconds since EPOCH
   const exp = Math.floor(new Date().getTime() / 1000 + 180);
@@ -1059,9 +1050,9 @@ function scheduleAutoRefresh(
         : state.getUseBearerTokenForAmApis()
           ? state.getBearerTokenMeta()?.expires
           : Math.min(
-            state.getBearerTokenMeta()?.expires,
-            state.getUserSessionTokenMeta()?.expires
-          );
+              state.getBearerTokenMeta()?.expires,
+              state.getUserSessionTokenMeta()?.expires
+            );
     let timeout = expires - Date.now() - 1000 * 25;
     if (timeout < 1000 * 30) {
       debugMessage({
@@ -1164,10 +1155,10 @@ export async function getTokens({
         );
       }
     }
-    if(state.getHost().endsWith('openidm')){
-       state.setDeploymentType(await determineDeploymentType(state))
+    if (state.getHost().endsWith('openidm')) {
+      state.setDeploymentType(await determineDeploymentType(state));
     }
-    //check if it is idm deployment type, then it will just do some stuff for idm and break 
+    //check if it is idm deployment type, then it will just do some stuff for idm and break
     else {
       // now that we have the full tenant URL we can lookup the cookie name
       state.setCookieName(await determineCookieName(state));
@@ -1212,17 +1203,16 @@ export async function getTokens({
         message: `AuthenticateOps.getTokens: Authenticating with user account ${state.getUsername()}`,
         state,
       });
-      // if logging into on prem idm 
+      // if logging into on prem idm
       if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) {
         const token: Tokens = {
           subject: state.getUsername(),
           host: state.getHost(),
           realm: state.getRealm() ? state.getRealm() : 'root',
         };
-        saveConnectionProfile({ host: state.getHost(), state })
-        return token 
-      }
-      else {
+        saveConnectionProfile({ host: state.getHost(), state });
+        return token;
+      } else {
         const token = await getUserSessionToken(callbackHandler, state);
         if (token) state.setUserSessionTokenMeta(token);
         if (usingConnectionProfile && !token.from_cache) {
@@ -1244,7 +1234,8 @@ export async function getTokens({
           state.getCookieValue() &&
           // !state.getBearerToken() &&
           (state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
-            state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY)
+            state.getDeploymentType() ===
+              Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY)
         ) {
           const accessToken = await getUserBearerToken(state);
           if (accessToken) state.setBearerTokenMeta(accessToken);
