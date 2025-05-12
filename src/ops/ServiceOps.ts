@@ -1,6 +1,5 @@
 import {
   type AmServiceSkeleton,
-  type ServiceNextDescendent,
   deleteService,
   deleteServiceNextDescendent,
   type FullService,
@@ -9,7 +8,7 @@ import {
   getServiceDescendents,
   putService,
   putServiceNextDescendent,
-  ServiceNextDescendentResponse,
+  type ServiceNextDescendent,
 } from '../api/ServiceApi';
 import { State } from '../shared/State';
 import {
@@ -49,9 +48,9 @@ export type Service = {
     globalConfig?: boolean
   ): Promise<AmServiceSkeleton>;
   deleteServiceNextDescendentOnly(
-    serviceId:string,
-    globalConfig?:boolean
-  ):Promise<ServiceNextDescendent>;
+    serviceId: string,
+    globalConfig?: boolean
+  ): Promise<ServiceNextDescendent>;
   /**
    * Deletes all services
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
@@ -131,10 +130,14 @@ export default (state: State): Service => {
       return deleteFullService({ serviceId, globalConfig, state });
     },
     async deleteServiceNextDescendentOnly(
-      serviceId:string,
-      globalConfig =false
+      serviceId: string,
+      globalConfig = false
     ): Promise<ServiceNextDescendent> {
-      return deleteServiceNextDescentdentOnly({serviceId,globalConfig, state});
+      return deleteServiceNextDescentdentOnly({
+        serviceId,
+        globalConfig,
+        state,
+      });
     },
     /**
      * Deletes all services
@@ -323,7 +326,7 @@ export async function getFullServices({
             !(
               error.response?.status === 403 &&
               error.response?.data?.message ===
-              'This operation is not available in PingOne Advanced Identity Cloud.'
+                'This operation is not available in PingOne Advanced Identity Cloud.'
             )
           ) {
             const message = error.response?.data?.message;
@@ -477,7 +480,8 @@ export async function putFullService({
     return result;
   } catch (error) {
     throw new FrodoError(
-      `Error putting ${globalConfig ? 'global' : 'realm'
+      `Error putting ${
+        globalConfig ? 'global' : 'realm'
       } full service config ${serviceId}`,
       error
     );
@@ -592,7 +596,8 @@ export async function deleteFullService({
     return deleteService({ serviceId, globalConfig, state });
   } catch (error) {
     throw new FrodoError(
-      `Error deleting ${globalConfig ? 'global' : 'realm'
+      `Error deleting ${
+        globalConfig ? 'global' : 'realm'
       } full service config ${serviceId}`,
       error
     );
@@ -607,7 +612,7 @@ export async function deleteServiceNextDescentdentOnly({
   serviceId: string;
   globalConfig: boolean;
   state: State;
-}):Promise<ServiceNextDescendent> {
+}): Promise<ServiceNextDescendent> {
   try {
     debugMessage({
       message: `ServiceOps.deleteServiceDescendentOnly: start, globalConfig=${globalConfig}`,
@@ -619,7 +624,9 @@ export async function deleteServiceNextDescentdentOnly({
       state,
     });
 
-    return await Promise.all (serviceNextDescendentData.map((nextDescendent) => deleteServiceNextDescendent({
+    return await Promise.all(
+      serviceNextDescendentData.map((nextDescendent) =>
+        deleteServiceNextDescendent({
           serviceId,
           serviceType: nextDescendent._type._id,
           serviceNextDescendentId: nextDescendent._id,
@@ -627,11 +634,11 @@ export async function deleteServiceNextDescentdentOnly({
           state,
         })
       )
-    )
-  }
-  catch (error) {
+    );
+  } catch (error) {
     throw new FrodoError(
-      `Error deleting ${globalConfig ? 'global' : 'realm'
+      `Error deleting ${
+        globalConfig ? 'global' : 'realm'
       } full service config ${serviceId}`,
       error
     );
@@ -669,7 +676,7 @@ export async function deleteFullServices({
             !(
               error.response?.status === 403 &&
               error.response?.data?.message ===
-              'This operation is not available in PingOne Advanced Identity Cloud.'
+                'This operation is not available in PingOne Advanced Identity Cloud.'
             )
           ) {
             const message = error.response?.data?.message;
@@ -686,7 +693,8 @@ export async function deleteFullServices({
     return deleted;
   } catch (error) {
     throw new FrodoError(
-      `Error deleting ${globalConfig ? 'global' : 'realm'
+      `Error deleting ${
+        globalConfig ? 'global' : 'realm'
       } full service configs`,
       error
     );
@@ -726,7 +734,8 @@ export async function exportService({
     return exportData;
   } catch (error) {
     throw new FrodoError(
-      `Error exporting ${globalConfig ? 'global' : 'realm'
+      `Error exporting ${
+        globalConfig ? 'global' : 'realm'
       } service ${serviceId}`,
       error
     );
@@ -760,8 +769,9 @@ export async function exportServices({
     for (const service of services) {
       updateProgressIndicator({
         id: indicatorId,
-        message: `Exporting ${globalConfig ? 'global' : 'realm'} service ${service._id
-          }`,
+        message: `Exporting ${globalConfig ? 'global' : 'realm'} service ${
+          service._id
+        }`,
         state,
       });
       service.location = globalConfig ? 'global' : state.getRealm();
@@ -769,8 +779,9 @@ export async function exportServices({
     }
     stopProgressIndicator({
       id: indicatorId,
-      message: `Exported ${services.length} ${globalConfig ? 'global' : 'realm'
-        } services.`,
+      message: `Exported ${services.length} ${
+        globalConfig ? 'global' : 'realm'
+      } services.`,
       state,
     });
     debugMessage({ message: `ServiceOps.exportServices: end`, state });
