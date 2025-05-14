@@ -351,8 +351,9 @@ export async function exportFullConfiguration({
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
   const isIdmDeployment =
     state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
+    
   let config = {} as ConfigEntityExportInterface;
-  if (!isIdmDeployment) {
+  if (isPlatformDeployment || isClassicDeployment) {
     config = await exportAmConfigEntities({
       includeReadOnly,
       onlyRealm,
@@ -477,7 +478,7 @@ export async function exportFullConfiguration({
           exportServices,
           globalStateObj,
           errors,
-          !isIdmDeployment
+          isPlatformDeployment || isClassicDeployment
         )
       )?.service,
       site: (
@@ -508,7 +509,7 @@ export async function exportFullConfiguration({
       Object.keys(globalConfig.idm)
         .filter(
           (k) =>
-            (k === 'ui/themerealm' && !isIdmDeployment) ||
+            (k === 'ui/themerealm' && isPlatformDeployment || isClassicDeployment) ||
             k === 'sync' ||
             k.startsWith('mapping/') ||
             k.startsWith('emailTemplate/')
@@ -518,7 +519,7 @@ export async function exportFullConfiguration({
   }
 
   const realmConfig = {};
-  if (!isIdmDeployment && (!onlyGlobal || onlyRealm)) {
+  if (isPlatformDeployment || isClassicDeployment && (!onlyGlobal || onlyRealm)) {
     // Export realm configs
     const activeRealm = state.getRealm();
     for (const realm of Object.keys(config.realm)) {
@@ -914,7 +915,7 @@ export async function importFullConfiguration({
       errors,
       indicatorId,
       'Services',
-      !isIdmDeployment && !!importData.global.service
+      isPlatformDeployment || isClassicDeployment && !!importData.global.service
     )
   );
   response.push(
@@ -961,7 +962,7 @@ export async function importFullConfiguration({
     status: 'success',
     state,
   });
-  if (!isIdmDeployment) {
+  if (isPlatformDeployment || isClassicDeployment) {
     // Import to realms
     const currentRealm = state.getRealm();
     for (const realm of Object.keys(importData.realm)) {

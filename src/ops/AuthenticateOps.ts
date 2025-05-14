@@ -335,12 +335,6 @@ async function determineDeploymentType(state: State): Promise<string> {
       return deploymentType;
 
     case Constants.CLASSIC_DEPLOYMENT_TYPE_KEY:
-      debugMessage({
-        message: `AuthenticateOps.determineDeploymentType: end [type=${deploymentType}]`,
-        state,
-      });
-      return deploymentType;
-
     case Constants.IDM_DEPLOYMENT_TYPE_KEY:
       debugMessage({
         message: `AuthenticateOps.determineDeploymentType: end [type=${deploymentType}]`,
@@ -384,7 +378,6 @@ async function determineDeploymentType(state: State): Promise<string> {
           state,
         });
       } catch (e) {
-        // debugMessage(e.response);
         // If error is in that condition after sending Authorize
         if (
           e.response?.status === 302 &&
@@ -1137,14 +1130,13 @@ export async function getTokens({
         );
       }
     }
-    //username and password empty if ended
-
     // if host is not a valid URL, try to locate a valid URL and deployment type from connections.json
     if (!isValidUrl(state.getHost())) {
       const conn = await getConnectionProfile({ state });
       state.setHost(conn.tenant);
       state.setAllowInsecureConnection(conn.allowInsecureConnection);
       state.setDeploymentType(conn.deploymentType);
+      
       // fail fast if deployment type not applicable
       if (
         state.getDeploymentType() &&

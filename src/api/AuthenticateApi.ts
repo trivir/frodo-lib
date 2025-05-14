@@ -79,14 +79,11 @@ export async function step({
  *
  * @param {any} body POST request body
  * @param {any} config request config
- * @param {string} realm realm
- * @param {string} service name of authentication service/journey
  * @returns Promise resolving to the authentication service response
  */
 export async function stepIdm({
   body = {},
   config = {},
-
   state,
 }: {
   body?: object;
