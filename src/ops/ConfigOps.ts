@@ -351,7 +351,7 @@ export async function exportFullConfiguration({
   const isPlatformDeployment = isCloudDeployment || isForgeOpsDeployment;
   const isIdmDeployment =
     state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY;
-    
+
   let config = {} as ConfigEntityExportInterface;
   if (isPlatformDeployment || isClassicDeployment) {
     config = await exportAmConfigEntities({
@@ -509,7 +509,8 @@ export async function exportFullConfiguration({
       Object.keys(globalConfig.idm)
         .filter(
           (k) =>
-            (k === 'ui/themerealm' && isPlatformDeployment || isClassicDeployment) ||
+            (k === 'ui/themerealm' && isPlatformDeployment) ||
+            isClassicDeployment ||
             k === 'sync' ||
             k.startsWith('mapping/') ||
             k.startsWith('emailTemplate/')
@@ -519,7 +520,10 @@ export async function exportFullConfiguration({
   }
 
   const realmConfig = {};
-  if (isPlatformDeployment || isClassicDeployment && (!onlyGlobal || onlyRealm)) {
+  if (
+    (isPlatformDeployment || isClassicDeployment) &&
+    (!onlyGlobal || onlyRealm)
+  ) {
     // Export realm configs
     const activeRealm = state.getRealm();
     for (const realm of Object.keys(config.realm)) {
@@ -915,7 +919,8 @@ export async function importFullConfiguration({
       errors,
       indicatorId,
       'Services',
-      isPlatformDeployment || isClassicDeployment && !!importData.global.service
+      (isPlatformDeployment || isClassicDeployment) &&
+        !!importData.global.service
     )
   );
   response.push(
