@@ -44,13 +44,10 @@ export type Service = {
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
    */
   deleteFullService(
+    descendentOnly: boolean,
     serviceId: string,
     globalConfig?: boolean
   ): Promise<AmServiceSkeleton>;
-  deleteServiceNextDescendentOnly(
-    serviceId: string,
-    globalConfig?: boolean
-  ): Promise<ServiceNextDescendent>;
   /**
    * Deletes all services
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
@@ -124,20 +121,11 @@ export default (state: State): Service => {
      * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
      */
     async deleteFullService(
+      descendentOnly: boolean,
       serviceId: string,
       globalConfig = false
     ): Promise<AmServiceSkeleton> {
-      return deleteFullService({ serviceId, globalConfig, state });
-    },
-    async deleteServiceNextDescendentOnly(
-      serviceId: string,
-      globalConfig = false
-    ): Promise<ServiceNextDescendent> {
-      return deleteServiceNextDescentdentOnly({
-        serviceId,
-        globalConfig,
-        state,
-      });
+      return deleteFullService(descendentOnly,{ serviceId, globalConfig, state });
     },
     /**
      * Deletes all services
@@ -385,7 +373,7 @@ export async function putFullService({
     if (clean) {
       try {
         debugMessage({ message: `ServiceOps.putFullService: clean`, state });
-        await deleteFullService({ serviceId, globalConfig, state });
+        await deleteFullService(false ,{ serviceId, globalConfig, state });
       } catch (error) {
         if (
           !(
@@ -560,7 +548,9 @@ export async function putFullServices({
  * @param {string} serviceId The service to delete
  * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
  */
-export async function deleteFullService({
+export async function deleteFullService(
+  descendentOnly: boolean,
+  {
   serviceId,
   globalConfig = false,
   state,
@@ -571,7 +561,7 @@ export async function deleteFullService({
 }) {
   try {
     debugMessage({
-      message: `ServiceOps.deleteFullService: start, globalConfig=${globalConfig}`,
+      message: `ServiceOps.deleteFullService: start, globalConfig=${globalConfig}, delete descendents only is ${descendentOnly}`,
       state,
     });
     const serviceNextDescendentData = await getServiceDescendents({
@@ -580,7 +570,7 @@ export async function deleteFullService({
       state,
     });
 
-    await Promise.all(
+    const descendents = await Promise.all(
       serviceNextDescendentData.map((nextDescendent) =>
         deleteServiceNextDescendent({
           serviceId,
@@ -593,7 +583,8 @@ export async function deleteFullService({
     );
 
     debugMessage({ message: `ServiceOps.deleteFullService: end`, state });
-    return deleteService({ serviceId, globalConfig, state });
+    if(!descendentOnly)  return deleteService({ serviceId, globalConfig, state });
+    
   } catch (error) {
     throw new FrodoError(
       `Error deleting ${
@@ -604,46 +595,6 @@ export async function deleteFullService({
   }
 }
 
-export async function deleteServiceNextDescentdentOnly({
-  serviceId,
-  globalConfig = false,
-  state,
-}: {
-  serviceId: string;
-  globalConfig: boolean;
-  state: State;
-}): Promise<ServiceNextDescendent> {
-  try {
-    debugMessage({
-      message: `ServiceOps.deleteServiceDescendentOnly: start, globalConfig=${globalConfig}`,
-      state,
-    });
-    const serviceNextDescendentData = await getServiceDescendents({
-      serviceId,
-      globalConfig,
-      state,
-    });
-
-    return await Promise.all(
-      serviceNextDescendentData.map((nextDescendent) =>
-        deleteServiceNextDescendent({
-          serviceId,
-          serviceType: nextDescendent._type._id,
-          serviceNextDescendentId: nextDescendent._id,
-          globalConfig,
-          state,
-        })
-      )
-    );
-  } catch (error) {
-    throw new FrodoError(
-      `Error deleting ${
-        globalConfig ? 'global' : 'realm'
-      } full service config ${serviceId}`,
-      error
-    );
-  }
-}
 /**
  * Deletes all services
  * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
@@ -666,7 +617,7 @@ export async function deleteFullServices({
     const deleted: AmServiceSkeleton[] = await Promise.all(
       serviceList.map(async (serviceListItem) => {
         try {
-          return deleteFullService({
+          return deleteFullService(false,{
             serviceId: serviceListItem._id,
             globalConfig,
             state,
