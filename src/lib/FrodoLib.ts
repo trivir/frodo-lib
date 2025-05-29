@@ -1,4 +1,5 @@
 // instantiable modules
+import { restGetTermsAndConditions } from '../api/TermsAndConditionsApi';
 import AdminOps, { Admin } from '../ops/AdminOps';
 import AgentOps, { Agent } from '../ops/AgentOps';
 import AmConfigOps, { AmConfig } from '../ops/AmConfigOps';
@@ -82,6 +83,7 @@ import ServiceOps, { Service } from '../ops/ServiceOps';
 import SessionOps, { Session } from '../ops/SessionOps';
 import ThemeOps, { Theme } from '../ops/ThemeOps';
 import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
+import TermsAndConditionsOps, { Terms } from '../ops/TermsAndConditionsOps';
 import UserOps, { User } from '../ops/UserOps';
 import VersionUtils, { Version } from '../ops/VersionUtils';
 // non-instantiable modules
@@ -196,6 +198,8 @@ export type Frodo = {
   site: Site;
 
   theme: Theme;
+
+  terms: Terms;
 
   user: User;
 
@@ -367,6 +371,8 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     site: SiteOps(state),
 
     theme: ThemeOps(state),
+
+    terms: TermsAndConditionsOps(state),
 
     user: UserOps(state),
 
