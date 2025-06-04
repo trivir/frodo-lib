@@ -445,7 +445,7 @@ export async function exportFullConfiguration({
           exportRealms,
           stateObj,
           errors,
-          includeReadOnly || isClassicDeployment
+          (includeReadOnly && isPlatformDeployment) || isClassicDeployment
         )
       )?.realm,
       scripttype: (
@@ -453,7 +453,7 @@ export async function exportFullConfiguration({
           exportScriptTypes,
           stateObj,
           errors,
-          includeReadOnly || isClassicDeployment
+          (includeReadOnly && isPlatformDeployment) || isClassicDeployment
         )
       )?.scripttype,
       secret: (
