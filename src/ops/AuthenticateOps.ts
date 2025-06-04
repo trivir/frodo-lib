@@ -155,12 +155,23 @@ let adminClientId = fidcClientId;
  * @returns {string} cookie name
  */
 async function determineCookieName(state: State): Promise<string> {
-  const data = await getServerInfo({ state });
+  let cookieName = null;
+  try {
+    const data = await getServerInfo({ state });
+    cookieName = data.cookieName;
+  } catch (e) {
+    if (
+      e.response?.status !== 401 ||
+      e.response?.data.message !== 'Access Denied'
+    ) {
+      throw e;
+    }
+  }
   debugMessage({
-    message: `AuthenticateOps.determineCookieName: cookieName=${data.cookieName}`,
+    message: `AuthenticateOps.determineCookieName: cookieName=${cookieName}`,
     state,
   });
-  return data.cookieName;
+  return cookieName;
 }
 
 /**
@@ -378,7 +389,7 @@ async function determineDeploymentType(state: State): Promise<string> {
           state,
         });
       } catch (e) {
-        // If error is in that condition after sending Authorize
+        // debugMessage(e.response);
         if (
           e.response?.status === 302 &&
           e.response.headers?.location?.indexOf('code=') > -1
@@ -411,14 +422,9 @@ async function determineDeploymentType(state: State): Promise<string> {
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
               try {
-                //I need to check if it is idm here
                 const idmresponse = await stepIdm({
                   body: {},
                   config: {},
-                  state,
-                });
-                verboseMessage({
-                  message: `idm response =  ${JSON.stringify(idmresponse.status, null, 2)} + ${idmresponse.data.authorization.authLogin}`,
                   state,
                 });
                 if (
@@ -432,12 +438,11 @@ async function determineDeploymentType(state: State): Promise<string> {
                     state,
                   });
                   deploymentType = Constants.IDM_DEPLOYMENT_TYPE_KEY;
+                } else {
                   verboseMessage({
-                    message: 'deployment type in determine =' + deploymentType,
+                    message: `Classic deployment`['brightCyan'] + ` detected.`,
                     state,
                   });
-                } else {
-                  throw new Error('Not IDM');
                 }
               } catch {
                 verboseMessage({
@@ -453,7 +458,6 @@ async function determineDeploymentType(state: State): Promise<string> {
         message: `AuthenticateOps.determineDeploymentType: end [type=${deploymentType}]`,
         state,
       });
-
       return deploymentType;
     }
   }
@@ -504,7 +508,18 @@ async function getFreshUserSessionToken({
       'X-OpenAM-Password': state.getPassword(),
     },
   };
-  let response = await step({ body: {}, config, state });
+  let response;
+  try {
+    response = await step({ body: {}, config, state });
+  } catch (e) {
+    if (
+      e.response?.status !== 401 ||
+      e.response?.data.message !== 'Access Denied'
+    ) {
+      throw e;
+    }
+    return null;
+  }
 
   let skip2FA = null;
   let steps = 0;
@@ -586,6 +601,7 @@ async function getUserSessionToken(
       otpCallbackHandler: otpCallback,
       state,
     });
+    if (!token) return token;
     token.from_cache = false;
     debugMessage({
       message: `AuthenticateOps.getUserSessionToken: fresh`,
@@ -973,6 +989,7 @@ async function determineDeploymentTypeAndDefaultRealmAndVersion(
     state,
   });
   state.setDeploymentType(await determineDeploymentType(state));
+  if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) return;
   determineDefaultRealm(state);
   debugMessage({
     message: `AuthenticateOps.determineDeploymentTypeAndDefaultRealmAndVersion: realm=${state.getRealm()}, type=${state.getDeploymentType()}`,
@@ -1082,6 +1099,7 @@ export type Tokens = {
   host?: string;
   realm?: string;
 };
+
 /**
  * Get tokens
  * @param {boolean} forceLoginAsUser true to force login as user even if a service account is available (default: false)
@@ -1130,13 +1148,14 @@ export async function getTokens({
         );
       }
     }
+
     // if host is not a valid URL, try to locate a valid URL and deployment type from connections.json
     if (!isValidUrl(state.getHost())) {
       const conn = await getConnectionProfile({ state });
       state.setHost(conn.tenant);
       state.setAllowInsecureConnection(conn.allowInsecureConnection);
       state.setDeploymentType(conn.deploymentType);
-      
+
       // fail fast if deployment type not applicable
       if (
         state.getDeploymentType() &&
@@ -1147,14 +1166,10 @@ export async function getTokens({
         );
       }
     }
-    if (state.getHost().endsWith('openidm')) {
-      state.setDeploymentType(await determineDeploymentType(state));
-    }
-    //check if it is idm deployment type, then it will just do some stuff for idm and break
-    else {
-      // now that we have the full tenant URL we can lookup the cookie name
-      state.setCookieName(await determineCookieName(state));
-    }
+
+    // now that we have the full tenant URL we can lookup the cookie name
+    state.setCookieName(await determineCookieName(state));
+
     // use service account to login?
     if (
       !forceLoginAsUser &&
@@ -1195,48 +1210,44 @@ export async function getTokens({
         message: `AuthenticateOps.getTokens: Authenticating with user account ${state.getUsername()}`,
         state,
       });
-      // if logging into on prem idm
-      if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) {
-        const token: Tokens = {
-          subject: state.getUsername(),
-          host: state.getHost(),
-          realm: state.getRealm() ? state.getRealm() : 'root',
-        };
+      const token = await getUserSessionToken(callbackHandler, state);
+      if (token) state.setUserSessionTokenMeta(token);
+      if (usingConnectionProfile && (!token || !token.from_cache)) {
         saveConnectionProfile({ host: state.getHost(), state });
-        return token;
-      } else {
-        const token = await getUserSessionToken(callbackHandler, state);
-        if (token) state.setUserSessionTokenMeta(token);
-        if (usingConnectionProfile && !token.from_cache) {
-          saveConnectionProfile({ host: state.getHost(), state });
-        }
-        await determineDeploymentTypeAndDefaultRealmAndVersion(state);
+      }
+      await determineDeploymentTypeAndDefaultRealmAndVersion(state);
 
-        // fail if deployment type not applicable
-        if (
-          state.getDeploymentType() &&
-          !types.includes(state.getDeploymentType())
-        ) {
-          throw new FrodoError(
-            `Unsupported deployment type '${state.getDeploymentType()}'`
-          );
-        }
+      // fail if deployment type not applicable
+      if (
+        state.getDeploymentType() &&
+        !types.includes(state.getDeploymentType())
+      ) {
+        throw new FrodoError(
+          `Unsupported deployment type '${state.getDeploymentType()}'`
+        );
+      }
 
-        if (
-          state.getCookieValue() &&
-          // !state.getBearerToken() &&
-          (state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
-            state.getDeploymentType() ===
-              Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY)
-        ) {
-          const accessToken = await getUserBearerToken(state);
-          if (accessToken) state.setBearerTokenMeta(accessToken);
-        }
+      if (
+        state.getCookieValue() &&
+        // !state.getBearerToken() &&
+        (state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
+          state.getDeploymentType() === Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY)
+      ) {
+        const accessToken = await getUserBearerToken(state);
+        if (accessToken) state.setBearerTokenMeta(accessToken);
       }
     }
     // incomplete or no credentials
     else {
       throw new FrodoError(`Incomplete or no credentials`);
+    }
+    // Return IDM tokens for IDM deployment type
+    if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) {
+      return {
+        subject: state.getUsername(),
+        host: state.getHost(),
+        realm: state.getRealm() ? state.getRealm() : 'root',
+      };
     }
     if (
       state.getCookieValue() ||
