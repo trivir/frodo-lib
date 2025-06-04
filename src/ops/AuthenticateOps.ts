@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'crypto';
 import url from 'url';
 import { v4 } from 'uuid';
 
-import { step } from '../api/AuthenticateApi';
+import { step, stepIdm } from '../api/AuthenticateApi';
 import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
@@ -155,12 +155,23 @@ let adminClientId = fidcClientId;
  * @returns {string} cookie name
  */
 async function determineCookieName(state: State): Promise<string> {
-  const data = await getServerInfo({ state });
+  let cookieName = null;
+  try {
+    const data = await getServerInfo({ state });
+    cookieName = data.cookieName;
+  } catch (e) {
+    if (
+      e.response?.status !== 401 ||
+      e.response?.data.message !== 'Access Denied'
+    ) {
+      throw e;
+    }
+  }
   debugMessage({
-    message: `AuthenticateOps.determineCookieName: cookieName=${data.cookieName}`,
+    message: `AuthenticateOps.determineCookieName: cookieName=${cookieName}`,
     state,
   });
-  return data.cookieName;
+  return cookieName;
 }
 
 /**
@@ -335,6 +346,7 @@ async function determineDeploymentType(state: State): Promise<string> {
       return deploymentType;
 
     case Constants.CLASSIC_DEPLOYMENT_TYPE_KEY:
+    case Constants.IDM_DEPLOYMENT_TYPE_KEY:
       debugMessage({
         message: `AuthenticateOps.determineDeploymentType: end [type=${deploymentType}]`,
         state,
@@ -409,10 +421,35 @@ async function determineDeploymentType(state: State): Promise<string> {
               });
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
-              verboseMessage({
-                message: `Classic deployment`['brightCyan'] + ` detected.`,
-                state,
-              });
+              try {
+                const idmresponse = await stepIdm({
+                  body: {},
+                  config: {},
+                  state,
+                });
+                if (
+                  idmresponse.status === 200 &&
+                  idmresponse.data?.authorization.authLogin
+                ) {
+                  verboseMessage({
+                    message:
+                      `Ping Identity IDM deployment`['brightCyan'] +
+                      ` detected.`,
+                    state,
+                  });
+                  deploymentType = Constants.IDM_DEPLOYMENT_TYPE_KEY;
+                } else {
+                  verboseMessage({
+                    message: `Classic deployment`['brightCyan'] + ` detected.`,
+                    state,
+                  });
+                }
+              } catch {
+                verboseMessage({
+                  message: `Classic deployment`['brightCyan'] + ` detected.`,
+                  state,
+                });
+              }
             }
           }
         }
@@ -471,7 +508,18 @@ async function getFreshUserSessionToken({
       'X-OpenAM-Password': state.getPassword(),
     },
   };
-  let response = await step({ body: {}, config, state });
+  let response;
+  try {
+    response = await step({ body: {}, config, state });
+  } catch (e) {
+    if (
+      e.response?.status !== 401 ||
+      e.response?.data.message !== 'Access Denied'
+    ) {
+      throw e;
+    }
+    return null;
+  }
 
   let skip2FA = null;
   let steps = 0;
@@ -553,6 +601,7 @@ async function getUserSessionToken(
       otpCallbackHandler: otpCallback,
       state,
     });
+    if (!token) return token;
     token.from_cache = false;
     debugMessage({
       message: `AuthenticateOps.getUserSessionToken: fresh`,
@@ -940,6 +989,7 @@ async function determineDeploymentTypeAndDefaultRealmAndVersion(
     state,
   });
   state.setDeploymentType(await determineDeploymentType(state));
+  if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) return;
   determineDefaultRealm(state);
   debugMessage({
     message: `AuthenticateOps.determineDeploymentTypeAndDefaultRealmAndVersion: realm=${state.getRealm()}, type=${state.getDeploymentType()}`,
@@ -1162,7 +1212,7 @@ export async function getTokens({
       });
       const token = await getUserSessionToken(callbackHandler, state);
       if (token) state.setUserSessionTokenMeta(token);
-      if (usingConnectionProfile && !token.from_cache) {
+      if (usingConnectionProfile && (!token || !token.from_cache)) {
         saveConnectionProfile({ host: state.getHost(), state });
       }
       await determineDeploymentTypeAndDefaultRealmAndVersion(state);
@@ -1190,6 +1240,14 @@ export async function getTokens({
     // incomplete or no credentials
     else {
       throw new FrodoError(`Incomplete or no credentials`);
+    }
+    // Return IDM tokens for IDM deployment type
+    if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) {
+      return {
+        subject: state.getUsername(),
+        host: state.getHost(),
+        realm: state.getRealm() ? state.getRealm() : 'root',
+      };
     }
     if (
       state.getCookieValue() ||

@@ -312,6 +312,10 @@ export function generateIdmApi({
         ...(state.getBearerToken() && {
           Authorization: `Bearer ${state.getBearerToken()}`,
         }),
+        ...(!state.getBearerToken() && {
+          'X-OpenIDM-Username': state.getUsername(),
+          'X-OpenIDM-Password': state.getPassword(),
+        }),
       },
       httpAgent: getHttpAgent(),
       httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),

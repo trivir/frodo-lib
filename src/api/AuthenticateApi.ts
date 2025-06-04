@@ -1,8 +1,9 @@
 import util from 'util';
 
 import { State } from '../shared/State';
+import { debugMessage } from '../utils/Console';
 import { getRealmPath } from '../utils/ForgeRockUtils';
-import { generateAmApi } from './BaseApi';
+import { generateAmApi, generateIdmApi } from './BaseApi';
 
 const authenticateUrlTemplate = '%s/json%s/authenticate';
 const authenticateWithServiceUrlTemplate = `${authenticateUrlTemplate}?authIndexType=service&authIndexValue=%s`;
@@ -72,4 +73,32 @@ export async function step({
     state,
   }).post(urlString, body, config);
   return data;
+}
+
+/**
+ *
+ * @param {any} body POST request body
+ * @param {any} config request config
+ * @returns Promise resolving to the authentication service response
+ */
+export async function stepIdm({
+  body = {},
+  config = {},
+  state,
+}: {
+  body?: object;
+  config?: object;
+  realm?: string;
+  service?: string;
+  state: State;
+}): Promise<any> {
+  debugMessage({
+    message: `AuthenticateApi.stepIdm: function start `,
+    state,
+  });
+  const urlString = `${state.getHost()}/authentication?_action=login`;
+  const response = await generateIdmApi({
+    state,
+  }).post(urlString, body, config);
+  return response;
 }
