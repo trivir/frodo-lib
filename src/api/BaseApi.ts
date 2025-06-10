@@ -1,4 +1,3 @@
-import Agent from 'agentkeepalive';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -7,7 +6,7 @@ import axios, {
 } from 'axios';
 import axiosRetry from 'axios-retry';
 import { randomUUID } from 'crypto';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import { ProxyAgent } from 'proxy-agent';
 
 import _curlirize from '../ext/axios-curlirize/curlirize';
 import StateImpl, { State } from '../shared/State';
@@ -22,32 +21,25 @@ if (process.env.FRODO_MOCK) {
   setupPollyForFrodoLib({ state: StateImpl({}) });
 }
 
-axiosRetry(axios, {
-  retries: 3,
-  shouldResetTimeout: true,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  retryCondition: (_error) => true, // retry no matter what
-});
-
 // all agents
 const timeout = 30000;
 
 // agentkeepalive
 const maxSockets = 100;
 const maxFreeSockets = 10;
-const freeSocketTimeout = 30000;
+const keepAlive = false;
 
 const userAgent = getUserAgent();
 const transactionId = `frodo-${randomUUID()}`;
 let httpAgent, httpsAgent;
 
-function getHttpAgent() {
+function getHttpAgent(): ProxyAgent {
   if (httpAgent) return httpAgent;
-  httpAgent = new Agent({
+  httpAgent = new ProxyAgent({
     maxSockets,
     maxFreeSockets,
     timeout,
-    freeSocketTimeout,
+    keepAlive,
   });
   return httpAgent;
 }
@@ -59,32 +51,17 @@ function getHttpAgent() {
 function getHttpsAgent(
   allowInsecureConnection: boolean,
   shareAgent: boolean = true
-): Agent.HttpsAgent | HttpsProxyAgent<string> {
+): ProxyAgent {
   if (httpsAgent && shareAgent) return httpsAgent;
-  let agent: Agent.HttpsAgent | HttpsProxyAgent<string>;
-  if (allowInsecureConnection) {
-    // eslint-disable-next-line no-console
-    console.error(`Allowing insecure connection`['yellow']);
-  }
   const options = {
     rejectUnauthorized: !allowInsecureConnection,
   };
-  const httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy;
-  if (httpsProxy) {
-    // https://github.com/axios/axios/issues/3459#issuecomment-766171276
-    // eslint-disable-next-line no-console
-    console.error(`Using proxy ${httpsProxy}`['yellow']);
-    options.rejectUnauthorized = !allowInsecureConnection;
-    agent = new HttpsProxyAgent(httpsProxy, options);
-    if (shareAgent) httpsAgent = agent;
-    return agent;
-  }
-  agent = new Agent.HttpsAgent({
+  const agent = new ProxyAgent({
     ...options,
     maxSockets,
     maxFreeSockets,
     timeout,
-    freeSocketTimeout,
+    keepAlive,
   });
   if (shareAgent) httpsAgent = agent;
   return agent;
@@ -95,8 +72,30 @@ function getHttpsAgent(
  * @returns {AxiosProxyConfig | false} axios proxy config or false
  */
 function getProxy(): AxiosProxyConfig | false {
-  if (process.env.HTTPS_PROXY || process.env.https_proxy) return false;
-  return null;
+  return false;
+}
+
+/**
+ * Creates an Axios instance and if retry config is set either on the global state or the request config, then
+ * interceptors are applied.
+ *
+ * Request config takes precedence over any global config. Config is applied in its entirety and not merged.
+ * @param {State} state State object
+ * @param {AxiosRequestConfig} requestConfig Axios request object
+ */
+function createAxiosInstance(
+  state: State,
+  requestConfig: AxiosRequestConfig
+): AxiosInstance {
+  const axiosInstance = axios.create(requestConfig);
+
+  const globalRetryConfig = state.getAxiosRetryConfig();
+  const requestRetryConfig = requestConfig['axios-retry'];
+  if (!!globalRetryConfig || !!requestRetryConfig) {
+    axiosRetry(axiosInstance, requestRetryConfig ?? globalRetryConfig);
+  }
+
+  return axiosInstance;
 }
 
 /**
@@ -190,7 +189,7 @@ export function generateAmApi({
       }),
   };
 
-  const requestDetails = mergeDeep(
+  const requestConfig = mergeDeep(
     {
       // baseURL: `${storage.session.getTenant()}/json`,
       timeout,
@@ -205,7 +204,7 @@ export function generateAmApi({
     requestOverride
   );
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -262,7 +261,7 @@ export function generateOauth2Api({
     };
   }
 
-  const requestDetails = {
+  const requestConfig = {
     // baseURL: `${storage.session.getTenant()}/json${resource.path}`,
     timeout,
     ...requestOverride,
@@ -275,7 +274,7 @@ export function generateOauth2Api({
     proxy: getProxy(),
   };
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -301,7 +300,7 @@ export function generateIdmApi({
   requestOverride?: AxiosRequestConfig;
   state: State;
 }): AxiosInstance {
-  const requestDetails = mergeDeep(
+  const requestConfig = mergeDeep(
     {
       // baseURL: getTenantURL(storage.session.getTenant()),
       timeout,
@@ -321,7 +320,7 @@ export function generateIdmApi({
     requestOverride
   );
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -355,7 +354,7 @@ export function generateLogKeysApi({
       Authorization: `Bearer ${state.getBearerToken()}`,
     }),
   };
-  const requestDetails = mergeDeep(
+  const requestConfig = mergeDeep(
     {
       timeout,
       headers,
@@ -366,7 +365,7 @@ export function generateLogKeysApi({
     requestOverride
   );
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -397,7 +396,7 @@ export function generateLogApi({
     'X-API-Key': state.getLogApiKey(),
     'X-API-Secret': state.getLogApiSecret(),
   };
-  const requestDetails = mergeDeep(
+  const requestConfig = mergeDeep(
     {
       // baseURL: getTenantURL(storage.session.getTenant()),
       timeout,
@@ -409,7 +408,7 @@ export function generateLogApi({
     requestOverride
   );
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -448,7 +447,7 @@ export function generateEnvApi({
       Authorization: `Bearer ${state.getBearerToken()}`,
     }),
   };
-  const requestDetails = {
+  const requestConfig = {
     // baseURL: getTenantURL(storage.session.getTenant()),
     timeout,
     headers,
@@ -458,7 +457,7 @@ export function generateEnvApi({
     proxy: getProxy(),
   };
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -497,7 +496,7 @@ export function generateGovernanceApi({
       Authorization: `Bearer ${state.getBearerToken()}`,
     }),
   };
-  const requestDetails = {
+  const requestConfig = {
     timeout,
     headers,
     ...requestOverride,
@@ -506,7 +505,7 @@ export function generateGovernanceApi({
     proxy: getProxy(),
   };
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
@@ -534,7 +533,7 @@ export function generateReleaseApi({
   requestOverride?: AxiosRequestConfig;
   state: State;
 }): AxiosInstance {
-  const requestDetails = {
+  const requestConfig = {
     baseURL: baseUrl,
     timeout,
     headers: {
@@ -547,7 +546,7 @@ export function generateReleaseApi({
     proxy: getProxy(),
   };
 
-  const request = axios.create(requestDetails);
+  const request = createAxiosInstance(state, requestConfig);
 
   // enable curlirizer output in debug mode
   if (state.getCurlirize()) {
