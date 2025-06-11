@@ -457,12 +457,14 @@ export async function readConfigEntities({
 export async function readConfigEntitiesByType({
   type,
   state,
+  onlyVisibleTemplates
 }: {
   type: string;
   state: State;
+  onlyVisibleTemplates?:boolean;
 }): Promise<NoIdObjectSkeletonInterface[]> {
   try {
-    const { result } = await _getConfigEntitiesByType({ type, state });
+    const { result } = await _getConfigEntitiesByType({ type, state , onlyVisibleTemplates});
     return result;
   } catch (error) {
     throw new FrodoError(`Error reading config entities by type`, error);
