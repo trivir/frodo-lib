@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2025-04-04
+
+### Added
+
+- New methods on State to allow setting global retry config as an [IAxiosRetryConfig](https://github.com/softonic/axios-retry/blob/4019333df603bf1bb27dae9311a96dd8edbe102b/src/index.ts#L10) object. Default is to have no retry config to maintain current behaviour.
+
+### Fixed
+
+- rockcarver/frodo-cli#477: Frodo Library now properly includes the transformation script for both `Social Provider Handler Node` and `Legacy Social Provider Handler Node`.
+- rockcarver/frodo-cli#482: Frodo Library now properly honors the NO_PROXY environment variable in addition to HTTP_PROXY and HTTPS_PROXY.
+
+## [3.0.4-2] - 2025-04-03
+
+## [3.0.4-1] - 2025-04-02
+
+### Added
+
+- New methods on State to allow setting global retry config as an [IAxiosRetryConfig](https://github.com/softonic/axios-retry/blob/4019333df603bf1bb27dae9311a96dd8edbe102b/src/index.ts#L10) object. Default is to have no retry config to maintain current behaviour.
+
+### Fixed
+
+- rockcarver/frodo-cli#477: Frodo Library now properly includes the transformation script for both `Social Provider Handler Node` and `Legacy Social Provider Handler Node`.
+- rockcarver/frodo-cli#482: Frodo Library now properly honors the NO_PROXY environment variable in addition to HTTP_PROXY and HTTPS_PROXY.
+
+## [3.0.4-0] - 2025-03-31
+
+## [3.0.3] - 2025-03-11
+
+### Fixed
+
+- rockcarver/frodo-cli#479: Fixes issues introduced by a recent PingOne Advanced Identity Cloud release (16747.0 on 27 Feb 2025) which prevented Frodo from correctly determining the deployment type of `cloud` and led to failures when adding connection profiles and creating service accounts.
+
+## [3.0.2] - 2025-03-10
+
+### Fixed
+
+- rockcarver/frodo-cli#479: Fixes issues introduced by a recent PingOne Advanced Identity Cloud release (16747.0 on 27 Feb 2025) which prevented Frodo from correctly determining the deployment type of `cloud` and led to failures in the `frodo conn save` and `frodo conn add` commands when Frodo was attempting to create service accounts with scopes that are not available in an environment.
+- Updated dependencies with vulnerabilities
+
 ## [3.0.1] - 2025-01-23
 
 ### Changed
@@ -1856,7 +1895,13 @@ Frodo supports exporting and importing of ESV secret values. To leave stuartship
 - Fixed problem with adding connection profiles
 - Miscellaneous bug fixes
 
-[unreleased]: https://github.com/rockcarver/frodo-lib/compare/v3.0.1...HEAD
+[unreleased]: https://github.com/rockcarver/frodo-lib/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-2...v3.1.0
+[3.0.4-2]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-1...v3.0.4-2
+[3.0.4-1]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-0...v3.0.4-1
+[3.0.4-0]: https://github.com/rockcarver/frodo-lib/compare/v3.0.3...v3.0.4-0
+[3.0.3]: https://github.com/rockcarver/frodo-lib/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/rockcarver/frodo-lib/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/rockcarver/frodo-lib/compare/v3.0.1-7...v3.0.1
 [3.0.1-7]: https://github.com/rockcarver/frodo-lib/compare/v3.0.1-6...v3.0.1-7
 [3.0.1-6]: https://github.com/rockcarver/frodo-lib/compare/v3.0.1-5...v3.0.1-6

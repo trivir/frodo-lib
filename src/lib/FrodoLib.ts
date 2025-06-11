@@ -34,6 +34,9 @@ import EnvFederationEnforcementOps, {
 } from '../ops/cloud/EnvFederationEnforcementOps';
 import EnvPromotionOps, { EnvPromotion } from '../ops/cloud/EnvPromotionOps';
 import EnvReleaseOps, { EnvRelease } from '../ops/cloud/EnvReleaseOps';
+import EnvServiceAccountScopesOps, {
+  EnvServiceAccountScopes,
+} from '../ops/cloud/EnvServiceAccountScopesOps';
 import EnvSSOCookieConfigOps, {
   EnvSSOCookieConfig,
 } from '../ops/cloud/EnvSSOCookieConfigOps';
@@ -130,6 +133,7 @@ export type Frodo = {
       EnvCustomDomains &
       EnvFederationEnforcement &
       EnvRelease &
+      EnvServiceAccountScopes &
       EnvSSOCookieConfig & {
         cert: EnvCertificate;
         csr: EnvCSR;
@@ -306,6 +310,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
         ...EnvCustomDomainsOps(state),
         ...EnvFederationEnforcementOps(state),
         ...EnvReleaseOps(state),
+        ...EnvServiceAccountScopesOps(state),
         ...EnvSSOCookieConfigOps(state),
         cert: EnvCertificatesOps(state),
         csr: EnvCSRsOps(state),
