@@ -1,5 +1,4 @@
 // instantiable modules
-import { restGetTermsAndConditions } from '../api/TermsAndConditionsApi';
 import AdminOps, { Admin } from '../ops/AdminOps';
 import AgentOps, { Agent } from '../ops/AgentOps';
 import AmConfigOps, { AmConfig } from '../ops/AmConfigOps';
@@ -99,6 +98,7 @@ import JsonUtils, { Json } from '../utils/JsonUtils';
 import ScriptValidationUtils, {
   ScriptValidation,
 } from '../utils/ScriptValidationUtils';
+import EndpointOps, { Endpoints } from '../ops/EndpointOps';
 
 /**
  * Frodo Library
@@ -158,6 +158,7 @@ export type Frodo = {
   email: {
     template: EmailTemplate;
   };
+  endpoints: Endpoints;
 
   factory: ApiFactory;
 
@@ -332,6 +333,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     email: {
       template: EmailTemplateOps(state),
     },
+    endpoints: EndpointOps(state),
 
     factory: ApiOps(state),
 
