@@ -98,7 +98,7 @@ import JsonUtils, { Json } from '../utils/JsonUtils';
 import ScriptValidationUtils, {
   ScriptValidation,
 } from '../utils/ScriptValidationUtils';
-import EndpointOps, { Endpoints } from '../ops/EndpointOps';
+import FrConfigServiceObjectsOps, { FrConfigServiceObject } from '../ops/FrConfigServiceObjectsOps';
 
 /**
  * Frodo Library
@@ -158,7 +158,6 @@ export type Frodo = {
   email: {
     template: EmailTemplate;
   };
-  endpoints: Endpoints;
 
   factory: ApiFactory;
 
@@ -199,6 +198,7 @@ export type Frodo = {
   server: Server;
   secretStore: SecretStore;
   service: Service;
+  serviceObject: FrConfigServiceObject;
   session: Session;
   site: Site;
 
@@ -333,7 +333,6 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     email: {
       template: EmailTemplateOps(state),
     },
-    endpoints: EndpointOps(state),
 
     factory: ApiOps(state),
 
@@ -374,6 +373,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     server: ServerOps(state),
     secretStore: SecretStoreOps(state),
     service: ServiceOps(state),
+    serviceObject:FrConfigServiceObjectsOps(state),
     session: SessionOps(state),
     site: SiteOps(state),
 
