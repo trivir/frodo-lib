@@ -76,6 +76,7 @@ import OrganizationOps, { Organization } from '../ops/OrganizationOps';
 import PolicyOps, { Policy } from '../ops/PolicyOps';
 import PolicySetOps, { PolicySet } from '../ops/PolicySetOps';
 import RawOps, {Raw} from '../ops/RawOps';
+import RawOps, {Raw} from '../ops/RawOps';
 import RealmOps, { Realm } from '../ops/RealmOps';
 import ReconOps, { Recon } from '../ops/ReconOps';
 import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
@@ -99,6 +100,7 @@ import JsonUtils, { Json } from '../utils/JsonUtils';
 import ScriptValidationUtils, {
   ScriptValidation,
 } from '../utils/ScriptValidationUtils';
+import FrConfigServiceObjectsOps, { FrConfigServiceObject } from '../ops/FrConfigServiceObjectsOps';
 
 /**
  * Frodo Library
@@ -200,6 +202,7 @@ export type Frodo = {
   server: Server;
   secretStore: SecretStore;
   service: Service;
+  serviceObject: FrConfigServiceObject;
   session: Session;
   site: Site;
 
@@ -376,6 +379,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     server: ServerOps(state),
     secretStore: SecretStoreOps(state),
     service: ServiceOps(state),
+    serviceObject:FrConfigServiceObjectsOps(state),
     session: SessionOps(state),
     site: SiteOps(state),
 
