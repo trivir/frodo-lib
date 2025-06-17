@@ -110,23 +110,19 @@ function curlirize(request, state: State) {
       if (axios.isAxiosError(err)) {
         // Access to config, request, and response
         printMessage({
-          message: `${err.response?.status}${
-            err.response?.data['reason']
+          message: `${err.response?.status}${err.response?.data['reason']
               ? ' ' + err.response?.data['reason']
               : ''
-          }${
-            err.response?.data['message']
+            }${err.response?.data['message']
               ? ' - ' + err.response?.data['message']
               : ''
-          }${
-            err.response?.data['error']
+            }${err.response?.data['error']
               ? ' - ' + err.response?.data['error']
               : ''
-          }${
-            err.response?.data['error_description']
+            }${err.response?.data['error_description']
               ? ' - ' + err.response?.data['error_description']
               : ''
-          }`,
+            }`,
           type: 'error',
           state,
         });
@@ -180,25 +176,27 @@ export function generateAmApi({
     ...(!state.getUseBearerTokenForAmApis() &&
       state.getCookieName() &&
       state.getCookieValue() && {
-        Cookie: `${state.getCookieName()}=${state.getCookieValue()}`,
-      }),
+      Cookie: `${state.getCookieName()}=${state.getCookieValue()}`,
+    }),
     // only add authorization header if we have a bearer token and are instructed to use it for AM APIs
     ...(state.getUseBearerTokenForAmApis() &&
       state.getBearerToken() && {
-        Authorization: `Bearer ${state.getBearerToken()}`,
-      }),
+      Authorization: `Bearer ${state.getBearerToken()}`,
+    }),
   };
 
   const requestConfig = mergeDeep(
     {
       // baseURL: `${storage.session.getTenant()}/json`,
+      ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       timeout,
       headers: {
         ...headers,
         ...state.getAuthenticationHeaderOverrides(),
       },
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
       proxy: getProxy(),
     },
     requestOverride
@@ -245,14 +243,14 @@ export function generateOauth2Api({
       !state.getUseBearerTokenForAmApis() &&
       state.getCookieName() &&
       state.getCookieValue() && {
-        Cookie: `${state.getCookieName()}=${state.getCookieValue()}`,
-      }),
+      Cookie: `${state.getCookieName()}=${state.getCookieValue()}`,
+    }),
     // only add authorization header if we have a bearer token and are instructed to use it for AM APIs
     ...(authenticate &&
       state.getUseBearerTokenForAmApis() &&
       state.getBearerToken() && {
-        Authorization: `Bearer ${state.getBearerToken()}`,
-      }),
+      Authorization: `Bearer ${state.getBearerToken()}`,
+    }),
   };
   if (requestOverride['headers']) {
     headers = {
@@ -268,9 +266,10 @@ export function generateOauth2Api({
     headers: {
       ...headers,
       ...state.getAuthenticationHeaderOverrides(),
-    },
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    },    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -312,9 +311,10 @@ export function generateIdmApi({
         ...(state.getBearerToken() && {
           Authorization: `Bearer ${state.getBearerToken()}`,
         }),
-      },
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      },    ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -357,9 +357,10 @@ export function generateLogKeysApi({
   const requestConfig = mergeDeep(
     {
       timeout,
-      headers,
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      headers,    ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -400,9 +401,10 @@ export function generateLogApi({
     {
       // baseURL: getTenantURL(storage.session.getTenant()),
       timeout,
-      headers,
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      headers, ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -451,9 +453,10 @@ export function generateEnvApi({
     // baseURL: getTenantURL(storage.session.getTenant()),
     timeout,
     headers,
-    ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    ...requestOverride, ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -500,8 +503,10 @@ export function generateGovernanceApi({
     timeout,
     headers,
     ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -541,8 +546,11 @@ export function generateReleaseApi({
       'Content-Type': 'application/json',
     },
     ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(false, false),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(false, false),
+    }),
+
     proxy: getProxy(),
   };
 
