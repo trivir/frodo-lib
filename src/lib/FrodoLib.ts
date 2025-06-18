@@ -54,6 +54,9 @@ import ConnectionProfileOps, {
 } from '../ops/ConnectionProfileOps';
 import ConnectorOps, { Connector } from '../ops/ConnectorOps';
 import EmailTemplateOps, { EmailTemplate } from '../ops/EmailTemplateOps';
+import FrConfigServiceObjectsOps, {
+  FrConfigServiceObject,
+} from '../ops/FrConfigServiceObjectsOps';
 import IdmConfigOps, { IdmConfig } from '../ops/IdmConfigOps';
 import IdmCryptoOps, { IdmCrypto } from '../ops/IdmCryptoOps';
 import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps';
@@ -75,7 +78,7 @@ import OAuth2TrustedJwtIssuerOps, {
 import OrganizationOps, { Organization } from '../ops/OrganizationOps';
 import PolicyOps, { Policy } from '../ops/PolicyOps';
 import PolicySetOps, { PolicySet } from '../ops/PolicySetOps';
-import RawOps, {Raw} from '../ops/RawOps';
+import RawOps, { Raw } from '../ops/RawOps';
 import RealmOps, { Realm } from '../ops/RealmOps';
 import ReconOps, { Recon } from '../ops/ReconOps';
 import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
@@ -84,9 +87,9 @@ import ScriptOps, { Script } from '../ops/ScriptOps';
 import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps';
 import ServiceOps, { Service } from '../ops/ServiceOps';
 import SessionOps, { Session } from '../ops/SessionOps';
+import TermsAndConditionsOps, { Terms } from '../ops/TermsAndConditionsOps';
 import ThemeOps, { Theme } from '../ops/ThemeOps';
 import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
-import TermsAndConditionsOps, { Terms } from '../ops/TermsAndConditionsOps';
 import UserOps, { User } from '../ops/UserOps';
 import VersionUtils, { Version } from '../ops/VersionUtils';
 // non-instantiable modules
@@ -99,7 +102,6 @@ import JsonUtils, { Json } from '../utils/JsonUtils';
 import ScriptValidationUtils, {
   ScriptValidation,
 } from '../utils/ScriptValidationUtils';
-import FrConfigServiceObjectsOps, { FrConfigServiceObject } from '../ops/FrConfigServiceObjectsOps';
 
 /**
  * Frodo Library
@@ -378,7 +380,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     server: ServerOps(state),
     secretStore: SecretStoreOps(state),
     service: ServiceOps(state),
-    serviceObject:FrConfigServiceObjectsOps(state),
+    serviceObject: FrConfigServiceObjectsOps(state),
     session: SessionOps(state),
     site: SiteOps(state),
 

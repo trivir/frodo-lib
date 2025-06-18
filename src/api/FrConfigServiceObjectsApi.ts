@@ -1,14 +1,10 @@
 import util from 'util';
 
-import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { printMessage, verboseMessage } from '../utils/Console';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
-import { generateAmApi, generateIdmApi } from './BaseApi';
+import { verboseMessage } from '../utils/Console';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
-const fs = require("fs");
-
+import { IdObjectSkeletonInterface } from './ApiTypes';
+import { generateIdmApi } from './BaseApi';
 
 export interface ServiceObjectTypeSkeleton {
   [objectType: string]: ServiceObjectEntry[];
@@ -21,17 +17,15 @@ export interface ServiceObjectEntry {
   overrides?: Record<string, string>;
 }
 
-export type ServiceObjectSkeleton =IdObjectSkeletonInterface &{
+export type ServiceObjectSkeleton = IdObjectSkeletonInterface & {
   username?: string;
   mail?: string[];
   name?: string;
   givenName?: string[];
   description?: string;
   status?: string;
-  [key:string]:unknown
-}
-
-
+  [key: string]: unknown;
+};
 
 export async function getServiceObject({
   objectType,
@@ -43,9 +37,9 @@ export async function getServiceObject({
   state: State;
 }): Promise<ServiceObjectSkeleton> {
   verboseMessage({
-    message: "FrConfigServiceObjectApi getServiceObject start",
-    state:state
-})
+    message: 'FrConfigServiceObjectApi getServiceObject start',
+    state: state,
+  });
   const baseUrl = getIdmBaseUrl(state);
   const queryFilter = encodeURIComponent(
     `${objectEntry.searchField} eq "${objectEntry.searchValue}"`
@@ -53,7 +47,7 @@ export async function getServiceObject({
   const fields = objectEntry.fields.join(',');
 
   const urlString = util.format(
-    '%s/managed/%s?_queryFilter=%s&_fields=%s', 
+    '%s/managed/%s?_queryFilter=%s&_fields=%s',
     baseUrl,
     objectType,
     queryFilter,
@@ -67,9 +61,9 @@ export async function getServiceObject({
 
   if (data.resultCount != 1) {
     throw new Error(
-      `Unexpected result from search: ${data.resultCount} entries found for ${objectType} - ${objectEntry.searchValue}`    );
-    }
+      `Unexpected result from search: ${data.resultCount} entries found for ${objectType} - ${objectEntry.searchValue}`
+    );
+  }
 
   return data.result[0] as ServiceObjectSkeleton;
 }
-

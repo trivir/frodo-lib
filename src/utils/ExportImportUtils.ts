@@ -27,7 +27,10 @@ export type ExportImport = {
   convertTextArrayToBase64Url(textArray: string[]): any;
   validateImport(metadata: any): boolean;
   getTypedFilename(name: string, type: string, suffix?: string): string;
-  sanitize(name:string, options?:{replacement?: string | ((char: string) => string)})
+  sanitize(
+    name: string,
+    options?: { replacement?: string | ((char: string) => string) }
+  );
   getWorkingDirectory(mkdirs?: boolean): string;
   getFilePath(fileName: string, mkdirs?: boolean): string;
   saveToFile(
@@ -153,8 +156,11 @@ export default (state: State): ExportImport => {
     getTypedFilename(name: string, type: string, suffix = 'json'): string {
       return getTypedFilename(name, type, suffix);
     },
-    sanitize(name:string, options? :{replacement?: string | ((char: string) => string)}): string {
-      return sanitize(name, options)
+    sanitize(
+      name: string,
+      options?: { replacement?: string | ((char: string) => string) }
+    ): string {
+      return sanitize(name, options);
     },
     getWorkingDirectory(mkdirs = false) {
       return getWorkingDirectory({ mkdirs, state });
@@ -295,12 +301,17 @@ export function getTypedFilename(
   return `${slug}.${type}.${suffix}`;
 }
 
-export function sanitize(input: string, options?: {
-  replacement?: string | ((char: string) => string);
-}): string {
+export function sanitize(
+  input: string,
+  options?: {
+    replacement?: string | ((char: string) => string);
+  }
+): string {
+  /* eslint-disable  */
   const illegalChars = /[\/\?<>\\:\*\|":]/g;
   const controlChars = /[\x00-\x1f\x80-\x9f]/g;
   const reservedNames = /^(con|prn|aux|nul|com\d|lpt\d)$/i;
+  /* eslint-enable */
 
   let replacementFn: (substring: string) => string;
 
@@ -469,7 +480,11 @@ export function saveTextToFile({
   state: State;
 }): boolean {
   try {
-    fs.writeFileSync(filename, data + (data.endsWith('\n') ? '' : '\n'), 'utf8');
+    fs.writeFileSync(
+      filename,
+      data + (data.endsWith('\n') ? '' : '\n'),
+      'utf8'
+    );
     return true;
   } catch (err) {
     printMessage({
