@@ -178,9 +178,7 @@ export async function exportAuthenticationSettings({
   }
 }
 
-export async function exportAuthenticationSettingsForAllRealms(){
-  
-}
+export async function exportAuthenticationSettingsForAllRealms() {}
 
 /**
  * Import authentication settings
@@ -209,4 +207,3 @@ export async function importAuthenticationSettings({
     throw new FrodoError(`Error importing authentication settings`, error);
   }
 }
-

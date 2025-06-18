@@ -2,8 +2,8 @@ import util from 'util';
 
 import { State } from '../shared/State';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { generateIdmApi } from './BaseApi';
 import { IdObjectSkeletonInterface } from './ApiTypes';
+import { generateIdmApi } from './BaseApi';
 
 const getTermsUrl = '%s/config/selfservice.terms';
 
@@ -22,7 +22,6 @@ export interface TermsAndConditions extends IdObjectSkeletonInterface {
     version: string;
   }>;
 }
-
 
 /**
  * Get terms and conditions

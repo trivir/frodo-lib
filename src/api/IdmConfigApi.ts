@@ -69,7 +69,7 @@ export async function getConfigEntitiesByType({
 }: {
   type: string;
   state: State;
-  onlyVisibleTemplates?:boolean
+  onlyVisibleTemplates?: boolean;
 }): Promise<PagedResult<NoIdObjectSkeletonInterface>> {
   // Due to a bug (as of Ping IDM 7.5.0) with the query filter for email templates (it happens using both sw or co), in order to get all the email templates you need to use 'emailTemplat' instead.
   if (type === EMAIL_TEMPLATE_TYPE && !onlyVisibleTemplates) {
