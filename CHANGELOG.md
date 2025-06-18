@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2025-06-17
+
+## [3.2.0] - 2025-06-17
+
+### Changed
+
+This release enables the library to return partial exports when errors occur during exports and imports. This allows for the CLI and other clients to still use the partial exports for exports that were successful.
+
+Note that only a few of the export and import functions were updated, mainly the ones handling journeys, to adress journey export issues reported in the CLI.
+
+Generally, the way it works is to keep an array of errors that occur during exports/imports, and at the end throw a FrodoError with those errors in addition to the partial export object(s). The CLI can then decide when an error occurs if they want to utilize the partial exports when the error is thrown.
+
+## [3.1.1-0] - 2025-06-17
+
 ## [3.1.0] - 2025-04-04
 
 ### Added
@@ -1895,7 +1909,10 @@ Frodo supports exporting and importing of ESV secret values. To leave stuartship
 - Fixed problem with adding connection profiles
 - Miscellaneous bug fixes
 
-[unreleased]: https://github.com/rockcarver/frodo-lib/compare/v3.1.0...HEAD
+[unreleased]: https://github.com/rockcarver/frodo-lib/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/rockcarver/frodo-lib/compare/v3.2.0...v3.3.0
+[3.2.0]: https://github.com/rockcarver/frodo-lib/compare/v3.1.1-0...v3.2.0
+[3.1.1-0]: https://github.com/rockcarver/frodo-lib/compare/v3.1.0...v3.1.1-0
 [3.1.0]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-2...v3.1.0
 [3.0.4-2]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-1...v3.0.4-2
 [3.0.4-1]: https://github.com/rockcarver/frodo-lib/compare/v3.0.4-0...v3.0.4-1
