@@ -151,9 +151,9 @@
     "slugify": "^1.6.5",
     "ts-jest": "^29.1.2",
     "tsup": "^8.0.2",
-    "typedoc": "^0.27.9",
-    "typedoc-plugin-missing-exports": "^3.1.0",
-    "typescript": "^5.8.2",
-    "uuid": "^11.1.0"
+    "typedoc": "^0.25.0",
+    "typedoc-plugin-missing-exports": "^2.0.0",
+    "typescript": "^5.2.2",
+    "uuid": "^10.0.0"
   }
 }
