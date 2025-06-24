@@ -54,6 +54,9 @@ import ConnectionProfileOps, {
 } from '../ops/ConnectionProfileOps';
 import ConnectorOps, { Connector } from '../ops/ConnectorOps';
 import EmailTemplateOps, { EmailTemplate } from '../ops/EmailTemplateOps';
+import FrConfigServiceObjectsOps, {
+  FrConfigServiceObject,
+} from '../ops/FrConfigServiceObjectsOps';
 import IdmConfigOps, { IdmConfig } from '../ops/IdmConfigOps';
 import IdmCryptoOps, { IdmCrypto } from '../ops/IdmCryptoOps';
 import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps';
@@ -75,6 +78,7 @@ import OAuth2TrustedJwtIssuerOps, {
 import OrganizationOps, { Organization } from '../ops/OrganizationOps';
 import PolicyOps, { Policy } from '../ops/PolicyOps';
 import PolicySetOps, { PolicySet } from '../ops/PolicySetOps';
+import RawOps, { Raw } from '../ops/RawOps';
 import RealmOps, { Realm } from '../ops/RealmOps';
 import ReconOps, { Recon } from '../ops/ReconOps';
 import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
@@ -182,6 +186,8 @@ export type Frodo = {
     issuer: OAuth2TrustedJwtIssuer;
   };
 
+  raw: Raw;
+
   realm: Realm;
 
   role: InternalRole;
@@ -196,6 +202,7 @@ export type Frodo = {
   server: Server;
   secretStore: SecretStore;
   service: Service;
+  serviceObject: FrConfigServiceObject;
   session: Session;
   site: Site;
 
@@ -354,6 +361,8 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
       issuer: OAuth2TrustedJwtIssuerOps(state),
     },
 
+    raw: RawOps(state),
+
     realm: RealmOps(state),
 
     role: InternalRoleOps(state),
@@ -368,6 +377,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     server: ServerOps(state),
     secretStore: SecretStoreOps(state),
     service: ServiceOps(state),
+    serviceObject: FrConfigServiceObjectsOps(state),
     session: SessionOps(state),
     site: SiteOps(state),
 
