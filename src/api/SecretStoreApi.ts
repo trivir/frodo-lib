@@ -292,3 +292,77 @@ export async function putSecretStoreMapping({
   });
   return data;
 }
+
+/**
+ * Delete secret store by id
+ * @param {string} secretStoreId Secret store id
+ * @param {string} secretStoreTypeId Secret store type id
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store object
+ */
+export async function deleteSecretStore({
+  secretStoreId,
+  secretStoreTypeId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreSkeleton> {
+  const urlString = util.format(
+    secretStoreURLTemplate,
+    state.getHost(),
+    getRealmPathGlobal(globalConfig, state),
+    getConfigPath(globalConfig),
+    secretStoreTypeId,
+    secretTypesThatIgnoreId.includes(secretStoreTypeId) ? '' : secretStoreId
+  );
+  const { data } = await generateAmApi({
+    resource: getApiConfig(globalConfig),
+    state,
+  }).delete(urlString, {
+    withCredentials: true,
+  });
+  return data;
+}
+
+/**
+ * Delete secret store mapping
+ * @param {string} secretStoreId Secret store id
+ * @param {string} secretStoreTypeId Secret store type id
+ * @param {string} secretId Secret store mapping label
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to a secret store mapping object
+ */
+export async function deleteSecretStoreMapping({
+  secretStoreId,
+  secretStoreTypeId,
+  secretId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string;
+  secretId: string;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreMappingSkeleton> {
+  const urlString = util.format(
+    secretStoreMappingURLTemplate,
+    state.getHost(),
+    getRealmPathGlobal(globalConfig, state),
+    getConfigPath(globalConfig),
+    secretStoreTypeId,
+    secretStoreId,
+    secretId
+  );
+  const { data } = await generateAmApi({
+    resource: getApiConfig(globalConfig),
+    state,
+  }).delete(urlString, {
+    withCredentials: true,
+  });
+  return data;
+}

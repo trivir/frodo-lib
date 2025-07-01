@@ -1,4 +1,6 @@
 import {
+  deleteSecretStore as _deleteSecretStore,
+  deleteSecretStoreMapping as _deleteSecretStoreMapping,
   getSecretStore,
   getSecretStoreMapping,
   getSecretStoreMappings,
@@ -16,9 +18,9 @@ import {
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
+import { getMetadata, getResult } from '../utils/ExportImportUtils';
 import { FrodoError } from './FrodoError';
-import { ExportMetaData } from './OpsTypes';
+import { ExportMetaData, ResultCallback } from './OpsTypes';
 
 export type SecretStore = {
   /**
@@ -85,10 +87,12 @@ export type SecretStore = {
   /**
    * Export all secret stores. The response can be saved to file as is.
    * @param {boolean} globalConfig true if global secret stores are the target of the operation, false otherwise. Default: false.
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<SecretStoreExportInterface>} Promise resolving to a SecretStoreExportInterface object.
    */
   exportSecretStores(
-    globalConfig: boolean
+    globalConfig: boolean,
+    resultCallback?: ResultCallback<SecretStoreSkeleton>
   ): Promise<SecretStoreExportInterface>;
   /**
    * Update secret store
@@ -119,13 +123,66 @@ export type SecretStore = {
    * @param {SecretStoreExportInterface} importData secret store import data
    * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
    * @param {string} secretStoreId optional secret store id. If supplied, only the secret store of that id is imported.
+   * @param {string} secretStoreTypeId optional secret store type id
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<SecretStoreExportSkeleton[]>} the imported secret stores and mappings
    */
   importSecretStores(
     importData: SecretStoreExportInterface,
     globalConfig: boolean,
-    secretStoreId?: string
+    secretStoreId?: string,
+    secretStoreTypeId?: string,
+    resultCallback?: ResultCallback<SecretStoreSkeleton>
   ): Promise<SecretStoreExportSkeleton[]>;
+  /**
+   * Delete secret store by id
+   * @param {string} secretStoreId Secret store id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+   * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+   * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store object
+   */
+  deleteSecretStore(
+    secretStoreId: string,
+    secretStoreTypeId: string | undefined
+  ): Promise<SecretStoreSkeleton>;
+  /**
+   * Delete all secret stores
+   * @param {boolean} globalConfig true if the secret store mappings are global, false otherwise. Default: false.
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
+   * @returns {Promise<SecretStoreSkeleton[]>} a promise that resolves to an array of secret store objects
+   */
+  deleteSecretStores(
+    globalConfig: boolean,
+    resultCallback?: ResultCallback<SecretStoreSkeleton>
+  ): Promise<SecretStoreSkeleton[]>;
+  /**
+   * Delete secret store mapping
+   * @param {string} secretStoreId Secret store id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+   * @param {string} secretId Secret store mapping label
+   * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+   * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to a secret store mapping object
+   */
+  deleteSecretStoreMapping(
+    secretStoreId: string,
+    secretStoreTypeId: string | undefined,
+    secretId: string,
+    globalConfig: boolean
+  ): Promise<SecretStoreMappingSkeleton>;
+  /**
+   * Delete secret store mappings
+   * @param {string} secretStoreId Secret store id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+   * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
+   * @returns {Promise<SecretStoreMappingSkeleton[]>} a promise that resolves to a secret store mapping object
+   */
+  deleteSecretStoreMappings(
+    secretStoreId: string,
+    secretStoreTypeId: string | undefined,
+    globalConfig: boolean,
+    resultCallback?: ResultCallback<SecretStoreMappingSkeleton>
+  ): Promise<SecretStoreMappingSkeleton[]>;
   /**
    * Function that returns true if the given secret store type can have mappings, false otherwise
    * @param secretStoreTypeId The secret store type
@@ -195,9 +252,10 @@ export default (state: State): SecretStore => {
       });
     },
     async exportSecretStores(
-      globalConfig: boolean = false
+      globalConfig: boolean = false,
+      resultCallback: ResultCallback<SecretStoreSkeleton> = void 0
     ): Promise<SecretStoreExportInterface> {
-      return exportSecretStores({ globalConfig, state });
+      return exportSecretStores({ globalConfig, resultCallback, state });
     },
     async updateSecretStore(
       secretStoreData: SecretStoreSkeleton,
@@ -226,16 +284,70 @@ export default (state: State): SecretStore => {
     async importSecretStores(
       importData: SecretStoreExportInterface,
       globalConfig: boolean = false,
-      secretStoreId?: string
+      secretStoreId?: string,
+      secretStoreTypeId?: string,
+      resultCallback: ResultCallback<SecretStoreSkeleton> = void 0
     ): Promise<SecretStoreExportSkeleton[]> {
       return importSecretStores({
         importData,
         globalConfig,
         secretStoreId,
+        secretStoreTypeId,
+        resultCallback,
         state,
       });
     },
-    canSecretStoreHaveMappings
+    async deleteSecretStore(
+      secretStoreId: string,
+      secretStoreTypeId: string | undefined,
+      globalConfig: boolean = false
+    ): Promise<SecretStoreSkeleton> {
+      return deleteSecretStore({
+        secretStoreId,
+        secretStoreTypeId,
+        globalConfig,
+        state,
+      });
+    },
+    async deleteSecretStores(
+      globalConfig: boolean = false,
+      resultCallback?: ResultCallback<SecretStoreSkeleton>
+    ): Promise<SecretStoreSkeleton[]> {
+      return deleteSecretStores({
+        globalConfig,
+        resultCallback,
+        state,
+      });
+    },
+    async deleteSecretStoreMapping(
+      secretStoreId: string,
+      secretStoreTypeId: string | undefined,
+      secretId: string,
+      globalConfig: boolean = false
+    ): Promise<SecretStoreMappingSkeleton> {
+      return deleteSecretStoreMapping({
+        secretStoreId,
+        secretStoreTypeId,
+        secretId,
+        globalConfig,
+        state,
+      });
+    },
+    deleteSecretStoreMappings(
+      secretStoreId: string,
+      secretStoreTypeId: string | undefined,
+      globalConfig: boolean = false,
+      resultCallback?: ResultCallback<SecretStoreMappingSkeleton>
+    ): Promise<SecretStoreMappingSkeleton[]> {
+      return deleteSecretStoreMappings({
+        secretStoreId,
+        secretStoreTypeId,
+        globalConfig,
+        resultCallback,
+        state,
+      });
+    },
+    canSecretStoreHaveMappings,
   };
 };
 
@@ -495,9 +607,11 @@ export async function exportSecretStore({
  */
 export async function exportSecretStores({
   globalConfig = false,
+  resultCallback = void 0,
   state,
 }: {
   globalConfig: boolean;
+  resultCallback?: ResultCallback<SecretStoreSkeleton>;
   state: State;
 }): Promise<SecretStoreExportInterface> {
   let indicatorId: string;
@@ -520,15 +634,20 @@ export async function exportSecretStores({
         state,
       });
       if (canSecretStoreHaveMappings(secretStore._type._id)) {
-        secretStore.mappings = await readSecretStoreMappings({
-          secretStoreId: secretStore._id,
-          secretStoreTypeId: secretStore._type._id,
-          globalConfig,
-          state,
-        });
+        try {
+          secretStore.mappings = await readSecretStoreMappings({
+            secretStoreId: secretStore._id,
+            secretStoreTypeId: secretStore._type._id,
+            globalConfig,
+            state,
+          });
+        } catch (e) {
+          if (resultCallback) resultCallback(e);
+        }
       }
       exportData.secretstore[secretStore._id] =
         secretStore as SecretStoreExportSkeleton;
+      if (resultCallback) resultCallback(undefined, secretStore);
     }
     stopProgressIndicator({
       id: indicatorId,
@@ -608,33 +727,42 @@ export async function updateSecretStoreMapping({
  * @param {SecretStoreExportInterface} importData secret store import data
  * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
  * @param {string} secretStoreId optional secret store id. If supplied, only the secret store of that id is imported.
+ * @param {string} secretStoreTypeId optional secret store type id
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
  * @returns {Promise<SecretStoreExportSkeleton[]>} the imported secret stores and mappings
  */
 export async function importSecretStores({
   importData,
   globalConfig,
   secretStoreId,
+  secretStoreTypeId,
+  resultCallback = void 0,
   state,
 }: {
   importData: SecretStoreExportInterface;
   globalConfig: boolean;
   secretStoreId?: string;
+  secretStoreTypeId?: string;
+  resultCallback?: ResultCallback<SecretStoreSkeleton>;
   state: State;
 }): Promise<SecretStoreExportSkeleton[]> {
-  const errors = [];
-  try {
-    debugMessage({
-      message: `SecretStoreOps.importSecretStores: start`,
-      state,
-    });
-    const response = [];
-    for (const secretStore of Object.values(importData.secretstore)) {
-      try {
-        if (secretStoreId && secretStore._id !== secretStoreId) {
-          continue;
-        }
-        let mappings;
-        if (secretStore.mappings) {
+  debugMessage({
+    message: `SecretStoreOps.importSecretStores: start`,
+    state,
+  });
+  const response = [];
+  for (const secretStore of Object.values(importData.secretstore)) {
+    try {
+      if (secretStoreId && secretStore._id !== secretStoreId) {
+        continue;
+      }
+      if (secretStoreId && !secretStoreTypeId)
+        secretStoreTypeId = (
+          await findSecretStore({ secretStoreId, globalConfig, state })
+        )._type._id;
+      let mappings;
+      if (secretStore.mappings) {
+        try {
           mappings = [];
           for (const mapping of secretStore.mappings) {
             mappings.push(
@@ -648,35 +776,220 @@ export async function importSecretStores({
             );
           }
           mappings = await Promise.all(mappings);
+        } catch (e) {
+          if (resultCallback) resultCallback(e);
         }
-        const isCloudDeployment =
-          state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY;
-        let result = secretStore;
-        if (!isCloudDeployment) {
-          delete secretStore.mappings;
-          result = (await updateSecretStore({
-            secretStoreData: secretStore,
-            globalConfig,
-            state,
-          })) as SecretStoreExportSkeleton;
-          result.mappings = mappings;
-        }
-        response.push(result);
-      } catch (error) {
-        errors.push(error);
       }
+      const isCloudDeployment =
+        state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY;
+      let result = secretStore;
+      if (!isCloudDeployment) {
+        delete secretStore.mappings;
+        result = (await updateSecretStore({
+          secretStoreData: secretStore,
+          globalConfig,
+          state,
+        })) as SecretStoreExportSkeleton;
+        result.mappings = mappings;
+      }
+      response.push(result);
+      if (resultCallback) resultCallback(undefined, result);
+    } catch (error) {
+      if (resultCallback) resultCallback(error);
     }
-    if (errors.length > 0) {
-      throw new FrodoError(`Error importing secret stores`, errors);
+  }
+  debugMessage({ message: `SecretStoreOps.importSecretStores: end`, state });
+  return response;
+}
+
+/**
+ * Delete secret store by id
+ * @param {string} secretStoreId Secret store id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store object
+ */
+export async function deleteSecretStore({
+  secretStoreId,
+  secretStoreTypeId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string | undefined;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreSkeleton> {
+  try {
+    debugMessage({ message: `SecretStoreOps.deleteSecretStore: start`, state });
+    if (!secretStoreTypeId)
+      secretStoreTypeId = (
+        await findSecretStore({ secretStoreId, globalConfig, state })
+      )._type._id;
+    const store = await _deleteSecretStore({
+      secretStoreId,
+      secretStoreTypeId,
+      globalConfig,
+      state,
+    });
+    debugMessage({ message: `SecretStoreOps.deleteSecretStore: end`, state });
+    return store;
+  } catch (e) {
+    throw new FrodoError(`Error deleting the secret store ${secretStoreId}`);
+  }
+}
+
+/**
+ * Delete all secret stores
+ * @param {boolean} globalConfig true if the secret store mappings are global, false otherwise. Default: false.
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
+ * @returns {Promise<SecretStoreSkeleton[]>} a promise that resolves to an array of secret store objects
+ */
+export async function deleteSecretStores({
+  globalConfig = false,
+  resultCallback = void 0,
+  state,
+}: {
+  globalConfig: boolean;
+  resultCallback?: ResultCallback<SecretStoreSkeleton>;
+  state: State;
+}): Promise<SecretStoreSkeleton[]> {
+  try {
+    debugMessage({
+      message: `SecretStoreOps.deleteSecretStores: start`,
+      state,
+    });
+    const deleted = [];
+    for (const store of await readSecretStores({ globalConfig, state })) {
+      const result = await getResult(
+        resultCallback,
+        undefined,
+        deleteSecretStore,
+        {
+          secretStoreId: store._id,
+          secretStoreTypeId: store._type._id,
+          globalConfig,
+          state,
+        }
+      );
+      deleted.push(result);
     }
-    debugMessage({ message: `SecretStoreOps.importSecretStores: end`, state });
-    return response;
-  } catch (error) {
-    // re-throw previously caught errors
-    if (errors.length > 0) {
-      throw error;
+    debugMessage({ message: `SecretStoreOps.deleteSecretStores: end`, state });
+    return deleted.filter((s) => s);
+  } catch (e) {
+    throw new FrodoError(`Error deleting secret stores`);
+  }
+}
+
+/**
+ * Delete secret store mapping
+ * @param {string} secretStoreId Secret store id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+ * @param {string} secretId Secret store mapping label
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to a secret store mapping object
+ */
+export async function deleteSecretStoreMapping({
+  secretStoreId,
+  secretStoreTypeId,
+  secretId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string | undefined;
+  secretId: string;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreMappingSkeleton> {
+  try {
+    debugMessage({
+      message: `SecretStoreOps.deleteSecretStoreMapping: start`,
+      state,
+    });
+    if (!secretStoreTypeId)
+      secretStoreTypeId = (
+        await findSecretStore({ secretStoreId, globalConfig, state })
+      )._type._id;
+    const store = await _deleteSecretStoreMapping({
+      secretStoreId,
+      secretStoreTypeId,
+      secretId,
+      globalConfig,
+      state,
+    });
+    debugMessage({
+      message: `SecretStoreOps.deleteSecretStoreMapping: end`,
+      state,
+    });
+    return store;
+  } catch (e) {
+    throw new FrodoError(
+      `Error deleting the secret store mapping ${secretId} from the secret store ${secretStoreId}`
+    );
+  }
+}
+
+/**
+ * Delete secret store mappings
+ * @param {string} secretStoreId Secret store id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
+ * @returns {Promise<SecretStoreMappingSkeleton[]>} a promise that resolves to a secret store mapping object
+ */
+export async function deleteSecretStoreMappings({
+  secretStoreId,
+  secretStoreTypeId,
+  globalConfig = false,
+  resultCallback = void 0,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string | undefined;
+  globalConfig: boolean;
+  resultCallback?: ResultCallback<SecretStoreMappingSkeleton>;
+  state: State;
+}): Promise<SecretStoreMappingSkeleton[]> {
+  try {
+    debugMessage({
+      message: `SecretStoreOps.deleteSecretStoreMappings: start`,
+      state,
+    });
+    if (!secretStoreTypeId)
+      secretStoreTypeId = (
+        await findSecretStore({ secretStoreId, globalConfig, state })
+      )._type._id;
+    const deleted = [];
+    for (const mapping of await readSecretStoreMappings({
+      secretStoreId,
+      secretStoreTypeId,
+      globalConfig,
+      state,
+    })) {
+      const result = await getResult(
+        resultCallback,
+        undefined,
+        deleteSecretStoreMapping,
+        {
+          secretStoreId,
+          secretStoreTypeId,
+          secretId: mapping._id,
+          globalConfig,
+          state,
+        }
+      );
+      deleted.push(result);
     }
-    throw new FrodoError(`Error importing secret stores`, error);
+    debugMessage({
+      message: `SecretStoreOps.deleteSecretStoreMappings: end`,
+      state,
+    });
+    return deleted.filter((s) => s);
+  } catch (e) {
+    throw new FrodoError(
+      `Error deleting the secret store mappings from the secret store ${secretStoreId}`
+    );
   }
 }
 

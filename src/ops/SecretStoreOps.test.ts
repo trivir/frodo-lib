@@ -42,6 +42,7 @@ import { filterRecording } from "../utils/PollyUtils";
 import * as SecretStoreOps from "./SecretStoreOps";
 import { state } from "../lib/FrodoLib";
 import Constants from "../shared/Constants";
+import { snapshotResultCallback } from "../test/utils/TestUtils";
 
 const ctx = autoSetupPolly();
 
@@ -164,14 +165,14 @@ describe('SecretStoreOps', () => {
         });
     
         test('1: Export realm SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
         });
     
         test('2: Export global SecretStores', async () => {
-          await expect(SecretStoreOps.exportSecretStores({ globalConfig: true, state })).rejects.toThrow();
+          await expect(SecretStoreOps.exportSecretStores({ globalConfig: true, resultCallback: snapshotResultCallback, state })).rejects.toThrow();
         });
       });
     
@@ -192,6 +193,34 @@ describe('SecretStoreOps', () => {
       describe('importSecretStores()', () => {
         test('0: Method is implemented', async () => {
           expect(SecretStoreOps.importSecretStores).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStore()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStore).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStores()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStores).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMapping()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStoreMapping).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMappings()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStoreMappings).toBeDefined();
         });
         //TODO: create tests
       });
@@ -239,14 +268,14 @@ describe('SecretStoreOps', () => {
     
       describe('exportSecretStores()', () => {
         test('0: Export realm SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
         });
     
         test('1: Export global SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: true, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: true, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
@@ -262,6 +291,22 @@ describe('SecretStoreOps', () => {
       });
     
       describe('importSecretStores()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStore()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStores()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMapping()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMappings()', () => {
         //TODO: create tests
       });
     });
