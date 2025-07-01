@@ -107,6 +107,39 @@ describe('SecretStoreOps', () => {
           await expect(SecretStoreOps.readSecretStores({ globalConfig: true, state })).rejects.toThrow();
         });
       });
+
+      describe('readSecretStoreMapping()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.readSecretStoreMapping).toBeDefined();
+        });
+    
+        test('1: Read ESV secret store mapping', async () => {
+          const response = await SecretStoreOps.readSecretStoreMapping({
+            secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            secretId: 'am.services.httpclient.mtls.clientcert.testClientCert.secret',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
+      });
+
+      describe('readSecretStoreMappings()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.readSecretStoreMappings).toBeDefined();
+        });
+
+        test('1: Read ESV secret store mappings', async () => {
+          const response = await SecretStoreOps.readSecretStoreMappings({
+            secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
+      });
     
       describe('exportSecretStore()', () => {
         test('0: Method is implemented', async () => {
@@ -190,6 +223,14 @@ describe('SecretStoreOps', () => {
           const response = await SecretStoreOps.readSecretStores({ globalConfig: true, state });
           expect(response).toMatchSnapshot();
         });
+      });
+
+      describe('readSecretStoreMapping()', () => {
+        //TODO: create tests
+      });
+
+      describe('readSecretStoreMappings()', () => {
+        //TODO: create tests
       });
     
       describe('exportSecretStore()', () => {

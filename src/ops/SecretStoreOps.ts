@@ -1,18 +1,18 @@
 import {
   getSecretStore,
+  getSecretStoreMapping,
   getSecretStoreMappings,
   getSecretStores,
   putSecretStore,
   putSecretStoreMapping,
   SecretStoreMappingSkeleton,
   SecretStoreSkeleton,
-} from '../api/classic/SecretStoreApi';
+} from '../api/SecretStoreApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import {
   createProgressIndicator,
   debugMessage,
-  printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../utils/Console';
@@ -27,15 +27,15 @@ export type SecretStore = {
    */
   createSecretStoreExportTemplate(): SecretStoreExportInterface;
   /**
-   * Read secret store by id
+   * Read secret store by id. Will throw if type is not defined and multiple secret stores with the same id are found.
    * @param {string} secretStoreId Secret store id
-   * @param {string} secretStoreTypeId Secret store type id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
    * @param {boolean} globalConfig true if global secret store is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store object
    */
   readSecretStore(
     secretStoreId: string,
-    secretStoreTypeId: string,
+    secretStoreTypeId: string | undefined,
     globalConfig: boolean
   ): Promise<SecretStoreSkeleton>;
   /**
@@ -45,27 +45,41 @@ export type SecretStore = {
    */
   readSecretStores(globalConfig: boolean): Promise<SecretStoreSkeleton[]>;
   /**
-   * Read secret store mappings
+   * Read secret store mapping. Will throw if type is not defined and multiple secret stores with the same id are found.
    * @param {string} secretStoreId Secret store id
-   * @param {string} secretStoreTypeId Secret store type id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+   * @param {string} secretId Secret store mapping label
+   * @param {boolean} globalConfig true if the secret store is global, false otherwise. Default: false.
+   * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to an array of secret store mapping objects
+   */
+  readSecretStoreMapping(
+    secretStoreId: string,
+    secretStoreTypeId: string | undefined,
+    secretId: string,
+    globalConfig: boolean
+  ): Promise<SecretStoreMappingSkeleton>;
+  /**
+   * Read secret store mappings. Will throw if type is not defined and multiple secret stores with the same id are found.
+   * @param {string} secretStoreId Secret store id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
    * @param {boolean} globalConfig true if the secret store is global, false otherwise. Default: false.
    * @returns {Promise<SecretStoreMappingSkeleton[]>} a promise that resolves to an array of secret store mapping objects
    */
   readSecretStoreMappings(
     secretStoreId: string,
-    secretStoreTypeId: string,
+    secretStoreTypeId: string | undefined,
     globalConfig: boolean
   ): Promise<SecretStoreMappingSkeleton[]>;
   /**
-   * Export a single secret store by id. The response can be saved to file as is.
+   * Export a single secret store by id. The response can be saved to file as is. Will throw if type is not defined and multiple secret stores with the same id are found.
    * @param {string} secretStoreId Secret store id
-   * @param {string} secretStoreTypeId Secret store type id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
    * @param {boolean} globalConfig true if global secret store is the target of the operation, false otherwise. Default: false.
    * @returns {Promise<SecretStoreExportInterface>} Promise resolving to a SecretStoreExportInterface object.
    */
   exportSecretStore(
     secretStoreId: string,
-    secretStoreTypeId: string,
+    secretStoreTypeId: string | undefined,
     globalConfig: boolean
   ): Promise<SecretStoreExportInterface>;
   /**
@@ -87,16 +101,16 @@ export type SecretStore = {
     globalConfig: boolean
   ): Promise<SecretStoreSkeleton>;
   /**
-   * Update secret store mapping
+   * Update secret store mapping. Will throw if type is not defined and multiple secret stores with the same id are found.
    * @param {string} secretStoreId Secret store id
-   * @param {string} secretStoreTypeId Secret store type id
+   * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
    * @param {SecretStoreMappingSkeleton} secretStoreMappingData secret store mapping to import
    * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
    * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to a secret store mapping object
    */
   updateSecretStoreMapping(
     secretStoreId: string,
-    secretStoreTypeId: string,
+    secretStoreTypeId: string | undefined,
     secretStoreMappingData: SecretStoreMappingSkeleton,
     globalConfig: boolean
   ): Promise<SecretStoreMappingSkeleton>;
@@ -112,6 +126,12 @@ export type SecretStore = {
     globalConfig: boolean,
     secretStoreId?: string
   ): Promise<SecretStoreExportSkeleton[]>;
+  /**
+   * Function that returns true if the given secret store type can have mappings, false otherwise
+   * @param secretStoreTypeId The secret store type
+   * @returns true if the given secret store type can have mappings, false otherwise
+   */
+  canSecretStoreHaveMappings(secretStoreTypeId: string): boolean;
 };
 
 export default (state: State): SecretStore => {
@@ -121,7 +141,7 @@ export default (state: State): SecretStore => {
     },
     async readSecretStore(
       secretStoreId: string,
-      secretStoreTypeId: string,
+      secretStoreTypeId: string | undefined,
       globalConfig: boolean = false
     ): Promise<SecretStoreSkeleton> {
       return readSecretStore({
@@ -136,9 +156,23 @@ export default (state: State): SecretStore => {
     ): Promise<SecretStoreSkeleton[]> {
       return readSecretStores({ globalConfig, state });
     },
+    async readSecretStoreMapping(
+      secretStoreId: string,
+      secretStoreTypeId: string | undefined,
+      secretId: string,
+      globalConfig: boolean = false
+    ): Promise<SecretStoreMappingSkeleton> {
+      return readSecretStoreMapping({
+        secretStoreId,
+        secretStoreTypeId,
+        secretId,
+        globalConfig,
+        state,
+      });
+    },
     async readSecretStoreMappings(
       secretStoreId: string,
-      secretStoreTypeId: string,
+      secretStoreTypeId: string | undefined,
       globalConfig: boolean = false
     ): Promise<SecretStoreMappingSkeleton[]> {
       return readSecretStoreMappings({
@@ -150,7 +184,7 @@ export default (state: State): SecretStore => {
     },
     async exportSecretStore(
       secretStoreId: string,
-      secretStoreTypeId: string,
+      secretStoreTypeId: string | undefined,
       globalConfig: boolean = false
     ): Promise<SecretStoreExportInterface> {
       return exportSecretStore({
@@ -177,7 +211,7 @@ export default (state: State): SecretStore => {
     },
     async updateSecretStoreMapping(
       secretStoreId: string,
-      secretStoreTypeId: string,
+      secretStoreTypeId: string | undefined,
       secretStoreMappingData: SecretStoreMappingSkeleton,
       globalConfig: boolean = false
     ): Promise<SecretStoreMappingSkeleton> {
@@ -201,11 +235,17 @@ export default (state: State): SecretStore => {
         state,
       });
     },
+    canSecretStoreHaveMappings
   };
 };
 
+export const SECRET_STORES_WITH_NO_MAPPINGS = [
+  'EnvironmentAndSystemPropertySecretStore',
+  'FileSystemSecretStore',
+];
+
 export type SecretStoreExportSkeleton = SecretStoreSkeleton & {
-  mappings: SecretStoreMappingSkeleton[];
+  mappings?: SecretStoreMappingSkeleton[];
 };
 
 export interface SecretStoreExportInterface {
@@ -229,9 +269,9 @@ export function createSecretStoreExportTemplate({
 }
 
 /**
- * Read secret store by id
+ * Read secret store by id. Will throw if type is not defined and multiple secret stores with the same id are found.
  * @param {string} secretStoreId Secret store id
- * @param {string} secretStoreTypeId Secret store type id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
  * @param {boolean} globalConfig true if global secret store is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store object
  */
@@ -242,17 +282,19 @@ export async function readSecretStore({
   state,
 }: {
   secretStoreId: string;
-  secretStoreTypeId: string;
+  secretStoreTypeId: string | undefined;
   globalConfig: boolean;
   state: State;
 }): Promise<SecretStoreSkeleton> {
   try {
-    return await getSecretStore({
-      secretStoreId,
-      secretStoreTypeId,
-      globalConfig,
-      state,
-    });
+    return secretStoreTypeId
+      ? await getSecretStore({
+          secretStoreId,
+          secretStoreTypeId,
+          globalConfig,
+          state,
+        })
+      : await findSecretStore({ secretStoreId, globalConfig, state });
   } catch (error) {
     throw new FrodoError(
       `Error reading secret store ${secretStoreId} of type ${secretStoreTypeId}`,
@@ -298,9 +340,63 @@ export async function readSecretStores({
 }
 
 /**
- * Read secret store mappings
+ * Read secret store mapping. Will throw if type is not defined and multiple secret stores with the same id are found.
  * @param {string} secretStoreId Secret store id
- * @param {string} secretStoreTypeId Secret store type id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
+ * @param {string} secretId Secret store mapping label
+ * @param {boolean} globalConfig true if the secret store is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to an array of secret store mapping objects
+ */
+export async function readSecretStoreMapping({
+  secretStoreId,
+  secretStoreTypeId,
+  secretId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  secretStoreTypeId: string | undefined;
+  secretId: string;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreMappingSkeleton> {
+  try {
+    debugMessage({
+      message: `SecretStoreOps.readSecretStoreMapping: start`,
+      state,
+    });
+    if (!secretStoreTypeId)
+      secretStoreTypeId = (
+        await findSecretStore({ secretStoreId, globalConfig, state })
+      )._type._id;
+    if (!canSecretStoreHaveMappings(secretStoreTypeId))
+      throw new FrodoError(
+        `No mappings exists for the secret store type '${secretStoreTypeId}'`
+      );
+    const mapping = await getSecretStoreMapping({
+      secretStoreId,
+      secretStoreTypeId,
+      secretId,
+      globalConfig,
+      state,
+    });
+    debugMessage({
+      message: `SecretStoreOps.readSecretStoreMapping: end`,
+      state,
+    });
+    return mapping;
+  } catch (error) {
+    throw new FrodoError(
+      `Error reading secret store mapping '${secretId}' for the secret store '${secretStoreId}'`,
+      error
+    );
+  }
+}
+
+/**
+ * Read secret store mappings. Will throw if type is not defined and multiple secret stores with the same id are found.
+ * @param {string} secretStoreId Secret store id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
  * @param {boolean} globalConfig true if the secret store is global, false otherwise. Default: false.
  * @returns {Promise<SecretStoreMappingSkeleton[]>} a promise that resolves to an array of secret store mapping objects
  */
@@ -311,7 +407,7 @@ export async function readSecretStoreMappings({
   state,
 }: {
   secretStoreId: string;
-  secretStoreTypeId: string;
+  secretStoreTypeId: string | undefined;
   globalConfig: boolean;
   state: State;
 }): Promise<SecretStoreMappingSkeleton[]> {
@@ -320,6 +416,14 @@ export async function readSecretStoreMappings({
       message: `SecretStoreOps.readSecretStoreMappings: start`,
       state,
     });
+    if (!secretStoreTypeId)
+      secretStoreTypeId = (
+        await findSecretStore({ secretStoreId, globalConfig, state })
+      )._type._id;
+    if (!canSecretStoreHaveMappings(secretStoreTypeId))
+      throw new FrodoError(
+        `No mappings exists for the secret store type '${secretStoreTypeId}'`
+      );
     const { result } = await getSecretStoreMappings({
       secretStoreId,
       secretStoreTypeId,
@@ -332,21 +436,17 @@ export async function readSecretStoreMappings({
     });
     return result;
   } catch (error) {
-    if (error.httpStatus === 404 || error.response?.status === 404) {
-      //Ignore this case since not all secret stores have mappings
-    } else {
-      throw new FrodoError(
-        `Error reading secret store mappings for the secret store '${secretStoreId}'`,
-        error
-      );
-    }
+    throw new FrodoError(
+      `Error reading secret store mappings for the secret store '${secretStoreId}'`,
+      error
+    );
   }
 }
 
 /**
- * Export a single secret store by id. The response can be saved to file as is.
+ * Export a single secret store by id. The response can be saved to file as is. Will throw if type is not defined and multiple secret stores with the same id are found.
  * @param {string} secretStoreId Secret store id
- * @param {string} secretStoreTypeId Secret store type id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
  * @param {boolean} globalConfig true if global secret store is the target of the operation, false otherwise. Default: false.
  * @returns {Promise<SecretStoreExportInterface>} Promise resolving to a SecretStoreExportInterface object.
  */
@@ -357,7 +457,7 @@ export async function exportSecretStore({
   state,
 }: {
   secretStoreId: string;
-  secretStoreTypeId: string;
+  secretStoreTypeId: string | undefined;
   globalConfig: boolean;
   state: State;
 }): Promise<SecretStoreExportInterface> {
@@ -368,12 +468,14 @@ export async function exportSecretStore({
       globalConfig,
       state,
     })) as SecretStoreExportSkeleton;
-    secretStore.mappings = await readSecretStoreMappings({
-      secretStoreId,
-      secretStoreTypeId: secretStore._type._id,
-      globalConfig,
-      state,
-    });
+    if (canSecretStoreHaveMappings(secretStoreTypeId)) {
+      secretStore.mappings = await readSecretStoreMappings({
+        secretStoreId,
+        secretStoreTypeId: secretStore._type._id,
+        globalConfig,
+        state,
+      });
+    }
     const exportData = createSecretStoreExportTemplate({ state });
     exportData.secretstore[secretStoreId] =
       secretStore as SecretStoreExportSkeleton;
@@ -417,17 +519,11 @@ export async function exportSecretStores({
         message: `Exporting secret store ${secretStore._id}`,
         state,
       });
-      try {
+      if (canSecretStoreHaveMappings(secretStore._type._id)) {
         secretStore.mappings = await readSecretStoreMappings({
           secretStoreId: secretStore._id,
           secretStoreTypeId: secretStore._type._id,
           globalConfig,
-          state,
-        });
-      } catch (e) {
-        printMessage({
-          message: `Unable to export mapping for secret store with id '${secretStore._id}': ${e.message}`,
-          type: 'error',
           state,
         });
       }
@@ -475,9 +571,9 @@ export async function updateSecretStore({
 }
 
 /**
- * Update secret store mapping
+ * Update secret store mapping. Will throw if type is not defined and multiple secret stores with the same id are found.
  * @param {string} secretStoreId Secret store id
- * @param {string} secretStoreTypeId Secret store type id
+ * @param {string | undefined} secretStoreTypeId Secret store type id (optional)
  * @param {SecretStoreMappingSkeleton} secretStoreMappingData secret store mapping to import
  * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
  * @returns {Promise<SecretStoreMappingSkeleton>} a promise that resolves to a secret store mapping object
@@ -490,11 +586,15 @@ export async function updateSecretStoreMapping({
   state,
 }: {
   secretStoreId: string;
-  secretStoreTypeId: string;
+  secretStoreTypeId: string | undefined;
   secretStoreMappingData: SecretStoreMappingSkeleton;
   globalConfig: boolean;
   state: State;
 }): Promise<SecretStoreMappingSkeleton> {
+  if (!secretStoreTypeId)
+    secretStoreTypeId = (
+      await findSecretStore({ secretStoreId, globalConfig, state })
+    )._type._id;
   return putSecretStoreMapping({
     secretStoreId,
     secretStoreTypeId,
@@ -578,4 +678,47 @@ export async function importSecretStores({
     }
     throw new FrodoError(`Error importing secret stores`, error);
   }
+}
+
+/**
+ * Function that returns true if the given secret store type can have mappings, false otherwise
+ * @param secretStoreTypeId The secret store type
+ * @returns true if the given secret store type can have mappings, false otherwise
+ */
+export function canSecretStoreHaveMappings(secretStoreTypeId: string): boolean {
+  return !SECRET_STORES_WITH_NO_MAPPINGS.includes(secretStoreTypeId);
+}
+
+/**
+ * Helper to find a secret store with a specified id. Throws if none or multiple secret stores with the same id are found across different secret store types.
+ * @param {string} secretStoreId Secret store id
+ * @param {boolean} globalConfig true if the secret store mapping is global, false otherwise. Default: false.
+ * @returns {Promise<SecretStoreSkeleton>} a promise that resolves to a secret store mapping object
+ */
+async function findSecretStore({
+  secretStoreId,
+  globalConfig = false,
+  state,
+}: {
+  secretStoreId: string;
+  globalConfig: boolean;
+  state: State;
+}): Promise<SecretStoreSkeleton> {
+  const stores = (
+    await readSecretStores({
+      globalConfig,
+      state,
+    })
+  ).filter((s) => s._id === secretStoreId);
+  if (stores.length === 0) {
+    throw new FrodoError(
+      `No secret store found with the id '${secretStoreId}'`
+    );
+  }
+  if (stores.length > 1) {
+    throw new FrodoError(
+      `Multiple secret stores found with the id '${secretStoreId}'`
+    );
+  }
+  return stores[0];
 }
