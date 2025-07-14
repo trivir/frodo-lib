@@ -42,6 +42,7 @@ import { filterRecording } from "../utils/PollyUtils";
 import * as SecretStoreOps from "./SecretStoreOps";
 import { state } from "../lib/FrodoLib";
 import Constants from "../shared/Constants";
+import { snapshotResultCallback } from "../test/utils/TestUtils";
 
 const ctx = autoSetupPolly();
 
@@ -78,13 +79,37 @@ describe('SecretStoreOps', () => {
       beforeEach(() => {
         setDefaultState();
       });
+
+      describe('createSecretStoreMapping()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.createSecretStoreMapping).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
       describe('readSecretStore()', () => {
         test('0: Method is implemented', async () => {
           expect(SecretStoreOps.readSecretStore).toBeDefined();
         });
+
         test('1: Read ESV secret store', async () => {
           const response = await SecretStoreOps.readSecretStore({
             secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
+      });
+
+      describe('readSecretStoreSchema()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.readSecretStoreSchema).toBeDefined();
+        });
+
+        test('1: Read ESV secret store schema', async () => {
+          const response = await SecretStoreOps.readSecretStoreSchema({
             secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
             globalConfig: false,
             state,
@@ -105,6 +130,39 @@ describe('SecretStoreOps', () => {
     
         test('2: Read global SecretStores', async () => {
           await expect(SecretStoreOps.readSecretStores({ globalConfig: true, state })).rejects.toThrow();
+        });
+      });
+
+      describe('readSecretStoreMapping()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.readSecretStoreMapping).toBeDefined();
+        });
+    
+        test('1: Read ESV secret store mapping', async () => {
+          const response = await SecretStoreOps.readSecretStoreMapping({
+            secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            secretId: 'am.services.httpclient.mtls.clientcert.testClientCert.secret',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
+      });
+
+      describe('readSecretStoreMappings()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.readSecretStoreMappings).toBeDefined();
+        });
+
+        test('1: Read ESV secret store mappings', async () => {
+          const response = await SecretStoreOps.readSecretStoreMappings({
+            secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
         });
       });
     
@@ -131,14 +189,14 @@ describe('SecretStoreOps', () => {
         });
     
         test('1: Export realm SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
         });
     
         test('2: Export global SecretStores', async () => {
-          await expect(SecretStoreOps.exportSecretStores({ globalConfig: true, state })).rejects.toThrow();
+          await expect(SecretStoreOps.exportSecretStores({ globalConfig: true, resultCallback: snapshotResultCallback, state })).rejects.toThrow();
         });
       });
     
@@ -162,6 +220,34 @@ describe('SecretStoreOps', () => {
         });
         //TODO: create tests
       });
+
+      describe('deleteSecretStore()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStore).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStores()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStores).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMapping()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStoreMapping).toBeDefined();
+        });
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMappings()', () => {
+        test('0: Method is implemented', async () => {
+          expect(SecretStoreOps.deleteSecretStoreMappings).toBeDefined();
+        });
+        //TODO: create tests
+      });
     });
   }
 
@@ -176,8 +262,32 @@ describe('SecretStoreOps', () => {
         setDefaultState(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
       });
 
+      describe('createSecretStoreMapping()', () => {
+        //TODO: create tests
+      });
+
       describe('readSecretStore()', () => {
         //TODO: create tests
+      });
+
+      describe('readSecretStoreSchema()', () => {
+        test('0: Read realm secret store schema', async () => {
+          const response = await SecretStoreOps.readSecretStoreSchema({
+            secretStoreTypeId: 'KeyStoreSecretStore',
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
+
+        test('1: Read global secret store schema', async () => {
+          const response = await SecretStoreOps.readSecretStoreSchema({
+            secretStoreTypeId: 'EnvironmentAndSystemPropertySecretStore',
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
     
       describe('readSecretStores()', () => {
@@ -191,6 +301,14 @@ describe('SecretStoreOps', () => {
           expect(response).toMatchSnapshot();
         });
       });
+
+      describe('readSecretStoreMapping()', () => {
+        //TODO: create tests
+      });
+
+      describe('readSecretStoreMappings()', () => {
+        //TODO: create tests
+      });
     
       describe('exportSecretStore()', () => {
         //TODO: create tests
@@ -198,14 +316,14 @@ describe('SecretStoreOps', () => {
     
       describe('exportSecretStores()', () => {
         test('0: Export realm SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: false, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
         });
     
         test('1: Export global SecretStores', async () => {
-          const response = await SecretStoreOps.exportSecretStores({ globalConfig: true, state });
+          const response = await SecretStoreOps.exportSecretStores({ globalConfig: true, resultCallback: snapshotResultCallback, state });
           expect(response).toMatchSnapshot({
             meta: expect.any(Object),
           });
@@ -221,6 +339,22 @@ describe('SecretStoreOps', () => {
       });
     
       describe('importSecretStores()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStore()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStores()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMapping()', () => {
+        //TODO: create tests
+      });
+
+      describe('deleteSecretStoreMappings()', () => {
         //TODO: create tests
       });
     });
