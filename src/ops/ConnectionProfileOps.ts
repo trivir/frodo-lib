@@ -69,6 +69,17 @@ export type ConnectionProfile = {
    */
   saveConnectionProfile(host: string): Promise<boolean>;
   /**
+   * Set an alias for an existing connection profile
+   * @param {string} host host url or unique substring of existing connection profile
+   * @param {string} alias alias to be assigned to connection profile
+   */
+  setConnectionProfileAlias(host: string, alias: string): void;
+  /**
+   * Set an alias for an existing connection profile
+   * @param {string} host host url or unique substring of existing connection profile
+   */
+  deleteConnectionProfileAlias(host: string): void;
+  /**
    * Delete connection profile
    * @param {string} host host tenant host url or unique substring
    */
@@ -115,6 +126,12 @@ export default (state: State): ConnectionProfile => {
     async saveConnectionProfile(host: string): Promise<boolean> {
       return saveConnectionProfile({ host, state });
     },
+    setConnectionProfileAlias(host: string, alias: string): void {
+      setConnectionProfileAlias({ host, alias, state });
+    },
+    deleteConnectionProfileAlias(host: string): void {
+      deleteConnectionProfileAlias({ host, state });
+    },
     deleteConnectionProfile(host: string): void {
       deleteConnectionProfile({ host, state });
     },
@@ -131,6 +148,7 @@ const fileOptions = {
 export interface SecureConnectionProfileInterface {
   tenant: string;
   idmHost?: string;
+  alias?: string;
   allowInsecureConnection?: boolean;
   deploymentType?: string;
   username?: string | null;
@@ -150,6 +168,7 @@ export interface SecureConnectionProfileInterface {
 export interface ConnectionProfileInterface {
   tenant: string;
   idmHost?: string;
+  alias?: string;
   allowInsecureConnection?: boolean;
   deploymentType?: string;
   username?: string | null;
@@ -211,14 +230,23 @@ function findConnectionProfiles({
   state: State;
 }): SecureConnectionProfileInterface[] {
   const profiles: SecureConnectionProfileInterface[] = [];
+  // First check for aliases
   for (const tenant in connectionProfiles) {
-    // debugMessage({
-    //   message: `ConnectionProfileOps.findConnectionProfiles: tenant=${tenant}`,
-    //   state,
-    // });
+    const profile = connectionProfiles[tenant];
+    if (profile.alias === host) {
+      debugMessage({
+        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched alias for '${tenant}', including in result set`,
+        state,
+      });
+      const foundProfile = { ...profile, tenant };
+      return [foundProfile];
+    }
+  }
+  // Then check substring
+  for (const tenant in connectionProfiles) {
     if (tenant.includes(host)) {
       debugMessage({
-        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' identifies '${tenant}', including in result set`,
+        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched as substring in '${tenant}', including in result set`,
         state,
       });
       const foundProfile = { ...connectionProfiles[tenant] };
@@ -383,6 +411,7 @@ export async function getConnectionProfileByHost({
   return {
     tenant: profiles[0].tenant,
     idmHost: profiles[0].idmHost ? profiles[0].idmHost : null,
+    alias: profiles[0].alias,
     allowInsecureConnection: profiles[0].allowInsecureConnection,
     deploymentType: profiles[0].deploymentType,
     username: profiles[0].username ? profiles[0].username : null,
@@ -544,6 +573,25 @@ export async function saveConnectionProfile({
     // idm host
     if (state.getIdmHost()) profile.idmHost = state.getIdmHost();
 
+    // alias
+    if (state.getAlias()) {
+      const alias = state.getAlias();
+      findConnectionProfiles({
+        connectionProfiles: profiles,
+        host: alias,
+        state,
+      });
+      // check for unique alias
+      for (const profile in profiles) {
+        if (profiles[profile].alias === alias) {
+          throw new FrodoError(
+            `Alias '${alias}' is already in use by connection profile '${profile}'. Please use a unique alias.`
+          );
+        }
+      }
+      profile.alias = state.getAlias();
+    }
+
     // allow insecure connection
     if (state.getAllowInsecureConnection())
       profile.allowInsecureConnection = state.getAllowInsecureConnection();
@@ -671,6 +719,105 @@ export async function saveConnectionProfile({
   } catch (error) {
     throw new FrodoError(`Error saving connection profile`, error);
   }
+}
+
+/**
+ * Sets alias for existing connection profile
+ * @param host host tenant host url or unique substring
+ */
+export function setConnectionProfileAlias({
+  host,
+  alias,
+  state,
+}: {
+  host: string;
+  alias: string;
+  state: State;
+}) {
+  const filename = getConnectionProfilesPath({ state });
+  let connectionsData: ConnectionsFileInterface = {};
+  if (!fs.statSync(filename, { throwIfNoEntry: false })) {
+    throw new FrodoError(`Connection profiles file ${filename} not found`);
+  }
+  const data = fs.readFileSync(filename, 'utf8');
+  connectionsData = JSON.parse(data);
+  const profiles = findConnectionProfiles({
+    connectionProfiles: connectionsData,
+    host,
+    state,
+  });
+  if (profiles.length === 0) {
+    throw new FrodoError(`No connection profile found matching '${host}'`);
+  }
+  if (profiles.length > 1) {
+    throw new FrodoError(
+      `Multiple matching connection profiles found matching '${host}':\n  - ${profiles
+        .map((profile) => profile.tenant)
+        .join(
+          '\n  - '
+        )}\nSpecify a sub-string uniquely identifying a single connection profile host URL.`
+    );
+  }
+  const tenant = profiles[0].tenant;
+  for (const existingTenant in connectionsData) {
+    if (
+      existingTenant !== tenant &&
+      connectionsData[existingTenant].alias === alias
+    ) {
+      throw new FrodoError(
+        `Alias '${alias}' is already in use by connection profile '${existingTenant}'. Please use a unique alias.`
+      );
+    }
+  }
+  connectionsData[tenant].alias = alias;
+  fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
+  printMessage({
+    message: `Alias '${alias}' has been set for connection profile '${tenant}'`,
+    type: 'info',
+    state,
+  });
+}
+
+export function deleteConnectionProfileAlias({
+  host,
+  state,
+}: {
+  host: string;
+  state: State;
+}) {
+  const filename = getConnectionProfilesPath({ state });
+  if (!fs.statSync(filename, { throwIfNoEntry: false })) {
+    throw new FrodoError(`Connection profiles file ${filename} not found`);
+  }
+  const data = fs.readFileSync(filename, 'utf8');
+  const connectionsData: ConnectionsFileInterface = JSON.parse(data);
+  const profiles = findConnectionProfiles({
+    connectionProfiles: connectionsData,
+    host,
+    state,
+  });
+  if (profiles.length === 0) {
+    throw new FrodoError(`No connection profile found matching '${host}'`);
+  }
+  if (profiles.length > 1) {
+    throw new FrodoError(
+      `Multiple matching connection profiles found matching '${host}':\n - ${profiles
+        .map((profile) => profile.tenant)
+        .join('\n - ')}\nUse a more specific identifier or alias.`
+    );
+  }
+  const tenant = profiles[0].tenant;
+  if (!connectionsData[tenant].alias) {
+    throw new FrodoError(`No alias is set for connection profile '${tenant}'`);
+  }
+  const alias = connectionsData[tenant].alias;
+  delete connectionsData[tenant].alias;
+  fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
+  printMessage({
+    message: `Alias '${alias}' has been deleted for connection profile '${tenant}'.`,
+    type: 'info',
+    state,
+  });
 }
 
 /**

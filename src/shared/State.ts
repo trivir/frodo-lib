@@ -39,6 +39,8 @@ export type State = {
    * @returns the IDM host base URL
    */
   getIdmHost(): string;
+  setAlias(alias: string): void;
+  getAlias(): string | undefined;
   setUsername(username: string): void;
   getUsername(): string;
   setPassword(password: string): void;
@@ -192,6 +194,13 @@ export default (initialState: StateInterface): State => {
     },
     getIdmHost() {
       return state.idmHost || process.env.FRODO_IDM_HOST;
+    },
+
+    setAlias(alias: string) {
+      state.alias = alias;
+    },
+    getAlias() {
+      return state.alias;
     },
 
     setUsername(username: string) {
@@ -518,6 +527,7 @@ export interface StateInterface {
   // connection settings
   host?: string;
   idmHost?: string;
+  alias?: string;
   username?: string;
   password?: string;
   realm?: string;
