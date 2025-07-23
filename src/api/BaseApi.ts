@@ -192,13 +192,15 @@ export function generateAmApi({
   const requestConfig = mergeDeep(
     {
       // baseURL: `${storage.session.getTenant()}/json`,
+      ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       timeout,
       headers: {
         ...headers,
         ...state.getAuthenticationHeaderOverrides(),
       },
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
       proxy: getProxy(),
     },
     requestOverride
@@ -269,8 +271,10 @@ export function generateOauth2Api({
       ...headers,
       ...state.getAuthenticationHeaderOverrides(),
     },
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -313,8 +317,10 @@ export function generateIdmApi({
           Authorization: `Bearer ${state.getBearerToken()}`,
         }),
       },
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -358,8 +364,10 @@ export function generateLogKeysApi({
     {
       timeout,
       headers,
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -401,8 +409,10 @@ export function generateLogApi({
       // baseURL: getTenantURL(storage.session.getTenant()),
       timeout,
       headers,
-      httpAgent: getHttpAgent(),
-      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      ...(!process.env.FRODO_MOCK && {
+        httpAgent: getHttpAgent(),
+        httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+      }),
       proxy: getProxy(),
     },
     requestOverride
@@ -489,8 +499,10 @@ export function generateEnvApi({
     timeout,
     headers,
     ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -537,8 +549,10 @@ export function generateGovernanceApi({
     timeout,
     headers,
     ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(state.getAllowInsecureConnection()),
+    }),
     proxy: getProxy(),
   };
 
@@ -578,8 +592,11 @@ export function generateReleaseApi({
       'Content-Type': 'application/json',
     },
     ...requestOverride,
-    httpAgent: getHttpAgent(),
-    httpsAgent: getHttpsAgent(false, false),
+    ...(!process.env.FRODO_MOCK && {
+      httpAgent: getHttpAgent(),
+      httpsAgent: getHttpsAgent(false, false),
+    }),
+
     proxy: getProxy(),
   };
 
