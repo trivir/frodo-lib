@@ -73,6 +73,76 @@ describe('ConnectionProfileOps', () => {
     }
   });
 
+  describe('findConnectionProfiles()', () => {
+    test.only('1: Find connection profile by alias', async () => {
+      const tenant = exampleHost
+      const alias = 'unique-alias';
+      const host = alias;
+      const connectionProfiles = {
+        [tenant]: {
+          ...exampleConnectionProfile,
+          alias,
+        },
+      };
+      fs.writeFileSync(
+        connectionProfilePath1,
+        JSON.stringify(connectionProfiles, null, 2)
+      );
+
+      const connections = ConnectionProfileOps.findConnectionProfiles({
+        connectionProfiles,
+        host,
+        state,
+      });
+      expect(connections).toHaveLength(1);
+      expect(connections[0].tenant).toBe(tenant);
+      expect(connections[0].alias).toBe(alias);
+    });
+
+    test('2: Default to substring matching after failing to find connection profile by alias', async () => {
+      const tenant = exampleHost;
+      const host = 'name';
+      const connectionProfiles = {
+        [tenant]: {
+          ...exampleConnectionProfile,
+        },
+      };
+      fs.writeFileSync(
+        connectionProfilePath1,
+        JSON.stringify(connectionProfiles, null, 2)
+      );
+
+      const connections = ConnectionProfileOps.findConnectionProfiles({
+        connectionProfiles,
+        host,
+        state,
+      });
+      expect(connections).toHaveLength(1);
+      expect(connections[0].tenant).toBe(tenant);
+    });
+
+    test('3: Fail to find a match by alias or substring', async () => {
+      const host = 'nonexistent'
+      const tenant = exampleHost;
+      const connectionProfiles = {
+        [tenant]: {
+          ...exampleConnectionProfile,
+        },
+      };
+      fs.writeFileSync(
+        connectionProfilePath1,
+        JSON.stringify(connectionProfiles, null, 2)
+      );
+
+      const connections = ConnectionProfileOps.findConnectionProfiles({
+        connectionProfiles,
+        host,
+        state,
+      });
+      expect(connections).toHaveLength(0);
+    });
+  });
+
   describe('saveConnectionProfile()', () => {
     test('1: Create connection profiles in location from state field', async () => {
       const host = exampleHost;

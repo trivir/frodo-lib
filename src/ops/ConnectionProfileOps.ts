@@ -220,7 +220,7 @@ export function getConnectionProfilesPath({ state }: { state: State }): string {
  * @param {State} state library state
  * @returns {SecureConnectionProfileInterface[]} Array of connection profiles
  */
-function findConnectionProfiles({
+export function findConnectionProfiles({
   connectionProfiles,
   host,
   state,
