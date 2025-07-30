@@ -28,7 +28,7 @@ export type ExportImport = {
   convertTextArrayToBase64Url(textArray: string[]): any;
   validateImport(metadata: any): boolean;
   getTypedFilename(name: string, type: string, suffix?: string): string;
-  sanitize(
+  sanitizeFileName(
     name: string,
     options?: { replacement?: string | ((char: string) => string) }
   );
@@ -46,7 +46,7 @@ export type ExportImport = {
    * @param {Object} data data object
    * @param {String} filename file name
    * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
-   * @param {boolean} keepRev Remove the _rev key from objects. Default: true
+   * @param {boolean} keepRev keep the _rev key from objects. Default: false
    * @return {boolean} true if successful, false otherwise
    */
   saveJsonToFile(
@@ -157,11 +157,11 @@ export default (state: State): ExportImport => {
     getTypedFilename(name: string, type: string, suffix = 'json'): string {
       return getTypedFilename(name, type, suffix);
     },
-    sanitize(
+    sanitizeFileName(
       name: string,
       options?: { replacement?: string | ((char: string) => string) }
     ): string {
-      return sanitize(name, options);
+      return sanitizeFileName(name, options);
     },
     getWorkingDirectory(mkdirs = false) {
       return getWorkingDirectory({ mkdirs, state });
@@ -302,7 +302,13 @@ export function getTypedFilename(
   return `${slug}.${type}.${suffix}`;
 }
 
-export function sanitize(
+/**
+ * This function is from fr-config-manager. It changes the name of the files to be safe on various OS. 
+ * @param input 
+ * @param options 
+ * @returns 
+ */
+export function sanitizeFileName(
   input: string,
   options?: {
     replacement?: string | ((char: string) => string);
@@ -435,7 +441,7 @@ export function saveToFile({
  * @param {object} data data object
  * @param {string} filename file name
  * @param {boolean} includeMeta true to include metadata, false otherwise. Default: true
- * @param {boolean} keepRev Remove the _rev key from objects. Default: true
+ * @param {boolean} keepRev Keep the _rev key from objects. Default: false
  * @return {boolean} true if successful, false otherwise
  */
 export function saveJsonToFile({
@@ -483,8 +489,7 @@ export function saveTextToFile({
   try {
     fs.writeFileSync(
       filename,
-      data + (data.endsWith('\n') ? '' : '\n'),
-      'utf8'
+      data + (data.endsWith('\n') ? '' : '\n')
     );
     return true;
   } catch (err) {

@@ -479,17 +479,17 @@ export async function readConfigEntities({
 export async function readConfigEntitiesByType({
   type,
   state,
-  onlyVisibleTemplates,
+  excludeDefault,
 }: {
   type: string;
   state: State;
-  onlyVisibleTemplates?: boolean;
+  excludeDefault?: boolean;
 }): Promise<NoIdObjectSkeletonInterface[]> {
   try {
     const { result } = await _getConfigEntitiesByType({
       type,
       state,
-      onlyVisibleTemplates,
+      excludeDefault,
     });
     return result;
   } catch (error) {

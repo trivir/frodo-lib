@@ -178,8 +178,6 @@ export async function exportAuthenticationSettings({
   }
 }
 
-export async function exportAuthenticationSettingsForAllRealms() {}
-
 /**
  * Import authentication settings
  * @param {AuthenticationSettingsExportInterface} importData import data

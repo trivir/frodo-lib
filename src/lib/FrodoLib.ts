@@ -54,9 +54,6 @@ import ConnectionProfileOps, {
 } from '../ops/ConnectionProfileOps';
 import ConnectorOps, { Connector } from '../ops/ConnectorOps';
 import EmailTemplateOps, { EmailTemplate } from '../ops/EmailTemplateOps';
-import FrConfigServiceObjectsOps, {
-  FrConfigServiceObject,
-} from '../ops/FrConfigServiceObjectsOps';
 import IdmConfigOps, { IdmConfig } from '../ops/IdmConfigOps';
 import IdmCryptoOps, { IdmCrypto } from '../ops/IdmCryptoOps';
 import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps';
@@ -202,7 +199,6 @@ export type Frodo = {
   server: Server;
   secretStore: SecretStore;
   service: Service;
-  serviceObject: FrConfigServiceObject;
   session: Session;
   site: Site;
 
@@ -377,7 +373,6 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     server: ServerOps(state),
     secretStore: SecretStoreOps(state),
     service: ServiceOps(state),
-    serviceObject: FrConfigServiceObjectsOps(state),
     session: SessionOps(state),
     site: SiteOps(state),
 
