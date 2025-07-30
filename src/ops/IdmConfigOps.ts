@@ -479,12 +479,18 @@ export async function readConfigEntities({
 export async function readConfigEntitiesByType({
   type,
   state,
+  excludeDefault,
 }: {
   type: string;
   state: State;
+  excludeDefault?: boolean;
 }): Promise<NoIdObjectSkeletonInterface[]> {
   try {
-    const { result } = await _getConfigEntitiesByType({ type, state });
+    const { result } = await _getConfigEntitiesByType({
+      type,
+      state,
+      excludeDefault,
+    });
     return result;
   } catch (error) {
     throw new FrodoError(`Error reading config entities by type`, error);
