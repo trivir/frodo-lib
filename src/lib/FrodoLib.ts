@@ -91,6 +91,7 @@ import VersionUtils, { Version } from '../ops/VersionUtils';
 import ConstantsImpl, { Constants } from '../shared/Constants';
 import StateImpl, { State, StateInterface } from '../shared/State';
 import Base64Utils, { Base64 } from '../utils/Base64Utils';
+import CryptoUtils, { FrodoCrypto } from '../utils/CryptoUtils';
 import ExportImportUtils, { ExportImport } from '../utils/ExportImportUtils';
 import ForgeRockUtils, { FRUtils } from '../utils/ForgeRockUtils';
 import JsonUtils, { Json } from '../utils/JsonUtils';
@@ -208,6 +209,7 @@ export type Frodo = {
     ExportImport &
     Base64 & {
       constants: Constants;
+      crypto: FrodoCrypto;
       jose: Jose;
       json: Json;
       version: Version;
@@ -259,6 +261,29 @@ export type Frodo = {
     host: string,
     serviceAccountId: string,
     serviceAccountJwkStr: string,
+    realm?: string,
+    deploymentType?: string,
+    allowInsecureConnection?: boolean,
+    debug?: boolean,
+    curlirize?: boolean
+  ): Frodo;
+
+  /**
+   * Factory helper to create a frodo instance ready for logging in with Amster credentials
+   * @param {string} host host base URL, e.g. 'https://am.example.com:8443/am'
+   * @param {string} amsterPrivateKey the pem encoded private key used to authenticate with Amster
+   * @param {string} authenticationService (optional) the authentication service used to authenticate with Amster (default: 'amsterService')
+   * @param {string} realm (optional) override default realm
+   * @param {string} deploymentType (optional) override deployment type ('cloud', 'forgeops', or 'classic')
+   * @param {boolean} allowInsecureConnection (optional) allow insecure connection
+   * @param {boolean} debug (optional) enable debug output
+   * @param {boolean} curlirize (optional) enable output of all library REST calls as curl commands
+   * @returns {Frodo} frodo instance
+   */
+  createInstanceWithAmsterAccount(
+    host: string,
+    amsterPrivateKey: string,
+    authenticationService?: string,
     realm?: string,
     deploymentType?: string,
     allowInsecureConnection?: boolean,
@@ -381,6 +406,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
       ...ExportImportUtils(state),
       ...Base64Utils(),
       constants: ConstantsImpl,
+      crypto: CryptoUtils(),
       jose: JoseOps(state),
       json: JsonUtils(),
       version: VersionUtils(state),
@@ -389,10 +415,35 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
     createInstance,
     createInstanceWithAdminAccount,
     createInstanceWithServiceAccount,
+    createInstanceWithAmsterAccount,
   };
 };
 
 function createInstance(config: StateInterface): Frodo {
+  const frodo = FrodoLib(config);
+  return frodo;
+}
+
+function createInstanceWithAmsterAccount(
+  host: string,
+  amsterPrivateKey: string,
+  authenticationService: string = ConstantsImpl.DEFAULT_AMSTER_SERVICE,
+  realm: string = undefined,
+  deploymentType: string = undefined,
+  allowInsecureConnection = false,
+  debug = false,
+  curlirize = false
+): Frodo {
+  const config: StateInterface = {
+    host,
+    amsterPrivateKey,
+    authenticationService,
+    realm,
+    deploymentType,
+    allowInsecureConnection,
+    debug,
+    curlirize,
+  };
   const frodo = FrodoLib(config);
   return frodo;
 }
@@ -519,6 +570,22 @@ function createInstanceWithAdminAccount(
  *
  * // and perform operations
  * instance3.authn.journey.exportJourney('Login');
+ * ```
+ *
+ * {@link frodo.createInstanceWithAmsterAccount}
+ * ```javascript
+ * // use factory method to create a new Frodo instance ready to login with Amster account
+ * const instance4 = frodo.createInstanceWithAmsterAccount(
+ *   'https://instance4/am',
+ *   '-----BEGIN PRIVATE KEY-----\nMIIJQgIBADANBgkqhkiG9w0BAQEFAASCCSwwggkoAgEAAoICAQCVPUZaHCRHu9i3\n...',
+ *   'amsterService'
+ * );
+ *
+ * // now the instance can login
+ * instance4.login.getTokens();
+ *
+ * // and perform AM operations
+ * instance4.authn.journey.exportJourney('Login');
  * ```
  */
 const frodo = FrodoLib();
