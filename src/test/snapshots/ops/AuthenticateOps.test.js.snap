@@ -7,18 +7,18 @@ exports[`AuthenticateOps Classic Tests getTokens() 0: Authenticate successfully 
   "realm": "/",
   "subject": Any<String>,
   "userSessionToken": {
-    "expires": 1753917052000,
+    "expires": 1753976145000,
     "from_cache": false,
     "realm": "/",
     "successUrl": "/am/console",
-    "tokenId": "MDXFdRfEPBkEwO6RW-tB5dcTibI.*AAJTSQACMDEAAlNLABxGMUp0SjdQb2pRWkZ2NmV3MEYzVjhBL2lIRTA9AAR0eXBlAANDVFMAAlMxAAA.*",
+    "tokenId": "pQvEBlVtlKosCXrta1USewzkja4.*AAJTSQACMDEAAlNLABwrS0Z0bzBaUkRHbkxiVEtYaTJ6b1NISWZVWXc9AAR0eXBlAANDVFMAAlMxAAA.*",
   },
 }
 `;
 
 exports[`AuthenticateOps Classic Tests getTokens() 0: Authenticate successfully as user 2`] = `"iPlanetDirectoryPro"`;
 
-exports[`AuthenticateOps Classic Tests getTokens() 0: Authenticate successfully as user 3`] = `"MDXFdRfEPBkEwO6RW-tB5dcTibI.*AAJTSQACMDEAAlNLABxGMUp0SjdQb2pRWkZ2NmV3MEYzVjhBL2lIRTA9AAR0eXBlAANDVFMAAlMxAAA.*"`;
+exports[`AuthenticateOps Classic Tests getTokens() 0: Authenticate successfully as user 3`] = `"pQvEBlVtlKosCXrta1USewzkja4.*AAJTSQACMDEAAlNLABwrS0Z0bzBaUkRHbkxiVEtYaTJ6b1NISWZVWXc9AAR0eXBlAANDVFMAAlMxAAA.*"`;
 
 exports[`AuthenticateOps Classic Tests getTokens() 1: Authenticate successfully using Amster credentials 1`] = `
 {
@@ -27,18 +27,18 @@ exports[`AuthenticateOps Classic Tests getTokens() 1: Authenticate successfully 
   "realm": "/",
   "subject": Any<String>,
   "userSessionToken": {
-    "expires": 1753917052000,
+    "expires": 1753976145000,
     "from_cache": false,
     "realm": "/",
     "successUrl": "/am/console",
-    "tokenId": "bMwAY_diMu3bLYrc9BCDJ7nyBgM.*AAJTSQACMDEAAlNLABwwOUd4RlMrbE9CM3dOd0Ixc3pRSytFMldhMDQ9AAR0eXBlAANDVFMAAlMxAAA.*",
+    "tokenId": "ZGWH6Y3tQsC3rhZHbyjFrn8USBw.*AAJTSQACMDEAAlNLABxHYW5GT1FRREtuTmhLeDRsLzBFUXdyRmU2NHc9AAR0eXBlAANDVFMAAlMxAAA.*",
   },
 }
 `;
 
 exports[`AuthenticateOps Classic Tests getTokens() 1: Authenticate successfully using Amster credentials 2`] = `"iPlanetDirectoryPro"`;
 
-exports[`AuthenticateOps Classic Tests getTokens() 1: Authenticate successfully using Amster credentials 3`] = `"bMwAY_diMu3bLYrc9BCDJ7nyBgM.*AAJTSQACMDEAAlNLABwwOUd4RlMrbE9CM3dOd0Ixc3pRSytFMldhMDQ9AAR0eXBlAANDVFMAAlMxAAA.*"`;
+exports[`AuthenticateOps Classic Tests getTokens() 1: Authenticate successfully using Amster credentials 3`] = `"ZGWH6Y3tQsC3rhZHbyjFrn8USBw.*AAJTSQACMDEAAlNLABxHYW5GT1FRREtuTmhLeDRsLzBFUXdyRmU2NHc9AAR0eXBlAANDVFMAAlMxAAA.*"`;
 
 exports[`AuthenticateOps Classic Tests getTokens() 2: Authenticate successfully using alternative Amster subject and service 1`] = `
 {
@@ -47,15 +47,15 @@ exports[`AuthenticateOps Classic Tests getTokens() 2: Authenticate successfully 
   "realm": "/",
   "subject": Any<String>,
   "userSessionToken": {
-    "expires": 1753917052000,
+    "expires": 1753976145000,
     "from_cache": false,
     "realm": "/",
     "successUrl": "/am/console",
-    "tokenId": "j7qvGfo7y_HDPTbE6cjdA3E6K_I.*AAJTSQACMDEAAlNLABxxZU1QOTVJN1hPRExZWkJ4Mm1XcmtkZkRKOUk9AAR0eXBlAANDVFMAAlMxAAA.*",
+    "tokenId": "JGVIkcoOtEcCAKTr1g9eUuzmwyk.*AAJTSQACMDEAAlNLABx5Z0NLOFRpbTYzTGRSNHdWM0Z3NElsSUZtODA9AAR0eXBlAANDVFMAAlMxAAA.*",
   },
 }
 `;
 
 exports[`AuthenticateOps Classic Tests getTokens() 2: Authenticate successfully using alternative Amster subject and service 2`] = `"iPlanetDirectoryPro"`;
 
-exports[`AuthenticateOps Classic Tests getTokens() 2: Authenticate successfully using alternative Amster subject and service 3`] = `"j7qvGfo7y_HDPTbE6cjdA3E6K_I.*AAJTSQACMDEAAlNLABxxZU1QOTVJN1hPRExZWkJ4Mm1XcmtkZkRKOUk9AAR0eXBlAANDVFMAAlMxAAA.*"`;
+exports[`AuthenticateOps Classic Tests getTokens() 2: Authenticate successfully using alternative Amster subject and service 3`] = `"JGVIkcoOtEcCAKTr1g9eUuzmwyk.*AAJTSQACMDEAAlNLABx5Z0NLOFRpbTYzTGRSNHdWM0Z3NElsSUZtODA9AAR0eXBlAANDVFMAAlMxAAA.*"`;
