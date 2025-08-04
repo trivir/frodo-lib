@@ -26,7 +26,7 @@ export type ConnectionProfile = {
   /**
    * Find connection profiles
    * @param {ConnectionsFileInterface} connectionProfiles connection profile object
-   * @param {string} host host url or unique substring
+   * @param {string} host host url, unique substring, or alias
    * @returns {SecureConnectionProfileInterface[]} Array of connection profiles
    */
   findConnectionProfiles(
@@ -42,7 +42,7 @@ export type ConnectionProfile = {
   initConnectionProfiles(): Promise<void>;
   /**
    * Get connection profile by host
-   * @param {String} host host tenant host url or unique substring
+   * @param {String} host host tenant, host url, unique substring, or alias
    * @returns {Object} connection profile or null
    */
   getConnectionProfileByHost(host: string): Promise<ConnectionProfileInterface>;
@@ -53,7 +53,7 @@ export type ConnectionProfile = {
   getConnectionProfile(): Promise<ConnectionProfileInterface>;
   /**
    * Load a connection profile into library state
-   * @param {string} host AM host URL or unique substring
+   * @param {string} host AM host URL, unique substring, or alias
    * @returns {Promise<boolean>} A promise resolving to true if successful
    */
   loadConnectionProfileByHost(host: string): Promise<boolean>;
@@ -64,24 +64,24 @@ export type ConnectionProfile = {
   loadConnectionProfile(): Promise<boolean>;
   /**
    * Save connection profile
-   * @param {string} host host url for new profiles or unique substring for existing profiles
+   * @param {string} host host url for new profiles, unique substring or alias for existing profiles
    * @returns {Promise<boolean>} true if the operation succeeded, false otherwise
    */
   saveConnectionProfile(host: string): Promise<boolean>;
   /**
    * Set an alias for an existing connection profile
-   * @param {string} host host url or unique substring of existing connection profile
+   * @param {string} host host url, unique substring, or alias of existing connection profile
    * @param {string} alias alias to be assigned to connection profile
    */
   setConnectionProfileAlias(host: string, alias: string): void;
   /**
    * Set an alias for an existing connection profile
-   * @param {string} host host url or unique substring of existing connection profile
+   * @param {string} host host url, unique substring, or alias of existing connection profile
    */
   deleteConnectionProfileAlias(host: string): void;
   /**
    * Delete connection profile
-   * @param {string} host host tenant host url or unique substring
+   * @param {string} host host tenant, host url, unique substring, or alias
    */
   deleteConnectionProfile(host: string): void;
   /**
@@ -216,7 +216,7 @@ export function getConnectionProfilesPath({ state }: { state: State }): string {
 /**
  * Find connection profiles
  * @param {ConnectionsFileInterface} connectionProfiles connection profile object
- * @param {string} host host url or unique substring
+ * @param {string} host host url, unique substring, or alias
  * @param {State} state library state
  * @returns {SecureConnectionProfileInterface[]} Array of connection profiles
  */
@@ -371,7 +371,7 @@ export async function initConnectionProfiles({ state }: { state: State }) {
 
 /**
  * Get connection profile by host
- * @param {string} host host tenant host url or unique substring
+ * @param {string} host host tenant, host url, unique substring, or alias
  * @param {State} state library state
  * @returns {Promise<ConnectionProfileInterface>} connection profile
  */
@@ -458,7 +458,7 @@ export async function getConnectionProfile({
 /**
  * Load a connection profile into library state
  * @param {Object} params Params object
- * @param {string} params.host AM host URL or unique substring
+ * @param {string} params.host AM host URL, unique substring, or alias
  * @param {State} params.state State object
  * @returns {Promise<boolean>} A promise resolving to true if successful
  */
@@ -504,7 +504,7 @@ export async function loadConnectionProfile({
 
 /**
  * Save connection profile
- * @param {string} host host url for new profiles or unique substring for existing profiles
+ * @param {string} host host url for new profiles, unique substring or alias for existing profiles
  * @returns {Promise<boolean>} true if the operation succeeded, false otherwise
  */
 export async function saveConnectionProfile({
@@ -723,7 +723,7 @@ export async function saveConnectionProfile({
 
 /**
  * Sets alias for existing connection profile
- * @param host host tenant host url or unique substring
+ * @param host host tenant, host url, unique substring, or alias
  */
 export function setConnectionProfileAlias({
   host,
@@ -822,7 +822,7 @@ export function deleteConnectionProfileAlias({
 
 /**
  * Delete connection profile
- * @param {String} host host tenant host url or unique substring
+ * @param {String} host host tenant, host url, unique substring, or alias
  */
 export function deleteConnectionProfile({
   host,
