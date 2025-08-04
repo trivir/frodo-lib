@@ -28,10 +28,6 @@ export type ExportImport = {
   convertTextArrayToBase64Url(textArray: string[]): any;
   validateImport(metadata: any): boolean;
   getTypedFilename(name: string, type: string, suffix?: string): string;
-  sanitizeFileName(
-    name: string,
-    options?: { replacement?: string | ((char: string) => string) }
-  );
   getWorkingDirectory(mkdirs?: boolean): string;
   getFilePath(fileName: string, mkdirs?: boolean): string;
   saveToFile(
@@ -156,12 +152,6 @@ export default (state: State): ExportImport => {
     },
     getTypedFilename(name: string, type: string, suffix = 'json'): string {
       return getTypedFilename(name, type, suffix);
-    },
-    sanitizeFileName(
-      name: string,
-      options?: { replacement?: string | ((char: string) => string) }
-    ): string {
-      return sanitizeFileName(name, options);
     },
     getWorkingDirectory(mkdirs = false) {
       return getWorkingDirectory({ mkdirs, state });
@@ -300,47 +290,6 @@ export function getTypedFilename(
     remove: /[^\w\s$*_+~.()'"!\-@]+/g,
   });
   return `${slug}.${type}.${suffix}`;
-}
-
-/**
- * This function is from fr-config-manager. It changes the name of the files to be safe on various OS. 
- * @param input 
- * @param options 
- * @returns 
- */
-export function sanitizeFileName(
-  input: string,
-  options?: {
-    replacement?: string | ((char: string) => string);
-  }
-): string {
-  /* eslint-disable  */
-  const illegalChars = /[\/\?<>\\:\*\|":]/g;
-  const controlChars = /[\x00-\x1f\x80-\x9f]/g;
-  const reservedNames = /^(con|prn|aux|nul|com\d|lpt\d)$/i;
-  /* eslint-enable */
-
-  let replacementFn: (substring: string) => string;
-
-  if (typeof options?.replacement === 'function') {
-    replacementFn = options.replacement;
-  } else {
-    const replacementValue = options?.replacement ?? '';
-    replacementFn = () => replacementValue;
-  }
-
-  let sanitized = input
-    .replace(illegalChars, replacementFn)
-    .replace(controlChars, replacementFn)
-    .replace(/^\.+$/, '');
-
-  sanitized = sanitized.trim();
-
-  if (reservedNames.test(sanitized)) {
-    sanitized = '_' + sanitized;
-  }
-
-  return sanitized;
 }
 
 export function getWorkingDirectory({
@@ -487,10 +436,7 @@ export function saveTextToFile({
   state: State;
 }): boolean {
   try {
-    fs.writeFileSync(
-      filename,
-      data + (data.endsWith('\n') ? '' : '\n')
-    );
+    fs.writeFileSync(filename, data + (data.endsWith('\n') ? '' : '\n'));
     return true;
   } catch (err) {
     printMessage({
