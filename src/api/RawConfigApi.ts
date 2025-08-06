@@ -8,7 +8,7 @@ const idmTemplate: string = '%s/%s';
 const amTemplate: string = '%s/%s';
 const envTemplate: string = '%s/environment/%s';
 
-export async function restGetRawIdm({
+export async function getRawIdm({
   state,
   url,
 }: {
@@ -21,7 +21,7 @@ export async function restGetRawIdm({
   return data;
 }
 
-export async function restGetRawAm({
+export async function getRawAm({
   state,
   url,
 }: {
@@ -37,7 +37,7 @@ export async function restGetRawAm({
   return data;
 }
 
-export async function restGetRawEnv({
+export async function getRawEnv({
   state,
   url,
 }: {
