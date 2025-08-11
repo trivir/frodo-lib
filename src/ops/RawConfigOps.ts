@@ -1,70 +1,107 @@
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
-import { getRawAm, getRawEnv, getRawIdm } from '../api/RawConfigApi';
+import {
+  ApiVersion,
+  getRawAm,
+  getRawEnv,
+  getRawIdm,
+} from '../api/RawConfigApi';
 import { State } from '../shared/State';
-import { debugMessage, verboseMessage } from '../utils/Console';
-import { FrodoError } from './FrodoError';
 import { mergeDeep } from '../utils/JsonUtils';
+import { FrodoError } from './FrodoError';
 
 export type RawConfig = {
-  exportRawConfig(path: string)
+  /**
+   * Exports raw configuration
+   * @param {RawExportOptions} options The export options, including the path to the resource
+   * @returns {Promise<IdObjectSkeletonInterface>} The raw configuration JSON object at the specified path
+   */
+  exportRawConfig(
+    options: RawExportOptions
+  ): Promise<IdObjectSkeletonInterface>;
 };
 
 export default (state: State): RawConfig => {
   return {
-    async exportRawConfig(configObject: any) {
-      return exportRawConfig({ state, configObject });
-    }
+    async exportRawConfig(
+      options: RawExportOptions
+    ): Promise<IdObjectSkeletonInterface> {
+      return exportRawConfig({ options, state });
+    },
   };
 };
 
+/**
+ * Raw config export options from fr-config-manager (https://github.com/ForgeRock/fr-config-manager/blob/main/docs/raw.md)
+ */
+export interface RawExportOptions {
+  /**
+   * The URL path for the configuration object, relative to the tenant base URL
+   */
+  path: string;
+  /**
+   * An optional partial configuration object which should override the corresponding properties of the object exported from the tenant.
+   */
+  overrides?: IdObjectSkeletonInterface;
+  /**
+   * An optional object containing the properties 'protocol' and 'resource' to be used in the API version header. This allows specific values for specific configuration. The default is { protocol: "2.0". resource: "1.0" }. Only used for configuration under /am or /environment
+   */
+  pushApiVersion?: ApiVersion;
+}
+
+/**
+ * Exports raw configuration
+ * @param {RawExportOptions} options The export options, including the path to the resource
+ * @returns {Promise<IdObjectSkeletonInterface>} The raw configuration JSON object at the specified path
+ */
 export async function exportRawConfig({
+  options,
   state,
-  configObject,
 }: {
+  options: RawExportOptions;
   state: State;
-  configObject: any;
 }): Promise<IdObjectSkeletonInterface> {
   try {
     let response: IdObjectSkeletonInterface;
 
-      // remove starting slash from path if it exists
-      if (configObject.path.startsWith('/')) {
-        configObject.path = configObject.path.substring(1);
-      }
+    // remove starting slash from path if it exists
+    const path = options.path.startsWith('/')
+      ? options.path.substring(1)
+      : options.path;
 
-      // support for only three root paths, am, openidm, and environment
-      const urlParts: string[] = configObject.path.split('/');
-      const startPath: string = urlParts.reverse().pop();
-      const noStart: string = urlParts.reverse().join('/');
-      switch (startPath) {
-        case 'openidm':
-          response = await getRawIdm({ state, url: noStart });
-          break;
-        case 'am':
-          response = await getRawAm({ state, url: noStart });
-          // fr-config-manager has this option, only for am end points
-          if (configObject.pushApiVersion) {
-            response._pushApiVersion = configObject.pushApiVersion;
-          }
-          break;
-        case 'environment':
-          response = await getRawEnv({ state, url: noStart });
-          break;
-        default:
-            throw new FrodoError(
-              `URL paths that start with ${startPath} are not supported`
-          );
-          break;
-      }
+    const urlParts: string[] = path.split('/');
+    const startPath: string = urlParts[0];
+    const noStart: string = urlParts.slice(1).join('/');
 
-      // all endpoints can have overrides
-      if (configObject.overrides) {
-        response = mergeDeep(response, configObject.overrides);
-      }
+    // support for only three root paths: am, openidm, and environment
+    switch (startPath) {
+      case 'am':
+        response = await getRawAm({ endpoint: noStart, state });
+        // fr-config-manager has this option, only for am end points
+        if (options.pushApiVersion) {
+          response._pushApiVersion = options.pushApiVersion;
+        }
+        break;
+      case 'openidm':
+        response = await getRawIdm({ endpoint: noStart, state });
+        break;
+      case 'environment':
+        response = await getRawEnv({ endpoint: noStart, state });
+        break;
+      default:
+        throw new FrodoError(
+          `URL paths that start with ${startPath} are not supported`
+        );
+    }
+
+    // all endpoints can have overrides
+    if (options.overrides) {
+      response = mergeDeep(response, options.overrides);
+    }
+
     return response;
   } catch (error) {
     throw new FrodoError(
-      `Error in exportRawIdm with relative url: ${configObject.path}`,
+      `Error in exportRawIdm with relative url: ${options.path}`,
       error
     );
   }

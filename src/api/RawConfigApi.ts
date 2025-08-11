@@ -1,60 +1,93 @@
 import util from 'util';
 
 import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
+import { getHostOnlyUrl, getIdmBaseUrl } from '../utils/ForgeRockUtils';
 import { generateAmApi, generateEnvApi, generateIdmApi } from './BaseApi';
 
-const idmTemplate: string = '%s/%s';
 const amTemplate: string = '%s/%s';
+const idmTemplate: string = '%s/%s';
 const envTemplate: string = '%s/environment/%s';
 
-export async function getRawIdm({
-  state,
-  url,
-}: {
-  state: State;
-  url: string;
-}) {
-  const urlString = util.format(idmTemplate, getIdmBaseUrl(state), url);
-  const { data } = await generateIdmApi({ state }).get(urlString);
+export type ApiVersion = {
+  protocol: string;
+  resource: string;
+};
 
-  return data;
+function getApiConfig(
+  apiVersion: ApiVersion = {
+    protocol: '2.0',
+    resource: '1.0',
+  }
+): { apiVersion: string } {
+  return {
+    apiVersion: `protocol=${apiVersion.protocol},resource=${apiVersion.resource}`,
+  };
 }
 
+/**
+ * Performs a get request against the specified AM endpoint
+ * @param {string} endpoint The AM endpoint (e.g. if full URL is https://<tenant-host>/am/<endpoint>, <endpoint> is the value to pass in)
+ * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
+ * @returns {Promise<any>} The response data from the endpoint
+ */
 export async function getRawAm({
+  endpoint,
+  apiVersion,
   state,
-  url,
 }: {
+  endpoint: string;
+  apiVersion?: ApiVersion;
   state: State;
-  url: string;
-}) {
-  const urlString = util.format(amTemplate, state.getHost(), url);
+}): Promise<any> {
+  const urlString = util.format(amTemplate, state.getHost(), endpoint);
   const { data } = await generateAmApi({
-    resource: { apiVersion: 'protocol=2.1,resource=1.0' },
+    resource: getApiConfig(apiVersion),
     state,
   }).get(urlString, { withCredentials: true });
 
   return data;
 }
 
-export async function getRawEnv({
+/**
+ * Performs a get request against the specified IDM endpoint
+ * @param {string} endpoint The IDM endpoint (e.g. if full URL is https://<tenant-host>/openidm/<endpoint>, <endpoint> is the value to pass in)
+ * @returns {Promise<any>} The response data from the endpoint
+ */
+export async function getRawIdm({
+  endpoint,
   state,
-  url,
 }: {
+  endpoint: string;
   state: State;
-  url: string;
-}) {
+}): Promise<any> {
+  const urlString = util.format(idmTemplate, getIdmBaseUrl(state), endpoint);
+  const { data } = await generateIdmApi({ state }).get(urlString);
+
+  return data;
+}
+
+/**
+ * Performs a get request against the specified Environment endpoint
+ * @param {string} endpoint The Environment endpoint (e.g. if full URL is https://<tenant-host>/environment/<endpoint>, <endpoint> is the value to pass in)
+ * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
+ * @returns {Promise<any>} The response data from the endpoint
+ */
+export async function getRawEnv({
+  endpoint,
+  apiVersion,
+  state,
+}: {
+  endpoint: string;
+  apiVersion?: ApiVersion;
+  state: State;
+}): Promise<any> {
   const urlString = util.format(
     envTemplate,
-    state
-      .getHost()
-      .split('/')
-      .filter((_, i, a) => i !== a.length - 1)
-      .join('/'),
-    url
+    getHostOnlyUrl(state.getHost()),
+    endpoint
   );
   const { data } = await generateEnvApi({
-    resource: { apiVersion: 'protocol=2.1,resource=1.0' },
+    resource: getApiConfig(apiVersion),
     state,
   }).get(urlString, { withCredentials: true });
 
