@@ -163,6 +163,7 @@ export interface SecureConnectionProfileInterface {
   encodedSvcacctJwk?: string | null;
   svcacctName?: string | null;
   svcacctScope?: string | null;
+  encodedAmsterPrivateKey?: string | null;
 }
 
 export interface ConnectionProfileInterface {
@@ -183,6 +184,7 @@ export interface ConnectionProfileInterface {
   svcacctJwk?: JwkRsa;
   svcacctName?: string | null;
   svcacctScope?: string | null;
+  amsterPrivateKey?: string | null;
 }
 
 export interface ConnectionsFileInterface {
@@ -352,6 +354,14 @@ export async function initConnectionProfiles({ state }: { state: State }) {
             await dataProtection.encrypt(connectionsData[conn]['svcacctJwk']);
           delete connectionsData[conn]['svcacctJwk'];
         }
+        if (connectionsData[conn]['amsterPrivateKey']) {
+          convert = true;
+          connectionsData[conn].encodedAmsterPrivateKey =
+            await dataProtection.encrypt(
+              connectionsData[conn]['amsterPrivateKey']
+            );
+          delete connectionsData[conn]['amsterPrivateKey'];
+        }
       }
       if (convert) {
         fs.writeFileSync(
@@ -438,6 +448,9 @@ export async function getConnectionProfileByHost({
       ? await dataProtection.decrypt(profiles[0].encodedSvcacctJwk)
       : null,
     svcacctScope: profiles[0].svcacctScope ? profiles[0].svcacctScope : null,
+    amsterPrivateKey: profiles[0].encodedAmsterPrivateKey
+      ? await dataProtection.decrypt(profiles[0].encodedAmsterPrivateKey)
+      : null,
   };
 }
 
@@ -485,6 +498,7 @@ export async function loadConnectionProfileByHost({
   state.setServiceAccountId(conn.svcacctId);
   state.setServiceAccountJwk(conn.svcacctJwk);
   state.setServiceAccountScope(conn.svcacctScope);
+  state.setAmsterPrivateKey(conn.amsterPrivateKey);
   return true;
 }
 
@@ -655,6 +669,13 @@ export async function saveConnectionProfile({
         message: `ConnectionProfileOps.saveConnectionProfile: added missing service account name`,
         state,
       });
+    }
+
+    // Amster account
+    if (state.getAmsterPrivateKey()) {
+      profile.encodedAmsterPrivateKey = await dataProtection.encrypt(
+        state.getAmsterPrivateKey()
+      );
     }
 
     // advanced settings
