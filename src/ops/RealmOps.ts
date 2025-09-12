@@ -233,6 +233,9 @@ export function createRealmExportTemplate({
  */
 export async function getRealms({ state }: { state: State }) {
   const { result } = await _getRealms({ state });
+  if (state.getDeploymentType() === 'cloud') {
+    return result.filter((realm: RealmSkeleton) => realm._id !== 'Lw');
+  }
   return result;
 }
 
