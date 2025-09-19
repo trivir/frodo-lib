@@ -43,6 +43,8 @@ import * as SecretStoreOps from "./SecretStoreOps";
 import { state } from "../lib/FrodoLib";
 import Constants from "../shared/Constants";
 import { snapshotResultCallback } from "../test/utils/TestUtils";
+import { SecretStoreMappingSkeleton } from "../api/SecretStoreApi";
+import { SecretStoreExportInterface } from "./SecretStoreOps";
 
 const ctx = autoSetupPolly();
 
@@ -76,6 +78,13 @@ describe('SecretStoreOps', () => {
       process.env.FRODO_RECORD_PHASE === '1')
   ) {
     describe('Cloud Tests', () => {
+      const CLOUD_MAPPING_1: SecretStoreMappingSkeleton = {
+        secretId: 'am.services.httpclient.mtls.servertrustcerts.testServerCert.secret',
+        aliases: [
+          'esv-test-server-cert'
+        ]
+      }
+
       beforeEach(() => {
         setDefaultState();
       });
@@ -84,7 +93,25 @@ describe('SecretStoreOps', () => {
         test('0: Method is implemented', async () => {
           expect(SecretStoreOps.createSecretStoreMapping).toBeDefined();
         });
-        //TODO: create tests
+        test('1: Create secret store mapping', async () => {
+          try {
+            await SecretStoreOps.deleteSecretStoreMapping({
+              secretStoreId: 'ESV',
+              secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+              secretId: CLOUD_MAPPING_1.secretId,
+              globalConfig: false,
+              state,
+            });
+          } catch (e) { /* Ignore error */ }
+          const response = await SecretStoreOps.createSecretStoreMapping({
+            secretStoreId: 'ESV',
+            secretStoreTypeId: 'GoogleSecretManagerSecretStoreProvider',
+            secretStoreMappingData: CLOUD_MAPPING_1,
+            globalConfig: false,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('readSecretStore()', () => {
@@ -258,16 +285,102 @@ describe('SecretStoreOps', () => {
       process.env.FRODO_RECORD_PHASE === '2')
   ) {
     describe('Classic Tests', () => {
+      const CLASSIC_MAPPING_1: SecretStoreMappingSkeleton = {
+        secretId: 'am.uma.resource.labels.mtls.cert',
+        aliases: [
+          'new',
+          'new2',
+          'new3'
+        ]
+      }
+
+      const CLASSIC_MAPPING_2: SecretStoreMappingSkeleton = {
+        secretId: 'am.applications.agents.remote.consent.request.signing.ES256',
+        aliases: [ 'es256test' ]
+      }
+
+      const CLASSIC_SECRET_STORE_1_ID = 'test-keystore';
+      const CLASSIC_SECRET_STORE_2_ID = 'test-keystore-2';
+      const CLASSIC_SECRET_STORES: SecretStoreExportInterface = {
+        secretstore: {
+          [CLASSIC_SECRET_STORE_1_ID]: {
+            _id: CLASSIC_SECRET_STORE_1_ID,
+            _type: {
+              _id: 'KeyStoreSecretStore',
+              collection: true,
+              name: 'Keystore'
+            },
+            file: '/root/am/security/keystores/keystore.jceks',
+            keyEntryPassword: 'entrypass',
+            leaseExpiryDuration: 5,
+            providerName: 'SunJCE',
+            storePassword: 'storepass',
+            storetype: 'JCEKS',
+            mappings: [
+              CLASSIC_MAPPING_1,
+              CLASSIC_MAPPING_2
+            ],
+          },
+          [CLASSIC_SECRET_STORE_2_ID]: {
+            _id: CLASSIC_SECRET_STORE_2_ID,
+            _type: {
+              _id: 'FileSystemSecretStore',
+              collection: true,
+              name: 'File System Secret Volumes'
+            },
+            directory: '/root/am/security/secrets/encrypted'
+          }
+        }
+      }
+
       beforeEach(() => {
         setDefaultState(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
       });
 
       describe('createSecretStoreMapping()', () => {
-        //TODO: create tests
+        test('0: Create global secret store mapping', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          await SecretStoreOps.deleteSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretId: CLASSIC_MAPPING_1.secretId,
+            globalConfig: true,
+            state,
+          });
+          const response = await SecretStoreOps.createSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretStoreMappingData: CLASSIC_MAPPING_1,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('readSecretStore()', () => {
-        //TODO: create tests
+        test('0: Read global secret store', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.readSecretStore({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('readSecretStoreSchema()', () => {
@@ -303,15 +416,61 @@ describe('SecretStoreOps', () => {
       });
 
       describe('readSecretStoreMapping()', () => {
-        //TODO: create tests
+        test('0: Read global secret store mapping', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.readSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretId: CLASSIC_MAPPING_1.secretId,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('readSecretStoreMappings()', () => {
-        //TODO: create tests
+        test('0: Create global secret store mappings', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.readSecretStoreMappings({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
     
       describe('exportSecretStore()', () => {
-        //TODO: create tests
+        test('0: Export global secret store', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.exportSecretStore({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
     
       describe('exportSecretStores()', () => {
@@ -331,31 +490,137 @@ describe('SecretStoreOps', () => {
       });
     
       describe('updateSecretStore()', () => {
-        //TODO: create tests
+        test('0: Update global secret store', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const secretStoreData = {...CLASSIC_SECRET_STORES.secretstore[CLASSIC_SECRET_STORE_1_ID]}
+          delete secretStoreData.mappings;
+          secretStoreData.leaseExpiryDuration = 6;
+          const response = await SecretStoreOps.updateSecretStore({
+            secretStoreData,
+            globalConfig: true,
+            state,
+          });
+          expect(response.leaseExpiryDuration).toBe(6);
+          expect(response).toMatchSnapshot();
+        });
       });
     
       describe('updateSecretStoreMapping()', () => {
-        //TODO: create tests
+        test('0: Update global secret store mapping', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const secretStoreMappingData = {...CLASSIC_MAPPING_1}
+          secretStoreMappingData.aliases = ['new4', 'new5'];
+          const response = await SecretStoreOps.updateSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretStoreMappingData,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
     
       describe('importSecretStores()', () => {
-        //TODO: create tests
+        test('0: Import global secret stores', async () => {
+          const response = await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('deleteSecretStore()', () => {
-        //TODO: create tests
+        test('0: Delete global secret store', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.deleteSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretId: CLASSIC_MAPPING_1.secretId,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('deleteSecretStores()', () => {
-        //TODO: create tests
+        test('0: Delete global secret stores', async () => {
+          const globalSecretStores = await SecretStoreOps.exportSecretStores({
+            globalConfig: true,
+            state
+          });
+          const response = await SecretStoreOps.deleteSecretStores({
+            globalConfig: true,
+            state,
+          });
+          await SecretStoreOps.importSecretStores({
+            importData: globalSecretStores,
+            globalConfig: true,
+            state
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('deleteSecretStoreMapping()', () => {
-        //TODO: create tests
+        test('0: Delete global secret store mapping', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.deleteSecretStoreMapping({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            secretId: CLASSIC_MAPPING_1.secretId,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
 
       describe('deleteSecretStoreMappings()', () => {
-        //TODO: create tests
+        test('0: Delete global secret store mappings', async () => {
+          await SecretStoreOps.importSecretStores({
+            importData: CLASSIC_SECRET_STORES,
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            globalConfig: true,
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          const response = await SecretStoreOps.deleteSecretStoreMappings({
+            secretStoreId: CLASSIC_SECRET_STORE_1_ID,
+            secretStoreTypeId: undefined,
+            globalConfig: true,
+            state,
+          });
+          expect(response).toMatchSnapshot();
+        });
       });
     });
   }
