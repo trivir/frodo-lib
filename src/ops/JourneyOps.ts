@@ -537,6 +537,10 @@ export interface TreeExportOptions {
    * Include x and y coordinate positions of the journey/tree nodes.
    */
   coords: boolean;
+  /**
+   * Save x and y coordinate positions of the journey/tree nodes separately.
+   */
+  sepCoords?: boolean;
 }
 
 /**
