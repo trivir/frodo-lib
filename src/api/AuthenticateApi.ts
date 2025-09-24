@@ -81,7 +81,7 @@ export async function step({
  * @param {any} config request config
  * @returns Promise resolving to the authentication service response
  */
-export async function stepIdm({
+export async function authenticateIdm({
   body = {},
   config = {},
   state,
@@ -93,7 +93,7 @@ export async function stepIdm({
   state: State;
 }): Promise<any> {
   debugMessage({
-    message: `AuthenticateApi.stepIdm: function start `,
+    message: `AuthenticateApi.authenticateIdm: function start `,
     state,
   });
   const urlString = `${state.getHost()}/authentication?_action=login`;

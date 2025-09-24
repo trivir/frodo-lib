@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'crypto';
 import url from 'url';
 import { v4 } from 'uuid';
 
-import { step, stepIdm } from '../api/AuthenticateApi';
+import { authenticateIdm, step } from '../api/AuthenticateApi';
 import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
@@ -422,7 +422,7 @@ async function determineDeploymentType(state: State): Promise<string> {
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
               try {
-                const idmresponse = await stepIdm({
+                const idmresponse = await authenticateIdm({
                   body: {},
                   config: {},
                   state,
@@ -444,11 +444,22 @@ async function determineDeploymentType(state: State): Promise<string> {
                     state,
                   });
                 }
-              } catch {
-                verboseMessage({
-                  message: `Classic deployment`['brightCyan'] + ` detected.`,
-                  state,
-                });
+              } catch (e: any) {
+                if (
+                  e.response?.status !== 401 ||
+                  e.response?.data.message !== 'Access Denied'
+                ) {
+                  debugMessage({
+                    message: `AuthenticateOps: 401 Unauthorized received – credentials may be invalid but IDM deployment is still possible.`,
+                    state,
+                  });
+                  throw e;
+                } else {
+                  verboseMessage({
+                    message: `Classic deployment`['brightCyan'] + ` detected.`,
+                    state,
+                  });
+                }
               }
             }
           }
@@ -601,7 +612,7 @@ async function getUserSessionToken(
       otpCallbackHandler: otpCallback,
       state,
     });
-    if (!token) return token;
+    if (!token) return null;
     token.from_cache = false;
     debugMessage({
       message: `AuthenticateOps.getUserSessionToken: fresh`,
