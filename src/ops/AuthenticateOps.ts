@@ -33,12 +33,15 @@ import {
   hasUserBearerToken,
   hasUserSessionToken,
   readSaBearerToken,
+  readToken,
   readUserBearerToken,
   readUserSessionToken,
   saveSaBearerToken,
   saveUserBearerToken,
   saveUserSessionToken,
 } from './TokenCacheOps';
+import { getUser } from '../api/UserApi';
+import { getUseBearerTokenForAmApis } from '@trivir/frodo-lib/types/shared/State';
 
 export type Authenticate = {
   /**
@@ -1155,14 +1158,27 @@ export async function getTokens({
       }
     }
     // use user account to login
+
+    else if (state.getUsername() == 'interactive-user') {
+      const token = await readToken({
+        tokenType: 'userBearer',
+        state
+      });
+      state.setUseBearerTokenForAmApis(true);
+      state.setBearerTokenMeta(token as AccessTokenMetaType);
+      await determineDeploymentTypeAndDefaultRealmAndVersion(state);
+    }
+
     else if (state.getUsername() && state.getPassword()) {
       debugMessage({
         message: `AuthenticateOps.getTokens: Authenticating with user account ${state.getUsername()}`,
         state,
       });
-      const token = await getUserSessionToken(callbackHandler, state);
-      if (token) state.setUserSessionTokenMeta(token);
-      if (usingConnectionProfile && !token.from_cache) {
+      const bearerToken = await getUserBearerToken(state);
+      if (bearerToken) state.setUseBearerTokenForAmApis(true);
+      const sessionToken = await getUserSessionToken(callbackHandler, state);
+      if (sessionToken) state.setUserSessionTokenMeta(sessionToken);
+      if (usingConnectionProfile && !sessionToken.from_cache) {
         saveConnectionProfile({ host: state.getHost(), state });
       }
       await determineDeploymentTypeAndDefaultRealmAndVersion(state);
