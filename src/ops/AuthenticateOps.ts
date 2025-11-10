@@ -428,8 +428,7 @@ async function determineDeploymentType(state: State): Promise<string> {
                   state,
                 });
                 if (
-                  idmresponse.status === 200 &&
-                  idmresponse.data?.authorization.authLogin
+                  idmresponse.authorization.authLogin
                 ) {
                   verboseMessage({
                     message:

@@ -130,8 +130,8 @@ describe('AuthenticateApi', () => {
       state.setPassword(process.env.FRODO_PASSWORD || 'openidm-admin');
       const config = {
         headers: {
-          'X-OpenAM-Username': state.getUsername(),
-          'X-OpenAM-Password': state.getPassword(),
+          'X-OpenIDM-Username': state.getUsername(),
+          'X-OpenIDM-Password': state.getPassword(),
         },
       };
       const response1 = await AuthenticateApi.authenticateIdm({
@@ -139,7 +139,8 @@ describe('AuthenticateApi', () => {
         config,
         state,
       });
-      expect(response1.status).toEqual(200);
+      expect(response1.authorization.authLogin).toBeTruthy();
+      expect(response1).toMatchSnapshot();
     });
   });
 });

@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AuthenticateApi authenticateIdm() 1: On-prem IDM authentication 1`] = `
+{
+  "_id": "login",
+  "authenticationId": "openidm-admin",
+  "authorization": {
+    "authLogin": true,
+    "authenticationId": "openidm-admin",
+    "component": "internal/user",
+    "id": "openidm-admin",
+    "ipAddress": "127.0.0.1",
+    "moduleId": "STATIC_USER",
+    "roles": [
+      "internal/role/openidm-admin",
+      "internal/role/openidm-authorized",
+    ],
+    "userRolesProperty": "authzRoles",
+  },
+}
+`;
+
 exports[`AuthenticateApi step() 1: Single step login journey 'PasswordGrant' 1`] = `
 {
   "realm": "/alpha",

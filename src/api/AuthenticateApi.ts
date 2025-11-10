@@ -97,8 +97,8 @@ export async function authenticateIdm({
     state,
   });
   const urlString = `${state.getHost()}/authentication?_action=login`;
-  const response = await generateIdmApi({
+  const { data } = await generateIdmApi({
     state,
   }).post(urlString, body, config);
-  return response;
+  return data;
 }
