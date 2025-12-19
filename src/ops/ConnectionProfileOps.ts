@@ -576,11 +576,6 @@ export async function saveConnectionProfile({
     // alias
     if (state.getAlias()) {
       const alias = state.getAlias();
-      findConnectionProfiles({
-        connectionProfiles: profiles,
-        host: alias,
-        state,
-      });
       // check for unique alias
       for (const profile in profiles) {
         if (profiles[profile].alias === alias) {

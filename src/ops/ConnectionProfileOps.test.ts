@@ -11,7 +11,6 @@ import { homedir } from 'os';
 import { FrodoError, state } from '../index';
 import * as ConnectionProfileOps from './ConnectionProfileOps';
 import Constants from '../shared/Constants';
-import { CONNECTOR_TYPE } from './ConnectorOps';
 
 const exampleHost = 'https://openam-tenant-name.forgeblocks.com/am';
 const exampleUsername = 'frodo.baggins@shire.me';
