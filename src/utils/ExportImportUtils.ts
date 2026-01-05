@@ -670,7 +670,7 @@ export async function getResult<R>(
   errorMessage: string,
   func: (...params: any) => Promise<R>,
   ...parameters: any
-): Promise<R> {
+): Promise<R | null> {
   try {
     const result = await func(...parameters);
     if (resultCallback) {
@@ -698,6 +698,7 @@ export async function getResult<R>(
       }
     }
   }
+  return null;
 }
 
 /**

@@ -65,6 +65,11 @@ import {
   ServerExportInterface,
 } from './classic/ServerOps';
 import { exportSites, importSites } from './classic/SiteOps';
+import {
+  exportWorkflows,
+  importWorkflows,
+  WorkflowGroups,
+} from './cloud/IgaWorkflowOps';
 import { exportSecrets, importSecrets } from './cloud/SecretsOps';
 import { exportVariables, importVariables } from './cloud/VariablesOps';
 import {
@@ -189,7 +194,7 @@ export interface FullExportOptions {
    */
   noDecode: boolean;
   /**
-   * Include x and y coordinate positions of the journey/tree nodes.
+   * Include x and y coordinate positions of the journey/tree/workflow nodes.
    */
   coords: boolean;
   /**
@@ -270,6 +275,7 @@ export interface FullGlobalExportInterface extends AmConfigEntitiesInterface {
   site: Record<string, SiteSkeleton> | undefined;
   sync: SyncSkeleton | undefined;
   variable: Record<string, VariableSkeleton> | undefined;
+  workflow: WorkflowGroups | undefined;
 }
 
 export interface FullRealmExportInterface extends AmConfigEntitiesInterface {
@@ -512,6 +518,23 @@ export async function exportFullConfiguration({
           isCloudDeployment
         )
       )?.variable,
+      workflow: (
+        await exportWithErrorHandling(
+          exportWorkflows,
+          {
+            options: {
+              deps: false,
+              useStringArrays,
+              coords,
+            },
+            resultCallback: errorCallback,
+            state,
+          },
+          'Workflows',
+          resultCallback,
+          isCloudDeployment
+        )
+      )?.workflow,
       ...config.global,
     } as FullGlobalExportInterface;
 
@@ -783,7 +806,7 @@ export async function importFullConfiguration({
   const errorCallback = getErrorCallback(resultCallback);
   // Import to global
   let indicatorId = createProgressIndicator({
-    total: 14,
+    total: 15,
     message: `Importing everything for global...`,
     state,
   });
@@ -924,6 +947,21 @@ export async function importFullConfiguration({
       'Email Templates',
       resultCallback,
       isPlatformDeployment && !!importData.global.emailTemplate
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importWorkflows,
+      {
+        importData: importData.global,
+        options: { deps: false },
+        resultCallback: errorCallback,
+        state,
+      },
+      indicatorId,
+      'Workflows',
+      resultCallback,
+      isCloudDeployment && !!importData.global.workflow
     )
   );
   response.push(
