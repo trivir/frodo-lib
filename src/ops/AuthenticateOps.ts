@@ -3,6 +3,7 @@ import url from 'url';
 import { v4 } from 'uuid';
 
 import { step } from '../api/AuthenticateApi';
+import { ServiceAccountScope } from '../api/cloud/EnvServiceAccountScopesApi';
 import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
@@ -929,6 +930,23 @@ export async function getSaBearerToken({
 }
 
 /**
+ * Helper function to determine whether the deployment is an iga cloud tenant or not, and set the state accordingly
+ * @param state library state
+ */
+async function determineIsIGATenant(state: State): Promise<void> {
+  if (state.getIsIGA() !== undefined) return;
+  // Check if the IGA scope is part of the possible scopes since non IGA tenants do not have this scope as a possible scope
+  state.setIsIGA(
+    (
+      (await readServiceAccountScopes({
+        flatten: false,
+        state,
+      })) as ServiceAccountScope[]
+    ).some((s) => s.scope === Constants.AVAILABLE_SCOPES.IGAFullScope)
+  );
+}
+
+/**
  * Helper function to determine deployment type, default realm, and version and update library state
  * @param state library state
  */
@@ -1150,6 +1168,8 @@ export async function getTokens({
             `Unsupported deployment type: '${state.getDeploymentType()}' not in ${types}`
           );
         }
+
+        await determineIsIGATenant(state);
       } catch (saErr) {
         throw new FrodoError(`Service account login error`, saErr);
       }
@@ -1176,6 +1196,8 @@ export async function getTokens({
           `Unsupported deployment type '${state.getDeploymentType()}'`
         );
       }
+
+      await determineIsIGATenant(state);
 
       if (
         state.getCookieValue() &&
