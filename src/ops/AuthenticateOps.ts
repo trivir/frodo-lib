@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'crypto';
+import c from 'tinyrainbow';
 import url from 'url';
 import { v4 } from 'uuid';
 
@@ -383,7 +384,7 @@ async function determineDeploymentType(state: State): Promise<string> {
           e.response.headers?.location?.indexOf('code=') > -1
         ) {
           verboseMessage({
-            message: `ForgeRock Identity Cloud`['brightCyan'] + ` detected.`,
+            message: c.cyan(`ForgeRock Identity Cloud`) + ` detected.`,
             state,
           });
           deploymentType = Constants.CLOUD_DEPLOYMENT_TYPE_KEY;
@@ -404,13 +405,13 @@ async function determineDeploymentType(state: State): Promise<string> {
               // maybe we don't want to run through the auto-detect code if we get a custom admin client id?
               adminClientId = state.getAdminClientId() || forgeopsClientId;
               verboseMessage({
-                message: `ForgeOps deployment`['brightCyan'] + ` detected.`,
+                message: c.cyan(`ForgeOps deployment`) + ` detected.`,
                 state,
               });
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
               verboseMessage({
-                message: `Classic deployment`['brightCyan'] + ` detected.`,
+                message: c.cyan(`Classic deployment`) + ` detected.`,
                 state,
               });
             }
