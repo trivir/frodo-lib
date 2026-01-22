@@ -4,6 +4,7 @@ import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
 import { SiteSkeleton } from '../api/classic/SiteApi';
+import { GlossarySchemaItemSkeleton } from '../api/cloud/iga/IgaGlossaryApi';
 import { SecretSkeleton } from '../api/cloud/SecretsApi';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
 import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
@@ -41,7 +42,7 @@ import {
   importAmConfigEntities,
 } from './AmConfigOps';
 import {
-  ApplicationSkeleton,
+  ApplicationGlossarySkeleton,
   exportApplications,
   importApplications,
 } from './ApplicationOps';
@@ -65,6 +66,10 @@ import {
   ServerExportInterface,
 } from './classic/ServerOps';
 import { exportSites, importSites } from './classic/SiteOps';
+import {
+  exportGlossarySchemas,
+  importGlossarySchemas,
+} from './cloud/iga/IgaGlossaryOps';
 import { exportSecrets, importSecrets } from './cloud/SecretsOps';
 import { exportVariables, importVariables } from './cloud/VariablesOps';
 import {
@@ -258,6 +263,7 @@ export interface FullGlobalExportInterface extends AmConfigEntitiesInterface {
   agent: Record<string, AgentSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
   emailTemplate: Record<string, EmailTemplateSkeleton> | undefined;
+  glossarySchema: Record<string, GlossarySchemaItemSkeleton<any>> | undefined;
   idm: Record<string, IdObjectSkeletonInterface> | undefined;
   internalRole: Record<string, InternalRoleSkeleton>;
   mapping: Record<string, MappingSkeleton> | undefined;
@@ -278,7 +284,7 @@ export interface FullRealmExportInterface extends AmConfigEntitiesInterface {
   application: Record<string, OAuth2ClientSkeleton> | undefined;
   authentication: AuthenticationSettingsSkeleton | undefined;
   idp: Record<string, SocialIdpSkeleton> | undefined;
-  managedApplication: Record<string, ApplicationSkeleton> | undefined;
+  managedApplication: Record<string, ApplicationGlossarySkeleton> | undefined;
   policy: Record<string, PolicySkeleton> | undefined;
   policyset: Record<string, PolicySetSkeleton> | undefined;
   resourcetype: Record<string, ResourceTypeSkeleton> | undefined;
@@ -419,6 +425,20 @@ export async function exportFullConfiguration({
           isPlatformDeployment
         )
       )?.emailTemplate,
+      glossarySchema: (
+        await exportWithErrorHandling(
+          exportGlossarySchemas,
+          {
+            options: {
+              includeInternal: includeReadOnly,
+            },
+            state,
+          },
+          'Glossary Schemas',
+          resultCallback,
+          !!state.getIsIGA()
+        )
+      )?.glossarySchema,
       idm: (
         await exportWithErrorHandling(
           exportConfigEntities,
@@ -783,7 +803,7 @@ export async function importFullConfiguration({
   const errorCallback = getErrorCallback(resultCallback);
   // Import to global
   let indicatorId = createProgressIndicator({
-    total: 14,
+    total: 15,
     message: `Importing everything for global...`,
     state,
   });
@@ -989,6 +1009,23 @@ export async function importFullConfiguration({
       'Internal Roles',
       resultCallback,
       isPlatformDeployment && !!importData.global.internalRole
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importGlossarySchemas,
+      {
+        importData: importData.global,
+        options: {
+          includeInternal: false,
+        },
+        resultCallback: errorCallback,
+        state,
+      },
+      indicatorId,
+      'Glossary Schemas',
+      resultCallback,
+      !!state.getIsIGA() && !!importData.global.glossarySchema
     )
   );
   stopProgressIndicator({

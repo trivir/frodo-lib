@@ -1,9 +1,16 @@
 import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
+import {
+  deleteApplicationGlossary,
+  getApplicationGlossary,
+  GlossarySchemaItemSkeleton,
+  GlossarySkeleton,
+  putApplicationGlossary,
+} from '../api/cloud/iga/IgaGlossaryApi';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
 import { Saml2ProviderSkeleton } from '../api/Saml2Api';
 import { type ScriptSkeleton } from '../api/ScriptApi';
-import constants from '../shared/Constants';
+import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { decode } from '../utils/Base64Utils';
 import {
@@ -23,8 +30,15 @@ import {
   updateCircleOfTrust,
 } from './CirclesOfTrustOps';
 import {
+  deleteGlossarySchemaByNameAndObjectType,
+  exportGlossarySchemaByNameAndObjectType,
+  GlossarySchemaExportInterface,
+  importGlossarySchemas,
+} from './cloud/iga/IgaGlossaryOps';
+import {
   ConnectorExportInterface,
   ConnectorSkeleton,
+  deleteConnector,
   exportConnector,
   importConnector,
 } from './ConnectorOps';
@@ -82,13 +96,13 @@ export type Application = {
   /**
    * Create application
    * @param {string} applicationId application id/name
-   * @param {ApplicationSkeleton} applicationData application data
-   * @returns {Promise<ApplicationSkeleton>} a promise that resolves to an application object
+   * @param {ApplicationGlossarySkeleton} applicationData application data
+   * @returns {Promise<ApplicationGlossarySkeleton>} a promise that resolves to an application object
    */
   createApplication(
     applicationId: string,
-    applicationData: ApplicationSkeleton
-  ): Promise<ApplicationSkeleton>;
+    applicationData: ApplicationGlossarySkeleton
+  ): Promise<ApplicationGlossarySkeleton>;
   /**
    * Read application
    * @param {string} applicationId application uuid
@@ -120,28 +134,28 @@ export type Application = {
    * Delete application
    * @param {string} applicationId application uuid
    * @param {boolean} deep deep delete (remove dependencies)
-   * @returns {Promise<ApplicationSkeleton>} a promise that resolves to an application object
+   * @returns {Promise<ApplicationGlossarySkeleton>} a promise that resolves to an application object
    */
   deleteApplication(
     applicationId: string,
     deep?: boolean
-  ): Promise<ApplicationSkeleton>;
+  ): Promise<ApplicationGlossarySkeleton>;
   /**
    * Delete application by name
    * @param {string} applicationName application name
    * @param {boolean} deep deep delete (remove dependencies)
-   * @returns {Promise<ApplicationSkeleton>} a promise that resolves to an application object
+   * @returns {Promise<ApplicationGlossarySkeleton>} a promise that resolves to an application object
    */
   deleteApplicationByName(
     applicationName: string,
     deep?: boolean
-  ): Promise<ApplicationSkeleton>;
+  ): Promise<ApplicationGlossarySkeleton>;
   /**
    * Delete all applications
    * @param {boolean} deep deep delete (remove dependencies)
-   * @returns {Promise<ApplicationSkeleton[]>} a promise that resolves to an array of application objects
+   * @returns {Promise<ApplicationGlossarySkeleton[]>} a promise that resolves to an array of application objects
    */
-  deleteApplications(deep?: boolean): Promise<ApplicationSkeleton[]>;
+  deleteApplications(deep?: boolean): Promise<ApplicationGlossarySkeleton[]>;
   /**
    * Query applications
    * @param filter CREST search filter
@@ -155,7 +169,7 @@ export type Application = {
    * Export application. The response can be saved to file as is.
    * @param {string} applicationId application uuid
    * @param {ApplicationExportOptions} options export options
-   * @returns {Promise<ApplicationExportInterface} Promise resolving to an ApplicationExportInterface object.
+   * @returns {Promise<ApplicationExportInterface>} Promise resolving to an ApplicationExportInterface object.
    */
   exportApplication(
     applicationId: string,
@@ -165,7 +179,7 @@ export type Application = {
    * Export application by name. The response can be saved to file as is.
    * @param {string} applicationName application name
    * @param {ApplicationExportOptions} options export options
-   * @returns {Promise<ApplicationExportInterface} Promise resolving to an ApplicationExportInterface object.
+   * @returns {Promise<ApplicationExportInterface>} Promise resolving to an ApplicationExportInterface object.
    */
   exportApplicationByName(
     applicationName: string,
@@ -182,24 +196,24 @@ export type Application = {
    * Import application. The import data is usually read from an application export file.
    * @param {string} applicationId application uuid
    * @param {ApplicationExportInterface} importData application import data.
-   * @returns {Promise<ApplicationSkeleton>} Promise resolving to an application object.
+   * @returns {Promise<ApplicationGlossarySkeleton>} Promise resolving to an application object.
    */
   importApplication(
     applicationId: string,
     importData: ApplicationExportInterface,
     options: ApplicationImportOptions
-  ): Promise<ApplicationSkeleton>;
+  ): Promise<ApplicationGlossarySkeleton>;
   /**
    * Import application by name. The import data is usually read from an application export file.
    * @param {string} applicationName application name
    * @param {ApplicationExportInterface} importData application import data.
-   * @returns {Promise<ApplicationSkeleton>} Promise resolving to an application object.
+   * @returns {Promise<ApplicationGlossarySkeleton>} Promise resolving to an application object.
    */
   importApplicationByName(
     applicationName: string,
     importData: ApplicationExportInterface,
     options: ApplicationImportOptions
-  ): Promise<ApplicationSkeleton>;
+  ): Promise<ApplicationGlossarySkeleton>;
   /**
    * Import first application. The import data is usually read from an application export file.
    * @param {ApplicationExportInterface} importData application import data.
@@ -207,7 +221,7 @@ export type Application = {
   importFirstApplication(
     importData: ApplicationExportInterface,
     options: ApplicationImportOptions
-  ): Promise<ApplicationSkeleton[]>;
+  ): Promise<ApplicationGlossarySkeleton[]>;
   /**
    * Import applications. The import data is usually read from an application export file.
    * @param {ApplicationExportInterface} importData application import data.
@@ -215,7 +229,7 @@ export type Application = {
   importApplications(
     importData: ApplicationExportInterface,
     options: ApplicationImportOptions
-  ): Promise<ApplicationSkeleton[]>;
+  ): Promise<ApplicationGlossarySkeleton[]>;
 };
 
 export default (state: State): Application => {
@@ -228,8 +242,8 @@ export default (state: State): Application => {
     },
     async createApplication(
       applicationId: string,
-      applicationData: ApplicationSkeleton
-    ): Promise<ApplicationSkeleton> {
+      applicationData: ApplicationGlossarySkeleton
+    ): Promise<ApplicationGlossarySkeleton> {
       return createApplication({
         applicationId,
         applicationData,
@@ -264,20 +278,22 @@ export default (state: State): Application => {
     async deleteApplication(
       applicationId: string,
       deep = true
-    ): Promise<ApplicationSkeleton> {
+    ): Promise<ApplicationGlossarySkeleton> {
       return deleteApplication({ applicationId, options: { deep }, state });
     },
     async deleteApplicationByName(
       applicationName: string,
       deep = true
-    ): Promise<ApplicationSkeleton> {
+    ): Promise<ApplicationGlossarySkeleton> {
       return deleteApplicationByName({
         applicationName,
         options: { deep },
         state,
       });
     },
-    async deleteApplications(deep = true): Promise<ApplicationSkeleton[]> {
+    async deleteApplications(
+      deep = true
+    ): Promise<ApplicationGlossarySkeleton[]> {
       return deleteApplications({ options: { deep }, state });
     },
     async queryApplications(
@@ -307,14 +323,14 @@ export default (state: State): Application => {
       applicationId: string,
       importData: ApplicationExportInterface,
       options: ApplicationImportOptions
-    ): Promise<ApplicationSkeleton> {
+    ): Promise<ApplicationGlossarySkeleton> {
       return importApplication({ applicationId, importData, options, state });
     },
     async importApplicationByName(
       applicationName: string,
       importData: ApplicationExportInterface,
       options: ApplicationImportOptions
-    ): Promise<ApplicationSkeleton> {
+    ): Promise<ApplicationGlossarySkeleton> {
       return importApplicationByName({
         applicationName,
         importData,
@@ -325,13 +341,13 @@ export default (state: State): Application => {
     async importFirstApplication(
       importData: ApplicationExportInterface,
       options: ApplicationImportOptions
-    ): Promise<ApplicationSkeleton[]> {
+    ): Promise<ApplicationGlossarySkeleton[]> {
       return importApplications({ importData, options, state });
     },
     async importApplications(
       importData: ApplicationExportInterface,
       options: ApplicationImportOptions
-    ): Promise<ApplicationSkeleton[]> {
+    ): Promise<ApplicationGlossarySkeleton[]> {
       return importApplications({ importData, options, state });
     },
   };
@@ -359,6 +375,10 @@ export type ApplicationSkeleton = IdObjectSkeletonInterface & {
   url: string;
 };
 
+export type ApplicationGlossarySkeleton = ApplicationSkeleton & {
+  glossary?: GlossarySkeleton;
+};
+
 /**
  * Export format for applications
  */
@@ -370,7 +390,7 @@ export interface ApplicationExportInterface {
   /**
    * Managed applications
    */
-  managedApplication: Record<string, ApplicationSkeleton>;
+  managedApplication: Record<string, ApplicationGlossarySkeleton>;
   /**
    * Scripts
    */
@@ -396,6 +416,10 @@ export interface ApplicationExportInterface {
    * mappings
    */
   mapping?: Record<string, MappingSkeleton>;
+  /**
+   * Glossary Schema
+   */
+  glossarySchema?: Record<string, GlossarySchemaItemSkeleton<any>>;
 }
 
 /**
@@ -430,14 +454,13 @@ export function createApplicationExportTemplate({
   return {
     meta: getMetadata({ state }),
     managedApplication: {},
-    application: {},
   } as ApplicationExportInterface;
 }
 
 export function getRealmManagedApplication({ state }: { state: State }) {
   let realmManagedApp = 'application';
   if (
-    state.getDeploymentType() === constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
+    state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY ||
     state.getUseRealmPrefixOnManagedObjects() === true
   ) {
     realmManagedApp = `${getCurrentRealmName(state)}_application`;
@@ -455,17 +478,27 @@ export async function createApplication({
   state,
 }: {
   applicationId: string;
-  applicationData: ApplicationSkeleton;
+  applicationData: ApplicationGlossarySkeleton;
   state: State;
-}): Promise<ApplicationSkeleton> {
+}): Promise<ApplicationGlossarySkeleton> {
   try {
-    const application = await createManagedObject({
+    const glossary = applicationData.glossary;
+    const moData = { ...applicationData };
+    delete moData.glossary;
+    const application = (await createManagedObject({
       type: getRealmManagedApplication({ state }),
       id: applicationId,
-      moData: applicationData,
+      moData,
       state,
-    });
-    return application as ApplicationSkeleton;
+    })) as ApplicationGlossarySkeleton;
+    if (glossary && state.getIsIGA()) {
+      application.glossary = await putApplicationGlossary({
+        applicationId,
+        glossaryData: glossary,
+        state,
+      });
+    }
+    return application;
   } catch (error) {
     throw new FrodoError(
       `Error creating ${getCurrentRealmName(state) + ' realm'} application ${applicationId}`,
@@ -544,7 +577,7 @@ export async function readApplications({
   try {
     if (
       // there are no application objects in the root realm in an AIC deployment
-      state.getDeploymentType() === constants.CLOUD_DEPLOYMENT_TYPE_KEY &&
+      state.getDeploymentType() === Constants.CLOUD_DEPLOYMENT_TYPE_KEY &&
       getCurrentRealmName(state) === '/'
     ) {
       return [];
@@ -625,7 +658,7 @@ async function exportDependencies({
   exportData,
   state,
 }: {
-  applicationData: ApplicationSkeleton;
+  applicationData: ApplicationGlossarySkeleton;
   options: ApplicationExportOptions;
   exportData: ApplicationExportInterface;
   state: State;
@@ -697,6 +730,19 @@ async function exportDependencies({
         exportData = mergeDeep(exportData, connectorData);
       }
     }
+    // glossary schema
+    if (state.getIsIGA() && applicationData.glossary) {
+      for (const glossaryName of Object.keys(applicationData.glossary)) {
+        exportData = mergeDeep(
+          exportData,
+          await exportGlossarySchemaByNameAndObjectType({
+            glossaryName,
+            objectType: Constants.GLOSSARY_APPLICATION_OBJECT_TYPE,
+            state,
+          })
+        );
+      }
+    }
     debugMessage({
       message: `ApplicationOps.exportDependencies: end`,
       state,
@@ -714,7 +760,7 @@ async function importDependencies({
   importData,
   state,
 }: {
-  applicationData: ApplicationSkeleton;
+  applicationData: ApplicationGlossarySkeleton;
   importData: ApplicationExportInterface;
   state: State;
 }) {
@@ -795,6 +841,21 @@ async function importDependencies({
         }
       }
     }
+    // glossary schema
+    if (state.getIsIGA() && importData.glossarySchema) {
+      try {
+        await importGlossarySchemas({
+          glossaryId: applicationData._id,
+          importData: importData as GlossarySchemaExportInterface,
+          options: {
+            includeInternal: false,
+          },
+          state,
+        });
+      } catch (error) {
+        errors.push(error);
+      }
+    }
     if (errors.length) {
       throw new FrodoError(
         `Error importing ${getCurrentRealmName(state) + ' realm'} dependencies`,
@@ -821,7 +882,7 @@ async function deleteDependencies({
   applicationData,
   state,
 }: {
-  applicationData: ApplicationSkeleton;
+  applicationData: ApplicationGlossarySkeleton;
   state: State;
 }) {
   const errors: Error[] = [];
@@ -919,6 +980,39 @@ async function deleteDependencies({
         errors.push(error);
       }
     }
+    // connectors and mappings
+    if (isProvisioningApplication(applicationData)) {
+      const connectorId = getConnectorId(applicationData);
+      if (connectorId) {
+        try {
+          await deleteConnector({
+            connectorId,
+            deep: true,
+            state,
+          });
+          debugMessage({
+            message: `ApplicationOps.deleteDependencies: Deleted connector '${connectorId}' and its mappings.`,
+            state,
+          });
+        } catch (error) {
+          errors.push(error);
+        }
+      }
+    }
+    // glossary schema
+    if (state.getIsIGA() && applicationData.glossary) {
+      for (const glossaryName of Object.keys(applicationData.glossary)) {
+        try {
+          await deleteGlossarySchemaByNameAndObjectType({
+            glossaryName,
+            objectType: Constants.GLOSSARY_APPLICATION_OBJECT_TYPE,
+            state,
+          });
+        } catch (error) {
+          errors.push(error);
+        }
+      }
+    }
     if (errors.length > 0) {
       throw new FrodoError(
         `Error deleting ${getCurrentRealmName(state) + ' realm'} dependencies`,
@@ -949,20 +1043,31 @@ export async function deleteApplication({
   applicationId: string;
   options?: { deep: boolean };
   state: State;
-}): Promise<ApplicationSkeleton> {
+}): Promise<ApplicationGlossarySkeleton> {
   try {
     debugMessage({ message: `ApplicationOps.deleteApplication: start`, state });
     const { deep } = options;
-    const applicationData: ApplicationSkeleton = (await deleteManagedObject({
-      type: getRealmManagedApplication({ state }),
-      id: applicationId,
-      state,
-    })) as ApplicationSkeleton;
+    let glossary;
+    if (state.getIsIGA()) {
+      glossary = await deleteApplicationGlossary({
+        applicationId,
+        state,
+      });
+    }
+    const applicationData: ApplicationGlossarySkeleton =
+      (await deleteManagedObject({
+        type: getRealmManagedApplication({ state }),
+        id: applicationId,
+        state,
+      })) as ApplicationGlossarySkeleton;
+    if (glossary) {
+      applicationData.glossary = glossary;
+    }
     if (deep) {
       await deleteDependencies({ applicationData, state });
     }
     debugMessage({ message: `ApplicationOps.deleteApplication: end`, state });
-    return applicationData as ApplicationSkeleton;
+    return applicationData as ApplicationGlossarySkeleton;
   } catch (error) {
     throw new FrodoError(
       `Error deleting ${getCurrentRealmName(state) + ' realm'} application ${applicationId}`,
@@ -979,8 +1084,8 @@ export async function deleteApplicationByName({
   applicationName: string;
   options?: { deep: boolean };
   state: State;
-}): Promise<ApplicationSkeleton> {
-  let applications: ApplicationSkeleton[] = [];
+}): Promise<ApplicationGlossarySkeleton> {
+  let applications: ApplicationGlossarySkeleton[] = [];
   try {
     applications = await queryApplications({
       filter: `name eq '${applicationName}'`,
@@ -988,7 +1093,7 @@ export async function deleteApplicationByName({
       state,
     });
     if (applications.length == 1) {
-      return deleteApplication({
+      return await deleteApplication({
         applicationId: applications[0]._id,
         options,
         state,
@@ -1016,7 +1121,7 @@ export async function deleteApplications({
 }: {
   options?: { deep: boolean };
   state: State;
-}): Promise<ApplicationSkeleton[]> {
+}): Promise<ApplicationGlossarySkeleton[]> {
   const errors: Error[] = [];
   try {
     debugMessage({
@@ -1026,7 +1131,7 @@ export async function deleteApplications({
     const applications = await readApplications({
       state,
     });
-    const deleted: ApplicationSkeleton[] = [];
+    const deleted: ApplicationGlossarySkeleton[] = [];
     for (const application of applications) {
       debugMessage({
         message: `ApplicationOps.deleteApplications: '${application['_id']}'`,
@@ -1103,7 +1208,16 @@ export async function exportApplication({
 }): Promise<ApplicationExportInterface> {
   try {
     debugMessage({ message: `ApplicationOps.exportApplication: start`, state });
-    const applicationData = await readApplication({ applicationId, state });
+    const applicationData = (await readApplication({
+      applicationId,
+      state,
+    })) as ApplicationGlossarySkeleton;
+    if (state.getIsIGA()) {
+      applicationData.glossary = await readApplicationGlossary({
+        applicationId: applicationData._id,
+        state,
+      });
+    }
     const exportData = createApplicationExportTemplate({ state });
     exportData.managedApplication[applicationData._id] = applicationData;
     if (options.deps) {
@@ -1141,10 +1255,16 @@ export async function exportApplicationByName({
       message: `ApplicationOps.exportApplicationByName: start`,
       state,
     });
-    const applicationData = await readApplicationByName({
+    const applicationData = (await readApplicationByName({
       applicationName,
       state,
-    });
+    })) as ApplicationGlossarySkeleton;
+    if (state.getIsIGA()) {
+      applicationData.glossary = await readApplicationGlossary({
+        applicationId: applicationData._id,
+        state,
+      });
+    }
     const exportData = createApplicationExportTemplate({ state });
     exportData.managedApplication[applicationData._id] = applicationData;
     if (options.deps) {
@@ -1180,7 +1300,9 @@ export async function exportApplications({
   try {
     debugMessage({ message: `ApplicationOps.exportApplication: start`, state });
     const exportData = createApplicationExportTemplate({ state });
-    const applications = await readApplications({ state });
+    const applications = (await readApplications({
+      state,
+    })) as ApplicationGlossarySkeleton[];
     indicatorId = createProgressIndicator({
       total: applications.length,
       message: `Exporting ${getCurrentRealmName(state) + ' realm'} applications...`,
@@ -1192,6 +1314,16 @@ export async function exportApplications({
         message: `Exporting ${getCurrentRealmName(state) + ' realm'} application ${applicationData.name}`,
         state,
       });
+      if (state.getIsIGA()) {
+        try {
+          applicationData.glossary = await readApplicationGlossary({
+            applicationId: applicationData._id,
+            state,
+          });
+        } catch (error) {
+          errors.push(error);
+        }
+      }
       exportData.managedApplication[applicationData._id] = applicationData;
       if (options.deps) {
         try {
@@ -1248,7 +1380,7 @@ export async function exportApplications({
  * @param {string} clientId client id
  * @param {ApplicationExportInterface} importData import data
  * @param {ApplicationImportOptions} options import options
- * @returns {Promise<ApplicationSkeleton>} a promise resolving to an oauth2 client
+ * @returns {Promise<ApplicationGlossarySkeleton>} a promise resolving to an oauth2 client
  */
 export async function importApplication({
   applicationId,
@@ -1260,7 +1392,7 @@ export async function importApplication({
   importData: ApplicationExportInterface;
   options?: ApplicationImportOptions;
   state: State;
-}): Promise<ApplicationSkeleton> {
+}): Promise<ApplicationGlossarySkeleton> {
   let response = null;
   const errors = [];
   const imported = [];
@@ -1274,11 +1406,23 @@ export async function importApplication({
           if (options.deps) {
             await importDependencies({ applicationData, importData, state });
           }
+          let glossary;
+          if (state.getIsIGA() && applicationData.glossary) {
+            glossary = await putApplicationGlossary({
+              applicationId,
+              glossaryData: applicationData.glossary,
+              state,
+            });
+          }
+          delete applicationData.glossary;
           response = await updateApplication({
             applicationId,
             applicationData,
             state,
           });
+          if (glossary) {
+            response.glossary = glossary;
+          }
           imported.push(id);
         } catch (error) {
           errors.push(error);
@@ -1314,7 +1458,7 @@ export async function importApplication({
  * @param {string} clientId client id
  * @param {ApplicationExportInterface} importData import data
  * @param {ApplicationImportOptions} options import options
- * @returns {Promise<ApplicationSkeleton>} a promise resolving to an oauth2 client
+ * @returns {Promise<ApplicationGlossarySkeleton>} a promise resolving to an oauth2 client
  */
 export async function importApplicationByName({
   applicationName: applicationName,
@@ -1326,7 +1470,7 @@ export async function importApplicationByName({
   importData: ApplicationExportInterface;
   options?: ApplicationImportOptions;
   state: State;
-}): Promise<ApplicationSkeleton> {
+}): Promise<ApplicationGlossarySkeleton> {
   let response = null;
   const errors = [];
   const imported = [];
@@ -1342,11 +1486,23 @@ export async function importApplicationByName({
           if (options.deps) {
             await importDependencies({ applicationData, importData, state });
           }
+          let glossary;
+          if (state.getIsIGA() && applicationData.glossary) {
+            glossary = await putApplicationGlossary({
+              applicationId,
+              glossaryData: applicationData.glossary,
+              state,
+            });
+          }
+          delete applicationData.glossary;
           response = await updateApplication({
             applicationId,
             applicationData,
             state,
           });
+          if (glossary) {
+            response.glossary = glossary;
+          }
           imported.push(applicationId);
         } catch (error) {
           errors.push(error);
@@ -1381,7 +1537,7 @@ export async function importApplicationByName({
  * Import first application
  * @param {ApplicationExportInterface} importData import data
  * @param {ApplicationImportOptions} options import options
- * @returns {Promise<ApplicationSkeleton[]>} a promise resolving to an array of oauth2 clients
+ * @returns {Promise<ApplicationGlossarySkeleton[]>} a promise resolving to an array of oauth2 clients
  */
 export async function importFirstApplication({
   importData,
@@ -1391,7 +1547,7 @@ export async function importFirstApplication({
   importData: ApplicationExportInterface;
   options?: ApplicationImportOptions;
   state: State;
-}): Promise<ApplicationSkeleton> {
+}): Promise<ApplicationGlossarySkeleton> {
   let response = null;
   const errors = [];
   const imported = [];
@@ -1404,11 +1560,23 @@ export async function importFirstApplication({
         if (options.deps) {
           await importDependencies({ applicationData, importData, state });
         }
+        let glossary;
+        if (state.getIsIGA() && applicationData.glossary) {
+          glossary = await putApplicationGlossary({
+            applicationId,
+            glossaryData: applicationData.glossary,
+            state,
+          });
+        }
+        delete applicationData.glossary;
         response = await updateApplication({
           applicationId,
           applicationData,
           state,
         });
+        if (glossary) {
+          response.glossary = glossary;
+        }
         imported.push(applicationId);
       } catch (error) {
         errors.push(error);
@@ -1443,7 +1611,7 @@ export async function importFirstApplication({
  * Import applications
  * @param {ApplicationExportInterface} importData import data
  * @param {ApplicationImportOptions} options import options
- * @returns {Promise<ApplicationSkeleton[]>} a promise resolving to an array of oauth2 clients
+ * @returns {Promise<ApplicationGlossarySkeleton[]>} a promise resolving to an array of oauth2 clients
  */
 export async function importApplications({
   importData,
@@ -1453,7 +1621,7 @@ export async function importApplications({
   importData: ApplicationExportInterface;
   options?: ApplicationImportOptions;
   state: State;
-}): Promise<ApplicationSkeleton[]> {
+}): Promise<ApplicationGlossarySkeleton[]> {
   const response = [];
   const errors = [];
   try {
@@ -1468,14 +1636,29 @@ export async function importApplications({
           errors.push(error);
         }
       }
-      try {
-        response.push(
-          await updateApplication({
+      let glossary;
+      if (state.getIsIGA() && applicationData.glossary) {
+        try {
+          glossary = await putApplicationGlossary({
             applicationId,
-            applicationData,
+            glossaryData: applicationData.glossary,
             state,
-          })
-        );
+          });
+        } catch (error) {
+          errors.push(error);
+        }
+      }
+      delete applicationData.glossary;
+      try {
+        const updatedApplication = await updateApplication({
+          applicationId,
+          applicationData,
+          state,
+        });
+        if (glossary) {
+          updatedApplication.glossary = glossary;
+        }
+        response.push(updatedApplication);
       } catch (error) {
         errors.push(error);
       }
@@ -1497,4 +1680,29 @@ export async function importApplications({
       error
     );
   }
+}
+
+/**
+ * Helper function that attempts to read an application's glossary, or returns null if it doesn't exist
+ * @param applicationId The application id
+ * @returns The application glossary, or null if it doesn't exist
+ */
+async function readApplicationGlossary({
+  applicationId,
+  state,
+}: {
+  applicationId: string;
+  state: State;
+}): Promise<GlossarySkeleton | null> {
+  try {
+    return await getApplicationGlossary({
+      applicationId,
+      state,
+    });
+  } catch (error) {
+    if (error.response?.status !== 404) {
+      throw error;
+    }
+  }
+  return null;
 }
