@@ -163,7 +163,12 @@ describe('EmailTemplateOps', () => {
     });
 
     test('1: Read all email templates', async () => {
-      const response = await EmailTemplateOps.readEmailTemplates({ state });
+      const response = await EmailTemplateOps.readEmailTemplates({ includeDefault: false, state });
+      expect(response).toMatchSnapshot();
+    });
+
+    test('2: Read all email templates including defaults', async () => {
+      const response = await EmailTemplateOps.readEmailTemplates({ includeDefault: true, state });
       expect(response).toMatchSnapshot();
     });
   });

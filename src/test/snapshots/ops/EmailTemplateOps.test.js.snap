@@ -1395,6 +1395,211 @@ a {
 ]
 `;
 
+exports[`EmailTemplateOps readEmailTemplates() 2: Read all email templates including defaults 1`] = `
+[
+  {
+    "_id": "emailTemplate/forgottenUsername",
+    "defaultLocale": "en",
+    "enabled": true,
+    "from": "",
+    "html": {
+      "en": "<html><body>{{#if object.userName}}<p>Your username is '{{object.userName}}'.</p>{{else}}If you received this email in error, please disregard.{{/if}}<p><a href="{{object.resumeURI}}">Click here to login</a></p></body></html>",
+      "fr": "<html><body>{{#if object.userName}}<p>Votre nom d'utilisateur est '{{object.userName}}'.</p>{{else}}Si vous avez reçu cet e-mail par erreur, veuillez ne pas en tenir compte.{{/if}}<p><a href="{{object.resumeURI}}">Cliquez ici pour vous connecter</a></p></body></html>",
+    },
+    "message": {
+      "en": "<html><head></head><body style="background-color: #324054; color: #455469; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;"><p>{{#if object.userName}}Your username is '{{object.userName}}'.</p><p>{{else}}If you received this email in error, please disregard.{{/if}}</p><p><a href="{{object.resumeURI}}" style="text-decoration: none; color: #109cf1;">Click here to login</a></p></div></body></html>",
+      "fr": "<html><head></head><body style="background-color: #324054; color: #455469; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;">{{#if object.userName}}<p>Votre nom d'utilisateur est '{{object.userName}}'.</p>{{else}}Si vous avez reçu cet e-mail par erreur, veuillez ne pas en tenir compte.{{/if}}<p><a href="{{object.resumeURI}}" style="text-decoration: none; color: #109cf1;">Cliquez ici pour vous connecter</a></p></div></body></html>",
+    },
+    "mimeType": "text/html",
+    "styles": "body{background-color:#324054;color:#5e6d82;padding:60px;text-align:center}a{text-decoration:none;color:#109cf1}.content{background-color:#fff;border-radius:4px;margin:0 auto;padding:48px;width:235px}",
+    "subject": {
+      "en": "Account Information - username",
+      "fr": "Informations sur le compte - nom d'utilisateur",
+    },
+  },
+  {
+    "_id": "emailTemplate/FrodoTestEmailTemplate1",
+    "defaultLocale": "en",
+    "displayName": "Frodo Test Email Template One",
+    "enabled": true,
+    "from": "",
+    "message": {
+      "en": "<h3>Click to reset your password</h3><h4><a href="{{object.resumeURI}}">Password reset link</a></h4>",
+      "fr": "<h3>Cliquez pour réinitialiser votre mot de passe</h3><h4><a href="{{object.resumeURI}}">Mot de passe lien de réinitialisation</a></h4>",
+    },
+    "mimeType": "text/html",
+    "subject": {
+      "en": "Reset your password",
+      "fr": "Réinitialisez votre mot de passe",
+    },
+  },
+  {
+    "_id": "emailTemplate/FrodoTestEmailTemplate2",
+    "defaultLocale": "en",
+    "displayName": "Frodo Test Email Template Two",
+    "enabled": true,
+    "from": "",
+    "message": {
+      "en": "<h3>This is your one-time password:</h3><h4>{{object.description}}</a></h4>",
+    },
+    "mimeType": "text/html",
+    "subject": {
+      "en": "One-Time Password for login",
+    },
+  },
+  {
+    "_id": "emailTemplate/registration",
+    "defaultLocale": "en",
+    "enabled": true,
+    "from": "",
+    "html": {
+      "en": "<html><body><h3>This is your registration email.</h3><p><a href="{{object.resumeURI}}">Email verification link</a></p></body></html>",
+      "fr": "<html><body><h3>Ceci est votre mail d'inscription.</h3><p><a href="{{object.resumeURI}}">Lien de vérification email</a></p></body></html>",
+    },
+    "message": {
+      "en": "<html><head></head><body style="background-color: #324054; color: #5e6d82; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;"><h3>This is your registration email.</h3><p><a href="{{object.resumeURI}}" style="text-decoration: none; color: #109cf1;">Email verification link</a></p></div></body></html>",
+      "fr": "<html><head></head><body style="background-color: #324054; color: #5e6d82; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;"><h3>Ceci est votre mail d'inscription.</h3><p><a href="{{object.resumeURI}}" style="text-decoration: none; color: #109cf1;">Lien de vérification email</a></p></div></body></html>",
+    },
+    "mimeType": "text/html",
+    "styles": "body{background-color:#324054;color:#5e6d82;padding:60px;text-align:center}a{text-decoration:none;color:#109cf1}.content{background-color:#fff;border-radius:4px;margin:0 auto;padding:48px;width:235px}",
+    "subject": {
+      "en": "Register new account",
+      "fr": "Créer un nouveau compte",
+    },
+  },
+  {
+    "_id": "emailTemplate/resetPassword",
+    "defaultLocale": "en",
+    "enabled": true,
+    "from": "",
+    "message": {
+      "en": "<h3>Click to reset your password</h3><h4><a href="{{object.resumeURI}}">Password reset link</a></h4>",
+      "fr": "<h3>Cliquez pour réinitialiser votre mot de passe</h3><h4><a href="{{object.resumeURI}}">Mot de passe lien de réinitialisation</a></h4>",
+    },
+    "mimeType": "text/html",
+    "subject": {
+      "en": "Reset your password",
+      "fr": "Réinitialisez votre mot de passe",
+    },
+  },
+  {
+    "_id": "emailTemplate/testTemplate",
+    "advancedEditor": true,
+    "defaultLocale": "en",
+    "description": "Test description",
+    "displayName": "TestTemplate",
+    "enabled": false,
+    "from": ""Test From" <from@email.com>",
+    "html": {
+      "en": "",
+      "es": "",
+    },
+    "message": {
+      "en": "<html>
+  <head></head>
+  <body style="background-color: #324054; color: #455469; padding: 60px; text-align: center;">
+    <div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;">
+      <p>
+        <img src="https://tinyurl.com/3mwewu3v" alt="alt text" title="Email Title Text">
+        </p>
+        <h1 id="emailtitle">Email Title</h1>
+        <p>Message text lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor.</p>
+      </div>
+    </body>
+  </html>",
+      "es": "<html>
+  <head></head>
+  <body style="background-color: #324054; color: #455469; padding: 60px; text-align: center;">
+    <div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;">
+      <p>
+        <img src="https://tinyurl.com/3mwewu3v" alt="alt text" title="Email Title Text">
+        </p>
+        <h1 id="emailtitle">Email Title</h1>
+        <p>Message text lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor.</p>
+      </div>
+    </body>
+  </html>",
+    },
+    "mimeType": "text/html",
+    "styles": "body {
+   background-color: #324054;
+   color: #455469;
+   padding: 60px;
+   text-align: center 
+}
+ a {
+   text-decoration: none;
+   color: #109cf1;
+}
+ .content {
+   background-color: #fff;
+   border-radius: 4px;
+   margin: 0 auto;
+   padding: 48px;
+   width: 235px 
+}
+",
+    "subject": {
+      "en": "",
+      "es": "",
+    },
+    "templateId": "testTemplate",
+  },
+  {
+    "_id": "emailTemplate/updatePassword",
+    "defaultLocale": "en",
+    "enabled": true,
+    "from": "",
+    "html": {
+      "en": "<h3>Verify email to update password</h3><p><a href="{{object.resumeURI}}">Update password link</a></p>",
+    },
+    "message": {
+      "en": "<html><head></head><body style="background-color: #324054; color: #5e6d82; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;"><h3 id="verifyemailtoupdatepassword">Verify email to update password</h3><p><a href="{{object.resumeURI}}" style="text-decoration: none; color: #109cf1;">Update password link</a></p></div></body></html>",
+    },
+    "mimeType": "text/html",
+    "styles": "body{background-color:#324054;color:#5e6d82;padding:60px;text-align:center}a{text-decoration:none;color:#109cf1}.content{background-color:#fff;border-radius:4px;margin:0 auto;padding:48px;width:235px}",
+    "subject": {
+      "en": "Update your password",
+    },
+  },
+  {
+    "_id": "emailTemplate/welcome",
+    "defaultLocale": "en",
+    "displayName": "Welcome",
+    "enabled": true,
+    "from": "saas@forgerock.com",
+    "html": {
+      "en": "<div class="content"><p>Welcome. Your username is '{{object.userName}}'.</p></div>",
+    },
+    "message": {
+      "en": "<html><head></head><body style="background-color: #324054; color: #5e6d82; padding: 60px; text-align: center;"><div class="content" style="background-color: #fff; border-radius: 4px; margin: 0 auto; padding: 48px; width: 235px;"><p>Welcome. Your username is '{{object.userName}}'.</p></div></body></html>",
+    },
+    "mimeType": "text/html",
+    "styles": "body{
+ background-color:#324054;
+ color:#5e6d82;
+ padding:60px;
+ text-align:center
+}
+a{
+ text-decoration:none;
+ color:#109cf1
+}
+.content{
+ background-color:#fff;
+ border-radius:4px;
+ margin:0 auto;
+ padding:48px;
+ width:235px
+}
+",
+    "subject": {
+      "en": "Your account has been created",
+    },
+  },
+]
+`;
+
 exports[`EmailTemplateOps updateEmailTemplate() 1: Create email template 'FrodoTestEmailTemplate3' 1`] = `
 {
   "_id": "emailTemplate/FrodoTestEmailTemplate3",
