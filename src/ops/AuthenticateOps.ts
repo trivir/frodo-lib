@@ -14,7 +14,7 @@ import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { encodeBase64Url } from '../utils/Base64Utils';
-import { debugMessage, verboseMessage } from '../utils/Console';
+import { debugMessage, printError, verboseMessage } from '../utils/Console';
 import { isValidUrl, parseUrl } from '../utils/ExportImportUtils';
 import {
   CallbackHandler,
@@ -1315,6 +1315,8 @@ export async function getTokens({
       return tokens;
     }
   } catch (error) {
-    throw new FrodoError(`Error getting tokens`, error);
+    printError(error);
+    throw error;
+    //throw new FrodoError(`Error getting tokens`, error);
   }
 }
