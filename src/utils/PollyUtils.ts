@@ -1,3 +1,4 @@
+import { state } from '../index';
 import { decode, encode, isBase64Encoded } from './Base64Utils';
 
 export type Recording = {
@@ -37,17 +38,35 @@ export function defaultMatchRequestsBy(protocol: boolean = true) {
   };
 }
 
-export function filterRecording(recording: Recording) {
+export function filterRecording(
+  recording: Recording,
+  useDefaultHost: boolean = true
+) {
   // proxy request url - proxied requests are recorded as: http://proxy-host:proxy-port/https://host/path
   // e.g. http://127.0.0.1:3128/https://openam-frodo-dev.forgeblocks.com/environment/release
   // to keep recordings the same whether or not a proxy was used, we must remove the proxy from the url
   if (recording.request?.url) {
     recording.request.url = cleanupProxyRequestUrl(recording.request.url);
+    if (useDefaultHost) {
+      const splitHost = state.getHost().split('/');
+      recording.request.url = recording.request.url.replaceAll(
+        splitHost[splitHost.length - 2],
+        'openam-frodo-dev.forgeblocks.com'
+      );
+    }
   }
 
   // request headers
   if (recording.request?.headers) {
     recording.request.headers.forEach(obfuscateHeader);
+    if (useDefaultHost) {
+      const hostHeaders = recording.request.headers.filter(
+        (h) => h.name === 'host'
+      );
+      for (const header of hostHeaders) {
+        header.value = 'openam-frodo-dev.forgeblocks.com';
+      }
+    }
   }
 
   // request post body

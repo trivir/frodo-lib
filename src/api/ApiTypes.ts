@@ -38,9 +38,33 @@ export type PagedResult<Type> = {
   remainingPagedResults: number;
 };
 
+export type SearchResult<Type> = {
+  result: Type[];
+  resultCount: number;
+  totalCount: number;
+  searchAfterKey?: string[];
+};
+
 export type EntityType = IdObjectSkeletonInterface & {
   name: string;
   collection: boolean;
+};
+
+export type SearchTargetOperator = 'AND' | 'EQUALS' | 'CONTAINS' | 'ALL' | 'OR';
+
+export interface SearchTargetFilterOperation {
+  operator: SearchTargetOperator;
+  operand:
+    | SearchTargetFilterOperation[]
+    | {
+        targetName: string;
+        targetValue: string;
+      };
+}
+
+export type Metadata = {
+  modifiedDate: string;
+  createdDate: string;
 };
 
 /**
