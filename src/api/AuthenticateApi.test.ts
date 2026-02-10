@@ -118,4 +118,31 @@ describe('AuthenticateApi', () => {
       expect(step2).toMatchSnapshot();
     });
   });
+
+  describe('authenticateIdm()', () => {
+    test('0: Method is implemented', async () => {
+      expect(AuthenticateApi.step).toBeDefined();
+    });
+
+    test('1: On-prem IDM authentication', async () => {
+      state.setHost(
+        process.env.FRODO_HOST || 'http://openidm-frodo-dev.classic.com:9080/openidm'
+      );
+      state.setUsername(process.env.FRODO_USERNAME || 'openidm-admin');
+      state.setPassword(process.env.FRODO_PASSWORD || 'openidm-admin');
+      const config = {
+        headers: {
+          'X-OpenIDM-Username': state.getUsername(),
+          'X-OpenIDM-Password': state.getPassword(),
+        },
+      };
+      const response1 = await AuthenticateApi.authenticateIdm({
+        body: {},
+        config,
+        state,
+      });
+      expect(response1.authorization.authLogin).toBeTruthy();
+      expect(response1).toMatchSnapshot();
+    });
+  });
 });

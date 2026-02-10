@@ -6,7 +6,8 @@ import jose from 'node-jose';
 import sshpk from 'sshpk';
 import { v4 } from 'uuid';
 
-import {
+import { 
+  authenticateIdm,
   AuthenticateStep,
   AuthenticateSuccessResponse,
   step,
@@ -178,12 +179,23 @@ let adminClientId = fidcClientId;
  * @returns {string} cookie name
  */
 async function determineCookieName(state: State): Promise<string> {
-  const data = await getServerInfo({ state });
+  let cookieName = null;
+  try {
+    const data = await getServerInfo({ state });
+    cookieName = data.cookieName;
+  } catch (e) {
+    if (
+      e.response?.status !== 401 ||
+      e.response?.data.message !== 'Access Denied'
+    ) {
+      throw e;
+    }
+  }
   debugMessage({
-    message: `AuthenticateOps.determineCookieName: cookieName=${data.cookieName}`,
+    message: `AuthenticateOps.determineCookieName: cookieName=${cookieName}`,
     state,
   });
-  return data.cookieName;
+  return cookieName;
 }
 
 /**
@@ -331,6 +343,7 @@ async function determineDeploymentType(state: State): Promise<string> {
       return deploymentType;
 
     case Constants.CLASSIC_DEPLOYMENT_TYPE_KEY:
+    case Constants.IDM_DEPLOYMENT_TYPE_KEY:
       debugMessage({
         message: `AuthenticateOps.determineDeploymentType: end [type=${deploymentType}]`,
         state,
@@ -408,10 +421,45 @@ async function determineDeploymentType(state: State): Promise<string> {
               });
               deploymentType = Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY;
             } else {
-              verboseMessage({
-                message: `Classic deployment`['brightCyan'] + ` detected.`,
-                state,
-              });
+              try {
+                const idmresponse = await authenticateIdm({
+                  body: {},
+                  config: {},
+                  state,
+                });
+                if (
+                  idmresponse.authorization.authLogin
+                ) {
+                  verboseMessage({
+                    message:
+                      `Ping Identity IDM deployment`['brightCyan'] +
+                      ` detected.`,
+                    state,
+                  });
+                  deploymentType = Constants.IDM_DEPLOYMENT_TYPE_KEY;
+                } else {
+                  verboseMessage({
+                    message: `Classic deployment`['brightCyan'] + ` detected.`,
+                    state,
+                  });
+                }
+              } catch (e: any) {
+                if (
+                  e.response?.status !== 401 ||
+                  e.response?.data.message !== 'Access Denied'
+                ) {
+                  debugMessage({
+                    message: `AuthenticateOps: 401 Unauthorized received – credentials may be invalid but IDM deployment is still possible.`,
+                    state,
+                  });
+                  throw e;
+                } else {
+                  verboseMessage({
+                    message: `Classic deployment`['brightCyan'] + ` detected.`,
+                    state,
+                  });
+                }
+              }
             }
           }
         }
@@ -559,6 +607,7 @@ async function getUserSessionToken(
       stepHandler,
       state,
     });
+    if (!token) return null;
     token.from_cache = false;
     debugMessage({
       message: `AuthenticateOps.getUserSessionToken: fresh`,
@@ -950,6 +999,7 @@ async function determineDeploymentTypeAndDefaultRealmAndVersion(
     state,
   });
   state.setDeploymentType(await determineDeploymentType(state));
+  if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) return;
   determineDefaultRealm(state);
   debugMessage({
     message: `AuthenticateOps.determineDeploymentTypeAndDefaultRealmAndVersion: realm=${state.getRealm()}, type=${state.getDeploymentType()}`,
@@ -1296,6 +1346,14 @@ export async function getTokens({
     // incomplete or no credentials
     else {
       throw new FrodoError(`Incomplete or no credentials`);
+    }
+    // Return IDM tokens for IDM deployment type
+    if (state.getDeploymentType() === Constants.IDM_DEPLOYMENT_TYPE_KEY) {
+      return {
+        subject: state.getUsername(),
+        host: state.getHost(),
+        realm: state.getRealm() ? state.getRealm() : 'root',
+      };
     }
     if (
       state.getCookieValue() ||

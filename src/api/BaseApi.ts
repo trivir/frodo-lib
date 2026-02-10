@@ -328,6 +328,10 @@ export function generateIdmApi({
         ...(state.getBearerToken() && {
           Authorization: `Bearer ${state.getBearerToken()}`,
         }),
+        ...(!state.getBearerToken() && {
+          'X-OpenIDM-Username': state.getUsername(),
+          'X-OpenIDM-Password': state.getPassword(),
+        }),
       },
       ...(process.env.FRODO_MOCK !== 'record' &&
         process.env.FRODO_POLLY_MODE !== 'record' && {
