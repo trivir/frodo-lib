@@ -12,7 +12,7 @@ import {
   deletePublishedWorkflow as _deletePublishedWorkflow,
   getDraftWorkflow,
   getPublishedWorkflow,
-  getWorkflows,
+  queryWorkflows,
   publishWorkflow as _publishWorkflow,
   putWorkflow,
   WorkflowSkeleton,
@@ -91,13 +91,11 @@ export type Workflow = {
    * Export workflow
    * @param {string} workflowId the workflow id
    * @param {WorkflowExportOptions} options workflow export options
-   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<WorkflowExportInterface>} a promise that resolves to a workflow export object
    */
   exportWorkflow(
     workflowId: string,
-    options?: WorkflowExportOptions,
-    resultCallback?: ResultCallback<WorkflowExportInterface>
+    options?: WorkflowExportOptions
   ): Promise<WorkflowExportInterface>;
   /**
    * Export all workflows
@@ -434,8 +432,7 @@ export async function readWorkflows({
   state: State;
 }): Promise<WorkflowSkeleton[]> {
   try {
-    const { result } = await getWorkflows({ state });
-    return result;
+    return await queryWorkflows({ state });
   } catch (error) {
     throw new FrodoError(`Error reading workflows`, error);
   }
