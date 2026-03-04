@@ -144,11 +144,29 @@ export type Workflow = {
    */
   deletePublishedWorkflow(workflowId: string): Promise<WorkflowSkeleton>;
   /**
+   * Delete workflow
+   * @param {string} workflowId the workflow id
+   * @param {boolean} deleteDraft true to attempt to delete the draft workflow. Default: true
+   * @param {boolean} deletePublished true to attempt to delete the published workflow. Default: true
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
+   * @returns {Promise<WorkflowGroup>} a promise that resolves to a workflow group object
+   */
+  deleteWorkflow(
+    workflowId: string,
+    deleteDraft?: boolean,
+    deletePublished?: boolean,
+    resultCallback?: ResultCallback<WorkflowSkeleton>
+  ): Promise<WorkflowGroup>;
+  /**
    * Delete workflows
+   * @param {boolean} deleteDraft true to attempt to delete draft workflows. Default: true
+   * @param {boolean} deletePublished true to attempt to delete published workflows. Default: true
    * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<WorkflowSkeleton[]>} promise that resolves to an array of workflow objects
    */
   deleteWorkflows(
+    deleteDraft?: boolean,
+    deletePublished?: boolean,
     resultCallback?: ResultCallback<WorkflowSkeleton>
   ): Promise<WorkflowSkeleton[]>;
 };
@@ -257,10 +275,28 @@ export default (state: State): Workflow => {
         state,
       });
     },
+    deleteWorkflow(
+      workflowId: string,
+      deleteDraft: boolean = true,
+      deletePublished: boolean = true,
+      resultCallback?: ResultCallback<WorkflowSkeleton>
+    ): Promise<WorkflowGroup> {
+      return deleteWorkflow({
+        workflowId,
+        deleteDraft,
+        deletePublished,
+        resultCallback,
+        state,
+      });
+    },
     deleteWorkflows(
+      deleteDraft: boolean = true,
+      deletePublished: boolean = true,
       resultCallback?: ResultCallback<WorkflowSkeleton>
     ): Promise<WorkflowSkeleton[]> {
       return deleteWorkflows({
+        deleteDraft,
+        deletePublished,
         resultCallback,
         state,
       });
@@ -801,7 +837,20 @@ export async function deleteDraftWorkflow({
     });
     return deletedWorkflow;
   } catch (error) {
-    throw new FrodoError(`Error deleting draft workflow ${workflowId}`, error);
+    let newError = error;
+    if (
+      error.status === 500 &&
+      error.response.data === 'Exception: argument "content" is null '
+    ) {
+      newError = new FrodoError(
+        `Draft workflow with id '${workflowId}' not found`,
+        error
+      );
+    }
+    throw new FrodoError(
+      `Error deleting draft workflow ${workflowId}`,
+      newError
+    );
   }
 }
 
@@ -828,28 +877,100 @@ export async function deletePublishedWorkflow({
     });
     return deletedWorkflow;
   } catch (error) {
+    let newError = error;
+    if (
+      error.status === 500 &&
+      error.response.data === 'Exception: argument "content" is null '
+    ) {
+      newError = new FrodoError(
+        `Published workflow with id '${workflowId}' not found`,
+        error
+      );
+    }
     throw new FrodoError(
       `Error deleting published workflow ${workflowId}`,
-      error
+      newError
     );
   }
 }
 
 /**
+ * Delete workflow
+ * @param {string} workflowId the workflow id
+ * @param {boolean} deleteDraft true to attempt to delete the draft workflow. Default: true
+ * @param {boolean} deletePublished true to attempt to delete the published workflow. Default: true
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
+ * @returns {Promise<WorkflowGroup>} a promise that resolves to a workflow group object
+ */
+export async function deleteWorkflow({
+  workflowId,
+  deleteDraft = true,
+  deletePublished = true,
+  resultCallback,
+  state,
+}: {
+  workflowId: string;
+  deleteDraft?: boolean;
+  deletePublished?: boolean;
+  resultCallback?: ResultCallback<WorkflowSkeleton>;
+  state: State;
+}): Promise<WorkflowGroup> {
+  const deletedWorkflowGroup: WorkflowGroup = {
+    draft: null,
+    published: null,
+  };
+  // Attempt to delete draft first
+  if (deleteDraft) {
+    const result: WorkflowSkeleton = await getResult(
+      resultCallback,
+      undefined,
+      deleteDraftWorkflow,
+      { workflowId, state }
+    );
+    if (result) {
+      deletedWorkflowGroup.draft = result;
+    }
+  }
+  // Attempt to delete published second
+  if (deletePublished) {
+    const result: WorkflowSkeleton = await getResult(
+      resultCallback,
+      undefined,
+      deletePublishedWorkflow,
+      { workflowId, state }
+    );
+    if (result) {
+      deletedWorkflowGroup.published = result;
+    }
+  }
+  return deletedWorkflowGroup;
+}
+
+/**
  * Delete workflows
+ * @param {boolean} deleteDraft true to attempt to delete draft workflows. Default: true
+ * @param {boolean} deletePublished true to attempt to delete published workflows. Default: true
  * @param {ResultCallback} resultCallback Optional callback to process individual results
  * @returns {Promise<WorkflowSkeleton[]>} promise that resolves to an array of workflow objects
  */
 export async function deleteWorkflows({
+  deleteDraft = true,
+  deletePublished = true,
   resultCallback,
   state,
 }: {
+  deleteDraft?: boolean;
+  deletePublished?: boolean;
   resultCallback?: ResultCallback<WorkflowSkeleton>;
   state: State;
 }): Promise<WorkflowSkeleton[]> {
   const workflows = await readWorkflows({ state });
   const deletedWorkflows = [];
-  for (const workflow of workflows) {
+  for (const workflow of workflows.filter(
+    (w) =>
+      (deleteDraft && w.status === 'draft') ||
+      (deletePublished && w.status === 'published')
+  )) {
     const result: WorkflowSkeleton = await getResult(
       resultCallback,
       `Error deleting workflow ${workflow.id}`,
