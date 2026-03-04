@@ -8,6 +8,7 @@ import {
   queryCertificationTemplates,
   searchCertificationTemplates,
 } from '../../../api/cloud/iga/IgaCertificationTemplateApi';
+import { VariableSkeleton } from '../../../api/cloud/VariablesApi';
 import { State } from '../../../shared/State';
 import {
   createProgressIndicator,
@@ -16,6 +17,7 @@ import {
   updateProgressIndicator,
 } from '../../../utils/Console';
 import {
+  getErrorCallback,
   getIGANotificationEmailTemplateDependencies,
   getMetadata,
   getResult,
@@ -26,6 +28,7 @@ import {
 } from '../../EmailTemplateOps';
 import { FrodoError } from '../../FrodoError';
 import { ExportMetaData, ResultCallback } from '../../OpsTypes';
+import { importVariables } from '../VariablesOps';
 
 export type CertificationTemplate = {
   /**
@@ -278,6 +281,7 @@ export interface CertificationTemplateExportInterface {
   meta?: ExportMetaData;
   certificationTemplate: Record<string, CertificationTemplateSkeleton>;
   emailTemplate?: Record<string, EmailTemplateSkeleton>;
+  variable: Record<string, VariableSkeleton>;
 }
 
 /**
@@ -327,6 +331,7 @@ export function createCertificationTemplateExportTemplate({
     meta: getMetadata({ state }),
     certificationTemplate: {},
     emailTemplate: {},
+    variable: {},
   };
 }
 
@@ -571,6 +576,7 @@ export async function exportCertificationTemplates({
           templateExport.certificationTemplate
         );
         Object.assign(exportData.emailTemplate, templateExport.emailTemplate);
+        Object.assign(exportData.variable, templateExport.variable);
       }
     }
     stopProgressIndicator({
@@ -652,25 +658,38 @@ export async function importCertificationTemplates({
     message: `IgaCertificationTemplateOps.importCertificationTemplates: start`,
     state,
   });
+  const errorCallback = getErrorCallback(resultCallback);
+  // Import variable dependencies
+  if (
+    options.deps &&
+    importData.variable &&
+    Object.keys(importData.variable).length > 0
+  ) {
+    await getResult(
+      errorCallback,
+      'Error importing ESV variable dependencies',
+      importVariables,
+      {
+        importData,
+        state,
+      }
+    );
+  }
   // Import email template dependencies
   if (
     options.deps &&
     importData.emailTemplate &&
     Object.keys(importData.emailTemplate).length
   ) {
-    try {
-      await importEmailTemplates({
-        //@ts-expect-error Since we ensure emailTemplate exists before this, we can ignore the error
+    await getResult(
+      errorCallback,
+      'Error importing email template dependencies',
+      importEmailTemplates,
+      {
         importData,
         state,
-      });
-    } catch (e) {
-      if (resultCallback) {
-        resultCallback(e, undefined);
-      } else {
-        throw new FrodoError(`Error importing email template dependencies`, e);
       }
-    }
+    );
   }
   // Import certification templates
   const response = [];
@@ -828,8 +847,12 @@ async function prepareCertificationTemplateForExport({
 }): Promise<CertificationTemplateExportInterface> {
   const exportData = createCertificationTemplateExportTemplate({ state });
   if (options.deps) {
+    const errors = [];
+    const variables: Record<string, VariableSkeleton> = {};
     const templates = await getIGANotificationEmailTemplateDependencies(
       templateData,
+      variables,
+      errors,
       state
     );
     exportData.emailTemplate = Object.fromEntries(
@@ -837,6 +860,13 @@ async function prepareCertificationTemplateForExport({
         return [e._id.split('/').pop(), e];
       })
     );
+    exportData.variable = variables;
+    if (errors.length) {
+      throw new FrodoError(
+        'Errors occurred while exporting event dependencies',
+        errors
+      );
+    }
   }
   exportData.certificationTemplate[templateData.id] = templateData;
   return exportData;

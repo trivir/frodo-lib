@@ -27,9 +27,11 @@ import {
 } from '../../../utils/Console';
 import {
   getErrorCallback,
+  getIGANotificationEmailTemplateDependencies,
   getMetadata,
   getResult,
   objectRecurse,
+  settlePromises,
   transformScriptArraysToStrings,
   transformScriptStringsToArrays,
 } from '../../../utils/ExportImportUtils';
@@ -37,11 +39,10 @@ import { mergeDeep } from '../../../utils/JsonUtils';
 import {
   EmailTemplateSkeleton,
   importEmailTemplates,
-  readEmailTemplate,
 } from '../../EmailTemplateOps';
 import { FrodoError } from '../../FrodoError';
 import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { importVariables, resolveVariable } from '../VariablesOps';
+import { importVariables } from '../VariablesOps';
 import { importEvents } from './IgaEventOps';
 import {
   createRequestFormExportTemplate,
@@ -989,60 +990,6 @@ export async function deleteWorkflows({
 // Helper functions
 
 /**
- * Gets email template dependencies for the provided workflows
- *
- * @param {Record<string, object>} workflows The workflows to get the email dependencies of
- * @param {Record<string, VariableSkeleton>} variables The variable object that caches resolved variables
- * @param {FrodoError[]} errors the errors encountered while getting the dependencies
- * @returns {EmailTemplateSkeleton[]} The array of email template dependencies
- */
-async function getWorkflowEmailTemplateDependencies({
-  workflows,
-  variables,
-  errors = [],
-  state,
-}: {
-  workflows: WorkflowGroups;
-  variables: Record<string, VariableSkeleton>;
-  errors: FrodoError[];
-  state: State;
-}): Promise<EmailTemplateSkeleton[]> {
-  const emailTemplateIds = new Set<string>();
-  objectRecurse(workflows, async (o) => {
-    let emailTemplateName;
-    if (typeof o.notification === 'string') emailTemplateName = o.notification;
-    if (typeof o.templateName === 'string') emailTemplateName = o.templateName;
-    if (emailTemplateName) {
-      emailTemplateIds.add(
-        await resolveVariable({
-          input: o.notification,
-          variables,
-          state,
-        })
-      );
-    }
-  });
-  return (
-    await Promise.allSettled(
-      [...emailTemplateIds].map((id) =>
-        readEmailTemplate({
-          templateId: id,
-          state,
-        })
-      )
-    )
-  )
-    .filter((p) => {
-      if (p.status === 'fulfilled' && p.value) return true;
-      if (p.status === 'rejected') {
-        errors.push(new FrodoError(p.reason));
-      }
-      return false;
-    })
-    .map((p) => (p as PromiseFulfilledResult<EmailTemplateSkeleton>).value);
-}
-
-/**
  * Get request forms/types workflow dependencies
  * @param {WorkflowGroups} workflows The workflows to get the request forms/types of
  * @param {WorkflowExportOptions} options workflow export options
@@ -1069,7 +1016,7 @@ async function getWorkflowRequestFormAndTypeDependencies({
   for (const workflowId of Object.keys(workflows)) {
     // Step 1: Get all request forms and their request type dependencies
     try {
-      const formExportPromises = await Promise.allSettled(
+      const forms = await settlePromises(
         (
           await getRequestFormAssignments({
             workflowId,
@@ -1081,19 +1028,11 @@ async function getWorkflowRequestFormAndTypeDependencies({
             options: { deps: true, useStringArrays: options.useStringArrays },
             state,
           })
-        )
+        ),
+        errors
       );
-      for (const formExportPromise of formExportPromises) {
-        if (formExportPromise.status === 'rejected') {
-          errors.push(new FrodoError(formExportPromise.reason));
-          continue;
-        }
-        if (
-          formExportPromise.status === 'fulfilled' &&
-          formExportPromise.value
-        ) {
-          results = mergeDeep(results, formExportPromise.value);
-        }
+      for (const form of forms) {
+        results = mergeDeep(results, form);
       }
     } catch (e) {
       errors.push(
@@ -1204,12 +1143,12 @@ async function getWorkflowExport({
     });
     // Get email templates
     const variables: Record<string, VariableSkeleton> = {};
-    const emailTemplatePromise = getWorkflowEmailTemplateDependencies({
-      workflows: exportData.workflow,
+    const emailTemplatePromise = getIGANotificationEmailTemplateDependencies(
+      exportData.workflow,
       variables,
       errors,
-      state,
-    }).then((templates) => {
+      state
+    ).then((templates) => {
       exportData.emailTemplate = Object.fromEntries(
         templates.map((e) => [e._id.split('/')[1], e])
       );

@@ -402,6 +402,7 @@ exports[`IgaCertificationTemplateOps createCertificationTemplateExportTemplate()
   "certificationTemplate": {},
   "emailTemplate": {},
   "meta": Any<Object>,
+  "variable": {},
 }
 `;
 
@@ -1526,6 +1527,7 @@ function getAuthorizationHeaderForSchedule(date) {
     },
   },
   "meta": Any<Object>,
+  "variable": {},
 }
 `;
 
@@ -1960,6 +1962,7 @@ exports[`IgaCertificationTemplateOps exportCertificationTemplateByName() 1: Expo
   },
   "emailTemplate": {},
   "meta": Any<Object>,
+  "variable": {},
 }
 `;
 
@@ -4409,6 +4412,7 @@ a {
     },
   },
   "meta": Any<Object>,
+  "variable": {},
 }
 `;
 
@@ -5369,6 +5373,7 @@ exports[`IgaCertificationTemplateOps exportCertificationTemplates() 2: Export ex
   },
   "emailTemplate": {},
   "meta": Any<Object>,
+  "variable": {},
 }
 `;
 
