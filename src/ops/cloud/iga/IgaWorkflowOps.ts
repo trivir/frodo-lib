@@ -565,34 +565,41 @@ export async function exportWorkflows({
       });
     } else {
       // For result callbacks we must do each export individually
-      const workflows = await readWorkflows({ state });
+      const workflowGroups = await readGroupedWorkflows({
+        includeReadOnly: options.includeReadOnly,
+        state,
+      });
       indicatorId = createProgressIndicator({
-        total: workflows.length,
+        total: Object.keys(workflowGroups).length,
         message: `Exporting workflows...`,
         state,
       });
       exportData = createWorkflowExportTemplate({ state });
-      for (const workflow of workflows) {
-        updateProgressIndicator({
-          id: indicatorId,
-          message: `Exporting ${workflow.status} workflow ${workflow.id}`,
-          state,
-        });
-        const singleExport = await getResult(
-          resultCallback,
-          undefined,
-          exportWorkflow,
-          {
-            workflowId: workflow.id,
+      const workflowPromises = [];
+      const workflowResults = [];
+      for (const workflowId of Object.keys(workflowGroups)) {
+        workflowPromises.push(
+          getResult(resultCallback, undefined, exportWorkflow, {
+            workflowId,
             options,
             state,
-          }
+          }).then((w) => {
+            updateProgressIndicator({
+              id: indicatorId,
+              message:
+                w && Object.keys(w.workflow).length > 0
+                  ? `Exported workflow ${workflowId}`
+                  : `Error exporting workflow ${workflowId}`,
+              state,
+            });
+            if (w) workflowResults.push(w);
+          })
         );
-        if (singleExport) {
-          // Merge in export with full export
-          exportData = mergeDeep(exportData, singleExport);
-        }
       }
+      await Promise.all(workflowPromises);
+      workflowResults.forEach((r) => {
+        exportData = mergeDeep(exportData, r);
+      });
     }
     stopProgressIndicator({
       id: indicatorId,
@@ -746,64 +753,58 @@ export async function importWorkflows({
     state,
   });
   for (const existingId of Object.keys(importData.workflow)) {
-    try {
-      const workflow = importData.workflow[existingId];
-      const shouldNotImportWorkflow =
-        (!workflow.draft && !workflow.published) ||
-        (workflow.draft &&
-          (!workflow.draft.mutable ||
-            (workflowId && workflowId !== workflow.draft.id))) ||
-        (workflow.published &&
-          (!workflow.published.mutable ||
-            (workflowId && workflowId !== workflow.published.id)));
-      if (shouldNotImportWorkflow) continue;
-      debugMessage({
-        message: `IgaWorkflowOps.importWorkflows: Importing workflow ${existingId}`,
-        state,
-      });
-      // Import workflows
-      // Get the draft workflow if it exists and we don't have it, since it will be deleted when we publish the published one, this way we can restore the draft version after.
-      // Note that we don't need to worry about request form assignments here, because when it deletes the draft, it doesn't delete the assignments (they are temporarily orphaned until we re-import the draft).
-      if (!workflow.draft) {
-        workflow.draft = serverWorkflows[workflow.published.id]?.draft;
-      }
-      // Import published first because publishing ends up deleting the draft workflow if it exists
-      if (workflow.published) {
-        fillCoordinates(
-          workflow.published,
-          serverWorkflows[workflow.published.id]?.published
-        );
-        const result = await updateWorkflow({
+    const workflow = importData.workflow[existingId];
+    const shouldNotImportWorkflow =
+      (!workflow.draft && !workflow.published) ||
+      (workflow.draft &&
+        (!workflow.draft.mutable ||
+          (workflowId && workflowId !== workflow.draft.id))) ||
+      (workflow.published &&
+        (!workflow.published.mutable ||
+          (workflowId && workflowId !== workflow.published.id)));
+    if (shouldNotImportWorkflow) continue;
+    debugMessage({
+      message: `IgaWorkflowOps.importWorkflows: Importing workflow ${existingId}`,
+      state,
+    });
+    // Import workflows
+    // Get the draft workflow if it exists and we don't have it, since it will be deleted when we publish the published one, this way we can restore the draft version after.
+    // Note that we don't need to worry about request form assignments here, because when it deletes the draft, it doesn't delete the assignments (they are temporarily orphaned until we re-import the draft).
+    if (!workflow.draft) {
+      workflow.draft = serverWorkflows[workflow.published.id]?.draft;
+    }
+    // Import published first because publishing ends up deleting the draft workflow if it exists
+    if (workflow.published) {
+      fillCoordinates(
+        workflow.published,
+        serverWorkflows[workflow.published.id]?.published
+      );
+      response.push(await getResult(
+        resultCallback,
+        `Error importing published workflow ${workflow.published.id}`,
+        updateWorkflow,
+        {
           workflowId: workflow.published.id,
           workflowData: workflow.published,
           state,
-        });
-        if (resultCallback) {
-          resultCallback(undefined, result);
         }
-        response.push(result);
-      }
-      if (workflow.draft) {
-        fillCoordinates(
-          workflow.draft,
-          serverWorkflows[workflow.draft.id]?.draft
-        );
-        const result = await updateWorkflow({
+      ));
+    }
+    if (workflow.draft) {
+      fillCoordinates(
+        workflow.draft,
+        serverWorkflows[workflow.draft.id]?.draft
+      );
+      response.push(await getResult(
+        resultCallback,
+        `Error importing draft workflow ${workflow.draft.id}`,
+        updateWorkflow,
+        {
           workflowId: workflow.draft.id,
           workflowData: workflow.draft,
           state,
-        });
-        if (resultCallback) {
-          resultCallback(undefined, result);
         }
-        response.push(result);
-      }
-    } catch (e) {
-      if (resultCallback) {
-        resultCallback(e, undefined);
-      } else {
-        throw new FrodoError(`Error importing workflow '${existingId}'`, e);
-      }
+      ));
     }
   }
   // We want to delete any orphaned assignments that could be caused as a result of the import (since relevant nodes could have been deleted from the workflow(s))
@@ -815,7 +816,7 @@ export async function importWorkflows({
     state,
   });
   debugMessage({ message: `IgaWorkflowOps.importWorkflows: end`, state });
-  return response;
+  return response.filter(w => w);
 }
 
 /**
@@ -969,8 +970,9 @@ export async function deleteWorkflows({
   const deletedWorkflows = [];
   for (const workflow of workflows.filter(
     (w) =>
-      (deleteDraft && w.status === 'draft') ||
-      (deletePublished && w.status === 'published')
+      w.mutable &&
+      ((deleteDraft && w.status === 'draft') ||
+      (deletePublished && w.status === 'published'))
   )) {
     const result: WorkflowSkeleton = await getResult(
       resultCallback,
