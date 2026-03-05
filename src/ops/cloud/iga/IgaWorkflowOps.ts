@@ -51,7 +51,7 @@ import {
   importRequestForms,
   RequestFormExportInterface,
 } from './IgaRequestFormOps';
-import { importRequestTypes } from './IgaRequestTypeOps';
+import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps';
 
 export type Workflow = {
   /**
@@ -1044,12 +1044,28 @@ async function getWorkflowRequestFormAndTypeDependencies({
     }
     // Step 2: Get all request types that reference the workflow that haven't already been exported
     try {
-      for (const t of await queryRequestTypes({
-        // This query only works if the workflow ID is all lowercase (probably because workflow IDs are case insensitive)
-        queryFilter: `workflow/id eq "${workflowId.toLowerCase()}"`,
-        state,
-      })) {
-        results.requestType[t.id] = t;
+      const types = await settlePromises(
+        (
+          await queryRequestTypes({
+            // This query only works if the workflow ID is all lowercase (probably because workflow IDs are case insensitive)
+            queryFilter: `workflow/id eq "${workflowId.toLowerCase()}"`,
+            fields: ['id'],
+            state,
+          })
+        ).map((t) =>
+          exportRequestType({
+            typeId: t.id,
+            options: {
+              onlyCustom: true,
+              useStringArrays: options.useStringArrays,
+            },
+            state,
+          })
+        ),
+        errors
+      );
+      for (const type of types) {
+        results = mergeDeep(results, type);
       }
     } catch (e) {
       errors.push(

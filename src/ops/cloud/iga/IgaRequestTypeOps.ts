@@ -4,6 +4,7 @@ import {
   getRequestType,
   putRequestType,
   queryRequestTypes,
+  RequestTypeSchema,
   RequestTypeSkeleton,
 } from '../../../api/cloud/iga/IgaRequestTypeApi';
 import { State } from '../../../shared/State';
@@ -385,19 +386,15 @@ export async function exportRequestType({
       message: `IgaRequestTypeOps.exportRequestType: start`,
       state,
     });
-    const exportData = createRequestTypeExportTemplate({ state });
     const type = await readRequestType({
       typeId,
       state,
     });
-    if (
-      options.useStringArrays &&
-      type.validation &&
-      typeof type.validation.source === 'string'
-    ) {
-      type.validation.source = type.validation.source.split('\n');
-    }
-    exportData.requestType[type.id] = type;
+    const exportData = prepareRequestTypeForExport({
+      typeData: type,
+      options,
+      state,
+    });
     debugMessage({
       message: `IgaRequestTypeOps.exportRequestType: end`,
       state,
@@ -484,15 +481,12 @@ export async function exportRequestTypes({
         message: `Exporting request type ${requestType.displayName}...`,
         state,
       });
-      if (
-        options.useStringArrays &&
-        requestType.validation &&
-        typeof requestType.validation.source === 'string'
-      ) {
-        requestType.validation.source =
-          requestType.validation.source.split('\n');
-      }
-      exportData.requestType[requestType.id] = requestType;
+      const typeExport = prepareRequestTypeForExport({
+        typeData: requestType,
+        options,
+        state,
+      });
+      Object.assign(exportData.requestType, typeExport.requestType);
     }
     stopProgressIndicator({
       id: indicatorId,
@@ -677,4 +671,51 @@ export async function deleteRequestTypes({
     }
   }
   return deletedRequestTypes;
+}
+
+/**
+ * Helper that prepares a request type for export
+ * @param {RequestTypeSkeleton} typeData the request type data
+ * @param {RequestTypeExportOptions} options export options
+ * @returns {RequestTypeExportInterface} the request type export object
+ */
+function prepareRequestTypeForExport({
+  typeData,
+  options,
+  state,
+}: {
+  typeData: RequestTypeSkeleton;
+  options: RequestTypeExportOptions;
+  state: State;
+}): RequestTypeExportInterface {
+  const exportData = createRequestTypeExportTemplate({ state });
+  if (
+    options.useStringArrays &&
+    typeData.validation &&
+    typeof typeData.validation.source === 'string'
+  ) {
+    typeData.validation.source = typeData.validation.source.split('\n');
+  }
+  // There is a bug with the import endpoint (both PUT and POST, as of AIC version 20814.0) where if the common array has an object, but the custom array doesn't have one at the first position,
+  // it will throw a 500 error, so we add in an empty object to the custom array so that on import it will import successfully.
+  if (
+    Array.isArray(typeData.schemas?.common) &&
+    typeData.schemas.common.some(
+      (o) => typeof o === 'object' && !Array.isArray(o) && o !== null
+    )
+  ) {
+    if (
+      !Array.isArray(typeData.schemas.custom) ||
+      typeData.schemas.custom.length === 0
+    ) {
+      typeData.schemas.custom = [{}] as RequestTypeSchema[];
+    } else if (
+      typeof typeData.schemas.custom[0] !== 'object' ||
+      typeData.schemas.custom[0] === null
+    ) {
+      typeData.schemas.custom.unshift({} as RequestTypeSchema);
+    }
+  }
+  exportData.requestType[typeData.id] = typeData;
+  return exportData;
 }
