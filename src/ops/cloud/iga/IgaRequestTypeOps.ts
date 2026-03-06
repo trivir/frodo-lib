@@ -2,6 +2,7 @@ import {
   createRequestType as _createRequestType,
   deleteRequestType as _deleteRequestType,
   getRequestType,
+  patchRequestType,
   putRequestType,
   queryRequestTypes,
   RequestTypeSchema,
@@ -151,7 +152,7 @@ export default (state: State): RequestType => {
     exportRequestType(
       typeId: string,
       options: RequestTypeExportOptions = {
-        onlyCustom: false,
+        includeNonCustom: true,
         useStringArrays: true,
       }
     ): Promise<RequestTypeExportInterface> {
@@ -164,7 +165,7 @@ export default (state: State): RequestType => {
     exportRequestTypeByName(
       typeName: string,
       options: RequestTypeExportOptions = {
-        onlyCustom: false,
+        includeNonCustom: true,
         useStringArrays: true,
       }
     ): Promise<RequestTypeExportInterface> {
@@ -176,7 +177,7 @@ export default (state: State): RequestType => {
     },
     exportRequestTypes(
       options: RequestTypeExportOptions = {
-        onlyCustom: false,
+        includeNonCustom: true,
         useStringArrays: true,
       }
     ): Promise<RequestTypeExportInterface> {
@@ -199,7 +200,7 @@ export default (state: State): RequestType => {
       importData: RequestTypeExportInterface,
       typeId?: string,
       typeName?: string,
-      options: RequestTypeImportOptions = { onlyCustom: false },
+      options: RequestTypeImportOptions = { includeNonCustom: true },
       resultCallback: ResultCallback<RequestTypeSkeleton> = void 0
     ): Promise<RequestTypeSkeleton[]> {
       return importRequestTypes({
@@ -244,9 +245,10 @@ export interface RequestTypeExportInterface {
  */
 export interface RequestTypeImportOptions {
   /**
-   * Include only custom request types in import if true
+   * Include non-custom request types in import if true.
+   * Note that non-custom request type imports will only modify the workflow ID as in the UI. If the request type doesn't exist, it will throw an error.
    */
-  onlyCustom: boolean;
+  includeNonCustom: boolean;
 }
 
 /**
@@ -254,9 +256,9 @@ export interface RequestTypeImportOptions {
  */
 export interface RequestTypeExportOptions {
   /**
-   * Include only custom request types in export if true
+   * Include non-custom request types in export if true.
    */
-  onlyCustom: boolean;
+  includeNonCustom: boolean;
   /**
    * Use string arrays to store script code
    */
@@ -374,7 +376,7 @@ export async function readRequestTypes({
  */
 export async function exportRequestType({
   typeId,
-  options = { onlyCustom: false, useStringArrays: true },
+  options = { includeNonCustom: true, useStringArrays: true },
   state,
 }: {
   typeId: string;
@@ -413,7 +415,7 @@ export async function exportRequestType({
  */
 export async function exportRequestTypeByName({
   typeName,
-  options = { onlyCustom: false, useStringArrays: true },
+  options = { includeNonCustom: true, useStringArrays: true },
   state,
 }: {
   typeName: string;
@@ -454,7 +456,7 @@ export async function exportRequestTypeByName({
  * @returns {Promise<RequestTypeExportInterface>} a promise that resolves to a request type export object
  */
 export async function exportRequestTypes({
-  options = { onlyCustom: false, useStringArrays: true },
+  options = { includeNonCustom: true, useStringArrays: true },
   state,
 }: {
   options?: RequestTypeExportOptions;
@@ -468,7 +470,7 @@ export async function exportRequestTypes({
     });
     const exportData = createRequestTypeExportTemplate({ state });
     const requestTypes = (await readRequestTypes({ state })).filter(
-      (t) => !options.onlyCustom || t.custom
+      (t) => options.includeNonCustom || t.custom
     );
     indicatorId = createProgressIndicator({
       total: requestTypes.length,
@@ -552,7 +554,7 @@ export async function importRequestTypes({
   typeId,
   typeName,
   importData,
-  options = { onlyCustom: false },
+  options = { includeNonCustom: true },
   resultCallback = void 0,
   state,
 }: {
@@ -573,18 +575,47 @@ export async function importRequestTypes({
     const shouldNotImport =
       (typeId && typeId !== requestType.id) ||
       (typeName && typeName !== requestType.displayName) ||
-      (options.onlyCustom && !requestType.custom);
+      (!typeId && !typeName && !options.includeNonCustom && !requestType.custom);
     if (shouldNotImport) continue;
-    // createRequestType can also be used as updateRequestType, so we use this method instead
-    const result = await getResult(
-      resultCallback,
-      `Error importing request type ${requestType.displayName}`,
-      createRequestType,
-      {
-        typeData: requestType,
-        state,
+    let result;
+    if (requestType.custom) {
+      // createRequestType can also be used as updateRequestType to replace existing configuration, so we use this method instead since updateRequestType can't be used to create configuration
+      result = await getResult(
+        resultCallback,
+        `Error importing request type ${requestType.displayName}`,
+        createRequestType,
+        {
+          typeData: requestType,
+          state,
+        }
+      );
+    } else if (options.includeNonCustom) {
+      // For some reason the UI will patch customValidation to null, so we do the same here just to be safe
+      const ops = [{
+        operation: "replace",
+        field: "/customValidation",
+        value: null
+      }];
+      if (requestType.workflow?.id) {
+        ops.push({
+          operation: "replace",
+          field: "/workflow/id",
+          value: requestType.workflow.id
+        });
       }
-    );
+      result = await getResult(
+        resultCallback,
+        `Error importing request type ${requestType.displayName}`,
+        patchRequestType,
+        {
+          typeId: requestType.id,
+          ops,
+          // Must use low level api to patch non-custom request types
+          useLowLevelApi: true,
+          state,
+        }
+      );
+    }
     if (result) {
       response.push(result);
     }

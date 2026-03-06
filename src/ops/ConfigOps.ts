@@ -179,6 +179,7 @@ export default (state: State): Config => {
         includeReadOnly: false,
         onlyRealm: false,
         onlyGlobal: false,
+        includeNonCustom: true,
       },
       resultCallback = void 0
     ) {
@@ -193,6 +194,7 @@ export default (state: State): Config => {
         cleanServices: false,
         includeDefault: false,
         includeActiveValues: true,
+        includeNonCustom: true,
       },
       resultCallback = void 0
     ): Promise<(object | any[])[]> {
@@ -246,6 +248,10 @@ export interface FullExportOptions {
    * Export only global config
    */
   onlyGlobal: boolean;
+  /**
+   * Include non-custom request types in export if true.
+   */
+  includeNonCustom: boolean;
 }
 
 /**
@@ -280,6 +286,11 @@ export interface FullImportOptions {
    * Host URL of source environment to decrypt secret values from
    */
   source?: string;
+  /**
+   * Include non-custom request types in import if true.
+   * Note that non-custom request type imports will only modify the workflow ID as in the UI. If the request type doesn't exist, it will throw an error.
+   */
+  includeNonCustom: boolean;
 }
 
 export interface FullExportInterface {
@@ -357,6 +368,7 @@ export async function exportFullConfiguration({
     includeReadOnly: false,
     onlyRealm: false,
     onlyGlobal: false,
+    includeNonCustom: true,
   },
   resultCallback = void 0,
   state,
@@ -375,6 +387,7 @@ export async function exportFullConfiguration({
     includeReadOnly,
     onlyRealm,
     onlyGlobal,
+    includeNonCustom,
   } = options;
   const stateObj = { state };
   const globalStateObj = { globalConfig: true, state };
@@ -575,7 +588,7 @@ export async function exportFullConfiguration({
           exportRequestTypes,
           {
             options: {
-              onlyCustom: false,
+              includeNonCustom,
               useStringArrays,
             },
             state,
@@ -922,6 +935,7 @@ export async function importFullConfiguration({
     includeDefault: false,
     includeActiveValues: true,
     source: '',
+    includeNonCustom: true,
   },
   resultCallback = void 0,
   state,
@@ -947,6 +961,7 @@ export async function importFullConfiguration({
     includeDefault,
     includeActiveValues,
     source,
+    includeNonCustom
   } = options;
   const errorCallback = getErrorCallback(resultCallback);
   // Import to global
@@ -1202,7 +1217,7 @@ export async function importFullConfiguration({
       {
         importData: importData.global,
         options: {
-          onlyCustom: false,
+          includeNonCustom,
         },
         resultCallback: errorCallback,
         state,
