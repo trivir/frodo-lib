@@ -98,6 +98,7 @@ export async function getRawEnv({
 /**
  * Performs a put request against the specified AM endpoint
  * @param {string} endpoint The AM endpoint (e.g. if full URL is https://<tenant-host>/am/<endpoint>, <endpoint> is the value to pass in)
+ * @param {IdObjectSkeletonInterface} payload The IDM object data to write to the specified endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
@@ -124,6 +125,7 @@ export async function putRawAm({
 /**
  * Performs a put request against the specified IDM endpoint
  * @param {string} endpoint The IDM endpoint (e.g. if full URL is https://<tenant-host>/openidm/<endpoint>, <endpoint> is the value to pass in)
+ * @param {IdObjectSkeletonInterface} payload The IDM object data to write to the specified endpoint
  * @returns {Promise<any>} The response data from the endpoint
  */
 export async function putRawIdm({
@@ -144,6 +146,7 @@ export async function putRawIdm({
 /**
  * Performs a put request against the specified Environment endpoint
  * @param {string} endpoint The Environment endpoint (e.g. if full URL is https://<tenant-host>/environment/<endpoint>, <endpoint> is the value to pass in)
+ * @param {IdObjectSkeletonInterface} payload The object data to write to the specified endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
