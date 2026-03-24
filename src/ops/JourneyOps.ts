@@ -1024,7 +1024,18 @@ export async function exportJourney({
     if (verbose && innerNodePromises.length > 0)
       printMessage({ message: '\n  - Inner nodes:', newline: false, state });
     try {
-      const settledPromises = await Promise.allSettled(innerNodePromises);
+      const settledPromises = await Promise.allSettled(
+        innerNodePromises.map((promise) =>
+          promise.catch((nodeError) => {
+            const url = nodeError.config?.url ?? '';
+            const nodeId = url.split('/').pop() ?? 'unknown';
+            throw new FrodoError(
+              `Error reading inner node '${nodeId}'`,
+              nodeError
+            );
+          })
+        )
+      );
       for (const settledPromise of settledPromises) {
         if (settledPromise.status === 'fulfilled' && settledPromise.value) {
           const innerNodeObject = settledPromise.value as NodeSkeleton;
@@ -1131,7 +1142,7 @@ export async function exportJourney({
             }
           }
         } else if (settledPromise.status === 'rejected') {
-          errors.push(new FrodoError(settledPromise.reason));
+          errors.push(settledPromise.reason);
         }
       }
     } catch (error) {
