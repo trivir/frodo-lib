@@ -25,6 +25,11 @@ export type Startup = {
    * @returns {Promise<boolean>} true if successful, false otherwise
    */
   applyUpdates(wait: boolean, timeout?: number): Promise<boolean>;
+  /**
+   * Get the current restart status of the environment
+   * @returns {Promise<RestartStatus>} the current restart status
+   */
+  getStatus(): Promise<RestartStatus>;
 };
 
 export default (state: State): Startup => {
@@ -50,6 +55,13 @@ export default (state: State): Startup => {
         state,
       });
     },
+    /**
+     * Get the current restart status of the environment
+     * @returns {Promise<RestartStatus>} the current restart status
+     */
+    async getStatus(): Promise<RestartStatus> {
+      return getRestartStatus({ state });
+    },
   };
 };
 
@@ -66,7 +78,17 @@ export interface Updates {
    */
   variables?: unknown[];
 }
-
+/**
+ * Get the current restart status of the environment
+ * @returns {Promise<RestartStatus>} the current restart status
+ */
+export async function getRestartStatus({
+  state,
+}: {
+  state: State;
+}): Promise<RestartStatus> {
+  return getStatus({ state });
+}
 /**
  * Check for updates that need applying
  * @returns {Promise<boolean>} true if there are updates that need to be applied, false otherwise
