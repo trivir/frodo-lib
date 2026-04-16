@@ -180,9 +180,11 @@ export function createTestVariableExport(
 
 export async function stageVariable(variable: VariableSkeleton, create = true) {
   // delete if exists, then create
-  await VariablesOps.deleteVariable({ variableId: variable._id, state });
-
-  // ignore
+  try {
+    await VariablesOps.deleteVariable({ variableId: variable._id, state });
+  } catch (error) {
+    // ignore
+  }
   if (create) {
     await VariablesOps.createVariable({
       variableId: variable._id,

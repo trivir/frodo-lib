@@ -29,7 +29,7 @@ export type Startup = {
    * Get the current restart status of the environment
    * @returns {Promise<RestartStatus>} the current restart status
    */
-  getStatus(): Promise<RestartStatus>;
+  readStatus(): Promise<RestartStatus>;
 };
 
 export default (state: State): Startup => {
@@ -55,12 +55,13 @@ export default (state: State): Startup => {
         state,
       });
     },
+
     /**
      * Get the current restart status of the environment
      * @returns {Promise<RestartStatus>} the current restart status
      */
-    async getStatus(): Promise<RestartStatus> {
-      return getRestartStatus({ state });
+    async readStatus(): Promise<RestartStatus> {
+      return readStatus({ state });
     },
   };
 };
@@ -78,11 +79,12 @@ export interface Updates {
    */
   variables?: unknown[];
 }
+
 /**
  * Get the current restart status of the environment
  * @returns {Promise<RestartStatus>} the current restart status
  */
-export async function getRestartStatus({
+export async function readStatus({
   state,
 }: {
   state: State;
