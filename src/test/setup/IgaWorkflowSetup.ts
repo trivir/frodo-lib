@@ -1124,6 +1124,30 @@ export const workflow8: WorkflowSkeleton = getTestWorkflow(
   true
 );
 
+export const workflow9: WorkflowSkeleton = getTestWorkflow(
+  'testWorkflow7',
+  'test_workflow_7',
+  false
+);
+
+export const workflow10: WorkflowSkeleton = getTestWorkflow(
+  'testWorkflow7',
+  'test_workflow_7',
+  true
+);
+
+export const workflow11: WorkflowSkeleton = getTestWorkflow(
+  'testWorkflow8',
+  'test_workflow_8',
+  false
+);
+
+export const workflow12: WorkflowSkeleton = getTestWorkflow(
+  'testWorkflow8',
+  'test_workflow_8',
+  true
+);
+
 export const workflowEvent1: EventSkeleton = getTestEvent({
   id: 'cd753d57-edf4-4f92-aad7-41242253ed9f',
   name: 'test_workflow_event_1',
@@ -1338,6 +1362,12 @@ export function setup() {
       await stageWorkflow(workflow5, true);
       await stageWorkflow(workflow7, true, true);
       await stageWorkflow(workflow8, true);
+      // Published workflows must be created first, otherwise it ends up deleting the draft one
+      await stageWorkflow(workflow10, true);
+      await stageWorkflow(workflow9, true);
+      // Published workflows must be created first, otherwise it ends up deleting the draft one
+      await stageWorkflow(workflow12, true);
+      await stageWorkflow(workflow11, true);
       await stageRequestType(workflowRequestType5, true);
       await stageRequestForm(workflowRequestForm1, true);
       await stageRequestForm(workflowRequestForm2, true);
@@ -1372,6 +1402,10 @@ export function setup() {
       await stageWorkflow(workflow6);
       await stageWorkflow(workflow7, false, true);
       await stageWorkflow(workflow8);
+      await stageWorkflow(workflow9);
+      await stageWorkflow(workflow10);
+      await stageWorkflow(workflow11);
+      await stageWorkflow(workflow12);
       await stageEmailTemplate(template1);
       await stageEmailTemplate(template2);
       await stageEmailTemplate(template3);

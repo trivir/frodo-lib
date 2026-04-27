@@ -2,9 +2,9 @@ import util from 'util';
 
 import { State } from '../../../shared/State';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils';
-import { QueryResult } from '../../ApiTypes';
 import { generateGovernanceApi } from '../../BaseApi';
 import { StaticNodeRefSkeletonInterface } from '../../NodeApi';
+import { governanceApiSearchAll } from '../../../utils/ExportImportUtils';
 
 const allWorkflowsURLTemplate = '%s/iga/governance/workflow';
 const workflowURLTemplate = allWorkflowsURLTemplate + '/%s';
@@ -15,6 +15,7 @@ const publishWorkflowURLTemplate = allWorkflowsURLTemplate + '?_action=publish';
 // The orchestration endpoints are what the admin UI use instead for workflow operations
 const allOrchestrationsURLTemplate = '%s/auto/orchestration/definition';
 const orchestrationURLTemplate = allOrchestrationsURLTemplate + '/%s';
+const draftOrchestrationURLTemplate = orchestrationURLTemplate + '/draft';
 const publishedOrchestrationURLTemplate =
   orchestrationURLTemplate + '/published';
 
@@ -239,25 +240,30 @@ export async function getPublishedWorkflow({
 }
 
 /**
- * Get all workflows
- * @returns {Promise<QueryResult<WorkflowSkeleton>>} a promise that resolves to an object containing an array of workflow objects
+ * Query all workflows
+ * @param {string} queryString The query string that matches name, displayName, and description keys. Default is '' which returns all workflows (see https://docs.pingidentity.com/pingoneaic/identity-governance/rest-api/endpoints/rest-iga.html#rest-api-workflow)
+ * @returns {Promise<WorkflowSkeleton[]>} a promise that resolves to an object containing an array of workflow objects
  */
-export async function getWorkflows({
+export async function queryWorkflows({
+  queryString = '',
   state,
 }: {
+  queryString?: string;
   state: State;
-}): Promise<QueryResult<WorkflowSkeleton>> {
+}): Promise<WorkflowSkeleton[]> {
   const urlString = util.format(
     allWorkflowsURLTemplate,
     getHostOnlyUrl(state.getHost())
   );
-  const { data } = await generateGovernanceApi({
-    resource: {},
+  return await governanceApiSearchAll({
+    url: urlString,
+    pageOffsetStrategy: 'PAGE',
+    pageSize: 10000,
+    // The page offset starts at 1 instead of 0 for workflows, so we need to add one to it
+    queryParamBuilder: (size, offset) =>
+      `_queryString=${queryString}&_pageSize=${size}&_pagedResultsOffset=${offset + 1}`,
     state,
-  }).get(urlString, {
-    withCredentials: true,
   });
-  return data;
 }
 
 /**
@@ -302,7 +308,9 @@ export async function deleteDraftWorkflow({
   state: State;
 }): Promise<WorkflowSkeleton> {
   const urlString = util.format(
-    draftWorkflowURLTemplate,
+    // Don't need to use orchestration endpoint here, but we do to be consistent with what we are doing for published workflows. Plus, the orchestration endpoint
+    // returns the workflow object as delete endpoints would typically do, unlike the workflow endpoint which returns only a message.
+    draftOrchestrationURLTemplate,
     getHostOnlyUrl(state.getHost()),
     workflowId
   );
@@ -328,7 +336,11 @@ export async function deletePublishedWorkflow({
   state: State;
 }): Promise<WorkflowSkeleton> {
   const urlString = util.format(
-    // Need to use orchestration endpoint here instead due to a bug with the workflow endpoint that returns a 500 error in some cases when you try to delete a published workflow (as of AIC version 20679.0).
+    // Need to use orchestration endpoint here instead of the workflow endpoint. The reason is that if you have a workflow that is referenced by a request type,
+    // the workflow endpoint throws a 500 error saying that the workflow must be in a draft to modify it. However, the UI which uses the orchestration endpoints
+    // is able to successfully delete the workflow even if it is referenced by a request type, so we use it to avoid this error. Not only that, but the orchestration
+    // endpoint actually returns the deleted workflow object, while workflow endpoint returns an object with only a message in it. The only down side to using this
+    // orchestration endpoint is that it throws a 500 error when the object doesn't exist, so we handle that special case in the ops functions.
     publishedOrchestrationURLTemplate,
     getHostOnlyUrl(state.getHost()),
     workflowId
