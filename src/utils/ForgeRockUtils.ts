@@ -116,13 +116,21 @@ export async function getRealmsForExport({
 }: {
   state: State;
 }): Promise<string[]> {
-  return (await getRealms({ state })).map((r) =>
-    !r.name || r.name === '/' || !r.parentPath
-      ? 'root'
-      : `root${r.parentPath.replace('/', '-')}${
-          r.parentPath !== '/' ? '-' : ''
-        }${r.name}`
-  );
+  return (await getRealms({ state })).map((r) => {
+    if (!r.name || r.name === '/' || !r.parentPath) {
+      return 'root';
+    }
+
+    const encodedParent = r.parentPath
+      .split('/')
+      .filter(Boolean)
+      .map((s) => s.replace(/-/g, '--'))
+      .join('-');
+
+    const encodedName = r.name.replace(/-/g, '--');
+
+    return `root-${encodedParent}${encodedParent ? '-' : ''}${encodedName}`;
+  });
 }
 
 /**
@@ -135,7 +143,18 @@ export function getRealmUsingExportFormat(realm: string): string {
   if (realm === 'root') {
     return '/';
   }
-  return realm.replace('root-', '/').replaceAll('-', '/');
+
+  let stripped = realm.replace(/^root-/, '');
+
+  stripped = stripped.replace(/--/g, '__DASH__');
+
+  const parts = stripped.split(/-(?!_)/);
+
+  const decoded = parts.map((p) =>
+    p.replace(/__DASH__/g, '-')
+  );
+
+  return '/' + decoded.join('/');
 }
 
 /**
