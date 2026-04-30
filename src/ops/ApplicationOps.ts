@@ -19,10 +19,7 @@ import constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { decode } from '../utils/Base64Utils';
 import {
-  createProgressIndicator,
   debugMessage,
-  stopProgressIndicator,
-  updateProgressIndicator,
 } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';

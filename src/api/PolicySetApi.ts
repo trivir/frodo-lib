@@ -10,6 +10,7 @@ const queryAllPolicySetURLTemplate =
   '%s/json%s/applications?_sortKeys=name&_queryFilter=name+eq+%22%5E(%3F!sunAMDelegationService%24).*%22';
 const policySetURLTemplate = '%s/json%s/applications/%s';
 const createApplicationURLTemplate = '%s/json%s/applications/?_action=create';
+const countPolicySetsURLTemplate = '%s/json%s/applications?_queryFilter=true&_pageSize=0&_totalPagedResultsPolicy=EXACT'
 
 const apiVersion = 'protocol=1.0,resource=2.1';
 const getApiConfig = () => {
@@ -40,6 +41,40 @@ export async function getPolicySets({ state }: { state: State }) {
     }
   );
   return data;
+}
+
+/**
+ * Get total number of policies in the current realm.
+ *
+ * @returns {Promise<number>} Exact total when available.
+ */
+export async function getPolicySetsCount({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  const urlString = util.format(
+    countPolicySetsURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state)
+  );
+  const { data } = await generateAmApi({
+    resource: getApiConfig(),
+    state,
+  }).get(urlString, {
+    withCredentials: true,
+  });
+
+  if (
+    typeof data?.totalPagedResults === 'number' &&
+    data.totalPagedResults >= 0
+  ) {
+    return data.totalPagedResults;
+  }
+  if (typeof data?.resultCount === 'number' && data.resultCount >= 0) {
+    return data.resultCount;
+  }
+  return Array.isArray(data?.result) ? data.result.length : 0;
 }
 
 /**

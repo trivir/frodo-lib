@@ -5,25 +5,21 @@ import {
   getPolicySet as _getPolicySet,
   getPolicySets as _getPolicySets,
   updatePolicySet as _updatePolicySet,
+  getPolicySetsCount,
 } from '../api/PolicySetApi';
 import { type PolicySetSkeleton } from '../api/PolicySetApi';
 import { getResourceType } from '../api/ResourceTypesApi';
 import { type ResourceTypeSkeleton } from '../api/ResourceTypesApi';
 import { type ScriptSkeleton } from '../api/ScriptApi';
 import { State } from '../shared/State';
-import {
-  createProgressIndicator,
-  debugMessage,
-  stopProgressIndicator,
-  updateProgressIndicator,
-} from '../utils/Console';
+import { debugMessage } from '../utils/Console';
 import {
   convertBase64TextToArray,
   getMetadata,
 } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { FrodoError } from './FrodoError';
-import { ExportMetaData } from './OpsTypes';
+import { ResultCallback, ExportMetaData } from './OpsTypes';
 import {
   findScriptUuids,
   getScripts,
@@ -44,6 +40,11 @@ export type PolicySet = {
    * @returns {Promise<PolicySetSkeleton[]>} a promise that resolves to an array of policy set objects
    */
   readPolicySets(): Promise<PolicySetSkeleton[]>;
+  /**
+   * Count all policy sets in the active realm.
+   * @returns {Promise<number>} exact count when supported by the backing API
+   */
+  countPolicySets(): Promise<number>;
   /**
    * Read policy set
    * @param {string} policySetName policy set name
@@ -72,10 +73,12 @@ export type PolicySet = {
   /**
    * Export policy sets
    * @param {PolicySetExportOptions} options export options
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<PolicySetExportInterface>} a promise that resolves to an PolicySetExportInterface object
    */
   exportPolicySets(
-    options?: PolicySetExportOptions
+    options?: PolicySetExportOptions,
+    resultCallback?: ResultCallback<PolicySetExportInterface>
   ): Promise<PolicySetExportInterface>;
   /**
    * Import policy set
@@ -117,6 +120,9 @@ export default (state: State): PolicySet => {
     async readPolicySets(): Promise<PolicySetSkeleton[]> {
       return readPolicySets({ state });
     },
+    async countPolicySets(): Promise<number> {
+      return countPolicySets({ state });
+    },
     async readPolicySet(policySetName: string) {
       return readPolicySet({ policySetName, state });
     },
@@ -150,9 +156,10 @@ export default (state: State): PolicySet => {
         deps: true,
         prereqs: false,
         useStringArrays: true,
-      }
+      },
+      resultCallback = void 0
     ): Promise<PolicySetExportInterface> {
-      return exportPolicySets({ options, state });
+      return exportPolicySets({ options, resultCallback, state });
     },
     async importPolicySet(
       policySetName: string,
@@ -254,6 +261,26 @@ export async function readPolicySets({
   } catch (error) {
     throw new FrodoError(
       `Error reading ${getCurrentRealmName(state) + ' realm'} policy sets`,
+      error
+    );
+  }
+}
+
+/**
+ * Count all policy sets in the active realm.
+ * @returns {Promise<number>} exact count when supported by the backing API
+ */
+export async function countPolicySets({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  try {
+    const total = await getPolicySetsCount({ state });
+    return total;
+  } catch (error) {
+    throw new FrodoError(
+      `Error counting ${getCurrentRealmName(state) + ' realm'} policy sets`,
       error
     );
   }
@@ -537,28 +564,19 @@ export async function exportPolicySets({
     prereqs: false,
     useStringArrays: true,
   },
+  resultCallback = void 0,
   state,
 }: {
   options: PolicySetExportOptions;
+  resultCallback?: ResultCallback<PolicySetExportInterface>;
   state: State;
 }): Promise<PolicySetExportInterface> {
   debugMessage({ message: `PolicySetOps.exportPolicySet: start`, state });
   const exportData = createPolicySetExportTemplate({ state });
   const errors = [];
-  let indicatorId: string;
   try {
     const policySets = await readPolicySets({ state });
-    indicatorId = createProgressIndicator({
-      total: policySets.length,
-      message: `Exporting ${getCurrentRealmName(state) + ' realm'} policy sets...`,
-      state,
-    });
     for (const policySetData of policySets) {
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting ${getCurrentRealmName(state) + ' realm'} policy set ${policySetData._id}`,
-        state,
-      });
       exportData.policyset[policySetData.name] = policySetData;
       if (options.prereqs) {
         try {
@@ -569,6 +587,13 @@ export async function exportPolicySets({
           });
         } catch (error) {
           errors.push(error);
+          if (resultCallback)
+            resultCallback(
+              new FrodoError(
+                `Error exporting ${getCurrentRealmName(state) + ' realm'} policy ${policySetData._id}`
+              )
+            );
+          continue;
         }
       }
       if (options.deps) {
@@ -581,14 +606,17 @@ export async function exportPolicySets({
           });
         } catch (error) {
           errors.push(error);
+          if (resultCallback)
+            resultCallback(
+              new FrodoError(
+                `Error exporting ${getCurrentRealmName(state) + ' realm'} policy ${policySetData._id}`
+              )
+            );
+          continue;
         }
       }
+      if (resultCallback) resultCallback(undefined, exportData);
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Exported ${policySets.length} ${getCurrentRealmName(state) + ' realm'} policy sets.`,
-      state,
-    });
     if (errors.length > 0) {
       throw new FrodoError(
         `Error exporting ${getCurrentRealmName(state) + ' realm'} policy sets`,

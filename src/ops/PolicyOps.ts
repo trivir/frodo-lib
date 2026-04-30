@@ -1,6 +1,7 @@
 import {
   deletePolicy as _deletePolicy,
   getPolicies as _getPolicies,
+  getPoliciesCount,
   getPoliciesByPolicySet as _getPoliciesByPolicySet,
   getPolicy as _getPolicy,
   type PolicyCondition,
@@ -14,19 +15,14 @@ import {
 } from '../api/ResourceTypesApi';
 import { type ScriptSkeleton } from '../api/ScriptApi';
 import { State } from '../shared/State';
-import {
-  createProgressIndicator,
-  debugMessage,
-  stopProgressIndicator,
-  updateProgressIndicator,
-} from '../utils/Console';
+import { debugMessage } from '../utils/Console';
 import {
   convertBase64TextToArray,
   getMetadata,
 } from '../utils/ExportImportUtils';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
+import { ResultCallback, type ExportMetaData } from './OpsTypes';
 import { readPolicySet, updatePolicySet } from './PolicySetOps';
 import { updateResourceType } from './ResourceTypeOps';
 import { readScript, updateScript } from './ScriptOps';
@@ -41,6 +37,11 @@ export type Policy = {
    * @returns {Promise<PolicySkeleton>} a promise that resolves to an array of policy set objects
    */
   readPolicies(): Promise<PolicySkeleton[]>;
+  /**
+   * Count all policies in the active realm.
+   * @returns {Promise<number>} exact count when supported by the backing API
+   */
+  countPolicies(): Promise<number>;
   /**
    * Get policies by policy set
    * @param {string} policySetId policy set id/name
@@ -91,9 +92,12 @@ export type Policy = {
   /**
    * Export policies
    * @param {PolicyExportOptions} options export options
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<PolicyExportInterface>} a promise that resolves to an PolicyExportInterface object
    */
-  exportPolicies(options?: PolicyExportOptions): Promise<PolicyExportInterface>;
+  exportPolicies(options?: PolicyExportOptions,
+    resultCallback?: ResultCallback<PolicyExportInterface>
+  ): Promise<PolicyExportInterface>;
   /**
    * Export policies by policy set
    * @param {string} policySetName policy set id/name
@@ -146,6 +150,9 @@ export default (state: State): Policy => {
     async readPolicies(): Promise<PolicySkeleton[]> {
       return readPolicies({ state });
     },
+    async countPolicies(): Promise<number> {
+      return countPolicies({ state });
+    },
     async readPoliciesByPolicySet(
       policySetId: string
     ): Promise<PolicySkeleton[]> {
@@ -178,9 +185,10 @@ export default (state: State): Policy => {
         deps: true,
         prereqs: false,
         useStringArrays: true,
-      }
+      },
+      resultCallback = void 0
     ): Promise<PolicyExportInterface> {
-      return exportPolicies({ options, state });
+      return exportPolicies({ options, resultCallback, state });
     },
     async exportPoliciesByPolicySet(
       policySetName: string,
@@ -295,6 +303,26 @@ export async function readPolicies({
   } catch (error) {
     throw new FrodoError(
       `Error reading ${getCurrentRealmName(state) + ' realm'} policies`,
+      error
+    );
+  }
+}
+
+/**
+ * Count all policies in the active realm.
+ * @returns {Promise<number>} exact count when supported by the backing API
+ */
+export async function countPolicies({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  try {
+    const total = await getPoliciesCount({ state });
+    return total;
+  } catch (error) {
+    throw new FrodoError(
+      `Error counting ${getCurrentRealmName(state) + ' realm'} policies`,
       error
     );
   }
@@ -705,34 +733,32 @@ export async function exportPolicies({
     prereqs: false,
     useStringArrays: true,
   },
+  resultCallback = void 0,
   state,
 }: {
   options?: PolicyExportOptions;
+  resultCallback?: ResultCallback<PolicyExportInterface>;
   state: State;
 }): Promise<PolicyExportInterface> {
   debugMessage({ message: `PolicyOps.exportPolicies: start`, state });
   const exportData = createPolicyExportTemplate({ state });
   const errors = [];
-  let indicatorId: string;
   try {
     const policies = await readPolicies({ state });
-    indicatorId = createProgressIndicator({
-      total: policies.length,
-      message: `Exporting ${getCurrentRealmName(state) + ' realm'} policies...`,
-      state,
-    });
     for (const policyData of policies) {
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting ${getCurrentRealmName(state) + ' realm'} policy ${policyData._id}`,
-        state,
-      });
       exportData.policy[policyData._id] = policyData;
       if (options.prereqs) {
         try {
           await exportPolicyPrerequisites({ policyData, exportData, state });
         } catch (error) {
           errors.push(error);
+          if (resultCallback)
+            resultCallback(
+              new FrodoError(
+                `Error exporting ${getCurrentRealmName(state) + ' realm'} policy ${policyData._id}`
+              )
+            );
+          continue;
         }
       }
       if (options.deps) {
@@ -745,8 +771,16 @@ export async function exportPolicies({
           });
         } catch (error) {
           errors.push(error);
+          if (resultCallback)
+            resultCallback(
+              new FrodoError(
+                `Error exporting ${getCurrentRealmName(state) + ' realm'} policy ${policyData._id}`
+              )
+            );
+          continue;
         }
       }
+      if (resultCallback) resultCallback(undefined, exportData);
     }
     if (errors.length > 0) {
       throw new FrodoError(
@@ -754,20 +788,9 @@ export async function exportPolicies({
         errors
       );
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Exported ${policies.length} ${getCurrentRealmName(state) + ' realm'} policies.`,
-      state,
-    });
     debugMessage({ message: `PolicyOps.exportPolicies: end`, state });
     return exportData;
   } catch (error) {
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Error exporting ${getCurrentRealmName(state) + ' realm'} policies.`,
-      status: 'fail',
-      state,
-    });
     // re-throw previously caught error
     if (errors.length > 0) {
       throw error;

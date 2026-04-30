@@ -3236,6 +3236,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Policy",
+    methodName: "countPolicies",
+    signature: "countPolicies(): Promise<number>",
+    description: "Count all policies in the active realm.",
+    params: [],
+    returns: "{Promise<number>} exact count when supported by the backing API",
+  },
+  {
+    typeName: "Policy",
     methodName: "readPoliciesByPolicySet",
     signature: "readPoliciesByPolicySet(policySetId: string): Promise<PolicySkeleton[]>",
     description: "Get policies by policy set",
@@ -3299,10 +3307,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Policy",
     methodName: "exportPolicies",
-    signature: "exportPolicies(options?: PolicyExportOptions): Promise<PolicyExportInterface>",
+    signature: "exportPolicies(options?: PolicyExportOptions, resultCallback?: ResultCallback<PolicyExportInterface> ): Promise<PolicyExportInterface>",
     description: "Export policies",
     params: [
       { name: "options", type: "PolicyExportOptions", description: "export options" },
+      { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results" },
     ],
     returns: "{Promise<PolicyExportInterface>} a promise that resolves to an PolicyExportInterface object",
   },
@@ -3369,6 +3378,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "PolicySet",
+    methodName: "countPolicySets",
+    signature: "countPolicySets(): Promise<number>",
+    description: "Count all policy sets in the active realm.",
+    params: [],
+    returns: "{Promise<number>} exact count when supported by the backing API",
+  },
+  {
+    typeName: "PolicySet",
     methodName: "readPolicySet",
     signature: "readPolicySet(policySetName: string): Promise<PolicySetSkeleton>",
     description: "Read policy set",
@@ -3415,10 +3432,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "PolicySet",
     methodName: "exportPolicySets",
-    signature: "exportPolicySets( options?: PolicySetExportOptions ): Promise<PolicySetExportInterface>",
+    signature: "exportPolicySets( options?: PolicySetExportOptions, resultCallback?: ResultCallback<PolicySetExportInterface> ): Promise<PolicySetExportInterface>",
     description: "Export policy sets",
     params: [
       { name: "options", type: "PolicySetExportOptions", description: "export options" },
+      { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results" },
     ],
     returns: "{Promise<PolicySetExportInterface>} a promise that resolves to an PolicySetExportInterface object",
   },
