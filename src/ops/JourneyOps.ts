@@ -1439,11 +1439,6 @@ export async function exportJourneys({
 }): Promise<MultiTreeExportInterface> {
   const multiTreeExport = createMultiTreeExportTemplate({ state });
   const trees = await readJourneys({ state });
-  const indicatorId = createProgressIndicator({
-    total: trees.length,
-    message: `Exporting ${getCurrentRealmName(state) + ' realm'} journeys...`,
-    state,
-  });
   for (const tree of trees) {
     const exportData: SingleTreeExportInterface = await getResult(
       resultCallback,
@@ -1458,18 +1453,8 @@ export async function exportJourneys({
     if (exportData) {
       delete exportData.meta;
       multiTreeExport.trees[tree._id] = exportData;
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting ${getCurrentRealmName(state) + ' realm'} journey ${tree._id}`,
-        state,
-      });
     }
   }
-  stopProgressIndicator({
-    id: indicatorId,
-    message: `Exported ${trees.length} ${getCurrentRealmName(state) + ' realm'} journeys.`,
-    state,
-  });
   return multiTreeExport;
 }
 

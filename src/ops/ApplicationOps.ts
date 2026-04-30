@@ -70,7 +70,7 @@ import {
   importOAuth2Client,
   OAuth2ClientExportInterface,
 } from './OAuth2ClientOps';
-import { type ExportMetaData } from './OpsTypes';
+import { ResultCallback, type ExportMetaData } from './OpsTypes';
 import {
   deleteSaml2Provider,
   exportSaml2Provider,
@@ -202,7 +202,8 @@ export type Application = {
    * @returns {Promise<ApplicationExportInterface>} Promise resolving to an ApplicationExportInterface object.
    */
   exportApplications(
-    options?: ApplicationExportOptions
+    options?: ApplicationExportOptions,
+    resultCallback?: ResultCallback<ApplicationExportInterface>
   ): Promise<ApplicationExportInterface>;
   /**
    * Import application. The import data is usually read from an application export file.
@@ -1411,81 +1412,62 @@ export async function exportApplicationByName({
 
 export async function exportApplications({
   options,
+  resultCallback = void 0,
   state,
 }: {
   options: ApplicationExportOptions;
+  resultCallback?: ResultCallback<ApplicationExportInterface>;
   state: State;
 }): Promise<ApplicationExportInterface> {
   const errors: Error[] = [];
-  let indicatorId: string;
   try {
     debugMessage({ message: `ApplicationOps.exportApplication: start`, state });
     const exportData = createApplicationExportTemplate({ state });
     const applications = (await readApplications({
       state,
     })) as ApplicationGlossarySkeleton[];
-    indicatorId = createProgressIndicator({
-      total: applications.length,
-      message: `Exporting ${getCurrentRealmName(state) + ' realm'} applications...`,
-      state,
-    });
     for (const applicationData of applications) {
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting ${getCurrentRealmName(state) + ' realm'} application ${applicationData.name}`,
-        state,
-      });
-      if (state.getIsIGA()) {
-        try {
-          applicationData.glossary = await readApplicationGlossary({
-            applicationId: applicationData._id,
-            state,
-          });
-        } catch (error) {
-          errors.push(error);
+      try {
+        if (state.getIsIGA()) {
+          try {
+            applicationData.glossary = await readApplicationGlossary({
+              applicationId: applicationData._id,
+              state,
+            });
+          } catch (error) {
+            errors.push(error);
+          }
         }
-      }
-      exportData.managedApplication[applicationData._id] = applicationData;
-      if (options.deps) {
-        try {
+        exportData.managedApplication[applicationData._id] = applicationData;
+        if (options.deps) {
           await exportDependencies({
             applicationData: applicationData,
             options,
             exportData,
             state,
           });
-        } catch (error) {
-          errors.push(error);
         }
+        if (resultCallback) resultCallback(undefined, exportData);
+      } catch (error) {
+        errors.push(error);
+        if (resultCallback)
+          resultCallback(
+            new FrodoError(
+              `Error exporting ${getCurrentRealmName(state) + ' realm'} application ${applicationData._id}`,
+              error
+            )
+          );
       }
     }
     if (errors.length > 0) {
-      stopProgressIndicator({
-        id: indicatorId,
-        message: `Error exporting ${getCurrentRealmName(state) + ' realm'} applications`,
-        status: 'fail',
-        state,
-      });
       throw new FrodoError(
         `Error exporting ${getCurrentRealmName(state) + ' realm'} applications`,
         errors
       );
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Exported ${applications.length} ${getCurrentRealmName(state) + ' realm'} applications`,
-      state,
-    });
     debugMessage({ message: `ApplicationOps.exportApplication: end`, state });
     return exportData;
   } catch (error) {
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Error exporting ${getCurrentRealmName(state) + ' realm'} applications`,
-      status: 'fail',
-      state,
-    });
-    // just re-throw previously caught errors
     if (errors.length > 0) {
       throw error;
     }

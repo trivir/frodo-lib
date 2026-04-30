@@ -738,7 +738,7 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Application",
     methodName: "exportApplications",
-    signature: "exportApplications( options?: ApplicationExportOptions ): Promise<ApplicationExportInterface>",
+    signature: "exportApplications( options?: ApplicationExportOptions, resultCallback?: ResultCallback<ApplicationExportInterface> ): Promise<ApplicationExportInterface>",
     description: "Export all applications. The response can be saved to file as is.",
     params: [],
     returns: "{Promise<ApplicationExportInterface>} Promise resolving to an ApplicationExportInterface object.",
