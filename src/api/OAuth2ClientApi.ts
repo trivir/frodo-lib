@@ -15,6 +15,9 @@ import { generateAmApi } from './BaseApi';
 const oauth2ClientURLTemplate = '%s/json%s/realm-config/agents/OAuth2Client/%s';
 const oauth2ClientListURLTemplate =
   '%s/json%s/realm-config/agents/OAuth2Client?_queryFilter=true';
+const countOAuth2ClientsURLTemplate =
+  '%s/json%s/realm-config/agents/OAuth2Client?_queryFilter=true&_pageSize=0&_totalPagedResultsPolicy=EXACT';
+
 const apiVersion = 'protocol=2.1,resource=1.0';
 const getApiConfig = () => {
   return {
@@ -83,6 +86,35 @@ export async function getOAuth2Clients({
     }
   );
   return data;
+}
+
+export async function getOAuth2ClientsCount({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  const urlString = util.format(
+    countOAuth2ClientsURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state)
+  );
+  const { data } = await generateAmApi({ resource: getApiConfig(), state }).get(
+    urlString,
+    {
+      withCredentials: true,
+    }
+  );
+
+  if (
+    typeof data?.totalPagedResults === 'number' &&
+    data.totalPagedResults >= 0
+  ) {
+    return data.totalPagedResults;
+  }
+  if (typeof data?.resultCount === 'number' && data.resultCount >= 0) {
+    return data.resultCount;
+  }
+  return Array.isArray(data?.result) ? data.result.length : 0;
 }
 
 /**

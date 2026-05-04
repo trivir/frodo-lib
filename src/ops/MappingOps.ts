@@ -2,10 +2,7 @@ import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import { putConfigEntity } from '../api/IdmConfigApi';
 import { State } from '../shared/State';
 import {
-  createProgressIndicator,
   debugMessage,
-  stopProgressIndicator,
-  updateProgressIndicator,
 } from '../utils/Console';
 import { getMetadata } from '../utils/ExportImportUtils';
 import { FrodoError } from './FrodoError';
@@ -14,7 +11,7 @@ import {
   readConfigEntitiesByType,
   readConfigEntity,
 } from './IdmConfigOps';
-import { ExportMetaData } from './OpsTypes';
+import { ExportMetaData, ResultCallback } from './OpsTypes';
 
 export type Mapping = {
   /**
@@ -98,10 +95,12 @@ export type Mapping = {
   /**
    * Export all mappings
    * @param {MappingExportOptions} options export options
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
    */
   exportMappings(
-    options?: MappingExportOptions
+    options?: MappingExportOptions,
+    resultCallback?: ResultCallback<MappingExportInterface>
   ): Promise<MappingExportInterface>;
   /**
    * Import mapping
@@ -205,9 +204,10 @@ export default (state: State): Mapping => {
       return exportMapping({ mappingId, options, state });
     },
     async exportMappings(
-      options: MappingExportOptions = { deps: true, useStringArrays: true }
+      options: MappingExportOptions = { deps: true, useStringArrays: true },
+      resultCallback = void 0
     ): Promise<MappingExportInterface> {
-      return exportMappings({ options, state });
+      return exportMappings({ options, resultCallback, state });
     },
     async importMapping(
       mappingId: string,
@@ -855,16 +855,18 @@ export async function exportMapping({
 /**
  * Export all mappings
  * @param {MappingExportOptions} options export options
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
  * @returns {Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object
  */
 export async function exportMappings({
   options = { deps: true, useStringArrays: true },
+  resultCallback = void 0,
   state,
 }: {
   options?: MappingExportOptions;
+  resultCallback?: ResultCallback<MappingExportInterface>;
   state: State;
 }): Promise<MappingExportInterface> {
-  let indicatorId: string;
   try {
     const exportData = createMappingExportTemplate({ state });
     const allMappingsData = await readMappings({
@@ -872,17 +874,7 @@ export async function exportMappings({
       moType: options.moType,
       state,
     });
-    indicatorId = createProgressIndicator({
-      total: allMappingsData.length,
-      message: 'Exporting mappings',
-      state,
-    });
     for (const mappingData of allMappingsData) {
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting mapping ${mappingData._id}`,
-        state,
-      });
       if (options.deps) {
         // TODO
       }
@@ -894,20 +886,10 @@ export async function exportMappings({
       } else {
         exportData.mapping[mappingData._id] = mappingData;
       }
+      if (resultCallback) resultCallback(undefined, exportData);
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `${allMappingsData.length} mappings exported.`,
-      state,
-    });
     return exportData;
   } catch (error) {
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Error exporting mappings`,
-      status: 'fail',
-      state,
-    });
     throw new FrodoError(`Error exporting mappings`, error);
   }
 }

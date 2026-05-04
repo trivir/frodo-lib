@@ -725,6 +725,7 @@ export async function exportPolicy({
 /**
  * Export policies
  * @param {PolicyExportOptions} options export options
+ * @param {ResultCallback} resultCallback Optional callback to process individual results
  * @returns {Promise<PolicyExportInterface>} a promise that resolves to an PolicyExportInterface object
  */
 export async function exportPolicies({

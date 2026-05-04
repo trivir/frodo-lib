@@ -5,6 +5,7 @@ import {
   getOAuth2Clients as _getOAuth2Clients,
   type OAuth2ClientSkeleton,
   putOAuth2Client as _putOAuth2Client,
+  getOAuth2ClientsCount,
 } from '../api/OAuth2ClientApi';
 import { type ScriptSkeleton } from '../api/ScriptApi';
 import { State } from '../shared/State';
@@ -22,7 +23,8 @@ import {
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { FrodoError } from './FrodoError';
 import { readOAuth2Provider } from './OAuth2ProviderOps';
-import { ExportMetaData } from './OpsTypes';
+import { ExportMetaData, ResultCallback } from './OpsTypes';
+import { countPolicies } from './PolicyOps';
 import { readScript, updateScript } from './ScriptOps';
 
 export type OAuth2Client = {
@@ -36,6 +38,11 @@ export type OAuth2Client = {
    * @returns {Promise<OAuth2ClientSkeleton[]>} a promise that resolves to an array of oauth2client objects
    */
   readOAuth2Clients(): Promise<OAuth2ClientSkeleton[]>;
+  /**
+   * Count all OAuth2 clients in the active realm.
+   * @returns {Promise<number>} exact count when supported by the backing API
+   */
+  countOAuth2Clients(): Promise<number>;
   /**
    * Read OAuth2 client
    * @param {string} clientId client id
@@ -76,10 +83,12 @@ export type OAuth2Client = {
   /**
    * Export all OAuth2 clients
    * @param {OAuth2ClientExportOptions} options export options
+   * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {OAuth2ClientExportInterface} export data
    */
   exportOAuth2Clients(
-    options?: OAuth2ClientExportOptions
+    options?: OAuth2ClientExportOptions,
+    resultCallback?: ResultCallback<OAuth2ClientExportInterface>
   ): Promise<OAuth2ClientExportInterface>;
   /**
    * Export OAuth2 client by ID
@@ -133,6 +142,9 @@ export default (state: State): OAuth2Client => {
     async readOAuth2Clients(): Promise<OAuth2ClientSkeleton[]> {
       return readOAuth2Clients({ state });
     },
+    async countOAuth2Clients(): Promise<number> {
+      return countPolicies({ state });
+    },
     async readOAuth2Client(clientId: string): Promise<OAuth2ClientSkeleton> {
       return readOAuth2Client({ clientId, state });
     },
@@ -155,9 +167,13 @@ export default (state: State): OAuth2Client => {
       return deleteOAuth2Client({ clientId, state });
     },
     async exportOAuth2Clients(
-      options: OAuth2ClientExportOptions = { useStringArrays: true, deps: true }
+      options: OAuth2ClientExportOptions = {
+        useStringArrays: true,
+        deps: true,
+      },
+      resultCallback = void 0
     ): Promise<OAuth2ClientExportInterface> {
-      return exportOAuth2Clients({ options, state });
+      return exportOAuth2Clients({ options, resultCallback, state });
     },
     async exportOAuth2Client(
       clientId: string,
@@ -263,6 +279,26 @@ export async function readOAuth2Clients({
         error
       );
     }
+  }
+}
+
+/**
+ * Count all OAuth2Clients in the active realm.
+ * @returns {Promise<number>} exact count when supported by the backing API
+ */
+export async function countOAuth2Clients({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  try {
+    const total = await getOAuth2ClientsCount({ state });
+    return total;
+  } catch (error) {
+    throw new FrodoError(
+      `Error counting ${getCurrentRealmName(state) + ' realm'} policies`,
+      error
+    );
   }
 }
 
@@ -538,9 +574,11 @@ async function exportOAuth2ClientDependencies(
  */
 export async function exportOAuth2Clients({
   options = { useStringArrays: true, deps: true },
+  resultCallback = void 0,
   state,
 }: {
   options?: OAuth2ClientExportOptions;
+  resultCallback?: ResultCallback<OAuth2ClientExportInterface>;
   state: State;
 }): Promise<OAuth2ClientExportInterface> {
   debugMessage({
@@ -549,21 +587,10 @@ export async function exportOAuth2Clients({
   });
   const exportData = createOAuth2ClientExportTemplate({ state });
   const errors = [];
-  let indicatorId: string;
   try {
     const provider = await readOAuth2Provider({ state });
     const clients = await readOAuth2Clients({ state });
-    indicatorId = createProgressIndicator({
-      total: clients.length,
-      message: `Exporting ${getCurrentRealmName(state) + ' realm'} OAuth2 clients...`,
-      state,
-    });
     for (const client of clients) {
-      updateProgressIndicator({
-        id: indicatorId,
-        message: `Exporting ${getCurrentRealmName(state) + ' realm'} OAuth2 client ${client._id}`,
-        state,
-      });
       try {
         client._provider = provider;
         exportData.application[client._id] = client;
@@ -575,15 +602,18 @@ export async function exportOAuth2Clients({
             state
           );
         }
+        if (resultCallback) resultCallback(undefined, exportData);
       } catch (error) {
         errors.push(error);
+        if (resultCallback)
+          resultCallback(
+            new FrodoError(
+              `Error exporting ${getCurrentRealmName(state) + ' realm'} oauth2 client ${client._id}`
+            )
+          );
+        continue;
       }
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Exported ${clients.length} ${getCurrentRealmName(state) + ' realm'} OAuth2 clients.`,
-      state,
-    });
   } catch (error) {
     errors.push(error);
   }

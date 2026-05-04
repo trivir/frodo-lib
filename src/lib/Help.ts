@@ -2579,10 +2579,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Mapping",
     methodName: "exportMappings",
-    signature: "exportMappings( options?: MappingExportOptions ): Promise<MappingExportInterface>",
+    signature: "exportMappings( options?: MappingExportOptions, resultCallback?: ResultCallback<MappingExportInterface> ): Promise<MappingExportInterface>",
     description: "Export all mappings",
     params: [
       { name: "options", type: "MappingExportOptions", description: "export options" },
+      { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results" },
     ],
     returns: "{Promise<MappingExportInterface>} a promise that resolves to a MappingExportInterface object",
   },
@@ -2902,6 +2903,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "OAuth2Client",
+    methodName: "countOAuth2Clients",
+    signature: "countOAuth2Clients(): Promise<number>",
+    description: "Count all OAuth2 clients in the active realm.",
+    params: [],
+    returns: "{Promise<number>} exact count when supported by the backing API",
+  },
+  {
+    typeName: "OAuth2Client",
     methodName: "readOAuth2Client",
     signature: "readOAuth2Client(clientId: string): Promise<OAuth2ClientSkeleton>",
     description: "Read OAuth2 client",
@@ -2953,10 +2962,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "OAuth2Client",
     methodName: "exportOAuth2Clients",
-    signature: "exportOAuth2Clients( options?: OAuth2ClientExportOptions ): Promise<OAuth2ClientExportInterface>",
+    signature: "exportOAuth2Clients( options?: OAuth2ClientExportOptions, resultCallback?: ResultCallback<OAuth2ClientExportInterface> ): Promise<OAuth2ClientExportInterface>",
     description: "Export all OAuth2 clients",
     params: [
       { name: "options", type: "OAuth2ClientExportOptions", description: "export options" },
+      { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results" },
     ],
     returns: "{OAuth2ClientExportInterface} export data",
   },
