@@ -363,6 +363,9 @@ export async function readSyncMappings({
     });
     return mappings;
   } catch (error) {
+    if (error.httpStatus === 404) {
+      return [];
+    }
     throw new FrodoError(`Error reading sync mappings`, error);
   }
 }
