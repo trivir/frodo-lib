@@ -30,7 +30,7 @@ import {
 import { getCurrentRealmName } from '../utils/ForgeRockUtils';
 import { get } from '../utils/JsonUtils';
 import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
+import { ResultCallback, type ExportMetaData } from './OpsTypes';
 import { updateScript } from './ScriptOps';
 
 export type Saml2 = {
@@ -39,6 +39,11 @@ export type Saml2 = {
    * @returns {Promise<Saml2ProviderStub[]>} a promise that resolves to an array of saml2 entity stubs
    */
   readSaml2ProviderStubs(): Promise<Saml2ProviderStub[]>;
+  /**
+   * Get all SAML2 entity ids
+   * @returns {Promise<string[]>} a promise that resolves to an array of saml2 entity ids
+   */
+  readSaml2EntityIds(): Promise<string[]>;
   /**
    *
    * @param {string} entityId Provider entity id
@@ -114,7 +119,8 @@ export type Saml2 = {
    * @returns {Promise<Saml2ExportInterface>} Promise resolving to a Saml2ExportInterface object.
    */
   exportSaml2Providers(
-    options?: Saml2EntitiesExportOptions
+    options?: Saml2EntitiesExportOptions,
+    resultCallback?: ResultCallback<Saml2ExportInterface>
   ): Promise<Saml2ExportInterface>;
   /**
    * Import a SAML entity provider
@@ -144,6 +150,9 @@ export default (state: State): Saml2 => {
   return {
     async readSaml2ProviderStubs(): Promise<Saml2ProviderStub[]> {
       return readSaml2ProviderStubs({ state });
+    },
+    async readSaml2EntityIds(): Promise<string[]> {
+      return readSaml2EntityIds({ state });
     },
     async readSaml2ProviderStub(entityId: string): Promise<Saml2ProviderStub> {
       return readSaml2ProviderStub({ entityId, state });
@@ -186,9 +195,10 @@ export default (state: State): Saml2 => {
       return exportSaml2Provider({ entityId, options, state });
     },
     async exportSaml2Providers(
-      options: Saml2EntitiesExportOptions = { deps: true }
+      options: Saml2EntitiesExportOptions = { deps: true },
+      resultCallback = void 0
     ): Promise<Saml2ExportInterface> {
-      return exportSaml2Providers({ options, state });
+      return exportSaml2Providers({ options, resultCallback, state });
     },
     async importSaml2Provider(
       entityId: string,
@@ -754,28 +764,19 @@ export async function exportSaml2Provider({
  */
 export async function exportSaml2Providers({
   options = { deps: true },
+  resultCallback = void 0,
   state,
 }: {
   options?: Saml2EntitiesExportOptions;
+  resultCallback?: ResultCallback<Saml2ExportInterface>;
   state: State;
 }): Promise<Saml2ExportInterface> {
-  let indicatorId: string;
   const errors: Error[] = [];
   try {
     const fileData = createSaml2ExportTemplate({ state });
     const stubs = await readSaml2ProviderStubs({ state });
-    indicatorId = createProgressIndicator({
-      total: stubs.length,
-      message: `Exporting ${getCurrentRealmName(state) + ' realm'} SAML2 providers...`,
-      state,
-    });
     for (const stub of stubs) {
       try {
-        updateProgressIndicator({
-          id: indicatorId,
-          message: `Exporting ${getCurrentRealmName(state) + ' realm'} SAML2 provider ${stub._id}`,
-          state,
-        });
         const providerData = await _getProviderByLocationAndId({
           location: stub.location,
           entityId64: stub._id,
@@ -787,9 +788,18 @@ export async function exportSaml2Providers({
             await exportDependencies({ providerData, fileData, state });
           } catch (error) {
             errors.push(error);
+            if (resultCallback)
+              resultCallback(
+                new FrodoError(
+                  `Error exporting ${getCurrentRealmName(state) + ' realm'} saml2 provider ${stub._id}`,
+                  error
+                )
+              );
+            continue;
           }
         }
         fileData.saml[stub.location][providerData._id] = providerData;
+        if (resultCallback) resultCallback(undefined, fileData);
       } catch (error) {
         if (
           !(
@@ -801,12 +811,12 @@ export async function exportSaml2Providers({
             )
           )
         ) {
-          errors.push(
-            new FrodoError(
-              `Error exporting ${getCurrentRealmName(state) + ' realm'} saml2 provider ${stub._id}`,
-              error
-            )
+          const finalError = new FrodoError(
+            `Error exporting ${getCurrentRealmName(state) + ' realm'} saml2 provider ${stub._id}`,
+            error
           );
+          errors.push(finalError);
+          if (resultCallback) resultCallback(finalError);
         }
       }
     }
@@ -816,19 +826,8 @@ export async function exportSaml2Providers({
         errors
       );
     }
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Exported ${stubs.length} ${getCurrentRealmName(state) + ' realm'} SAML2 providers.`,
-      state,
-    });
     return fileData;
   } catch (error) {
-    stopProgressIndicator({
-      id: indicatorId,
-      message: `Error exporting ${getCurrentRealmName(state) + ' realm'} saml2 providers`,
-      status: 'fail',
-      state,
-    });
     // re-throw previously caught error
     if (errors.length > 0) {
       throw error;

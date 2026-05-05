@@ -9,6 +9,7 @@ import {
   getScripts as _getScripts,
   putScript as _putScript,
   type ScriptSkeleton,
+  getScriptsCount,
 } from '../api/ScriptApi';
 import { type ExportMetaData, ResultCallback } from '../ops/OpsTypes';
 import { State } from '../shared/State';
@@ -44,6 +45,11 @@ export type Script = {
    * @returns {Promise<ScriptSkeleton[]>} a promise that resolves to an array of script objects
    */
   readScripts(): Promise<ScriptSkeleton[]>;
+  /**
+   * Count all scripts in the active realm.
+   * @returns {Promise<number>} exact count when supported by the backing API
+   */
+  countScripts(): Promise<number>;
   /**
    * Get the names of library scripts required by the input script object
    *
@@ -163,6 +169,9 @@ export default (state: State): Script => {
     },
     async readScripts(): Promise<ScriptSkeleton[]> {
       return readScripts({ state });
+    },
+    async countScripts(): Promise<number> {
+      return countScripts({ state });
     },
     getLibraryScriptNames(scriptObj: ScriptSkeleton): string[] {
       return getLibraryScriptNames(scriptObj);
@@ -321,6 +330,26 @@ export async function readScripts({
   } catch (error) {
     throw new FrodoError(
       `Error reading ${getCurrentRealmName(state) + ' realm'} scripts`,
+      error
+    );
+  }
+}
+
+/**
+ * Count all scripts in the active realm.
+ * @returns {Promise<number>} exact count when supported by the backing API
+ */
+export async function countScripts({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  try {
+    const total = await getScriptsCount({ state });
+    return total;
+  } catch (error) {
+    throw new FrodoError(
+      `Error counting ${getCurrentRealmName(state) + ' realm'} scripts`,
       error
     );
   }
@@ -713,17 +742,7 @@ export async function exportScripts({
   if (!includeDefault)
     scriptList = scriptList.filter((script) => !script.default);
   const exportData = createScriptExportTemplate({ state });
-  const indicatorId = createProgressIndicator({
-    total: scriptList.length,
-    message: `Exporting ${getCurrentRealmName(state) + ' realm'} ${scriptList.length} scripts...`,
-    state,
-  });
   for (const scriptData of scriptList) {
-    updateProgressIndicator({
-      id: indicatorId,
-      message: `Reading ${getCurrentRealmName(state) + ' realm'} script ${scriptData.name}`,
-      state,
-    });
     const result: ScriptSkeleton = await getResult(
       resultCallback,
       `Error exporting ${getCurrentRealmName(state) + ' realm'} script ${scriptData.name}`,
@@ -738,11 +757,6 @@ export async function exportScripts({
       exportData.script[scriptData._id] = result;
     }
   }
-  stopProgressIndicator({
-    id: indicatorId,
-    message: `Exported ${getCurrentRealmName(state) + ' realm'} ${scriptList.length} scripts.`,
-    state,
-  });
   return exportData;
 }
 

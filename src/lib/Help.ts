@@ -3815,6 +3815,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Saml2",
+    methodName: "readSaml2EntityIds",
+    signature: "readSaml2EntityIds(): Promise<string[]>",
+    description: "Get all SAML2 entity ids",
+    params: [],
+    returns: "{Promise<string[]>} a promise that resolves to an array of saml2 entity ids",
+  },
+  {
+    typeName: "Saml2",
     methodName: "readSaml2ProviderStub",
     signature: "readSaml2ProviderStub(entityId: string): Promise<Saml2ProviderStub>",
     description: "",
@@ -3909,7 +3917,7 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Saml2",
     methodName: "exportSaml2Providers",
-    signature: "exportSaml2Providers( options?: Saml2EntitiesExportOptions ): Promise<Saml2ExportInterface>",
+    signature: "exportSaml2Providers( options?: Saml2EntitiesExportOptions, resultCallback?: ResultCallback<Saml2ExportInterface> ): Promise<Saml2ExportInterface>",
     description: "Export all entity providers. The response can be saved to file as is.",
     params: [
       { name: "options", type: "Saml2EntitiesExportOptions", description: "export options" },
@@ -3954,6 +3962,14 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Read all scripts",
     params: [],
     returns: "{Promise<ScriptSkeleton[]>} a promise that resolves to an array of script objects",
+  },
+  {
+    typeName: "Script",
+    methodName: "countScripts",
+    signature: "countScripts(): Promise<number>",
+    description: "Count all scripts in the active realm.",
+    params: [],
+    returns: "{Promise<number>} exact count when supported by the backing API",
   },
   {
     typeName: "Script",

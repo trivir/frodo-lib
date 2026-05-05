@@ -11,6 +11,9 @@ const scriptQueryURLTemplate =
   '%s/json%s/scripts?_queryFilter=name+eq+%%22%s%%22';
 const libraryConfigQueryURLTemplate =
   '%s/json%s/libraries?_queryFilter=name+eq+%%22%s%%22';
+const countScriptsURLTemplate =
+  '%s/json%s/scripts?_queryFilter=true&_pageSize=0&_totalPagedResultsPolicy=EXACT';
+
 const apiVersion = 'protocol=2.0,resource=1.0';
 const getApiConfig = () => {
   return {
@@ -84,6 +87,39 @@ export async function getScripts({
     withCredentials: true,
   });
   return data;
+}
+
+/**
+ * Get total number of scripts in the current realm.
+ * @returns {Promise<number>} Exact total when available.
+ */
+export async function getScriptsCount({
+  state,
+}: {
+  state: State;
+}): Promise<number> {
+  const urlString = util.format(
+    countScriptsURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state)
+  );
+  const { data } = await generateAmApi({
+    resource: getApiConfig(),
+    state,
+  }).get(urlString, {
+    withCredentials: true,
+  });
+
+  if (
+    typeof data?.totalPagedResults === 'number' &&
+    data.totalPagedResults >= 0
+  ) {
+    return data.totalPagedResults;
+  }
+  if (typeof data?.resultCount === 'number' && data.resultCount >= 0) {
+    return data.resultCount;
+  }
+  return Array.isArray(data?.result) ? data.result.length : 0;
 }
 
 /**
