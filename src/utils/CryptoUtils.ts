@@ -1,53 +1,52 @@
-import jwkToPem from 'jwk-to-pem';
 import sshpk from 'sshpk';
+import * as jose from 'jose';
 
 import { FrodoError } from '../ops/FrodoError';
+import { JwkRsa } from '../ops/JoseOps';
 
 export type FrodoCrypto = {
   /**
-   * Parses a private key and returns it as an unencrypted PKCS#8 PEM encoded string
+   * Parses a private key and returns it
    * Supported private key formats include:
-   * - PEM (both PKCS#1 and PKCS#8 variants)
    * - OpenSSH
    * - DNSSEC
    * - JWK
    * @param {string} key The private key
    * @param {string | undefined} passphrase The passphrase for the private key if it is encrypted
    * @param {string | undefined} name The name of the private key (i.e. the name of the file it came from, if applicable); used for error handling
-   * @returns {string} The unencrypted PKCS#8 PEM encoded private key
+   * @returns {JwkRsa} The private key as JWK
    */
-  convertPrivateKeyToPem(
+  getPrivateKey(
     key: string,
     passphrase?: string,
     name?: string
-  ): string;
+  ): Promise<JwkRsa>;
 };
 
 export default (): FrodoCrypto => {
   return {
-    convertPrivateKeyToPem(
+    getPrivateKey(
       key: string,
       passphrase?: string,
       name?: string
-    ): string {
-      return convertPrivateKeyToPem({ key, passphrase, name });
+    ): Promise<JwkRsa> {
+      return getPrivateKey({ key, passphrase, name });
     },
   };
 };
 
 /**
- * Parses a private key and returns it as an unencrypted PKCS#8 PEM encoded string
+ * Parses a private key and returns it
  * Supported private key formats include:
- * - PEM (both PKCS#1 and PKCS#8 variants)
  * - OpenSSH
  * - DNSSEC
  * - JWK
  * @param {string} key The private key
  * @param {string | undefined} passphrase The passphrase for the private key if it is encrypted
  * @param {string | undefined} name The name of the private key (i.e. the name of the file it came from, if applicable); used for error handling
- * @returns {string} The unencrypted PKCS#8 PEM encoded private key
+ * @returns {JwkRsa} The unencrypted PKCS#8 PEM encoded private key
  */
-export function convertPrivateKeyToPem({
+export async function getPrivateKey({
   key,
   passphrase,
   name,
@@ -55,15 +54,14 @@ export function convertPrivateKeyToPem({
   key: string;
   passphrase?: string;
   name?: string;
-}): string {
+}): Promise<JwkRsa> {
   if (!key) {
     throw new FrodoError(`Private key${name ? ` ${name}` : ''} not provided.`);
   }
-  // Try converting JWK to PEM PKCS#8 format.
+  // Tries to return JWK
   try {
-    const jwk = JSON.parse(key);
-    // Need true flag to get the full private key
-    return jwkToPem(jwk, { private: true });
+    // Checks to see if key is valid JSON
+    return JSON.parse(key);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     /* Ignore error since private key may still be a supported format */
@@ -73,5 +71,55 @@ export function convertPrivateKeyToPem({
     filename: name,
     passphrase,
   });
-  return privateKey.toString('pkcs8');
+
+  // Manually create the JWK to be imported -> exported if the key is provided with a curve and has 'parts'
+  //@ts-expect-error k does exist in part
+  if (privateKey.curve && privateKey.part.k) {
+    //@ts-expect-error k does exist in part
+    const seed = privateKey.part.k.data; // 32 bytes, the private key
+    //@ts-expect-error A does exist in part
+    const pubKey = privateKey.toPublic().part.A.data; // 32 bytes, the public key
+
+    // base64url encode without padding
+    function b64url(bytes) {
+      return btoa(String.fromCharCode(...bytes))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    const jwk = {
+      kty: 'OKP',
+      crv: 'Ed25519',
+      d: b64url(seed),
+      x: b64url(pubKey),
+    } as jose.JWK;
+
+    // @ts-expect-error the returned value is in JwkRsa format
+    return jose.exportJWK(
+      await jose.importJWK(jwk, 'EdDSA', { extractable: true })
+    ) as JwkRsa;
+  } else {
+    let pemKey;
+
+    try {
+      // ECDSA- or Ed25519-based algorithm
+      pemKey = await jose.importPKCS8(
+        privateKey.toBuffer('pkcs8').toString('utf8'),
+        'ES256',
+        { extractable: true }
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      // RSA-based algorithm
+      pemKey = await jose.importPKCS8(
+        privateKey.toBuffer('pkcs8').toString('utf8'),
+        'RS256',
+        { extractable: true }
+      );
+    }
+
+    //@ts-expect-error the returned value is in JwkRsa format
+    return jose.exportJWK(pemKey) as JwkRsa;
+  }
 }

@@ -12,6 +12,7 @@ import Constants from './Constants';
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jose from 'node-jose';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -323,22 +324,22 @@ describe('State', () => {
       expect(state.setAmsterPrivateKey).toBeDefined();
     });
 
-    test('1: Method getAmsterPrivateKey is implemented', () => {
+    test('1: Method getAmsterPrivateKey is implemented', async () => {
       expect(state.getAmsterPrivateKey).toBeDefined();
     });
 
-    test("2: Amster private key value should be undefined if it hasn't been set before or defined if FRODO_AMSTER_PRIVATE_KEY env variable has been set or if set explicitly", () => {
+    test("2: Amster private key value should be undefined if it hasn't been set before or defined if FRODO_AMSTER_PRIVATE_KEY env variable has been set or if set explicitly", async () => {
       delete process.env.FRODO_AMSTER_PRIVATE_KEY;
-      expect(state.getAmsterPrivateKey()).toBeUndefined();
+      expect(await state.getAmsterPrivateKey()).toBeUndefined();
       process.env.FRODO_AMSTER_PRIVATE_KEY = privateKey1;
       // Tests that privateKey1, in PKCS#8 format, is still in PKCS#8 format after being parsed
-      expect(state.getAmsterPrivateKey()).toEqual(privateKey1);
-      state.setAmsterPrivateKey(privateKey2);
+      expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey1, 'pem')).toJSON(true));
+      state.setAmsterPrivateKey((await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true) as JwkRsa);
       // Tests that privateKey2, in PKCS#1 format, is still in PKCS#1 format since we set it directly
-      expect(state.getAmsterPrivateKey()).toEqual(privateKey2);
+      expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true));
     });
 
-    test("3: Amster private key value should be undefined and throw error if FRODO_AMSTER_PRIVATE_KEY is encrypted and FRODO_AMSTER_PASSPHRASE is not provided, or defined if FRODO_AMSTER_PASSPHRASE is provided.", () => {
+    test("3: Amster private key value should be undefined and throw error if FRODO_AMSTER_PRIVATE_KEY is encrypted and FRODO_AMSTER_PASSPHRASE is not provided, or defined if FRODO_AMSTER_PASSPHRASE is provided.", async () => {
       delete process.env.FRODO_AMSTER_PRIVATE_KEY;
       delete process.env.FRODO_AMSTER_PASSPHRASE;
       state.setAmsterPrivateKey(undefined);
@@ -346,7 +347,7 @@ describe('State', () => {
       expect(state.getAmsterPrivateKey).toThrow("The PEM format key (unnamed) is encrypted (password-protected), and no passphrase was provided in `options`");
       process.env.FRODO_AMSTER_PASSPHRASE = 'test';
       // Should be in PKCS#8 format now instead of OpenSSH
-      expect(state.getAmsterPrivateKey()).not.toEqual(privateKey3);
+      expect(await state.getAmsterPrivateKey()).not.toEqual((await jose.JWK.asKey(privateKey3, 'pem')).toJSON(true));
     });
   });
 

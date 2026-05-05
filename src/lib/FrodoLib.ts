@@ -76,7 +76,7 @@ import IdmSystemOps, { IdmSystem } from '../ops/IdmSystemOps';
 import IdpOps, { Idp } from '../ops/IdpOps';
 import InfoOps, { Info } from '../ops/InfoOps';
 import InternalRoleOps, { InternalRole } from '../ops/InternalRoleOps';
-import JoseOps, { Jose } from '../ops/JoseOps';
+import JoseOps, { Jose, JwkRsa } from '../ops/JoseOps';
 import JourneyOps, { Journey } from '../ops/JourneyOps';
 import ManagedObjectOps, { ManagedObject } from '../ops/ManagedObjectOps';
 import MappingOps, { Mapping } from '../ops/MappingOps';
@@ -315,7 +315,7 @@ export type Frodo = {
    */
   createInstanceWithAmsterAccount(
     host: string,
-    amsterPrivateKey: string,
+    amsterPrivateKey: JwkRsa,
     authenticationService?: string,
     realm?: string,
     deploymentType?: string,
@@ -473,7 +473,7 @@ function createInstance(config: StateInterface): Frodo {
 
 function createInstanceWithAmsterAccount(
   host: string,
-  amsterPrivateKey: string,
+  amsterPrivateKey: JwkRsa,
   authenticationService: string = ConstantsImpl.DEFAULT_AMSTER_SERVICE,
   realm: string = undefined,
   deploymentType: string = undefined,

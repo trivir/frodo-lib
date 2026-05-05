@@ -4,6 +4,8 @@ import { autoSetupPolly } from '../utils/AutoSetupPolly';
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jose from 'node-jose';
+import { JwkRsa } from '../ops/JoseOps';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -92,19 +94,19 @@ describe('FrodoLib', () => {
     state0.setHost('https://instance0/am');
     const instance1 = frodo.createInstanceWithAmsterAccount(
       'https://instance1/am',
-      privateKey1
+      (await jose.JWK.asKey(privateKey1, 'pem')).toJSON(true) as JwkRsa
     );
     const instance2 = frodo.createInstanceWithAmsterAccount(
       'https://instance2/am',
-      privateKey2,
+      (await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true) as JwkRsa,
       customAmsterService
     );
     expect(instance0.state.getHost()).toEqual(host0);
     expect(instance1.state.getHost()).toEqual(host1);
-    expect(instance1.state.getAmsterPrivateKey()).toEqual(privateKey1);
+    expect(await instance1.state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey1, 'pem')).toJSON(true));
     expect(instance1.state.getAuthenticationService()).toEqual(Constants.DEFAULT_AMSTER_SERVICE);
     expect(instance2.state.getHost()).toEqual(host2);
-    expect(instance2.state.getAmsterPrivateKey()).toEqual(privateKey2);
+    expect(await instance2.state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true));
     expect(instance2.state.getAuthenticationService()).toEqual(customAmsterService);
   });
 });

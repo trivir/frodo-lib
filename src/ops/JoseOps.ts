@@ -89,19 +89,22 @@ export async function createSignedJwtToken(
   payload: string | object,
   jwkJson: JwkRsa,
   header: object = {}
-) {
+): Promise<string> {
   const key = await jose.JWK.asKey(jwkJson);
   if (typeof payload === 'object') {
     payload = JSON.stringify(payload);
   }
   const jwt = await jose.JWS.createSign(
-    { alg: 'RS256', compact: true, fields: header },
-    // https://github.com/cisco/node-jose/issues/253
-    { key, reference: false }
+    { alg: 'RS256', format: 'compact', fields: header },
+    key
   )
     .update(payload)
-    .final();
-  return jwt;
+    .final()
+    .then((result) => {
+      return result;
+    });
+  // @ts-expect-error since the format is 'compact' a string is returned
+  return jwt as string;
 }
 
 export async function verifySignedJwtToken(jwt: string, jwkJson: JwkRsaPublic) {
