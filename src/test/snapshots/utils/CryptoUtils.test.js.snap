@@ -1,11 +1,12 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`CryptoUtils getPrivateKey() 3: PEM PKCS#8 RSA 1`] = `
+exports[`CryptoUtils getPrivateKey() 2: PEM PKCS#1 RSA 1`] = `
 {
   "d": "Y8uMu7sYCRR9fci0U-TewgYNDHXocevnU7o8ursJOhCUrnreeLzjga-BCAOX7eRTJTbVq8IzNG4NbA4-zfb9xQ",
   "dp": "hl4xOJGVYRiQU3BGCjskJBo24bJ_YSjZy5Y-VTw0miU",
   "dq": "ij9M7SNCEfc1gaXiSgMHmazOvD6gDy7mHqMrL0D20zk",
   "e": "AQAB",
+  "kid": "qkD8YKN_6VgpUBkeKFQPgGgigUelFgCnecVSy5yuaCs",
   "kty": "RSA",
   "n": "hVdznmYTyC1ry4bHHkiCbyoL_HIJDKCSeMAyYaa9ZGhhvN8UrpS480u2pehxBmJiVZtD80Ui7ejidhisSQPT-Q",
   "p": "ubYp8-Z2owLIXCvjrj8-VJRU7u-73YkMUol2se-0n7s",
@@ -14,12 +15,13 @@ exports[`CryptoUtils getPrivateKey() 3: PEM PKCS#8 RSA 1`] = `
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 5: PEM PKCS#8 ECDSA 1`] = `
+exports[`CryptoUtils getPrivateKey() 3: PEM PKCS#8 RSA 1`] = `
 {
   "d": "T3iwNb4kjdSTjZSdSHB7EVGYlpokw0gadQSqXuSyfIZKn7k70VlNQynPe3Swd5QUgvMhJwBj5sw2utvWN0DQUlbQtt-TZiVdAdzPCF9zyDAWJSOHT4xirjWh7_hLON32ONOBdVWOHuaPHpj88nS8084iOTVs5875ZcKgt3EgDKE",
   "dp": "mlNulEMq1qTcWasM3z9sVgLxKjART40-lIVJtdRk_P7v-qvvyp6ayXuneH4NR965YCKDGHr80tipkgvT6nVuIQ",
   "dq": "eOMdj6XQ7cPVTde8yxRQ9GwrQUV1tnLS0lHGxvsRkKeJ5JE_FXf-ptKEWiZuEHPQ0N3fFjurQtgfECrE0f9RnQ",
   "e": "AQAB",
+  "kid": "6YEBmzs4-h-PV2f9UbxaIL9qHiZHrimNdiXY-FBS3lg",
   "kty": "RSA",
   "n": "zdJe-pIq1VRgSopnTQkMojIYqo176YJuLk4IeSWOe--aP2OX00vKGoQrZIe5JW0_9RIJ9L7osXyFKk2a4r4_gqURdJqca_S5tkUTcQsK_Kunj1X78Gk9RqJ87HfezJLPJDg2D0mVkPLmpVKBxjR8KjQ7GKLXtOv3iwOGIjLsTKc",
   "p": "-ADCStx6PhfMEKsvTrTVT5qareNsNJHFlQjKJeC05RHr5c-HnioxMHafF5_rJXmy-7FtwhgQDmWYFyJfx9BycQ",
@@ -28,40 +30,44 @@ exports[`CryptoUtils getPrivateKey() 5: PEM PKCS#8 ECDSA 1`] = `
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 6: PEM PKCS#8 ED25519 1`] = `
+exports[`CryptoUtils getPrivateKey() 5: PEM PKCS#8 ECDSA 1`] = `
 {
   "crv": "P-256",
   "d": "-RC9AdyPFXArluWk6KMDJZnRg6aXNXx4mTk3uwwKSqg",
+  "kid": "asAZud7B6VQKl78SQsY3pxdkZeTJu-SXKU1Pnx8NQIw",
   "kty": "EC",
   "x": "DymV0MRNFZOUvBc5-1bI9H-PA4qY7NlF2sf4xew1w8A",
   "y": "ebqNoUCJImoX1IvZdHb7QNiBv02S4fjhdCE3GQ92WQ8",
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 7: PEM PKCS#8 ED25519 Encrypted 1`] = `
+exports[`CryptoUtils getPrivateKey() 6: PEM PKCS#8 ED25519 1`] = `
 {
   "crv": "Ed25519",
   "d": "EVBej4SZp1F00OIGC7iHOg77j5oHJ64Tl-bmwa4xL_s",
+  "kid": "8aANYc0R78zxs8a_-maLqCGfW1EIDuuFgWwXXzXVYIg",
   "kty": "OKP",
   "x": "qZWTR-5H4FEh_HkZPNMh0lVmZky5TbpsLWQBaTFnN4A",
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 8: OpenSSH RSA 1`] = `
+exports[`CryptoUtils getPrivateKey() 7: PEM PKCS#8 ED25519 Encrypted 1`] = `
 {
   "crv": "Ed25519",
   "d": "e1hMcHhkbE6jxIa0R-gupTYvT3iIF1o2e93LmLTQfHQ",
+  "kid": "yDPfxeqAcoAMumwalLCn3xM4veu9WKoFBkN7LYeEmBM",
   "kty": "OKP",
   "x": "vwEr3F6eO4dtGsQcaX3GWhP7jeG4JuIJBzhAPo11D08",
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 9: OpenSSH ECDSA 1`] = `
+exports[`CryptoUtils getPrivateKey() 8: OpenSSH RSA 1`] = `
 {
   "d": "QXrH1tSvdkTqt2o02Sd8SwVOEvSQDouZUdIaXlrYG3wd9EfO5_yn8Vl8jBSqYRFCbXL2bWagfmyR3_Gcy1vWpvsTavcxBjdjIttrPF0WhtPbFoy48mGhXIyTWor56248e6J37mFFtkR_gfRjnvS5JANhpPjoTLhvGioGzgYi44E",
   "dp": "",
   "dq": "",
   "e": "AQAB",
+  "kid": "NHRgn2uKvQCgAxjVy-z1eWpC95NXfguEHu65rVtRsgk",
   "kty": "RSA",
   "n": "yrB0SnD2N6xvlXYcxRgzTErJZfBE6RIJ7qE0lEF3-aqzP5Ls5J6jjIUTwI8MHMX0eSxNMjdm1pycqbWS8mq4HwOwcAslObACU7BVm9yaKZVGbzFWr2Yps13wYgHC0HJzQ0biolsOk0lpABV3Sn1icY80MTQExV0R2NaJLsgSkXU",
   "p": "63p9Gf5U4UOCXBopSA4VV38o5FfTpmpvomJgP3d1qGFTxi0yx9mL4LC9QJKdP8Dyxad66FhCIlEi_2iWzBFUCQ",
@@ -70,31 +76,49 @@ exports[`CryptoUtils getPrivateKey() 9: OpenSSH ECDSA 1`] = `
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 10: OpenSSH ED25519 1`] = `
+exports[`CryptoUtils getPrivateKey() 9: OpenSSH ECDSA 1`] = `
 {
   "crv": "P-256",
   "d": "LBIrlWvr1ioOIXQpJaWrvFTDtyPX82rRKy9co6BZNrg",
+  "kid": "pRypFJFItr8d9HRnBBc1a7iFXMPQI5AHi8iQiFitDKY",
   "kty": "EC",
   "x": "XO26UxPR1doE9esP7RKS7LwM5Bt456oZR2GPduPP-EE",
   "y": "8SEHztEjs_ZN9LS7D2ecOXmSh069aonmruKtZdXUkwE",
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 11: OpenSSH ED25519 Encrypted 1`] = `
+exports[`CryptoUtils getPrivateKey() 10: OpenSSH ED25519 1`] = `
 {
   "crv": "Ed25519",
   "d": "evSJ38PaEsGn4mfJYSJ3dNfe6G1MANPga7Xsv-Gb6HU",
+  "kid": "Fy24AzeXGQv4BJL1Os3yyYhl02OZxy08bqHFtuYdsmw",
   "kty": "OKP",
   "x": "A2T-HCZ3LJ6ss5Y8BZGXvzlE-438qqfWA4rWyG8eyd0",
 }
 `;
 
-exports[`CryptoUtils getPrivateKey() 12: DNSSEC RSASHA512 1`] = `
+exports[`CryptoUtils getPrivateKey() 11: OpenSSH ED25519 Encrypted 1`] = `
 {
   "crv": "Ed25519",
   "d": "_JJgrN2LFsG4XZIChhsFO5HHsXz_-j7GgyJQ8tNfW38",
+  "kid": "1K4Mc6pmIxM5jDL6zOsOJMA6QVo43MwLoymq1JwgeRo",
   "kty": "OKP",
   "x": "Sw-zS0kVH8li5P8zBVlVJ5kQ-oPLE33Gwbof8GhmeEs",
+}
+`;
+
+exports[`CryptoUtils getPrivateKey() 12: DNSSEC RSASHA512 1`] = `
+{
+  "d": "p-u2H7cEWafjcqefz5DwBhi-zhkWUtVcxay_Ne3l_URMgu0Ft_zGzC2Gr128hIhbsBrGtcJjQ3ECu7kJS8_y8HaE0zku19-3eh6bIekgtLzbsgQXkgqjVlXxkkQmG-1C9J3rknMyDsoV9ncSBd1VIHKvrvRBPysIr9VlbTWc0Q",
+  "dp": "93i4X_sIPtjL4bbnFVdzXnNGbR9F8wbon_9NrKA50fXqbfjXhIeUiWyRB67UChnfIpqFoISrWP4yr5fbZrmZpQ",
+  "dq": "L1eaK8oAaV_qXK3_ifICAloodFsk2XWrZkCuBCc9g1ovA-nXmBHjTJv3k11ZhfziuJ3BQSxBlhEbFs5cWdsLdQ",
+  "e": "AQAB",
+  "kid": "D50p-bG8tRZL4qtEah-v-1bS-sLSaI660Nfz1f3IQFM",
+  "kty": "RSA",
+  "n": "9w9AzSIL3a312ovgUTMfw7qCzEZ2UkYonXrg71b3DXwCncGFXLQ5EB3myWebyHzf9OkkgkJZx9c1OPy375fmoXeuiQ5FElENAVddPI-vvkMBQbXwGRvnVXE_Akz7g1vT-LdqEr1H_wmYPUr39twdDQlQtwWO_D1tpovBnf7YI38",
+  "p": "_iMv_L2IKaicQy2c5zYuULhaDLcHXbvmpL19Uvi3kh5T6w66U81-HVoU_RprAxSVXuR5gnv3zq6TPewZcVOG6w",
+  "q": "-N7JQ4piWJdfb0hDrfogVAeINsbrSxqxC1tnPhnIu-xA7mDz0ke7y6nspJ8JADv5dbt-xtffB1hM4NabM7aYvQ",
+  "qi": "zYWYdN2jwzNp5F2LJMqqda31BzUhHMDkv1NE_33IvI2BL_tmx2MNREfauHQ5P0_a9bjQR0db1DvyWvsZ1IrxkQ",
 }
 `;
 
@@ -112,20 +136,6 @@ exports[`CryptoUtils getPrivateKey() 13: JWK RSA 1`] = `
   "q": "p9mCXS5mmKkJrCZGfy0h3yZOJkiDIKi_hwu95VcX_vZ8SM1LKJgwDjPWyvGxPZPC-fXm86Gaj6aN6Q3AJc-G5Q",
   "qi": "l2m2wzcOpgI4zaD4yCB880Kg4s4iUz_k3vWgvjhWrqPmor5zPDdWp1LEwRFyoWdGPJg2vqALzE_57Nc3hNLa5A",
   "use": "sig",
-}
-`;
-
-exports[`CryptoUtils getPrivateKey() 13: JWK RSA 2`] = `
-{
-  "d": "p-u2H7cEWafjcqefz5DwBhi-zhkWUtVcxay_Ne3l_URMgu0Ft_zGzC2Gr128hIhbsBrGtcJjQ3ECu7kJS8_y8HaE0zku19-3eh6bIekgtLzbsgQXkgqjVlXxkkQmG-1C9J3rknMyDsoV9ncSBd1VIHKvrvRBPysIr9VlbTWc0Q",
-  "dp": "93i4X_sIPtjL4bbnFVdzXnNGbR9F8wbon_9NrKA50fXqbfjXhIeUiWyRB67UChnfIpqFoISrWP4yr5fbZrmZpQ",
-  "dq": "L1eaK8oAaV_qXK3_ifICAloodFsk2XWrZkCuBCc9g1ovA-nXmBHjTJv3k11ZhfziuJ3BQSxBlhEbFs5cWdsLdQ",
-  "e": "AQAB",
-  "kty": "RSA",
-  "n": "9w9AzSIL3a312ovgUTMfw7qCzEZ2UkYonXrg71b3DXwCncGFXLQ5EB3myWebyHzf9OkkgkJZx9c1OPy375fmoXeuiQ5FElENAVddPI-vvkMBQbXwGRvnVXE_Akz7g1vT-LdqEr1H_wmYPUr39twdDQlQtwWO_D1tpovBnf7YI38",
-  "p": "_iMv_L2IKaicQy2c5zYuULhaDLcHXbvmpL19Uvi3kh5T6w66U81-HVoU_RprAxSVXuR5gnv3zq6TPewZcVOG6w",
-  "q": "-N7JQ4piWJdfb0hDrfogVAeINsbrSxqxC1tnPhnIu-xA7mDz0ke7y6nspJ8JADv5dbt-xtffB1hM4NabM7aYvQ",
-  "qi": "zYWYdN2jwzNp5F2LJMqqda31BzUhHMDkv1NE_33IvI2BL_tmx2MNREfauHQ5P0_a9bjQR0db1DvyWvsZ1IrxkQ",
 }
 `;
 

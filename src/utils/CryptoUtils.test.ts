@@ -38,8 +38,8 @@ describe('CryptoUtils', () => {
     test('1: Test not providing a key', async () => {
       try {
         await getPrivateKey({ key: '' })
-      } catch (e) {
-        expect(e).toStrictEqual(new FrodoError('Private key not provided.'));
+      } catch (error) {
+        expect(error).toStrictEqual(new FrodoError('Private key not provided.'));
       }
     });
 
@@ -51,9 +51,13 @@ describe('CryptoUtils', () => {
       testSuccess('pkcs8Rsa.pem');
     });
 
-    // test('4: PEM PKCS#8 DSA', () => {
-    //   testSuccess('pkcs8Dsa.pem');
-    // });
+    test('4: PEM PKCS#8 DSA', async () => {
+      try {
+        await testSuccess('pkcs8Dsa.pem')
+      } catch (error) {
+        expect(error).toStrictEqual(new FrodoError('Private key not supported.'));
+      }
+    });
 
     test('5: PEM PKCS#8 ECDSA', () => {
       testSuccess('pkcs8Ecdsa.pem');

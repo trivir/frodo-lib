@@ -36,26 +36,26 @@ export default (_state: State) => {
 };
 
 export interface JwkInterface {
-  kty: string;
+  kty?: string;
   use?: string;
   key_ops?: string[];
-  alg: string;
+  alg?: string;
   kid?: string;
   x5u?: string;
-  x5c?: string;
+  x5c?: string | string[];
   x5t?: string;
   'x5t#S256'?: string;
 }
 
 export type JwkRsa = JwkInterface & {
-  d: string;
-  dp: string;
-  dq: string;
-  e: string;
-  n: string;
-  p: string;
-  q: string;
-  qi: string;
+  d?: string;
+  dp?: string;
+  dq?: string;
+  e?: string;
+  n?: string;
+  p?: string;
+  q?: string;
+  qi?: string;
 };
 
 export type JwkRsaPublic = JwkInterface & {

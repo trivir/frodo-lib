@@ -6,13 +6,15 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
+import { FrodoError, state } from '../index';
 import { JwkRsa } from '../ops/JoseOps';
 import Constants from './Constants';
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jose from 'node-jose';
+import * as panvaJose from 'jose';
+import SshPK from 'sshpk';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -320,6 +322,41 @@ describe('State', () => {
       ),
       'utf8'
     );
+
+    // Generates JWK, with passed in PEM key, using Jose (panva)
+    // This ensures that if crypto and Jose generate the same outcome, then the JWK is truthy
+    async function convertKey(key: string, passphrase?: string, isEdBased?: boolean) {
+      if (isEdBased) {
+        const pemKeyString = SshPK.parsePrivateKey(key, 'auto', {
+          passphrase,
+        });
+  
+        //@ts-expect-error k does exist in part
+        const seed = pemKeyString.part.k.data; // 32 bytes, the private key
+        //@ts-expect-error A does exist in part
+        const pubKey = pemKeyString.toPublic().part.A.data; // 32 bytes, the public key
+  
+        // base64url encode without padding
+        function b64url(bytes) {
+          return btoa(String.fromCharCode(...bytes))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+        }
+  
+        const jwk = {
+          kty: 'OKP',
+          crv: 'Ed25519',
+          d: b64url(seed),
+          x: b64url(pubKey),
+        } as panvaJose.JWK;
+  
+        return await panvaJose.exportJWK(await panvaJose.importJWK(jwk, 'EdDSA', { extractable: true }));
+      }
+
+      return (await jose.JWK.asKey(key, 'pem')).toJSON(true) as JwkRsa;
+    }
+
     test('0: Method setAmsterPrivateKey is implemented', () => {
       expect(state.setAmsterPrivateKey).toBeDefined();
     });
@@ -333,10 +370,12 @@ describe('State', () => {
       expect(await state.getAmsterPrivateKey()).toBeUndefined();
       process.env.FRODO_AMSTER_PRIVATE_KEY = privateKey1;
       // Tests that privateKey1, in PKCS#8 format, is still in PKCS#8 format after being parsed
-      expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey1, 'pem')).toJSON(true));
-      state.setAmsterPrivateKey((await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true) as JwkRsa);
+      expect(await state.getAmsterPrivateKey()).toEqual(await convertKey(privateKey1, process.env.FRODO_AMSTER_PASSPHRASE));
+      
+      const convertedKey = await convertKey(privateKey2, process.env.FRODO_AMSTER_PASSPHRASE)
+      state.setAmsterPrivateKey(convertedKey);
       // Tests that privateKey2, in PKCS#1 format, is still in PKCS#1 format since we set it directly
-      expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey2, 'pem')).toJSON(true));
+      expect(await state.getAmsterPrivateKey()).toEqual(await convertKey(privateKey2, process.env.FRODO_AMSTER_PASSPHRASE));
     });
 
     test("3: Amster private key value should be undefined and throw error if FRODO_AMSTER_PRIVATE_KEY is encrypted and FRODO_AMSTER_PASSPHRASE is not provided, or defined if FRODO_AMSTER_PASSPHRASE is provided.", async () => {
@@ -344,10 +383,18 @@ describe('State', () => {
       delete process.env.FRODO_AMSTER_PASSPHRASE;
       state.setAmsterPrivateKey(undefined);
       process.env.FRODO_AMSTER_PRIVATE_KEY = privateKey3;
-      expect(state.getAmsterPrivateKey).toThrow("The PEM format key (unnamed) is encrypted (password-protected), and no passphrase was provided in `options`");
+      try {
+        await state.getAmsterPrivateKey()
+      } catch (error) {
+        expect(error).toStrictEqual(new FrodoError("The PEM format key (unnamed) is encrypted (password-protected), and no passphrase was provided in `options`"));
+      }
       process.env.FRODO_AMSTER_PASSPHRASE = 'test';
+
+      const convertedKey = await convertKey(privateKey3, 'test', true);
+      state.setAmsterPrivateKey(convertedKey);
+      
       // Should be in PKCS#8 format now instead of OpenSSH
-      expect(await state.getAmsterPrivateKey()).not.toEqual((await jose.JWK.asKey(privateKey3, 'pem')).toJSON(true));
+      expect(await state.getAmsterPrivateKey()).toEqual(convertedKey);
     });
   });
 
