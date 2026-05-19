@@ -1743,8 +1743,14 @@ export async function importApplications({
   options?: ApplicationImportOptions;
   state: State;
 }): Promise<ApplicationGlossarySkeleton[]> {
+  const totalApps = Object.keys(importData.managedApplication).length;
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalApps,
+    message: `Importing ${totalApps} applications...`,
+    state,
+  });
   try {
     for (const applicationId of Object.keys(importData.managedApplication)) {
       const applicationData = importData.managedApplication[applicationId];
@@ -1780,6 +1786,11 @@ export async function importApplications({
           updatedApplication.glossary = glossary;
         }
         response.push(updatedApplication);
+        updateProgressIndicator({
+          id: indicatorId,
+          message: `${applicationId}`,
+          state,
+        });
       } catch (error) {
         errors.push(error);
       }
@@ -1790,12 +1801,20 @@ export async function importApplications({
         errors
       );
     }
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Imported ${totalApps} applications`,
+      status: 'success',
+      state,
+    });
     return response;
   } catch (error) {
-    // just re-throw previously caught errors
-    if (errors.length > 0) {
-      throw error;
-    }
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing applications: ${errors.map((e) => e.message).join('\n')}`,
+      status: 'fail',
+      state,
+    });
     throw new FrodoError(
       `Error importing ${getCurrentRealmName(state) + ' realm'} applications`,
       error

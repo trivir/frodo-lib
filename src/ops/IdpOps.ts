@@ -795,8 +795,14 @@ export async function importSocialIdentityProviders({
   options?: SocialIdentityProviderImportOptions;
   state: State;
 }): Promise<SocialIdpSkeleton[]> {
+  const totalIdps = Object.keys(importData.idp).length;
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalIdps,
+    message: `Importing ${totalIdps} social identity providers...`,
+    state,
+  });
   for (const idpId of Object.keys(importData.idp)) {
     try {
       if (
@@ -825,16 +831,33 @@ export async function importSocialIdentityProviders({
           state,
         })
       );
+      updateProgressIndicator({
+        id: indicatorId,
+        message: `${idpId}`,
+        state,
+      });
     } catch (error) {
       errors.push(error);
     }
   }
   if (errors.length > 0) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing social identity providers: ${errors.map((e) => e.message).join('\n')}`,
+      status: 'fail',
+      state,
+    });
     throw new FrodoError(
       `Error importing ${getCurrentRealmName(state) + ' realm'} providers`,
       errors
     );
   }
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Imported ${totalIdps} social identity providers`,
+    status: 'success',
+    state,
+  });
   return response;
 }
 

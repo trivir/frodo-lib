@@ -1032,8 +1032,15 @@ export async function importMappings({
   options?: MappingImportOptions;
   state: State;
 }): Promise<MappingSkeleton[]> {
+  const totalMappings = Object.keys(importData.mapping).length;
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalMappings,
+    message: `Importing ${totalMappings} mappings...`,
+    state,
+  });
+
   let mappings = [];
   if (importData.mapping) {
     mappings = mappings.concat(Object.values(importData.mapping));
@@ -1053,13 +1060,30 @@ export async function importMappings({
           state,
         })
       );
+      updateProgressIndicator({
+        id: indicatorId,
+        message: `${mappingData._id}`,
+        state,
+      });
     } catch (error) {
       errors.push(error);
     }
   }
   if (errors.length > 0) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing mappings: ${errors.map((e) => e.message).join('\n')}`,
+      status: 'fail',
+      state,
+    });
     throw new FrodoError(`Error importing mappings`, errors);
   }
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Imported ${totalMappings} social identity providers`,
+    status: 'success',
+    state,
+  });
   return response;
 }
 

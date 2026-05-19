@@ -1057,8 +1057,14 @@ export async function importSaml2Providers({
   state: State;
 }): Promise<Saml2ProviderSkeleton[]> {
   debugMessage({ message: `Saml2Ops.importSaml2Providers: start`, state });
+  const totalSaml = Object.keys(importData.saml).length;
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalSaml,
+    message: `Importing ${totalSaml} mappings...`,
+    state,
+  });
   try {
     // find providers in hosted and in remote and map locations
     const hostedIds = Object.keys(importData.saml.hosted);
@@ -1096,12 +1102,22 @@ export async function importSaml2Providers({
         response.push(
           await _createProvider({ location, providerData, metaData, state })
         );
+        updateProgressIndicator({
+          id: indicatorId,
+          message: `${entityId64}`,
+          state,
+        });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (createProviderErr) {
         try {
           response.push(
             await _updateProvider({ location, providerData, state })
           );
+          updateProgressIndicator({
+            id: indicatorId,
+            message: `${entityId64}`,
+            state,
+          });
         } catch (error) {
           errors.push(error);
         }
@@ -1114,6 +1130,12 @@ export async function importSaml2Providers({
       );
     }
   } catch (error) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing saml2 providers: ${errors.map((e) => e.message).join('\n')}`,
+      status: 'fail',
+      state,
+    });
     // re-throw previously caught error
     if (errors.length > 0) {
       throw error;
@@ -1124,5 +1146,11 @@ export async function importSaml2Providers({
     );
   }
   debugMessage({ message: `Saml2Ops.importSaml2Providers: end`, state });
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Imported ${totalSaml} saml2 providers`,
+    status: 'success',
+    state,
+  });
   return response;
 }

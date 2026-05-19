@@ -1157,8 +1157,14 @@ export async function importPolicies({
   options?: PolicyImportOptions;
   state: State;
 }): Promise<PolicySkeleton[]> {
+  const totalPolicies = Object.keys(importData.policy).length;
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalPolicies,
+    message: `Importing ${totalPolicies} policies...`,
+    state,
+  });
   for (const id of Object.keys(importData.policy)) {
     try {
       const policyData = importData.policy[id];
@@ -1181,6 +1187,11 @@ export async function importPolicies({
         response.push(
           await updatePolicy({ policyId: policyData._id, policyData, state })
         );
+        updateProgressIndicator({
+          id: indicatorId,
+          message: `${policyData._id}`,
+          state,
+        });
       } catch (error) {
         errors.push(error);
       }
@@ -1200,10 +1211,22 @@ export async function importPolicies({
     }
   }
   if (errors.length > 0) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing policies: ${errors.map((e) => e.message).join('\n')}`,
+      status: 'fail',
+      state,
+    });
     throw new FrodoError(
       `Error importing ${getCurrentRealmName(state) + ' realm'} policies`,
       errors
     );
   }
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Imported ${totalPolicies} policies`,
+    status: 'success',
+    state,
+  });
   return response;
 }

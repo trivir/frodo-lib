@@ -807,8 +807,14 @@ export async function importOAuth2Clients({
   options?: OAuth2ClientImportOptions;
   state: State;
 }): Promise<OAuth2ClientSkeleton[]> {
+  const totalClients = Object.keys(importData.application).length
   const response = [];
   const errors = [];
+  const indicatorId = createProgressIndicator({
+    total: totalClients,
+    message: `Importing ${totalClients} oauth2 clients...`,
+    state,
+  });
   for (const id of Object.keys(importData.application)) {
     try {
       const clientData = importData.application[id];
@@ -820,15 +826,31 @@ export async function importOAuth2Clients({
       response.push(
         await updateOAuth2Client({ clientId: id, clientData, state })
       );
+      updateProgressIndicator({
+        id: indicatorId,
+        message: `${clientData._id}`,
+        state,
+      });
     } catch (error) {
       errors.push(error);
     }
   }
   if (errors.length > 0) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error importing oauth2 clients: ${errors.map((e) => e.message).join('\n')}`,
+      state,
+    });
     throw new FrodoError(
       `Error importing ${getCurrentRealmName(state) + ' realm'} oauth2 clients`,
       errors
     );
   }
+  stopProgressIndicator({
+    id: indicatorId,
+    message: `Imported ${totalClients} oauth2 clients`,
+    status: 'success',
+    state,
+  });
   return response;
 }
