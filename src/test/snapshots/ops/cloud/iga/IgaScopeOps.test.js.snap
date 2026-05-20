@@ -1,0 +1,1187 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`IgaScopeOps createScopeExportTemplate() 1: Create scope export template 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {},
+}
+`;
+
+exports[`IgaScopeOps deleteScopeByName() 1: Delete existing scope by name 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: test_scope_4",
+  "entity": {
+    "class": "managed/user",
+    "type": "string",
+  },
+  "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+  "metadata": {
+    "createdDate": "2026-05-20T17:46:15.799618945Z",
+    "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+  },
+  "name": "test_scope_4",
+  "permissions": {
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScope() 1: Export existing scope by ID 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "73c690c8-8251-4914-98e4-722f762dd5ec": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_1",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+      "metadata": {
+        "createdDate": "2026-05-20T17:33:22.578691137Z",
+        "modifiedDate": "2026-05-20T17:33:22.578692827Z",
+      },
+      "name": "test_scope_1",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScopeByName() 1: Export existing scope by name 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_2",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+      "metadata": {
+        "createdDate": "2026-05-20T17:46:13.683151909Z",
+        "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+      },
+      "name": "test_scope_2",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScopes() 1: Export all scopes 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "0c059c42-d919-4b94-8119-f5e6e1501034": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_4",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+      "metadata": {
+        "createdDate": "2026-05-20T17:46:15.799618945Z",
+        "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+      },
+      "name": "test_scope_4",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+    "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_2",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+      "metadata": {
+        "createdDate": "2026-05-20T17:46:13.683151909Z",
+        "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+      },
+      "name": "test_scope_2",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+    "b171e77b-4f0a-4ef3-b65a-934f72b13b23": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_1",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "b171e77b-4f0a-4ef3-b65a-934f72b13b23",
+      "metadata": {
+        "createdDate": "2026-05-20T17:46:12.593946755Z",
+        "modifiedDate": "2026-05-20T17:46:12.593947985Z",
+      },
+      "name": "test_scope_1",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+    "dafff2ac-d9bf-4b28-b72a-732fd62bf72f": {
+      "_rev": 1,
+      "description": "Test scope: test_scope_3",
+      "entity": {
+        "class": "managed/user",
+        "type": "string",
+      },
+      "id": "dafff2ac-d9bf-4b28-b72a-732fd62bf72f",
+      "metadata": {
+        "createdDate": "2026-05-20T17:46:14.779413111Z",
+        "modifiedDate": "2026-05-20T17:46:14.779414251Z",
+      },
+      "name": "test_scope_3",
+      "permissions": {
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps importScopes() 1: Import none (empty import data) 1`] = `[]`;
+
+exports[`IgaScopeOps importScopes() 2: Import by ID 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_1",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "52f625d3-906f-4051-ab83-a2bbd5d0afbf",
+    "name": "test_scope_1",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps importScopes() 3: Import by name 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_2",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "9d688600-361c-4012-b6e1-bc34fe23b083",
+    "name": "test_scope_2",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_1",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "2b942f51-8403-4753-b58e-c50268c513f7",
+    "name": "test_scope_1",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_2",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "ec433bca-4108-4881-b232-0228356d503c",
+    "name": "test_scope_2",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_3",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "26ba425f-c5cb-48d0-9f72-94d232649dab",
+    "name": "test_scope_3",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps readScope() 1: Read existing scope by ID 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: test_scope_1",
+  "entity": {
+    "class": "managed/user",
+    "type": "string",
+  },
+  "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+  "metadata": {
+    "createdDate": "2026-05-20T17:33:22.578691137Z",
+    "modifiedDate": "2026-05-20T17:33:22.578692827Z",
+  },
+  "name": "test_scope_1",
+  "permissions": {
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps readScopeByName() 1: Read existing scope by name 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: test_scope_2",
+  "entity": {
+    "class": "managed/user",
+    "type": "string",
+  },
+  "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+  "metadata": {
+    "createdDate": "2026-05-20T17:46:13.683151909Z",
+    "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+  },
+  "name": "test_scope_2",
+  "permissions": {
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps readScopeEntities() 1: Read scope entities 1`] = `
+{
+  "entities": [
+    "user",
+    "catalog",
+  ],
+}
+`;
+
+exports[`IgaScopeOps readScopeEntitySchema() 1: Read scope entity schema for known entity type 1`] = `
+{
+  "schema": {
+    "user._id": {
+      "class": "json",
+      "displayName": "User ID",
+      "type": "string",
+    },
+    "user.accountStatus": {
+      "class": "json",
+      "displayName": "Status",
+      "type": "string",
+    },
+    "user.adminOfOrg": {
+      "class": "json",
+      "item": {
+        "reference": "/openidm/managed/alpha_organization",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.aliasList": {
+      "class": "json",
+      "displayName": "List of identity aliases used primarily to record social IdP subjects for this user",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.applications": {
+      "class": "json",
+      "displayName": "Applications",
+      "item": {
+        "reference": "/openidm/managed/alpha_application",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.assignments": {
+      "class": "json",
+      "displayName": "Assignments",
+      "item": {
+        "reference": "/openidm/managed/alpha_assignment",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.city": {
+      "class": "json",
+      "displayName": "City",
+      "type": "string",
+    },
+    "user.cn": {
+      "class": "json",
+      "displayName": "Common Name",
+      "type": "string",
+    },
+    "user.country": {
+      "class": "json",
+      "displayName": "Country",
+      "type": "string",
+    },
+    "user.custom_RAP": {
+      "class": "json",
+      "displayName": "The RAP, stored as a salted hash",
+      "type": "string",
+    },
+    "user.description": {
+      "class": "json",
+      "displayName": "Description",
+      "type": "string",
+    },
+    "user.devicePrintProfiles": {
+      "class": "json",
+      "displayName": "Device Print Profiles Information",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.deviceProfiles": {
+      "class": "json",
+      "displayName": "Device Profiles",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedDate1": {
+      "class": "json",
+      "displayName": "Generic Indexed Date 1",
+      "type": "string",
+    },
+    "user.frIndexedDate2": {
+      "class": "json",
+      "displayName": "Generic Indexed Date 2",
+      "type": "string",
+    },
+    "user.frIndexedDate3": {
+      "class": "json",
+      "displayName": "Generic Indexed Date 3",
+      "type": "string",
+    },
+    "user.frIndexedDate4": {
+      "class": "json",
+      "displayName": "Generic Indexed Date 4",
+      "type": "string",
+    },
+    "user.frIndexedDate5": {
+      "class": "json",
+      "displayName": "Generic Indexed Date 5",
+      "type": "string",
+    },
+    "user.frIndexedInteger1": {
+      "class": "json",
+      "displayName": "Generic Indexed Integer 1",
+      "type": "number",
+    },
+    "user.frIndexedInteger2": {
+      "class": "json",
+      "displayName": "Generic Indexed Integer 2",
+      "type": "number",
+    },
+    "user.frIndexedInteger3": {
+      "class": "json",
+      "displayName": "Generic Indexed Integer 3",
+      "type": "number",
+    },
+    "user.frIndexedInteger4": {
+      "class": "json",
+      "displayName": "Generic Indexed Integer 4",
+      "type": "number",
+    },
+    "user.frIndexedInteger5": {
+      "class": "json",
+      "displayName": "Generic Indexed Integer 5",
+      "type": "number",
+    },
+    "user.frIndexedMultivalued1": {
+      "class": "json",
+      "displayName": "Generic Indexed Multivalue 1",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedMultivalued2": {
+      "class": "json",
+      "displayName": "Generic Indexed Multivalue 2",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedMultivalued3": {
+      "class": "json",
+      "displayName": "Generic Indexed Multivalue 3",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedMultivalued4": {
+      "class": "json",
+      "displayName": "Generic Indexed Multivalue 4",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedMultivalued5": {
+      "class": "json",
+      "displayName": "Generic Indexed Multivalue 5",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frIndexedString1": {
+      "class": "json",
+      "displayName": "Generic Indexed String 1",
+      "type": "string",
+    },
+    "user.frIndexedString10": {
+      "class": "json",
+      "displayName": "Generic Indexed String 10",
+      "type": "string",
+    },
+    "user.frIndexedString11": {
+      "class": "json",
+      "displayName": "Generic Indexed String 11",
+      "type": "string",
+    },
+    "user.frIndexedString12": {
+      "class": "json",
+      "displayName": "Generic Indexed String 12",
+      "type": "string",
+    },
+    "user.frIndexedString13": {
+      "class": "json",
+      "displayName": "Generic Indexed String 13",
+      "type": "string",
+    },
+    "user.frIndexedString14": {
+      "class": "json",
+      "displayName": "Generic Indexed String 14",
+      "type": "string",
+    },
+    "user.frIndexedString15": {
+      "class": "json",
+      "displayName": "Generic Indexed String 15",
+      "type": "string",
+    },
+    "user.frIndexedString16": {
+      "class": "json",
+      "displayName": "Generic Indexed String 16",
+      "type": "string",
+    },
+    "user.frIndexedString17": {
+      "class": "json",
+      "displayName": "Generic Indexed String 17",
+      "type": "string",
+    },
+    "user.frIndexedString18": {
+      "class": "json",
+      "displayName": "Generic Indexed String 18",
+      "type": "string",
+    },
+    "user.frIndexedString19": {
+      "class": "json",
+      "displayName": "Generic Indexed String 19",
+      "type": "string",
+    },
+    "user.frIndexedString2": {
+      "class": "json",
+      "displayName": "Generic Indexed String 2",
+      "type": "string",
+    },
+    "user.frIndexedString20": {
+      "class": "json",
+      "displayName": "Generic Indexed String 20",
+      "type": "string",
+    },
+    "user.frIndexedString3": {
+      "class": "json",
+      "displayName": "Generic Indexed String 3",
+      "type": "string",
+    },
+    "user.frIndexedString4": {
+      "class": "json",
+      "displayName": "Generic Indexed String 4",
+      "type": "string",
+    },
+    "user.frIndexedString5": {
+      "class": "json",
+      "displayName": "Generic Indexed String 5",
+      "type": "string",
+    },
+    "user.frIndexedString6": {
+      "class": "json",
+      "displayName": "Generic Indexed String 6",
+      "type": "string",
+    },
+    "user.frIndexedString7": {
+      "class": "json",
+      "displayName": "Generic Indexed String 7",
+      "type": "string",
+    },
+    "user.frIndexedString8": {
+      "class": "json",
+      "displayName": "Generic Indexed String 8",
+      "type": "string",
+    },
+    "user.frIndexedString9": {
+      "class": "json",
+      "displayName": "Generic Indexed String 9",
+      "type": "string",
+    },
+    "user.frUnindexedDate1": {
+      "class": "json",
+      "displayName": "Generic Unindexed Date 1",
+      "type": "string",
+    },
+    "user.frUnindexedDate2": {
+      "class": "json",
+      "displayName": "Generic Unindexed Date 2",
+      "type": "string",
+    },
+    "user.frUnindexedDate3": {
+      "class": "json",
+      "displayName": "The date/time for when the RAP expires",
+      "format": "datetime",
+      "type": [
+        "string",
+        "null",
+      ],
+    },
+    "user.frUnindexedDate4": {
+      "class": "json",
+      "displayName": "Generic Unindexed Date 4",
+      "type": "string",
+    },
+    "user.frUnindexedDate5": {
+      "class": "json",
+      "displayName": "Generic Unindexed Date 5",
+      "type": "string",
+    },
+    "user.frUnindexedInteger1": {
+      "class": "json",
+      "displayName": "The number of attempts to use RAP to reset password",
+      "type": "number",
+    },
+    "user.frUnindexedInteger2": {
+      "class": "json",
+      "displayName": "Generic Unindexed Integer 2",
+      "type": "number",
+    },
+    "user.frUnindexedInteger3": {
+      "class": "json",
+      "displayName": "Generic Unindexed Integer 3",
+      "type": "number",
+    },
+    "user.frUnindexedInteger4": {
+      "class": "json",
+      "displayName": "Generic Unindexed Integer 4",
+      "type": "number",
+    },
+    "user.frUnindexedInteger5": {
+      "class": "json",
+      "displayName": "Generic Unindexed Integer 5",
+      "type": "number",
+    },
+    "user.frUnindexedMultivalued1": {
+      "class": "json",
+      "displayName": "Generic Unindexed Multivalue 1",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frUnindexedMultivalued2": {
+      "class": "json",
+      "displayName": "Generic Unindexed Multivalue 2",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frUnindexedMultivalued3": {
+      "class": "json",
+      "displayName": "Generic Unindexed Multivalue 3",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frUnindexedMultivalued4": {
+      "class": "json",
+      "displayName": "Generic Unindexed Multivalue 4",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frUnindexedMultivalued5": {
+      "class": "json",
+      "displayName": "Generic Unindexed Multivalue 5",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.frUnindexedString1": {
+      "class": "json",
+      "displayName": "Generic Unindexed String 1",
+      "type": "string",
+    },
+    "user.frUnindexedString2": {
+      "class": "json",
+      "displayName": "Generic Unindexed String 2",
+      "type": "string",
+    },
+    "user.frUnindexedString3": {
+      "class": "json",
+      "displayName": "Generic Unindexed String 3",
+      "type": "string",
+    },
+    "user.frUnindexedString4": {
+      "class": "json",
+      "displayName": "Generic Unindexed String 4",
+      "type": "string",
+    },
+    "user.frUnindexedString5": {
+      "class": "json",
+      "displayName": "Generic Unindexed String 5",
+      "type": "string",
+    },
+    "user.givenName": {
+      "class": "json",
+      "displayName": "First Name",
+      "type": "string",
+    },
+    "user.groups": {
+      "class": "json",
+      "displayName": "Groups",
+      "item": {
+        "reference": "/openidm/managed/alpha_group",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.mail": {
+      "class": "json",
+      "displayName": "Email Address",
+      "type": "string",
+    },
+    "user.manager": {
+      "class": "json",
+      "displayName": "Manager",
+      "reference": "/openidm/managed/alpha_user",
+      "type": "reference",
+    },
+    "user.memberOfOrg": {
+      "class": "json",
+      "item": {
+        "reference": "/openidm/managed/alpha_organization",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.oathDeviceProfiles": {
+      "class": "json",
+      "displayName": "Oath Device Profiles",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.ownerOfApp": {
+      "class": "json",
+      "item": {
+        "reference": "/openidm/managed/alpha_application",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.ownerOfOrg": {
+      "class": "json",
+      "item": {
+        "reference": "/openidm/managed/alpha_organization",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.password": {
+      "class": "json",
+      "displayName": "Password",
+      "type": "string",
+    },
+    "user.passwordExpirationTime": {
+      "class": "json",
+      "displayName": "Password Expiration Time",
+      "type": "string",
+    },
+    "user.passwordLastChangedTime": {
+      "class": "json",
+      "displayName": "Password Last Changed Time",
+      "type": "string",
+    },
+    "user.postalAddress": {
+      "class": "json",
+      "displayName": "Address 1",
+      "type": "string",
+    },
+    "user.postalCode": {
+      "class": "json",
+      "displayName": "Postal Code",
+      "type": "string",
+    },
+    "user.profileImage": {
+      "class": "json",
+      "displayName": "Profile Image",
+      "type": "string",
+    },
+    "user.pushDeviceProfiles": {
+      "class": "json",
+      "displayName": "Push Device Profiles",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "user.reports": {
+      "class": "json",
+      "displayName": "Direct Reports",
+      "item": {
+        "reference": "/openidm/managed/alpha_user",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.roles": {
+      "class": "json",
+      "displayName": "Provisioning Roles",
+      "item": {
+        "reference": "/openidm/managed/alpha_role",
+        "type": "reference",
+      },
+      "type": "array",
+    },
+    "user.sn": {
+      "class": "json",
+      "displayName": "Last Name",
+      "type": "string",
+    },
+    "user.stateProvince": {
+      "class": "json",
+      "displayName": "State/Province",
+      "type": "string",
+    },
+    "user.telephoneNumber": {
+      "class": "json",
+      "displayName": "Telephone Number",
+      "type": "string",
+    },
+    "user.timestamp": {
+      "class": "column",
+      "type": "date",
+    },
+    "user.userName": {
+      "class": "json",
+      "displayName": "Username",
+      "type": "string",
+    },
+    "user.webauthnDeviceProfiles": {
+      "class": "json",
+      "displayName": "Web AuthN Device Profiles",
+      "item": {
+        "type": "string",
+      },
+      "type": "array",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps readScopes() 1: Read all scopes 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_4",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+    "metadata": {
+      "createdDate": "2026-05-20T17:46:15.799618945Z",
+      "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+    },
+    "name": "test_scope_4",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_2",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+    "metadata": {
+      "createdDate": "2026-05-20T17:46:13.683151909Z",
+      "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+    },
+    "name": "test_scope_2",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_1",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "b171e77b-4f0a-4ef3-b65a-934f72b13b23",
+    "metadata": {
+      "createdDate": "2026-05-20T17:46:12.593946755Z",
+      "modifiedDate": "2026-05-20T17:46:12.593947985Z",
+    },
+    "name": "test_scope_1",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: test_scope_3",
+    "entity": {
+      "class": "managed/user",
+      "type": "string",
+    },
+    "id": "dafff2ac-d9bf-4b28-b72a-732fd62bf72f",
+    "metadata": {
+      "createdDate": "2026-05-20T17:46:14.779413111Z",
+      "modifiedDate": "2026-05-20T17:46:14.779414251Z",
+    },
+    "name": "test_scope_3",
+    "permissions": {
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps updateScope() 1: Update existing scope 1`] = `
+{
+  "_rev": 2,
+  "description": "Test scope: test_scope_1",
+  "entity": {
+    "class": "managed/user",
+    "type": "string",
+  },
+  "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+  "metadata": null,
+  "name": "test_scope_1",
+  "permissions": {
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+  },
+}
+`;

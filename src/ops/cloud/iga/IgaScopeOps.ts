@@ -330,7 +330,41 @@ import {
       throw new FrodoError(`Error reading scopes`, error);
     }
   }
-  
+  /**
+ * Read all scope entity types
+ * @returns {Promise<ScopeEntityResponse>} a promise that resolves to the list of entity types
+ */
+export async function readScopeEntities({
+  state,
+}: {
+  state: State;
+}): Promise<ScopeEntityResponse> {
+  try {
+    return await getScopeEntity({ state });
+  } catch (error) {
+    throw new FrodoError(`Error reading scope entities`, error);
+  }
+}
+
+/**
+ * Read the schema for a scope entity type
+ * @param {string} entityName the entity name (e.g. 'user')
+ * @returns {Promise<ScopeEntitySchemaResponse>} a promise that resolves to the entity schema
+ */
+export async function readScopeEntitySchema({
+  entityName,
+  state,
+}: {
+  entityName: string;
+  state: State;
+}): Promise<ScopeEntitySchemaResponse> {
+  try {
+    return await getScopeEntitySchema({ entityName, state });
+  } catch (error) {
+    throw new FrodoError(`Error reading scope entity schema for ${entityName}`, error);
+  }
+}
+
   /**
    * Export scope
    * @param {string} id the scope id
