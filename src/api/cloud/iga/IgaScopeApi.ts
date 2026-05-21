@@ -94,7 +94,7 @@ export interface ScopeSkeleton {
   sourceCondition: ScopeConditions;
   targetCondition: ScopeConditions;
   permissions?: ScopePermissions;
-  entity: ScopeEntityAttribute
+  entity: ScopeEntityAttribute;
   _rev: number;
   metadata?: Metadata;
 }
@@ -263,7 +263,7 @@ export async function queryScopes({
   const urlString = util.format(
     scopeEndpointURLTemplate,
     getHostOnlyUrl(state.getHost())
-  );  
+  );
   return await getApiSearchAll<ScopeSkeleton>({
     url: urlString,
     queryFilter,
@@ -328,16 +328,13 @@ export async function deleteScope({
 }
 
 export async function deleteScopes({
-
   state,
 }: {
-
   state: State;
 }): Promise<ScopeSkeleton> {
   const urlString = util.format(
     scopeURLTemplate,
-    getHostOnlyUrl(state.getHost()),
-
+    getHostOnlyUrl(state.getHost())
   );
   const { data } = await generateGovernanceApi({
     resource: {},

@@ -7,71 +7,514 @@ exports[`IgaScopeOps createScopeExportTemplate() 1: Create scope export template
 }
 `;
 
-exports[`IgaScopeOps deleteScopeByName() 1: Delete existing scope by name 1`] = `
+exports[`IgaScopeOps deleteScope() 1: Delete existing scope by ID 1`] = `
 {
-  "_rev": 1,
-  "description": "Test scope: test_scope_4",
-  "entity": {
-    "class": "managed/user",
-    "type": "string",
-  },
-  "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+  "_rev": 2,
+  "description": "",
+  "id": "a42f39bd-7f23-445e-8b71-4730d3c58f21",
   "metadata": {
-    "createdDate": "2026-05-20T17:46:15.799618945Z",
-    "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+    "createdDate": "2026-05-21T19:44:57.724126026Z",
+    "modifiedDate": "2026-05-21T19:45:53.207Z",
   },
-  "name": "test_scope_4",
+  "name": "scope3",
   "permissions": {
-    "viewGrants": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
     "viewUserAccess": true,
   },
   "sourceCondition": {
     "user": {
-      "filter": {},
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "user.frIndexedDate1",
+            },
+          },
+          {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "U",
+                  },
+                  "value": "user.city",
+                },
+              },
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "A",
+                  },
+                  "value": "user.country",
+                },
+              },
+            ],
+          },
+        ],
+      },
       "version": "v2",
     },
   },
   "status": "active",
   "targetCondition": {
     "application": {
-      "filter": {},
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "A",
+              },
+              "value": "catalog.application._id",
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "A",
+              },
+              "value": "catalog.entitlement.descriptor.displayName",
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "A",
+              },
+              "value": "catalog.role.description",
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "user._id",
+            },
+          },
+        ],
+      },
       "version": "v2",
     },
   },
 }
 `;
 
+exports[`IgaScopeOps deleteScopeByName() 1: Delete existing scope by name 1`] = `
+{
+  "_rev": 2,
+  "description": "test scope for contains filter",
+  "id": "af71f4f1-843b-4b7a-bbdc-007bdf2cde69",
+  "metadata": {
+    "createdDate": "2026-05-21T19:44:45.803567382Z",
+    "modifiedDate": "2026-05-21T19:46:05.217Z",
+  },
+  "name": "scope4",
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "",
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {},
+}
+`;
+
+exports[`IgaScopeOps deleteScopes() 1: Delete all scopes 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "",
+    "id": "177df908-d788-4513-bc29-5d9cccc35744",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:44.989200356Z",
+      "modifiedDate": "2026-05-21T19:44:44.98922982Z",
+    },
+    "name": "User LCM Test",
+    "permissions": {
+      "createUser": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "user._id",
+                "right": {
+                  "literal": "6a2d0e09-a9ac-41ca-af24-8af052c480f2",
+                },
+              },
+            },
+            {
+              "equals": {
+                "left": "user.userName",
+                "right": {
+                  "literal": "phh-parent-org-admin",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "user": {
+        "filter": {},
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "A test scope for ends with filter",
+    "id": "17fa81f2-6553-4d9f-87f7-1160c5e975ad",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:47.815291184Z",
+      "modifiedDate": "2026-05-21T19:44:47.81532274Z",
+    },
+    "name": "ends-with-scope",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "ends_with": {
+                "suffix": {
+                  "literal": "1",
+                },
+                "value": "user._id",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "test scope for does not contain filter",
+    "id": "2de3682d-9de9-4372-bfa0-9c71b8549db3",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:46.834648429Z",
+      "modifiedDate": "2026-05-21T19:44:46.834676731Z",
+    },
+    "name": "does-not-contain-test",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_contains": {
+                "in_string": "user.city",
+                "search_string": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "",
+    "id": "3c4cbbdd-aa24-4b6f-9b85-04b563d81896",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:59.756962185Z",
+      "modifiedDate": "2026-05-21T19:44:59.756985197Z",
+    },
+    "name": "test",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "not_contains": {
+                "in_string": "user.stateProvince",
+                "search_string": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {},
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "ends_with": {
+                "suffix": {
+                  "literal": "s",
+                },
+                "value": "user.accountStatus",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Description of the put scope request",
+    "id": "43e2c34b-f358-4316-a233-82c963f805ca",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:43.426510706Z",
+      "modifiedDate": "2026-05-21T19:44:43.42658293Z",
+    },
+    "name": "New Scope",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {
+          "and": [],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Allows employees (frIndexedInteger1 eq 0) to view other employee objects",
+    "id": "dd0466f4-c4d9-4eba-8d10-e2f131eab905",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:52.982757902Z",
+      "modifiedDate": "2026-05-21T19:44:52.982778308Z",
+    },
+    "name": "phh-delegate-visibility",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "equals": {
+                "left": "user.frIndexedInteger1",
+                "right": {
+                  "literal": 0,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "inactive",
+    "targetCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "equals": {
+                "left": "user.frIndexedInteger1",
+                "right": {
+                  "literal": 0,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
 exports[`IgaScopeOps exportScope() 1: Export existing scope by ID 1`] = `
 {
   "meta": Any<Object>,
   "scope": {
-    "73c690c8-8251-4914-98e4-722f762dd5ec": {
-      "_rev": 1,
-      "description": "Test scope: test_scope_1",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+    "72c65784-c1ac-47e5-9703-ea0967487e99": {
+      "_rev": 2,
+      "description": "",
+      "id": "72c65784-c1ac-47e5-9703-ea0967487e99",
       "metadata": {
-        "createdDate": "2026-05-20T17:33:22.578691137Z",
-        "modifiedDate": "2026-05-20T17:33:22.578692827Z",
+        "createdDate": "2026-05-21T19:44:50.554893022Z",
+        "modifiedDate": "2026-05-21T19:45:28.478Z",
       },
-      "name": "test_scope_1",
+      "name": "scope1",
       "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
         "viewGrants": true,
         "viewUserAccess": true,
       },
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
       "status": "active",
       "targetCondition": {
         "application": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "catalog.application.name",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {
+            "and": [
+              {
+                "equals": {
+                  "left": "catalog.entitlement.descriptor.displayName",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "catalog.role.description",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "user._id",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
@@ -84,36 +527,35 @@ exports[`IgaScopeOps exportScopeByName() 1: Export existing scope by name 1`] = 
 {
   "meta": Any<Object>,
   "scope": {
-    "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990": {
-      "_rev": 1,
-      "description": "Test scope: test_scope_2",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+    "9db2e5b6-e9e1-483e-886a-53e2c47f8d74": {
+      "_rev": 3,
+      "description": "test scope for is no filter
+",
+      "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
       "metadata": {
-        "createdDate": "2026-05-20T17:46:13.683151909Z",
-        "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+        "createdDate": "2026-05-21T19:44:51.830923986Z",
+        "modifiedDate": "2026-05-21T19:45:39.822Z",
       },
-      "name": "test_scope_2",
-      "permissions": {
-        "viewGrants": true,
-        "viewUserAccess": true,
-      },
+      "name": "scope2",
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
       "status": "active",
-      "targetCondition": {
-        "application": {
-          "filter": {},
-          "version": "v2",
-        },
-      },
+      "targetCondition": {},
     },
   },
 }
@@ -123,57 +565,145 @@ exports[`IgaScopeOps exportScopes() 1: Export all scopes 1`] = `
 {
   "meta": Any<Object>,
   "scope": {
-    "0c059c42-d919-4b94-8119-f5e6e1501034": {
+    "177df908-d788-4513-bc29-5d9cccc35744": {
       "_rev": 1,
-      "description": "Test scope: test_scope_4",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+      "description": "",
+      "id": "177df908-d788-4513-bc29-5d9cccc35744",
       "metadata": {
-        "createdDate": "2026-05-20T17:46:15.799618945Z",
-        "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+        "createdDate": "2026-05-21T19:44:44.989200356Z",
+        "modifiedDate": "2026-05-21T19:44:44.98922982Z",
       },
-      "name": "test_scope_4",
+      "name": "User LCM Test",
       "permissions": {
-        "viewGrants": true,
-        "viewUserAccess": true,
+        "createUser": true,
       },
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "user._id",
+                  "right": {
+                    "literal": "6a2d0e09-a9ac-41ca-af24-8af052c480f2",
+                  },
+                },
+              },
+              {
+                "equals": {
+                  "left": "user.userName",
+                  "right": {
+                    "literal": "phh-parent-org-admin",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
       "status": "active",
       "targetCondition": {
-        "application": {
+        "user": {
           "filter": {},
           "version": "v2",
         },
       },
     },
-    "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990": {
+    "17fa81f2-6553-4d9f-87f7-1160c5e975ad": {
       "_rev": 1,
-      "description": "Test scope: test_scope_2",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+      "description": "A test scope for ends with filter",
+      "id": "17fa81f2-6553-4d9f-87f7-1160c5e975ad",
       "metadata": {
-        "createdDate": "2026-05-20T17:46:13.683151909Z",
-        "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+        "createdDate": "2026-05-21T19:44:47.815291184Z",
+        "modifiedDate": "2026-05-21T19:44:47.81532274Z",
       },
-      "name": "test_scope_2",
+      "name": "ends-with-scope",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "ends_with": {
+                  "suffix": {
+                    "literal": "1",
+                  },
+                  "value": "user._id",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {},
+    },
+    "2de3682d-9de9-4372-bfa0-9c71b8549db3": {
+      "_rev": 1,
+      "description": "test scope for does not contain filter",
+      "id": "2de3682d-9de9-4372-bfa0-9c71b8549db3",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:46.834648429Z",
+        "modifiedDate": "2026-05-21T19:44:46.834676731Z",
+      },
+      "name": "does-not-contain-test",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_contains": {
+                  "in_string": "user.city",
+                  "search_string": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {},
+    },
+    "3c4cbbdd-aa24-4b6f-9b85-04b563d81896": {
+      "_rev": 1,
+      "description": "",
+      "id": "3c4cbbdd-aa24-4b6f-9b85-04b563d81896",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:59.756962185Z",
+        "modifiedDate": "2026-05-21T19:44:59.756985197Z",
+      },
+      "name": "test",
       "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
         "viewGrants": true,
         "viewUserAccess": true,
       },
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "and": [
+              {
+                "not_contains": {
+                  "in_string": "user.stateProvince",
+                  "search_string": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
@@ -181,68 +711,383 @@ exports[`IgaScopeOps exportScopes() 1: Export all scopes 1`] = `
       "targetCondition": {
         "application": {
           "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {},
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "ends_with": {
+                  "suffix": {
+                    "literal": "s",
+                  },
+                  "value": "user.accountStatus",
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
     },
-    "b171e77b-4f0a-4ef3-b65a-934f72b13b23": {
+    "43e2c34b-f358-4316-a233-82c963f805ca": {
       "_rev": 1,
-      "description": "Test scope: test_scope_1",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "b171e77b-4f0a-4ef3-b65a-934f72b13b23",
+      "description": "Description of the put scope request",
+      "id": "43e2c34b-f358-4316-a233-82c963f805ca",
       "metadata": {
-        "createdDate": "2026-05-20T17:46:12.593946755Z",
-        "modifiedDate": "2026-05-20T17:46:12.593947985Z",
+        "createdDate": "2026-05-21T19:44:43.426510706Z",
+        "modifiedDate": "2026-05-21T19:44:43.42658293Z",
       },
-      "name": "test_scope_1",
-      "permissions": {
-        "viewGrants": true,
-        "viewUserAccess": true,
-      },
+      "name": "New Scope",
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "and": [],
+          },
           "version": "v2",
         },
       },
       "status": "active",
       "targetCondition": {
         "application": {
-          "filter": {},
+          "filter": {
+            "and": [],
+          },
           "version": "v2",
         },
       },
     },
-    "dafff2ac-d9bf-4b28-b72a-732fd62bf72f": {
-      "_rev": 1,
-      "description": "Test scope: test_scope_3",
-      "entity": {
-        "class": "managed/user",
-        "type": "string",
-      },
-      "id": "dafff2ac-d9bf-4b28-b72a-732fd62bf72f",
+    "72c65784-c1ac-47e5-9703-ea0967487e99": {
+      "_rev": 2,
+      "description": "",
+      "id": "72c65784-c1ac-47e5-9703-ea0967487e99",
       "metadata": {
-        "createdDate": "2026-05-20T17:46:14.779413111Z",
-        "modifiedDate": "2026-05-20T17:46:14.779414251Z",
+        "createdDate": "2026-05-21T19:44:50.554893022Z",
+        "modifiedDate": "2026-05-21T19:45:28.478Z",
       },
-      "name": "test_scope_3",
+      "name": "scope1",
       "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
         "viewGrants": true,
         "viewUserAccess": true,
       },
       "sourceCondition": {
         "user": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
       "status": "active",
       "targetCondition": {
         "application": {
-          "filter": {},
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "catalog.application.name",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {
+            "and": [
+              {
+                "equals": {
+                  "left": "catalog.entitlement.descriptor.displayName",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "catalog.role.description",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "equals": {
+                  "left": "user._id",
+                  "right": {
+                    "literal": "temp",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "9db2e5b6-e9e1-483e-886a-53e2c47f8d74": {
+      "_rev": 3,
+      "description": "test scope for is no filter
+",
+      "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:51.830923986Z",
+        "modifiedDate": "2026-05-21T19:45:39.822Z",
+      },
+      "name": "scope2",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "Utah",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {},
+    },
+    "a42f39bd-7f23-445e-8b71-4730d3c58f21": {
+      "_rev": 2,
+      "description": "",
+      "id": "a42f39bd-7f23-445e-8b71-4730d3c58f21",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:57.724126026Z",
+        "modifiedDate": "2026-05-21T19:45:53.207Z",
+      },
+      "name": "scope3",
+      "permissions": {
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "user.frIndexedDate1",
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "U",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "A",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "A",
+                  },
+                  "value": "catalog.application._id",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "A",
+                  },
+                  "value": "catalog.entitlement.descriptor.displayName",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "A",
+                  },
+                  "value": "catalog.role.description",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "user._id",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "af71f4f1-843b-4b7a-bbdc-007bdf2cde69": {
+      "_rev": 2,
+      "description": "test scope for contains filter",
+      "id": "af71f4f1-843b-4b7a-bbdc-007bdf2cde69",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:45.803567382Z",
+        "modifiedDate": "2026-05-21T19:46:05.217Z",
+      },
+      "name": "scope4",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "",
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {},
+    },
+    "dd0466f4-c4d9-4eba-8d10-e2f131eab905": {
+      "_rev": 1,
+      "description": "Allows employees (frIndexedInteger1 eq 0) to view other employee objects",
+      "id": "dd0466f4-c4d9-4eba-8d10-e2f131eab905",
+      "metadata": {
+        "createdDate": "2026-05-21T19:44:52.982757902Z",
+        "modifiedDate": "2026-05-21T19:44:52.982778308Z",
+      },
+      "name": "phh-delegate-visibility",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 0,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "inactive",
+      "targetCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 0,
+                  },
+                },
+              },
+            ],
+          },
           "version": "v2",
         },
       },
@@ -257,13 +1102,13 @@ exports[`IgaScopeOps importScopes() 2: Import by ID 1`] = `
 [
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_1",
+    "description": "Test scope: scope1",
     "entity": {
       "class": "managed/user",
       "type": "string",
     },
-    "id": "52f625d3-906f-4051-ab83-a2bbd5d0afbf",
-    "name": "test_scope_1",
+    "id": "fcdcbf75-d18c-4884-96d2-9d3cad6814e5",
+    "name": "scope1",
     "permissions": {
       "viewGrants": true,
       "viewUserAccess": true,
@@ -289,13 +1134,13 @@ exports[`IgaScopeOps importScopes() 3: Import by name 1`] = `
 [
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_2",
+    "description": "Test scope: scope2",
     "entity": {
       "class": "managed/user",
       "type": "string",
     },
-    "id": "9d688600-361c-4012-b6e1-bc34fe23b083",
-    "name": "test_scope_2",
+    "id": "a6025545-161d-43ac-a050-d686ce14764f",
+    "name": "scope2",
     "permissions": {
       "viewGrants": true,
       "viewUserAccess": true,
@@ -321,13 +1166,13 @@ exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
 [
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_1",
+    "description": "Test scope: scope1",
     "entity": {
       "class": "managed/user",
       "type": "string",
     },
-    "id": "2b942f51-8403-4753-b58e-c50268c513f7",
-    "name": "test_scope_1",
+    "id": "8ee36c5e-0197-44ad-b8b7-97ad13abbe3d",
+    "name": "scope1",
     "permissions": {
       "viewGrants": true,
       "viewUserAccess": true,
@@ -348,13 +1193,13 @@ exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
   },
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_2",
+    "description": "Test scope: scope2",
     "entity": {
       "class": "managed/user",
       "type": "string",
     },
-    "id": "ec433bca-4108-4881-b232-0228356d503c",
-    "name": "test_scope_2",
+    "id": "6c399dd1-91c7-49df-921d-11351a7b6d62",
+    "name": "scope2",
     "permissions": {
       "viewGrants": true,
       "viewUserAccess": true,
@@ -375,13 +1220,13 @@ exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
   },
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_3",
+    "description": "Test scope: scope3",
     "entity": {
       "class": "managed/user",
       "type": "string",
     },
-    "id": "26ba425f-c5cb-48d0-9f72-94d232649dab",
-    "name": "test_scope_3",
+    "id": "7d94658c-85a2-449b-80d7-a6de6e88fda7",
+    "name": "scope3",
     "permissions": {
       "viewGrants": true,
       "viewUserAccess": true,
@@ -405,32 +1250,104 @@ exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
 
 exports[`IgaScopeOps readScope() 1: Read existing scope by ID 1`] = `
 {
-  "_rev": 1,
-  "description": "Test scope: test_scope_1",
-  "entity": {
-    "class": "managed/user",
-    "type": "string",
-  },
-  "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+  "_rev": 2,
+  "description": "",
+  "id": "72c65784-c1ac-47e5-9703-ea0967487e99",
   "metadata": {
-    "createdDate": "2026-05-20T17:33:22.578691137Z",
-    "modifiedDate": "2026-05-20T17:33:22.578692827Z",
+    "createdDate": "2026-05-21T19:44:50.554893022Z",
+    "modifiedDate": "2026-05-21T19:45:28.478Z",
   },
-  "name": "test_scope_1",
+  "name": "scope1",
   "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
     "viewGrants": true,
     "viewUserAccess": true,
   },
   "sourceCondition": {
     "user": {
-      "filter": {},
+      "filter": {
+        "or": [
+          {
+            "equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "Utah",
+              },
+            },
+          },
+        ],
+      },
       "version": "v2",
     },
   },
   "status": "active",
   "targetCondition": {
     "application": {
-      "filter": {},
+      "filter": {
+        "or": [
+          {
+            "equals": {
+              "left": "catalog.application.name",
+              "right": {
+                "literal": "temp",
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {
+        "and": [
+          {
+            "equals": {
+              "left": "catalog.entitlement.descriptor.displayName",
+              "right": {
+                "literal": "temp",
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "equals": {
+              "left": "catalog.role.description",
+              "right": {
+                "literal": "temp",
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "equals": {
+              "left": "user._id",
+              "right": {
+                "literal": "temp",
+              },
+            },
+          },
+        ],
+      },
       "version": "v2",
     },
   },
@@ -439,35 +1356,34 @@ exports[`IgaScopeOps readScope() 1: Read existing scope by ID 1`] = `
 
 exports[`IgaScopeOps readScopeByName() 1: Read existing scope by name 1`] = `
 {
-  "_rev": 1,
-  "description": "Test scope: test_scope_2",
-  "entity": {
-    "class": "managed/user",
-    "type": "string",
-  },
-  "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+  "_rev": 3,
+  "description": "test scope for is no filter
+",
+  "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
   "metadata": {
-    "createdDate": "2026-05-20T17:46:13.683151909Z",
-    "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+    "createdDate": "2026-05-21T19:44:51.830923986Z",
+    "modifiedDate": "2026-05-21T19:45:39.822Z",
   },
-  "name": "test_scope_2",
-  "permissions": {
-    "viewGrants": true,
-    "viewUserAccess": true,
-  },
+  "name": "scope2",
   "sourceCondition": {
     "user": {
-      "filter": {},
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "Utah",
+              },
+            },
+          },
+        ],
+      },
       "version": "v2",
     },
   },
   "status": "active",
-  "targetCondition": {
-    "application": {
-      "filter": {},
-      "version": "v2",
-    },
-  },
+  "targetCondition": {},
 }
 `;
 
@@ -1030,30 +1946,44 @@ exports[`IgaScopeOps readScopes() 1: Read all scopes 1`] = `
 [
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_4",
-    "entity": {
-      "class": "managed/user",
-      "type": "string",
-    },
-    "id": "0c059c42-d919-4b94-8119-f5e6e1501034",
+    "description": "",
+    "id": "177df908-d788-4513-bc29-5d9cccc35744",
     "metadata": {
-      "createdDate": "2026-05-20T17:46:15.799618945Z",
-      "modifiedDate": "2026-05-20T17:46:15.799620634Z",
+      "createdDate": "2026-05-21T19:44:44.989200356Z",
+      "modifiedDate": "2026-05-21T19:44:44.98922982Z",
     },
-    "name": "test_scope_4",
+    "name": "User LCM Test",
     "permissions": {
-      "viewGrants": true,
-      "viewUserAccess": true,
+      "createUser": true,
     },
     "sourceCondition": {
       "user": {
-        "filter": {},
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "user._id",
+                "right": {
+                  "literal": "6a2d0e09-a9ac-41ca-af24-8af052c480f2",
+                },
+              },
+            },
+            {
+              "equals": {
+                "left": "user.userName",
+                "right": {
+                  "literal": "phh-parent-org-admin",
+                },
+              },
+            },
+          ],
+        },
         "version": "v2",
       },
     },
     "status": "active",
     "targetCondition": {
-      "application": {
+      "user": {
         "filter": {},
         "version": "v2",
       },
@@ -1061,24 +1991,98 @@ exports[`IgaScopeOps readScopes() 1: Read all scopes 1`] = `
   },
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_2",
-    "entity": {
-      "class": "managed/user",
-      "type": "string",
-    },
-    "id": "59d38f3a-fbc5-4ca4-880b-e8dd7e19e990",
+    "description": "A test scope for ends with filter",
+    "id": "17fa81f2-6553-4d9f-87f7-1160c5e975ad",
     "metadata": {
-      "createdDate": "2026-05-20T17:46:13.683151909Z",
-      "modifiedDate": "2026-05-20T17:46:13.683153258Z",
+      "createdDate": "2026-05-21T19:44:47.815291184Z",
+      "modifiedDate": "2026-05-21T19:44:47.81532274Z",
     },
-    "name": "test_scope_2",
+    "name": "ends-with-scope",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "ends_with": {
+                "suffix": {
+                  "literal": "1",
+                },
+                "value": "user._id",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "test scope for does not contain filter",
+    "id": "2de3682d-9de9-4372-bfa0-9c71b8549db3",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:46.834648429Z",
+      "modifiedDate": "2026-05-21T19:44:46.834676731Z",
+    },
+    "name": "does-not-contain-test",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_contains": {
+                "in_string": "user.city",
+                "search_string": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "",
+    "id": "3c4cbbdd-aa24-4b6f-9b85-04b563d81896",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:59.756962185Z",
+      "modifiedDate": "2026-05-21T19:44:59.756985197Z",
+    },
+    "name": "test",
     "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
       "viewGrants": true,
       "viewUserAccess": true,
     },
     "sourceCondition": {
       "user": {
-        "filter": {},
+        "filter": {
+          "and": [
+            {
+              "not_contains": {
+                "in_string": "user.stateProvince",
+                "search_string": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
         "version": "v2",
       },
     },
@@ -1086,68 +2090,383 @@ exports[`IgaScopeOps readScopes() 1: Read all scopes 1`] = `
     "targetCondition": {
       "application": {
         "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {},
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "ends_with": {
+                "suffix": {
+                  "literal": "s",
+                },
+                "value": "user.accountStatus",
+              },
+            },
+          ],
+        },
         "version": "v2",
       },
     },
   },
   {
     "_rev": 1,
-    "description": "Test scope: test_scope_1",
-    "entity": {
-      "class": "managed/user",
-      "type": "string",
-    },
-    "id": "b171e77b-4f0a-4ef3-b65a-934f72b13b23",
+    "description": "Description of the put scope request",
+    "id": "43e2c34b-f358-4316-a233-82c963f805ca",
     "metadata": {
-      "createdDate": "2026-05-20T17:46:12.593946755Z",
-      "modifiedDate": "2026-05-20T17:46:12.593947985Z",
+      "createdDate": "2026-05-21T19:44:43.426510706Z",
+      "modifiedDate": "2026-05-21T19:44:43.42658293Z",
     },
-    "name": "test_scope_1",
-    "permissions": {
-      "viewGrants": true,
-      "viewUserAccess": true,
-    },
+    "name": "New Scope",
     "sourceCondition": {
       "user": {
-        "filter": {},
+        "filter": {
+          "and": [],
+        },
         "version": "v2",
       },
     },
     "status": "active",
     "targetCondition": {
       "application": {
-        "filter": {},
+        "filter": {
+          "and": [],
+        },
         "version": "v2",
       },
     },
   },
   {
-    "_rev": 1,
-    "description": "Test scope: test_scope_3",
-    "entity": {
-      "class": "managed/user",
-      "type": "string",
-    },
-    "id": "dafff2ac-d9bf-4b28-b72a-732fd62bf72f",
+    "_rev": 2,
+    "description": "",
+    "id": "72c65784-c1ac-47e5-9703-ea0967487e99",
     "metadata": {
-      "createdDate": "2026-05-20T17:46:14.779413111Z",
-      "modifiedDate": "2026-05-20T17:46:14.779414251Z",
+      "createdDate": "2026-05-21T19:44:50.554893022Z",
+      "modifiedDate": "2026-05-21T19:45:28.478Z",
     },
-    "name": "test_scope_3",
+    "name": "scope1",
     "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
       "viewGrants": true,
       "viewUserAccess": true,
     },
     "sourceCondition": {
       "user": {
-        "filter": {},
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
         "version": "v2",
       },
     },
     "status": "active",
     "targetCondition": {
       "application": {
-        "filter": {},
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "catalog.application.name",
+                "right": {
+                  "literal": "temp",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {
+          "and": [
+            {
+              "equals": {
+                "left": "catalog.entitlement.descriptor.displayName",
+                "right": {
+                  "literal": "temp",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "catalog.role.description",
+                "right": {
+                  "literal": "temp",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "equals": {
+                "left": "user._id",
+                "right": {
+                  "literal": "temp",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 3,
+    "description": "test scope for is no filter
+",
+    "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:51.830923986Z",
+      "modifiedDate": "2026-05-21T19:45:39.822Z",
+    },
+    "name": "scope2",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "Utah",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 2,
+    "description": "",
+    "id": "a42f39bd-7f23-445e-8b71-4730d3c58f21",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:57.724126026Z",
+      "modifiedDate": "2026-05-21T19:45:53.207Z",
+    },
+    "name": "scope3",
+    "permissions": {
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "user.frIndexedDate1",
+              },
+            },
+            {
+              "or": [
+                {
+                  "starts_with": {
+                    "prefix": {
+                      "literal": "U",
+                    },
+                    "value": "user.city",
+                  },
+                },
+                {
+                  "starts_with": {
+                    "prefix": {
+                      "literal": "A",
+                    },
+                    "value": "user.country",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "A",
+                },
+                "value": "catalog.application._id",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "A",
+                },
+                "value": "catalog.entitlement.descriptor.displayName",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "A",
+                },
+                "value": "catalog.role.description",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "user._id",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 2,
+    "description": "test scope for contains filter",
+    "id": "af71f4f1-843b-4b7a-bbdc-007bdf2cde69",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:45.803567382Z",
+      "modifiedDate": "2026-05-21T19:46:05.217Z",
+    },
+    "name": "scope4",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "",
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "Allows employees (frIndexedInteger1 eq 0) to view other employee objects",
+    "id": "dd0466f4-c4d9-4eba-8d10-e2f131eab905",
+    "metadata": {
+      "createdDate": "2026-05-21T19:44:52.982757902Z",
+      "modifiedDate": "2026-05-21T19:44:52.982778308Z",
+    },
+    "name": "phh-delegate-visibility",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "equals": {
+                "left": "user.frIndexedInteger1",
+                "right": {
+                  "literal": 0,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "inactive",
+    "targetCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "equals": {
+                "left": "user.frIndexedInteger1",
+                "right": {
+                  "literal": 0,
+                },
+              },
+            },
+          ],
+        },
         "version": "v2",
       },
     },
@@ -1157,15 +2476,15 @@ exports[`IgaScopeOps readScopes() 1: Read all scopes 1`] = `
 
 exports[`IgaScopeOps updateScope() 1: Update existing scope 1`] = `
 {
-  "_rev": 2,
-  "description": "Test scope: test_scope_1",
+  "_rev": 3,
+  "description": "Test scope: scope1",
   "entity": {
     "class": "managed/user",
     "type": "string",
   },
-  "id": "73c690c8-8251-4914-98e4-722f762dd5ec",
+  "id": "72c65784-c1ac-47e5-9703-ea0967487e99",
   "metadata": null,
-  "name": "test_scope_1",
+  "name": "scope1",
   "permissions": {
     "viewGrants": true,
     "viewUserAccess": true,

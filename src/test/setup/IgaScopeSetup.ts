@@ -1,10 +1,10 @@
-import { ScopeSkeleton } from '../../api/cloud/iga/IgaScopeApi';
-import { state } from '../../index';
 import {
+  ScopeSkeleton,
   createScope as _createScope,
   deleteScope as _deleteScope,
   queryScopes as _queryScopes,
 } from '../../api/cloud/iga/IgaScopeApi';
+import { state } from '../../index';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
@@ -41,41 +41,45 @@ export function getTestScopeData(
   };
 }
 
-
+/**
+ * Other IGA commands allow user generated IDs. Scope uses Server generated Ids. 
+ * This is a problem because it means that when the id is created, it is random causing the tests to fail. 
+ * To bypass this, I had to manually create and hard code the scope id
+ */
 
 // scope1: used for readScope, exportScope, updateScope
 export const scope1: ScopeSkeleton = {
-  id: '73c690c8-8251-4914-98e4-722f762dd5ec',
+  id: '72c65784-c1ac-47e5-9703-ea0967487e99',
   _rev: 0,
-  ...getTestScopeData('test_scope_1'),
+  ...getTestScopeData('scope1'),
 };
 
 // scope2: used for readScopeByName, exportScopeByName
 export const scope2: ScopeSkeleton = {
-  id: '0fbe053c-aa3a-447f-a1df-e409790036a1',
+  id: '9db2e5b6-e9e1-483e-886a-53e2c47f8d74',
   _rev: 0,
-  ...getTestScopeData('test_scope_2'),
+  ...getTestScopeData('scope2'),
 };
 
 // scope3: used for deleteScope by ID
 export const scope3: ScopeSkeleton = {
-  id: '537dc742-4f97-4c39-8603-3cb33c6aa5ee',
+  id: 'a42f39bd-7f23-445e-8b71-4730d3c58f21',
   _rev: 0,
-  ...getTestScopeData('test_scope_3'),
+  ...getTestScopeData('scope3'),
 };
 
 // scope4: used for deleteScopeByName
 export const scope4: ScopeSkeleton = {
-  id: '8c8362be-31db-4a4c-8a06-a45845674f15',
+  id: 'af71f4f1-843b-4b7a-bbdc-007bdf2cde69',
   _rev: 0,
-  ...getTestScopeData('test_scope_4'),
+  ...getTestScopeData('scope4'),
 };
 
 // scope5: never staged — used for all negative/non-existing test cases
 export const scope5: ScopeSkeleton = {
-  id: '11111111-1111-1111-1111-111111111111',
+  id: 'cfef12ab-88e8-4d40-9553-27e50501d699',
   _rev: 0,
-  ...getTestScopeData('test_scope_5'),
+  ...getTestScopeData('scope5'),
 };
 
 /**
@@ -83,10 +87,7 @@ export const scope5: ScopeSkeleton = {
  * Because the API assigns IDs on create, staging always deletes by name query
  * rather than by ID.
  */
-export async function stageScope(
-  scope: ScopeSkeleton,
-  createNew = false
-) {
+export async function stageScope(scope: ScopeSkeleton, createNew = false) {
   try {
     const existing = await _queryScopes({
       queryFilter: `name eq "${scope.name}"`,
@@ -96,7 +97,8 @@ export async function stageScope(
       await _deleteScope({ id: s.id, state });
     }
   } catch (error) {
-  }
+    //ignore
+    }
   if (createNew) {
     await _createScope({
       scopeData: scope,
@@ -117,15 +119,7 @@ export function setup() {
   // in recording mode, setup test data before recording
   beforeAll(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
-      // scope1: exists — used for readScope, exportScope, updateScope
-      await stageScope(scope1, true);
-      // scope2: exists — used for readScopeByName, exportScopeByName
-      await stageScope(scope2, true);
-      // scope3: exists — used for deleteScope by ID
-      await stageScope(scope3, true);
-      // scope4: exists — used for deleteScopeByName
-      await stageScope(scope4, true);
-      // scope5: does NOT exist — used for all negative test cases
+
       await stageScope(scope5, false);
     }
   });
