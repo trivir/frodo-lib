@@ -1,0 +1,381 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`IgaConfigOps createConfigExportTemplate() 1: Create config export template 1`] = `
+{
+  "config": {},
+  "meta": Any<Object>,
+}
+`;
+
+exports[`IgaConfigOps exportConfig() 1: Export all IGA config 1`] = `
+{
+  "config": {
+    "feature_recommendation": {},
+    "iga-file": {},
+    "iga_access_request": {
+      "allowSelfApproval": false,
+      "defaultApprover": "managed/role/8b470ae7-d40a-4f6a-87cd-b39c2f144fe7",
+      "maxManualRoleMembers": 1000,
+      "preventRequestWithViolation": false,
+      "requireApproveJustification": false,
+      "requireRejectJustification": false,
+      "requireRequestJustification": false,
+      "requireRequestJustificationWithViolation": false,
+    },
+    "iga_autoid_integration": {
+      "enableAutoId": false,
+      "enableFeatureRecommendation": true,
+      "featuresToSkipDuringRecommendation": [
+        "_eventMetadata",
+        "_rev",
+        "accountStatus",
+        "assignedDashboard",
+        "cn",
+        "entityType",
+        "fr",
+        "givenName",
+        "id",
+        "mail",
+        "manager",
+        "metadata",
+        "sn",
+        "userId",
+        "userName",
+        "passwordLastChangedTime",
+        "passwordExpirationTime",
+        "scopes",
+        "adminOfOrg",
+        "memberOfOrg",
+        "ownerOfApp",
+        "ownerOfOrg",
+        "roles",
+        "authzRoles",
+        "applications",
+        "assignments",
+        "groups",
+        "reports",
+      ],
+      "highScorePercentThreshold": 80,
+      "lowScorePercentThreshold": 30,
+      "maxRecommendedFeatures": 10,
+      "mediumScorePercentThreshold": 50,
+      "roleMiningConfidenceThreshold": 0.75,
+      "roleMiningEntitlementThreshold": 1,
+      "roleMiningMembershipThreshold": 30,
+      "training_features_filter": [
+        "user.managerId",
+      ],
+    },
+    "iga_global": {
+      "enableScoping": false,
+    },
+    "iga_notification": {
+      "notificationMaxRetries": 3,
+      "notificationPollingBatchSize": 50,
+      "notificationRetryDelay": 60000,
+      "notificationSendDelay": 1000,
+    },
+    "iga_ui_config": {
+      "lcmSettings": {
+        "entitlement": {
+          "enabled": false,
+        },
+        "organization": {
+          "enabled": false,
+        },
+        "role": {
+          "enabled": false,
+        },
+        "user": {
+          "enabled": true,
+        },
+      },
+    },
+  },
+  "meta": Any<Object>,
+}
+`;
+
+exports[`IgaConfigOps exportConfig() 2: Export all IGA config with result callback 1`] = `
+{
+  "config": {
+    "feature_recommendation": {},
+    "iga-file": {},
+    "iga_access_request": {
+      "allowSelfApproval": false,
+      "defaultApprover": "managed/role/8b470ae7-d40a-4f6a-87cd-b39c2f144fe7",
+      "maxManualRoleMembers": 1000,
+      "preventRequestWithViolation": false,
+      "requireApproveJustification": false,
+      "requireRejectJustification": false,
+      "requireRequestJustification": false,
+      "requireRequestJustificationWithViolation": false,
+    },
+    "iga_autoid_integration": {
+      "enableAutoId": false,
+      "enableFeatureRecommendation": true,
+      "featuresToSkipDuringRecommendation": [
+        "_eventMetadata",
+        "_rev",
+        "accountStatus",
+        "assignedDashboard",
+        "cn",
+        "entityType",
+        "fr",
+        "givenName",
+        "id",
+        "mail",
+        "manager",
+        "metadata",
+        "sn",
+        "userId",
+        "userName",
+        "passwordLastChangedTime",
+        "passwordExpirationTime",
+        "scopes",
+        "adminOfOrg",
+        "memberOfOrg",
+        "ownerOfApp",
+        "ownerOfOrg",
+        "roles",
+        "authzRoles",
+        "applications",
+        "assignments",
+        "groups",
+        "reports",
+      ],
+      "highScorePercentThreshold": 80,
+      "lowScorePercentThreshold": 30,
+      "maxRecommendedFeatures": 10,
+      "mediumScorePercentThreshold": 50,
+      "roleMiningConfidenceThreshold": 0.75,
+      "roleMiningEntitlementThreshold": 1,
+      "roleMiningMembershipThreshold": 30,
+      "training_features_filter": [
+        "user.managerId",
+      ],
+    },
+    "iga_global": {
+      "enableScoping": false,
+    },
+    "iga_notification": {
+      "notificationMaxRetries": 3,
+      "notificationPollingBatchSize": 50,
+      "notificationRetryDelay": 60000,
+      "notificationSendDelay": 1000,
+    },
+    "iga_ui_config": {
+      "lcmSettings": {
+        "entitlement": {
+          "enabled": false,
+        },
+        "organization": {
+          "enabled": false,
+        },
+        "role": {
+          "enabled": false,
+        },
+        "user": {
+          "enabled": true,
+        },
+      },
+    },
+  },
+  "meta": Any<Object>,
+}
+`;
+
+exports[`IgaConfigOps exportConfigByKey() 1: Export existing config key 1`] = `
+{
+  "config": {
+    "iga_global": {
+      "enableScoping": false,
+    },
+  },
+  "meta": Any<Object>,
+}
+`;
+
+exports[`IgaConfigOps importConfig() 1: Import full config 1`] = `
+{
+  "feature_recommendation": {},
+  "iga-file": {},
+  "iga_access_request": {
+    "allowSelfApproval": false,
+    "defaultApprover": "managed/role/8b470ae7-d40a-4f6a-87cd-b39c2f144fe7",
+    "maxManualRoleMembers": 1000,
+    "preventRequestWithViolation": false,
+    "requireApproveJustification": false,
+    "requireRejectJustification": false,
+    "requireRequestJustification": false,
+    "requireRequestJustificationWithViolation": false,
+  },
+  "iga_autoid_integration": {
+    "enableAutoId": false,
+    "enableFeatureRecommendation": true,
+    "featuresToSkipDuringRecommendation": [
+      "_eventMetadata",
+      "_rev",
+      "accountStatus",
+      "assignedDashboard",
+      "cn",
+      "entityType",
+      "fr",
+      "givenName",
+      "id",
+      "mail",
+      "manager",
+      "metadata",
+      "sn",
+      "userId",
+      "userName",
+      "passwordLastChangedTime",
+      "passwordExpirationTime",
+      "scopes",
+      "adminOfOrg",
+      "memberOfOrg",
+      "ownerOfApp",
+      "ownerOfOrg",
+      "roles",
+      "authzRoles",
+      "applications",
+      "assignments",
+      "groups",
+      "reports",
+    ],
+    "highScorePercentThreshold": 80,
+    "lowScorePercentThreshold": 30,
+    "maxRecommendedFeatures": 10,
+    "mediumScorePercentThreshold": 50,
+    "roleMiningConfidenceThreshold": 0.75,
+    "roleMiningEntitlementThreshold": 1,
+    "roleMiningMembershipThreshold": 30,
+    "training_features_filter": [
+      "user.managerId",
+    ],
+  },
+  "iga_global": {
+    "enableScoping": false,
+  },
+  "iga_notification": {
+    "notificationMaxRetries": 3,
+    "notificationPollingBatchSize": 50,
+    "notificationRetryDelay": 60000,
+    "notificationSendDelay": 1000,
+  },
+  "iga_ui_config": {
+    "lcmSettings": {
+      "entitlement": {
+        "enabled": false,
+      },
+      "organization": {
+        "enabled": false,
+      },
+      "role": {
+        "enabled": false,
+      },
+      "user": {
+        "enabled": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaConfigOps importConfigByKey() 1: Import existing config key 1`] = `
+{
+  "enableScoping": false,
+}
+`;
+
+exports[`IgaConfigOps readConfig() 1: Read full IGA config 1`] = `
+{
+  "feature_recommendation": {},
+  "iga-file": {},
+  "iga_access_request": {
+    "allowSelfApproval": false,
+    "defaultApprover": "managed/role/8b470ae7-d40a-4f6a-87cd-b39c2f144fe7",
+    "maxManualRoleMembers": 1000,
+    "preventRequestWithViolation": false,
+    "requireApproveJustification": false,
+    "requireRejectJustification": false,
+    "requireRequestJustification": false,
+    "requireRequestJustificationWithViolation": false,
+  },
+  "iga_autoid_integration": {
+    "enableAutoId": false,
+    "enableFeatureRecommendation": true,
+    "featuresToSkipDuringRecommendation": [
+      "_eventMetadata",
+      "_rev",
+      "accountStatus",
+      "assignedDashboard",
+      "cn",
+      "entityType",
+      "fr",
+      "givenName",
+      "id",
+      "mail",
+      "manager",
+      "metadata",
+      "sn",
+      "userId",
+      "userName",
+      "passwordLastChangedTime",
+      "passwordExpirationTime",
+      "scopes",
+      "adminOfOrg",
+      "memberOfOrg",
+      "ownerOfApp",
+      "ownerOfOrg",
+      "roles",
+      "authzRoles",
+      "applications",
+      "assignments",
+      "groups",
+      "reports",
+    ],
+    "highScorePercentThreshold": 80,
+    "lowScorePercentThreshold": 30,
+    "maxRecommendedFeatures": 10,
+    "mediumScorePercentThreshold": 50,
+    "roleMiningConfidenceThreshold": 0.75,
+    "roleMiningEntitlementThreshold": 1,
+    "roleMiningMembershipThreshold": 30,
+    "training_features_filter": [
+      "user.managerId",
+    ],
+  },
+  "iga_global": {
+    "enableScoping": false,
+  },
+  "iga_notification": {
+    "notificationMaxRetries": 3,
+    "notificationPollingBatchSize": 50,
+    "notificationRetryDelay": 60000,
+    "notificationSendDelay": 1000,
+  },
+  "iga_ui_config": {
+    "lcmSettings": {
+      "entitlement": {
+        "enabled": false,
+      },
+      "organization": {
+        "enabled": false,
+      },
+      "role": {
+        "enabled": false,
+      },
+      "user": {
+        "enabled": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaConfigOps readConfigByKey() 1: Read existing config key 1`] = `
+{
+  "enableScoping": false,
+}
+`;
