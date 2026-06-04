@@ -5867,6 +5867,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Log",
+    methodName: "updateLogApiKey",
+    signature: "updateLogApiKey()",
+    description: "Update log api key on an existing connection profile",
+    params: [],
+    returns: "",
+  },
+  {
+    typeName: "Log",
     methodName: "deleteLogApiKey",
     signature: "deleteLogApiKey(keyId: string): Promise<LogApiKey>",
     description: "Delete log api key",
