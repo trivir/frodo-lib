@@ -1384,32 +1384,32 @@ export function setup() {
   // in recording mode, remove test data after recording
   afterAll(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
-      // await stageRequestType(workflowRequestType1);
-      // await stageRequestType(workflowRequestType2);
-      // await stageRequestType(workflowRequestType3);
-      // await stageRequestType(workflowRequestType4);
-      // await stageEvent(workflowEvent1);
-      // await stageEvent(workflowEvent2);
-      // await stageEvent(workflowEvent3);
-      // await stageRequestForm(workflowRequestForm1);
-      // await stageRequestForm(workflowRequestForm2);
-      // await stageRequestType(workflowRequestType5);
-      // await stageWorkflow(workflow1);
-      // await stageWorkflow(workflow2);
-      // await stageWorkflow(workflow3);
-      // await stageWorkflow(workflow4);
-      // await stageWorkflow(workflow5);
-      // await stageWorkflow(workflow6);
-      // await stageWorkflow(workflow7, false, true);
-      // await stageWorkflow(workflow8);
-      // await stageWorkflow(workflow9);
-      // await stageWorkflow(workflow10);
-      // await stageWorkflow(workflow11);
-      // await stageWorkflow(workflow12);
-      // await stageEmailTemplate(template1);
-      // await stageEmailTemplate(template2);
-      // await stageEmailTemplate(template3);
-      // await stageEmailTemplate(template4);
+      await stageRequestType(workflowRequestType1);
+      await stageRequestType(workflowRequestType2);
+      await stageRequestType(workflowRequestType3);
+      await stageRequestType(workflowRequestType4);
+      await stageEvent(workflowEvent1);
+      await stageEvent(workflowEvent2);
+      await stageEvent(workflowEvent3);
+      await stageRequestForm(workflowRequestForm1);
+      await stageRequestForm(workflowRequestForm2);
+      await stageRequestType(workflowRequestType5);
+      await stageWorkflow(workflow1);
+      await stageWorkflow(workflow2);
+      await stageWorkflow(workflow3);
+      await stageWorkflow(workflow4);
+      await stageWorkflow(workflow5);
+      await stageWorkflow(workflow6);
+      await stageWorkflow(workflow7, false, true);
+      await stageWorkflow(workflow8);
+      await stageWorkflow(workflow9);
+      await stageWorkflow(workflow10);
+      await stageWorkflow(workflow11);
+      await stageWorkflow(workflow12);
+      await stageEmailTemplate(template1);
+      await stageEmailTemplate(template2);
+      await stageEmailTemplate(template3);
+      await stageEmailTemplate(template4);
     }
   });
 }
