@@ -179,8 +179,9 @@ export async function queryPolicyRules({
   state: State;
 }): Promise<PolicyRuleSkeleton[]> {
   const urlString = util.format(
-    sodPolicyRuleEndpointURLTemplate, 
-    getHostOnlyUrl(state.getHost()))
+    sodPolicyRuleEndpointURLTemplate,
+    getHostOnlyUrl(state.getHost())
+  );
   return await getApiSearchAll<PolicyRuleSkeleton>({
     url: urlString,
     queryFilter,

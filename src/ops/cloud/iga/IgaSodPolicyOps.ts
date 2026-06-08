@@ -6,10 +6,7 @@ import {
   deletePolicy as _deletePolicy,
   PolicySkeleton,
 } from '../../../api/cloud/iga/IgaSodPolicyApi';
-import {
-    readPolicyRule,
-    readPolicyRuleByName,
-  } from './IgaSodPolicyRuleOps';
+import { readPolicyRule } from './IgaSodPolicyRuleOps';
 import { State } from '../../../shared/State';
 import {
   createProgressIndicator,
@@ -205,22 +202,22 @@ export function createPolicyExportTemplate({
 /**
  * Map Rule Names
  * @param {string} policy the policy that the policy rule is being mapped to
- * 
+ *
  */
 async function mapRuleNames({
-    policy,
-    state,
-  }: {
-    policy: PolicySkeleton;
-    state: State;
-  }): Promise<PolicySkeleton> {
-    const names: string[] = [];
-    for (const ruleId of policy.policyRuleIds) {
-      const rule = await readPolicyRule({ id: ruleId, state });
-      names.push(rule.name);
-    }
-    return { ...policy, policyRuleNames: names };
+  policy,
+  state,
+}: {
+  policy: PolicySkeleton;
+  state: State;
+}): Promise<PolicySkeleton> {
+  const names: string[] = [];
+  for (const ruleId of policy.policyRuleIds) {
+    const rule = await readPolicyRule({ id: ruleId, state });
+    names.push(rule.name);
   }
+  return { ...policy, policyRuleNames: names };
+}
 /**
  * Create policy
  * @param {PolicySkeleton} policyData the policy object
@@ -309,116 +306,116 @@ export async function readPolicies({
  * @returns {Promise<PolicyExportInterface>} a promise that resolves to a policy export object
  */
 export async function exportPolicy({
-    id,
-    state,
-  }: {
-    id: string;
-    state: State;
-  }): Promise<PolicyExportInterface> {
-    try {
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPolicy: start`,
-        state,
-      });
-      const exportData = createPolicyExportTemplate({ state });
-      const policy = await mapRuleNames({
-        policy: await readPolicy({ id, state }),
-        state,
-      });
-      exportData.policy[policy.id] = policy;
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPolicy: end`,
-        state,
-      });
-      return exportData;
-    } catch (error) {
-      throw new FrodoError(`Error exporting policy ${id}`, error);
-    }
+  id,
+  state,
+}: {
+  id: string;
+  state: State;
+}): Promise<PolicyExportInterface> {
+  try {
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPolicy: start`,
+      state,
+    });
+    const exportData = createPolicyExportTemplate({ state });
+    const policy = await mapRuleNames({
+      policy: await readPolicy({ id, state }),
+      state,
+    });
+    exportData.policy[policy.id] = policy;
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPolicy: end`,
+      state,
+    });
+    return exportData;
+  } catch (error) {
+    throw new FrodoError(`Error exporting policy ${id}`, error);
   }
+}
 /**
  * Export policy by its display name
  * @param {string} name the policy display name
  * @returns {Promise<PolicyExportInterface>} a promise that resolves to a policy export object
  */
 export async function exportPoliciesByName({
-    name,
-    state,
-  }: {
-    name: string;
-    state: State;
-  }): Promise<PolicyExportInterface> {
-    try {
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPoliciesByName: start`,
-        state,
-      });
-      const exportData = createPolicyExportTemplate({ state });
-      const policy = await mapRuleNames({
-        policy: await readPolicyByName({ name, state }),
-        state,
-      });
-      exportData.policy[policy.id] = policy;
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPoliciesByName: end`,
-        state,
-      });
-      return exportData;
-    } catch (error) {
-      throw new FrodoError(`Error exporting policy ${name}`, error);
-    }
+  name,
+  state,
+}: {
+  name: string;
+  state: State;
+}): Promise<PolicyExportInterface> {
+  try {
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPoliciesByName: start`,
+      state,
+    });
+    const exportData = createPolicyExportTemplate({ state });
+    const policy = await mapRuleNames({
+      policy: await readPolicyByName({ name, state }),
+      state,
+    });
+    exportData.policy[policy.id] = policy;
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPoliciesByName: end`,
+      state,
+    });
+    return exportData;
+  } catch (error) {
+    throw new FrodoError(`Error exporting policy ${name}`, error);
   }
+}
 
 /**
  * Export all policies
  * @returns {Promise<PolicyExportInterface>} a promise that resolves to a policy export object
  */
 export async function exportPolicies({
-    state,
-  }: {
-    state: State;
-  }): Promise<PolicyExportInterface> {
-    let indicatorId: string;
-    try {
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPolicies: start`,
-        state,
-      });
-      const exportData = createPolicyExportTemplate({ state });
-      const policies = await readPolicies({ state });
-      indicatorId = createProgressIndicator({
-        total: policies.length,
-        message: 'Exporting policy...',
-        state,
-      });
-      for (const policy of policies) {
-        updateProgressIndicator({
-          id: indicatorId,
-          message: `Exporting policy ${policy.name}...`,
-          state,
-        });
-        exportData.policy[policy.id] = await mapRuleNames({ policy, state });
-      }
-      stopProgressIndicator({
+  state,
+}: {
+  state: State;
+}): Promise<PolicyExportInterface> {
+  let indicatorId: string;
+  try {
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPolicies: start`,
+      state,
+    });
+    const exportData = createPolicyExportTemplate({ state });
+    const policies = await readPolicies({ state });
+    indicatorId = createProgressIndicator({
+      total: policies.length,
+      message: 'Exporting policy...',
+      state,
+    });
+    for (const policy of policies) {
+      updateProgressIndicator({
         id: indicatorId,
-        message: `Exported ${policies.length} policies`,
-        status: 'success',
+        message: `Exporting policy ${policy.name}...`,
         state,
       });
-      debugMessage({
-        message: `IgaSodPolicyOps.exportPolicies: end`,
-        state,
-      });
-      return exportData;
-    } catch (error) {
-      stopProgressIndicator({
-        id: indicatorId,
-        message: `Error exporting policies`,
-        status: 'fail',
-        state,
-      });
-      throw new FrodoError(`Error exporting policies`, error);
+      exportData.policy[policy.id] = await mapRuleNames({ policy, state });
     }
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Exported ${policies.length} policies`,
+      status: 'success',
+      state,
+    });
+    debugMessage({
+      message: `IgaSodPolicyOps.exportPolicies: end`,
+      state,
+    });
+    return exportData;
+  } catch (error) {
+    stopProgressIndicator({
+      id: indicatorId,
+      message: `Error exporting policies`,
+      status: 'fail',
+      state,
+    });
+    throw new FrodoError(`Error exporting policies`, error);
   }
+}
 /**
  * Update policy
  * @param {string} id the policyid

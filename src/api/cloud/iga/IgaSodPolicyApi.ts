@@ -8,17 +8,15 @@ import { generateGovernanceApi } from '../../BaseApi';
 
 const sodPolicyEndpointURLTemplate = '%s/iga/governance/policy';
 const sodPolicyURLTemplate = sodPolicyEndpointURLTemplate + '/%s';
-const createSodPolicyURLTemplate = sodPolicyEndpointURLTemplate + '?_action=create';
-
-
-
+const createSodPolicyURLTemplate =
+  sodPolicyEndpointURLTemplate + '?_action=create';
 
 export interface PolicyOwner {
   givenName: string;
   id: string;
   mail: string;
   sn: string;
-  userName: string
+  userName: string;
 }
 
 export interface PolicySkeleton {
@@ -26,7 +24,7 @@ export interface PolicySkeleton {
   description: string;
   policyOwner: PolicyOwner;
   policyRuleIds: string[];
-  policyRuleNames?: string[]
+  policyRuleNames?: string[];
   active: boolean;
   id: string;
   scheduleId?: string | null;
@@ -59,7 +57,6 @@ export async function getSodPolicy({
   return data;
 }
 
-
 /**
  * Get all SOD policies
  * @returns {Promise<SearchResult<PolicySkeleton> >} a promise that resolves to a policy object
@@ -81,7 +78,6 @@ export async function getPolicies({
   });
   return data;
 }
-
 
 /**
  * Create SOD policy
@@ -189,4 +185,3 @@ export async function deletePolicy({
   });
   return data;
 }
-

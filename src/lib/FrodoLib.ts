@@ -54,8 +54,10 @@ import IgaRequestFormOps, {
 import IgaRequestTypeOps, {
   RequestType,
 } from '../ops/cloud/iga/IgaRequestTypeOps';
-import IgaSodPolicyOps, {SodPolicy} from '../ops/cloud/iga/IgaSodPolicyOps'
-import IgaSodPolicyRuleOps, {SodPolicyRule} from '../ops/cloud/iga/IgaSodPolicyRuleOps'
+import IgaSodPolicyOps, { SodPolicy } from '../ops/cloud/iga/IgaSodPolicyOps';
+import IgaSodPolicyRuleOps, {
+  SodPolicyRule,
+} from '../ops/cloud/iga/IgaSodPolicyRuleOps';
 import IgaWorkflowOps, { Workflow } from '../ops/cloud/iga/IgaWorkflowOps';
 import LogOps, { Log } from '../ops/cloud/LogOps';
 import SecretsOps, { Secret } from '../ops/cloud/SecretsOps';
@@ -173,7 +175,7 @@ export type Frodo = {
       requestType: RequestType;
       workflow: Workflow;
       sodPolicy: SodPolicy;
-      sodPolicyRule: SodPolicyRule
+      sodPolicyRule: SodPolicyRule;
     };
     log: Log;
     secret: Secret;
@@ -385,7 +387,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
         requestType: IgaRequestTypeOps(state),
         workflow: IgaWorkflowOps(state),
         sodPolicy: IgaSodPolicyOps(state),
-        sodPolicyRule: IgaSodPolicyRuleOps(state)
+        sodPolicyRule: IgaSodPolicyRuleOps(state),
       },
       log: LogOps(state),
       secret: SecretsOps(state),
