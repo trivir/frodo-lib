@@ -4,7 +4,7 @@ import path from 'path';
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
+import { debugMessage, frodoPrompt, printMessage } from '../utils/Console';
 import DataProtection from '../utils/DataProtection';
 import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils';
 import { getFrodoHome } from '../utils/FrodoUtils';
@@ -13,10 +13,14 @@ import {
   createServiceAccount,
   getServiceAccount,
   SERVICE_ACCOUNT_DEFAULT_SCOPES,
+  validateServiceAccount,
 } from './cloud/ServiceAccountOps';
 import { FrodoError } from './FrodoError';
 import { createJwkRsa, createJwks, getJwkRsaPublic, JwkRsa } from './JoseOps';
 import { mergeDeep } from '../utils/JsonUtils';
+import { isLogApiKeyValid } from './cloud/LogOps';
+import { getTokens } from './AuthenticateOps';
+import { Callback, CallbackHandler } from './CallbackOps';
 
 export type ConnectionProfile = {
   /**
@@ -69,6 +73,20 @@ export type ConnectionProfile = {
    * @returns {Promise<boolean>} true if the operation succeeded, false otherwise
    */
   saveConnectionProfile(host: string): Promise<boolean>;
+  /**
+   * Update an existing connection profile
+   * @param serviceAccount true to update the service account
+   * @param userAccount true to update the user account credentials
+   * @param logApi true to update the log API key pair
+   * @param interactive true to prompt the user for input
+   * @returns {Promise<boolean>} A promise resolving to true if successful
+   */
+  updateConnectionProfile(
+    serviceAccount?: boolean,
+    userAccount?: boolean,
+    logApi?: boolean,
+    interactive?: boolean
+  );
   /**
    * Set an alias for an existing connection profile
    * @param {string} host host url, unique substring, or alias of existing connection profile
@@ -126,6 +144,20 @@ export default (state: State): ConnectionProfile => {
     },
     async saveConnectionProfile(host: string): Promise<boolean> {
       return saveConnectionProfile({ host, state });
+    },
+    async updateConnectionProfile(
+      serviceAccount?: boolean,
+      userAccount?: boolean,
+      logApi?: boolean,
+      interactive?: boolean
+    ): Promise<boolean> {
+      return updateConnectionProfile({
+        serviceAccount,
+        userAccount,
+        logApi,
+        interactive,
+        state,
+      });
     },
     setConnectionProfileAlias(host: string, alias: string): void {
       setConnectionProfileAlias({ host, alias, state });
@@ -791,6 +823,190 @@ export async function saveConnectionProfile({
   } catch (error) {
     throw new FrodoError(`Error saving connection profile`, error);
   }
+}
+
+export async function updateConnectionProfile({
+  serviceAccount,
+  userAccount,
+  logApi,
+  interactive = false,
+  state,
+}: {
+  serviceAccount?: boolean;
+  userAccount?: boolean;
+  logApi?: boolean;
+  interactive?: boolean;
+  state: State;
+}) {
+  const host = state.getHost();
+  let profile = await getConnectionProfileByHost({ host, state });
+  state.setHost(profile.tenant);
+
+  if (serviceAccount) {
+    if (interactive) {
+      if (profile.svcacctId) {
+        const decision = frodoPrompt({
+          query:
+            `Service account '${profile.svcacctName}' is currently associated with connection profile '${profile.tenant}'\n` +
+            `Would you like to overwrite this? y/n: `,
+          state,
+        });
+        if (!['y', 'yes'].includes(decision.toLowerCase())) {
+          printMessage({
+            message: 'Connection profile unchanged.',
+            type: 'warn',
+            state,
+          });
+          return false;
+        }
+      }
+      const id = frodoPrompt({
+        query: `Enter the service account ID to be saved to connection profile '${profile.tenant}': `,
+        state,
+      });
+      const jwkFile = frodoPrompt({
+        query: `Enter the JWK file path for service account '${id}': `,
+        state,
+      });
+      const jwk = JSON.parse(fs.readFileSync(jwkFile).toString());
+      state.setServiceAccountId(id);
+      state.setServiceAccountJwk(jwk);
+    }
+    const valid = await validateServiceAccount({
+      saId: state.getServiceAccountId(),
+      saJwk: state.getServiceAccountJwk(),
+      state,
+    });
+    state.setBearerTokenMeta(valid);
+    state.setUseBearerTokenForAmApis(true);
+
+    if (!valid) {
+      printMessage({
+        message: 'Invalid service account credentials.',
+        type: 'error',
+        state,
+      });
+      return false;
+    }
+    const name = (await getServiceAccount({ serviceAccountId: state.getServiceAccountId(), state })).name
+
+    printMessage({
+      message: `Service account '${name}' has been added to connection profile.`,
+      type: 'info',
+      state,
+    });
+  }
+
+  if (userAccount) {
+    if (interactive) {
+      if (profile.username) {
+        const decision = frodoPrompt({
+          query:
+            `User account '${profile.username}' is currently associated with connection profile '${profile.tenant}'\n` +
+            `Would you like to overwrite this? y/n: `,
+          state,
+        });
+        if (!['y', 'yes'].includes(decision.toLowerCase())) {
+          printMessage({
+            message: 'Connection profile unchanged.',
+            type: 'warn',
+            state,
+          });
+          return false;
+        }
+      }
+      const username = frodoPrompt({
+        query: `Enter the username to be saved to connection profile '${profile.tenant}': `,
+        state,
+      });
+      const password = frodoPrompt({
+        query: `Enter the password for '${username}': `,
+        masked: true,
+        state,
+      });
+      state.setUsername(username);
+      state.setPassword(password);
+    }
+    const valid = await getTokens({
+      forceLoginAsUser: true,
+      callbackHandler: (callback: Callback) => {
+        if (callback.type != 'NameCallback')
+          throw new Error(`Unsupported callback: ${callback.type}`);
+        callback.input[0].value = frodoPrompt({
+          state,
+          query: `Multi-factor authentication is enabled and required for this user.\n${callback.output[0].value}: `,
+        });
+        return callback;
+      },
+      state,
+    });
+    if (!valid) {
+      printMessage({
+        message: 'Invalid user account credentials.',
+        type: 'error',
+        state,
+      });
+      return false;
+    }
+    printMessage({
+      message: `User account '${state.getUsername()}' has been added to connection profile.`,
+      type: 'info',
+      state,
+    });
+  }
+
+  if (logApi) {
+    if (interactive) {
+      if (profile.logApiKey) {
+        const decision = frodoPrompt({
+          query:
+            `Log API key '${profile.logApiKey}' is currently associated with connection profile '${profile.tenant}'\n` +
+            `Would you like to overwrite this? y/n: `,
+          state,
+        });
+        if (!['y', 'yes'].includes(decision.toLowerCase())) {
+          printMessage({
+            message: 'Connection profile unchanged.',
+            type: 'warn',
+            state,
+          });
+          return false;
+        }
+      }
+      const key = frodoPrompt({
+        query: `Enter ID of the log API key to be saved to connection profile '${profile.tenant}': `,
+        state,
+      });
+      const secret = frodoPrompt({
+        query: `Enter the secret associated with log API key '${key}': `,
+        masked: true,
+        state,
+      });
+      state.setLogApiKey(key);
+      state.setLogApiSecret(secret);
+    }
+    const valid = await isLogApiKeyValid({
+      keyId: state.getLogApiKey(),
+      secret: state.getLogApiSecret(),
+      state,
+    });
+    if (!valid) {
+      printMessage({
+        message: 'Invalid log API key pair.',
+        type: 'error',
+        state,
+      });
+      return false;
+    }
+    printMessage({
+      message: `Log API key '${state.getLogApiKey()}' has been added to connection profile.`,
+      type: 'info',
+      state,
+    });
+  }
+
+  await saveConnectionProfile({ host: state.getHost(), state });
+  return true;
 }
 
 /**

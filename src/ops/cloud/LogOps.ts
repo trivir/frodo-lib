@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 import { type PagedResult } from '../../api/ApiTypes';
 import {
   createLogApiKey as _createLogApiKey,
@@ -15,8 +13,6 @@ import {
   tail as _tail,
 } from '../../api/cloud/LogApi';
 import { State } from '../../shared/State';
-import { saveJsonToFile } from '../../utils/ExportImportUtils';
-import { getConnectionProfileByHost, getConnectionProfilesPath } from '../ConnectionProfileOps';
 import { FrodoError } from '../FrodoError';
 
 export type Log = {
@@ -66,10 +62,6 @@ export type Log = {
    * @returns {Promise<LogApiKey>} a promise resolving to an object containing the log api key and secret
    */
   createLogApiKey(keyName: string): Promise<LogApiKey>;
-  /**
-   * Update log api key on an existing connection profile
-   */
-  updateLogApiKey();
   /**
    * Delete log api key
    * @param {string} keyId key id
@@ -133,9 +125,6 @@ export default (state: State): Log => {
     },
     async createLogApiKey(keyName: string): Promise<LogApiKey> {
       return createLogApiKey({ keyName, state });
-    },
-    async updateLogApiKey() {
-      return updateLogApiKey({ state });
     },
     async deleteLogApiKey(keyId: string): Promise<LogApiKey> {
       return deleteLogApiKey({ keyId, state });
@@ -512,30 +501,6 @@ export async function createLogApiKey({
   } catch (error) {
     throw new FrodoError(`Error creating log api key ${keyName}`, error);
   }
-}
-
-/**
- * Update log API key on an existing connection profile
- */
-export async function updateLogApiKey({ state }: { state: State }) {
-  const filename = getConnectionProfilesPath({ state });
-  const host = state.getHost();
-
-  let connections = JSON.parse(fs.readFileSync(getConnectionProfilesPath({ state }), "utf-8"));
-  let profile = await getConnectionProfileByHost({
-    host: host,
-    state,
-  });
-
-  profile.logApiKey = state.getLogApiKey();
-  profile.logApiSecret = state.getLogApiSecret();
-  connections[host] = profile;
-  saveJsonToFile({
-    data: connections,
-    filename,
-    includeMeta: false,
-    state,
-  });
 }
 
 /**

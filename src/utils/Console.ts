@@ -214,3 +214,15 @@ export function stopProgressIndicator({
     handler(id, message, status);
   }
 }
+
+export function frodoPrompt({
+  query,
+  masked,
+  state,
+}: {
+  query: string,
+  masked?: boolean,
+  state: State,
+}): string {
+  return state.getPromptHandler()(query, masked)
+}
