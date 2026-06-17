@@ -1173,6 +1173,19 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "ConnectionProfile",
+    methodName: "updateConnectionProfile",
+    signature: "updateConnectionProfile( serviceAccount?: boolean, userAccount?: boolean, logApi?: boolean, interactive?: boolean )",
+    description: "Update an existing connection profile",
+    params: [
+      { name: "serviceAccount", type: "", description: "true to update the service account" },
+      { name: "userAccount", type: "", description: "true to update the user account credentials" },
+      { name: "logApi", type: "", description: "true to update the log API key pair" },
+      { name: "interactive", type: "", description: "true to prompt the user for input" },
+    ],
+    returns: "{Promise<boolean>} A promise resolving to true if successful",
+  },
+  {
+    typeName: "ConnectionProfile",
     methodName: "setConnectionProfileAlias",
     signature: "setConnectionProfileAlias(host: string, alias: string): void",
     description: "Set an alias for an existing connection profile",
@@ -5838,14 +5851,6 @@ export const helpMetadata: MethodHelpDoc[] = [
       { name: "keyName", type: "string", description: "human-readable key name" },
     ],
     returns: "{Promise<LogApiKey>} a promise resolving to an object containing the log api key and secret",
-  },
-  {
-    typeName: "Log",
-    methodName: "updateLogApiKey",
-    signature: "updateLogApiKey()",
-    description: "Update log api key on an existing connection profile",
-    params: [],
-    returns: "",
   },
   {
     typeName: "Log",

@@ -167,6 +167,8 @@ export type State = {
     type?: string,
     newline?: boolean
   ) => void;
+  setPromptHandler(handler: (query: string, masked?: boolean) => string);
+  getPromptHandler(): (query: string, masked?: boolean) => string;
   setErrorHandler(handler: (error: Error, message?: string) => void): void;
   getErrorHandler(): (error: Error, message?: string) => void;
   setVerboseHandler(handler: (message: string | object) => void): void;
@@ -554,6 +556,12 @@ export default (initialState: StateInterface): State => {
       return globalState.printHandler;
     },
 
+    setPromptHandler(handler: (query: string, masked?: boolean) => string) {
+      state.promptHandler = handler;
+    },
+    getPromptHandler() {
+      return state.promptHandler;
+    },
     setErrorHandler(handler: (error: Error, message?: string) => void) {
       globalState.errorHandler = handler;
     },
@@ -709,6 +717,7 @@ export interface StateInterface {
     type?: string,
     newline?: boolean
   ) => void;
+  promptHandler?: (query: string, masked?: boolean) => string;
   errorHandler?: (error: Error, message: string) => void;
   verboseHandler?: (message: string | object) => void;
   verbose?: boolean;
