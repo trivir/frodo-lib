@@ -39,6 +39,8 @@ export type ExportImport = {
   getTypedFilename(name: string, type: string, suffix?: string): string;
   getWorkingDirectory(mkdirs?: boolean): string;
   getFilePath(fileName: string, mkdirs?: boolean): string;
+  readToJson(filePath: string, options?: {overrideValue?: string; envFile?: Record<string, string>; base64Encode?: boolean }): any;
+  loadEnvFile(): Record<string, string>;
   /**
    * Save object to file in Frodo export format
    * @param {any} data data object
@@ -242,6 +244,12 @@ export default (state: State): ExportImport => {
     isValidUrl(urlString: string): boolean {
       return isValidUrl(urlString);
     },
+    readToJson(filePath, options = {}) {
+      return readToJson(filePath, options)
+    },
+    loadEnvFile() {
+      return loadEnvFile({state})
+    }
   };
 };
 
@@ -591,6 +599,97 @@ export async function readFiles(directory: string): Promise<
   );
 
   return filePathsNested.flat();
+}
+
+export function readToJson(
+  filePath: string,
+  {
+    overrideValue,
+    envFile = {},
+    base64Encode = false,
+  }: {
+    overrideValue?: string;
+    envFile?: Record<string, string>;
+    base64Encode?: boolean;
+  } = {}
+): any {
+  const BASE64_PRE_ENCODED_PREFIX = 'BASE64:';
+
+  let content = fs.readFileSync(filePath, 'utf8');
+
+  const placeholders = content.match(/\\*?\$\{.*?\}/g);
+  if (placeholders) {
+    for (const placeholder of placeholders) {
+      if (placeholder.startsWith('\\\\')) {
+        continue;
+      }
+
+      let name = placeholder.replace(/\$\{(.*)\}/, '$1');
+      let encodeValue = base64Encode;
+      if (name.startsWith(BASE64_PRE_ENCODED_PREFIX)) {
+        encodeValue = false; 
+        name = name.substring(BASE64_PRE_ENCODED_PREFIX.length);
+      }
+
+      let value: string | undefined;
+      if (overrideValue !== undefined) {
+        value = overrideValue;
+      } else if (name in envFile) {
+        value = envFile[name];
+      } else if (process.env[name] !== undefined) {
+        value = process.env[name];
+      }
+
+      if (value === undefined) {
+        throw new FrodoError(`No value found for placeholder "${name}"`);
+      }
+
+      if (encodeValue) {
+        value = encode(value);
+      }
+
+      content = content.replaceAll(placeholder, value);
+    }
+  }
+
+  content = content.replace(/\\\\\$\{/g, '${');
+
+  try {
+    return JSON.parse(content);
+  } catch (error) {
+    throw new FrodoError(`Error parsing JSON from ${filePath}`, error);
+  }
+}
+
+export function loadEnvFile({ state }: { state: State }): Record<string, string> {
+  const envPath = getFilePath({ fileName: '.env', mkdirs: false, state });
+  if (!fs.existsSync(envPath)) {
+    return {};
+  }
+  const out: Record<string, string> = {};
+  const contents = fs.readFileSync(envPath, 'utf8');
+  for (const rawLine of contents.split('\n')) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) {
+      continue;
+    }
+    const eq = line.indexOf('=');
+    if (eq === -1) {
+      continue;
+    }
+    const key = line.slice(0, eq).trim();
+    let value = line.slice(eq + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (key) {
+      out[key] = value;
+    }
+  }
+  return out;
 }
 
 export function substituteEnvParams(input: string, reader: Reader): string {
