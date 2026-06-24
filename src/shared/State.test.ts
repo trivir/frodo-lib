@@ -420,6 +420,25 @@ describe('State', () => {
     });
   });
 
+  describe('getEnv()/setEnv()', () => {
+    const envKey = 'TEST_ENV_KEY';
+    const envValue = 'test-value';
+  
+    test('0: Method getEnv is implemented', () => {
+      expect(state.getEnv).toBeDefined();
+    });
+  
+    test('1: Method setEnv is implemented', () => {
+      expect(state.setEnv).toBeDefined();
+    });
+  
+    test("2: Env value should be undefined if it hasn't been set before or defined if set explicitly", () => {
+      expect(state.getEnv(envKey)).toBeUndefined();
+      state.setEnv(envKey, envValue);
+      expect(state.getEnv(envKey)).toEqual(envValue);
+    });
+  });
+
   // setAmVersion,
   // getAmVersion,
 
