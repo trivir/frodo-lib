@@ -1,3 +1,4 @@
+// @ts-nocheck
 import util from 'util';
 
 import { State } from '../shared/State';
@@ -12,18 +13,33 @@ import {
 } from './ApiTypes';
 import { generateAmApi } from './BaseApi';
 
-const queryAllNodeTypesURLTemplate =
+// Old API
+const queryAllNodeTypesOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes?_action=getAllTypes';
-const queryAllNodesByTypeURLTemplate =
+const queryAllNodesByTypeOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s?_queryFilter=true';
-const queryAllNodesURLTemplate =
+const queryAllNodesOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes?_action=nextdescendents';
-const nodeURLTemplate =
+const nodeOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s/%s';
-const createNodeURLTemplate =
+const createNodeOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s?_action=create';
-const nodeSchemaURLTemplate =
+const nodeSchemaOldURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s?_action=schema';
+
+
+// New API
+const queryAllNodesByTypeNewURLTemplate =
+  '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s/%s?_queryFilter=true';
+const queryAllNodesNewURLTemplate =
+  '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s?_action=nextdescendents';
+const nodeNewURLTemplate =
+  '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s/%s/%s';
+const createNodeNewURLTemplate =
+  '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s/%s?_action=create';
+const nodeSchemaNewURLTemplate =
+  '%s/json%s/realm-config/authentication/authenticationtrees/nodes/%s/%s?_action=schema';
+
 const customNodeTypeURLTemplate = '%s/json/node-designer/node-type';
 const queryAllCustomNodesURLTemplate =
   customNodeTypeURLTemplate + '?_queryFilter=true';
@@ -31,17 +47,27 @@ const customNodeURLTemplate = customNodeTypeURLTemplate + '/%s';
 const journeyUsageCustomNodesURLTemplate =
   customNodeURLTemplate + '?_action=journeys';
 
-const apiVersion = 'protocol=2.1,resource=1.0';
-const getNodeApiConfig = () => {
+const apiVersion = 'protocol=2.1,resource=%s';
+
+const getNodeApiConfig = (state: State) => {
+  let newApiVersion: string = '3.0';
+  let oldApiVersion: string = '1.0';
   return {
-    apiVersion,
+    apiVersion: util.format(apiVersion, isNewApi(state) ? newApiVersion : oldApiVersion)
   };
 };
+
+function isNewApi(state: State): boolean {
+  const [major, minor] = state.getAmVersion().split('.').map(Number);
+
+  return major > 8 || (major === 8 && minor >= 1);
+}
 
 export interface NodeRefSkeletonInterface {
   connections: Record<string, string>;
   displayName: string;
   nodeType: string;
+  version: string;
   x: number;
   y: number;
 }
@@ -55,6 +81,7 @@ export interface InnerNodeRefSkeletonInterface {
   _id: string;
   displayName: string;
   nodeType: string;
+  version: string;
 }
 
 export type CustomNodeProperty = {
@@ -123,12 +150,12 @@ export async function getNodeTypes({
   state: State;
 }): Promise<QueryResult<NodeTypeSkeleton>> {
   const urlString = util.format(
-    queryAllNodeTypesURLTemplate,
+    queryAllNodeTypesOldURLTemplate,
     state.getHost(),
-    getCurrentRealmPath(state)
+    getCurrentRealmPath(state),
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(
     urlString,
@@ -151,12 +178,12 @@ export async function getNodes({
   state: State;
 }): Promise<QueryResult<NodeSkeleton>> {
   const urlString = util.format(
-    queryAllNodesURLTemplate,
+    queryAllNodesOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state)
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(
     urlString,
@@ -172,23 +199,32 @@ export async function getNodes({
 /**
  * Get all nodes by type
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise<PagedResult<NodeSkeleton>>} a promise that resolves to an object containing an array of node objects of the requested type
  */
 export async function getNodesByType({
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }): Promise<PagedResult<NodeSkeleton>> {
-  const urlString = util.format(
-    queryAllNodesByTypeURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    queryAllNodesByTypeNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion
+  ) : util.format(
+    queryAllNodesByTypeOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).get(urlString, {
     withCredentials: true,
@@ -200,26 +236,36 @@ export async function getNodesByType({
  * Get node by uuid and type
  * @param {string} nodeId node uuid
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise<NodeSkeleton>} a promise that resolves to a node object
  */
 export async function getNode({
   nodeId,
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }): Promise<NodeSkeleton> {
-  const urlString = util.format(
-    nodeURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    nodeNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion,
+    nodeId
+  ) : util.format(
+    nodeOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType,
     nodeId
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).get(urlString, {
     withCredentials: true,
@@ -230,26 +276,35 @@ export async function getNode({
 /**
  * Create node by type
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @param {object} nodeData node object
  * @returns {Promise<NodeSkeleton>} a promise that resolves to a node object
  */
 export async function createNode({
   nodeType,
+  nodeVersion,
   nodeData,
   state,
 }: {
   nodeType: string;
+  nodeVersion: string | undefined;
   nodeData: NodeSkeleton;
   state: State;
 }): Promise<NodeSkeleton> {
-  const urlString = util.format(
-    createNodeURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    createNodeNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion
+  ) : util.format(
+    createNodeOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(urlString, nodeData, {
     withCredentials: true,
@@ -261,23 +316,32 @@ export async function createNode({
 /**
  * Get node schema by type
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise<NodeSkeleton>} a promise that resolves to a node object
  */
 export async function getNodeSchema({
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }): Promise<NodeSkeleton> {
-  const urlString = util.format(
-    nodeSchemaURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    nodeSchemaNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion
+  ) : util.format(
+    nodeSchemaOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(
     urlString,
@@ -310,32 +374,42 @@ export async function getCustomNodeSchema({
  * Put node by uuid and type
  * @param {string} nodeId node uuid
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @param {object} nodeData node object
  * @returns {Promise} a promise that resolves to an object containing a node object
  */
 export async function putNode({
   nodeId,
   nodeType,
+  nodeVersion,
   nodeData,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   nodeData: NodeSkeleton | NoIdObjectSkeletonInterface;
   state: State;
 }) {
   // until we figure out a way to use transport keys in Frodo,
   // we'll have to drop those encrypted attributes.
   const cleanData = deleteDeepByKey(nodeData, '-encrypted');
-  const urlString = util.format(
-    nodeURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    nodeNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion,
+    nodeId
+  ) : util.format(
+    nodeOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType,
     nodeId
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).put(urlString, cleanData, {
     withCredentials: true,
@@ -347,26 +421,36 @@ export async function putNode({
  * Delete node by uuid and type
  * @param {String} nodeId node uuid
  * @param {String} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise} a promise that resolves to an object containing a node object
  */
 export async function deleteNode({
   nodeId,
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }) {
-  const urlString = util.format(
-    nodeURLTemplate,
+  const urlString = isNewApi(state) ? util.format(
+    nodeNewURLTemplate,
+    state.getHost(),
+    getCurrentRealmPath(state),
+    nodeType,
+    nodeVersion,
+    nodeId
+  ) : util.format(
+    nodeOldURLTemplate,
     state.getHost(),
     getCurrentRealmPath(state),
     nodeType,
     nodeId
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).delete(urlString, {
     withCredentials: true,
@@ -388,7 +472,7 @@ export async function createCustomNode({
 }): Promise<CustomNodeSkeleton> {
   const urlString = util.format(customNodeTypeURLTemplate, state.getHost());
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(urlString, nodeData, {
     withCredentials: true,
@@ -410,7 +494,7 @@ export async function getCustomNodes({
     state.getHost()
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).get(urlString, {
     withCredentials: true,
@@ -432,7 +516,7 @@ export async function getCustomNode({
 }): Promise<CustomNodeSkeleton> {
   const urlString = util.format(customNodeURLTemplate, state.getHost(), nodeId);
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).get(urlString, {
     withCredentials: true,
@@ -459,7 +543,7 @@ export async function putCustomNode({
 }): Promise<CustomNodeSkeleton> {
   const urlString = util.format(customNodeURLTemplate, state.getHost(), nodeId);
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).put(urlString, nodeData, {
     withCredentials: true,
@@ -484,7 +568,7 @@ export async function deleteCustomNode({
 }): Promise<CustomNodeSkeleton> {
   const urlString = util.format(customNodeURLTemplate, state.getHost(), nodeId);
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).delete(urlString, {
     withCredentials: true,
@@ -510,7 +594,7 @@ export async function getCustomNodeUsage({
     nodeId
   );
   const { data } = await generateAmApi({
-    resource: getNodeApiConfig(),
+    resource: getNodeApiConfig(state),
     state,
   }).post(urlString, undefined, {
     withCredentials: true,

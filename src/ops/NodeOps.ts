@@ -51,16 +51,18 @@ export type Node = {
   /**
    * Read all nodes by type
    * @param {string} nodeType node type
+   * @param {string | undefined} nodeVersion node version
    * @returns {Promise<NodeSkeleton[]>} a promise that resolves to an object containing an array of node objects of the requested type
    */
-  readNodesByType(nodeType: string): Promise<NodeSkeleton[]>;
+  readNodesByType(nodeType: string, nodeVersion: string | undefined): Promise<NodeSkeleton[]>;
   /**
    * Read node by uuid and type
    * @param {string} nodeId node uuid
    * @param {string} nodeType node type
+   * @param {string | undefined} nodeVersion node version
    * @returns {Promise<NodeSkeleton>} a promise that resolves to a node object
    */
-  readNode(nodeId: string, nodeType: string): Promise<NodeSkeleton>;
+  readNode(nodeId: string, nodeType: string, nodeVersion: string): Promise<NodeSkeleton>;
   /**
    * Export all nodes
    * @returns {Promise<NodeExportInterface>} a promise that resolves to an array of node objects
@@ -69,29 +71,33 @@ export type Node = {
   /**
    * Create node by type
    * @param {string} nodeType node type
+   * @param {string | undefined} nodeVersion node version
    * @param {NodeSkeleton} nodeData node object
    * @returns {Promise<NodeSkeleton>} a promise that resolves to an object containing a node object
    */
-  createNode(nodeType: string, nodeData: NodeSkeleton): Promise<NodeSkeleton>;
+  createNode(nodeType: string, nodeVersion: string, nodeData: NodeSkeleton): Promise<NodeSkeleton>;
   /**
    * Update or create node by uuid and type
    * @param {string} nodeId node uuid
    * @param {string} nodeType node type
+   * @param {string | undefined} nodeVersion node version
    * @param {NodeSkeleton} nodeData node object
    * @returns {Promise<NodeSkeleton>} a promise that resolves to an object containing a node object
    */
   updateNode(
     nodeId: string,
     nodeType: string,
+    nodeVersion: string | undefined,
     nodeData: NodeSkeleton
   ): Promise<NodeSkeleton>;
   /**
    * Delete node by uuid and type
    * @param {string} nodeId node uuid
    * @param {string} nodeType node type
+   * @param {string | undefined} nodeVersion node version
    * @returns {Promise<NodeSkeleton>} a promise that resolves to an object containing a node object
    */
-  deleteNode(nodeId: string, nodeType: string): Promise<NodeSkeleton>;
+  deleteNode(nodeId: string, nodeType: string, nodeVersion: string | undefined): Promise<NodeSkeleton>;
   /**
    * Read custom node. Either ID or name must be provided.
    * @param {string} nodeId ID or service name of custom node. Takes priority over node display name if both are provided.
@@ -254,30 +260,32 @@ export default (state: State): Node => {
     async readNodes(): Promise<NodeSkeleton[]> {
       return readNodes({ state });
     },
-    async readNodesByType(nodeType: string): Promise<NodeSkeleton[]> {
-      return readNodesByType({ nodeType, state });
+    async readNodesByType(nodeType: string, nodeVersion: string | undefined): Promise<NodeSkeleton[]> {
+      return readNodesByType({ nodeType, nodeVersion, state });
     },
-    async readNode(nodeId: string, nodeType: string): Promise<NodeSkeleton> {
-      return readNode({ nodeId, nodeType, state });
+    async readNode(nodeId: string, nodeType: string, nodeVersion: string | undefined): Promise<NodeSkeleton> {
+      return readNode({ nodeId, nodeType, nodeVersion, state });
     },
     async exportNodes(): Promise<NodeExportInterface> {
       return exportNodes({ state });
     },
     async createNode(
       nodeType: string,
+      nodeVersion: string,
       nodeData: NodeSkeleton
     ): Promise<NodeSkeleton> {
-      return createNode({ nodeType, nodeData, state });
+      return createNode({ nodeType, nodeVersion, nodeData, state });
     },
     async updateNode(
       nodeId: string,
       nodeType: string,
+      nodeVersion: string | undefined,
       nodeData: NodeSkeleton
     ): Promise<NodeSkeleton> {
-      return updateNode({ nodeId, nodeType, nodeData, state });
+      return updateNode({ nodeId, nodeType, nodeVersion, nodeData, state });
     },
-    async deleteNode(nodeId: string, nodeType: string): Promise<NodeSkeleton> {
-      return deleteNode({ nodeId, nodeType, state });
+    async deleteNode(nodeId: string, nodeType: string, nodeVersion: string | undefined): Promise<NodeSkeleton> {
+      return deleteNode({ nodeId, nodeType, nodeVersion, state });
     },
     readCustomNode(
       nodeId?: string,
@@ -543,17 +551,20 @@ export async function readNodes({
 /**
  * Read all nodes by type
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise<NodeSkeleton[]>} a promise that resolves to an object containing an array of node objects of the requested type
  */
 export async function readNodesByType({
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }): Promise<NodeSkeleton[]> {
   try {
-    const { result } = await _getNodesByType({ nodeType, state });
+    const { result } = await _getNodesByType({ nodeType, nodeVersion, state });
     return result;
   } catch (error) {
     throw new FrodoError(`Error reading ${nodeType} nodes`, error);
@@ -564,19 +575,22 @@ export async function readNodesByType({
  * Read node
  * @param {String} nodeId node uuid
  * @param {String} nodeType node type
+ * @param {String} nodeVersion node version
  * @returns {Promise} a promise that resolves to a node object
  */
 export async function readNode({
   nodeId,
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string;
   state: State;
 }): Promise<NodeSkeleton> {
   try {
-    return _getNode({ nodeId, nodeType, state });
+    return _getNode({ nodeId, nodeType, nodeVersion, state });
   } catch (error) {
     throw new FrodoError(`Error reading ${nodeType} node ${nodeId}`, error);
   }
@@ -631,32 +645,35 @@ export async function exportNodes({
  * Create node
  * @param {string} nodeId node uuid
  * @param {string} nodeType node type
+ * @param {string} nodeVersion node version
  * @param {NodeSkeleton} nodeData node object
  * @returns {Promise<NodeSkeleton>} a promise that resolves to an object containing a node object
  */
 export async function createNode({
   nodeId,
   nodeType,
+  nodeVersion,
   nodeData,
   state,
 }: {
   nodeId?: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   nodeData: NodeSkeleton;
   state: State;
 }): Promise<NodeSkeleton> {
   try {
     if (nodeId) {
       try {
-        await readNode({ nodeId, nodeType, state });
+        await readNode({ nodeId, nodeType, nodeVersion, state });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        const result = await updateNode({ nodeId, nodeType, nodeData, state });
+        const result = await updateNode({ nodeId, nodeType, nodeVersion, nodeData, state });
         return result;
       }
       throw new FrodoError(`Node ${nodeId} already exists!`);
     }
-    return _createNode({ nodeType, nodeData, state });
+    return _createNode({ nodeType, nodeData, nodeVersion, state });
   } catch (error) {
     throw new FrodoError(`Error creating ${nodeType} node ${nodeId}`, error);
   }
@@ -666,22 +683,25 @@ export async function createNode({
  * Put node by uuid and type
  * @param {string} nodeId node uuid
  * @param {string} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @param {object} nodeData node object
  * @returns {Promise} a promise that resolves to an object containing a node object
  */
 export async function updateNode({
   nodeId,
   nodeType,
+  nodeVersion,
   nodeData,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   nodeData: NodeSkeleton;
   state: State;
 }): Promise<NodeSkeleton> {
   try {
-    return _putNode({ nodeId, nodeType, nodeData, state });
+    return _putNode({ nodeId, nodeType, nodeVersion, nodeData, state });
   } catch (error) {
     throw new FrodoError(`Error updating ${nodeType} node ${nodeId}`, error);
   }
@@ -691,19 +711,22 @@ export async function updateNode({
  * Delete node by uuid and type
  * @param {String} nodeId node uuid
  * @param {String} nodeType node type
+ * @param {string | undefined} nodeVersion node version
  * @returns {Promise} a promise that resolves to an object containing a node object
  */
 export async function deleteNode({
   nodeId,
   nodeType,
+  nodeVersion,
   state,
 }: {
   nodeId: string;
   nodeType: string;
+  nodeVersion: string | undefined;
   state: State;
 }): Promise<NodeSkeleton> {
   try {
-    return _deleteNode({ nodeId, nodeType, state });
+    return _deleteNode({ nodeId, nodeType, nodeVersion, state });
   } catch (error) {
     throw new FrodoError(`Error deleting ${nodeType} node ${nodeId}`, error);
   }
@@ -1118,7 +1141,7 @@ export async function findOrphanedNodes({
   }
   for (const type of types) {
     try {
-      const nodes = (await _getNodesByType({ nodeType: type._id, state }))
+      const nodes = (await _getNodesByType({ nodeType: type._id, nodeVersion: type.version, state }))
         .result;
       for (const node of nodes) {
         allNodes.push(node);
@@ -1176,6 +1199,7 @@ export async function findOrphanedNodes({
           const containerNode = await _getNode({
             nodeId,
             nodeType: node.nodeType,
+            nodeVersion: node.version,
             state,
           });
           for (const innerNode of containerNode.nodes) {
@@ -1244,6 +1268,7 @@ export async function removeOrphanedNodes({
       await deleteNode({
         nodeId: node['_id'],
         nodeType: node['_type']['_id'],
+        nodeVersion: node['type']['version'],
         state,
       });
     } catch (deleteError) {

@@ -871,7 +871,7 @@ export async function exportJourney({
     // get all the nodes
     for (const [nodeId, nodeInfo] of Object.entries(treeObject.nodes)) {
       nodePromises.push(
-        getNode({ nodeId, nodeType: nodeInfo['nodeType'], state })
+        getNode({ nodeId, nodeType: nodeInfo['nodeType'], nodeVersion: nodeInfo['version'], state })
       );
       if (!coords) {
         delete nodeInfo['x'];
@@ -1000,6 +1000,7 @@ export async function exportJourney({
             getNode({
               nodeId: innerNode._id,
               nodeType: innerNode.nodeType,
+              nodeVersion: innerNode.version,
               state,
             })
           );
@@ -2059,6 +2060,7 @@ export async function importJourney({
           await putNode({
             nodeId: newUuid,
             nodeType,
+            nodeVersion,
             nodeData: innerNodeData as NodeSkeleton,
             state,
           });
@@ -2099,6 +2101,7 @@ export async function importJourney({
               await putNode({
                 nodeId: newUuid,
                 nodeType,
+                nodeVersion,
                 nodeData: innerNodeData as NodeSkeleton,
                 state,
               });
@@ -2201,7 +2204,7 @@ export async function importJourney({
             });
         }
         try {
-          await putNode({ nodeId: newUuid, nodeType, nodeData, state });
+          await putNode({ nodeId: newUuid, nodeType, nodeVersion, nodeData, state });
         } catch (nodeImportError) {
           if (
             nodeImportError.response?.status === 400 &&
@@ -2236,7 +2239,7 @@ export async function importJourney({
               }
             }
             try {
-              await putNode({ nodeId: newUuid, nodeType, nodeData, state });
+              await putNode({ nodeId: newUuid, nodeType, nodeVersion, nodeData, state });
             } catch (nodeImportError2) {
               throw new FrodoError(
                 `Error importing ${getCurrentRealmName(state) + ' realm'} node ${nodeId}${
@@ -2875,6 +2878,7 @@ export async function deleteJourney({
               const containerNode = await getNode({
                 nodeId,
                 nodeType: nodeObject['nodeType'],
+                nodeVersion: nodeObject['version'],
                 state,
               });
               if (verbose)
@@ -2888,6 +2892,7 @@ export async function deleteJourney({
                   deleteNode({
                     nodeId: innerNodeObject._id,
                     nodeType: innerNodeObject.nodeType,
+                    nodeVersion: innerNodeObject.version,
                     state,
                   })
                     .then((response2) => {
@@ -2919,6 +2924,7 @@ export async function deleteJourney({
                 deleteNode({
                   nodeId: containerNode._id,
                   nodeType: containerNode['_type']['_id'],
+                  nodeVersion: containerNode['_type']['version'],
                   state,
                 })
                   .then((response2) => {
@@ -2969,7 +2975,7 @@ export async function deleteJourney({
           } else {
             // delete the node
             nodePromises.push(
-              deleteNode({ nodeId, nodeType: nodeObject['nodeType'], state })
+              deleteNode({ nodeId, nodeType: nodeObject['nodeType'], nodeVersion: nodeObject['version'], state })
                 .then((response) => {
                   status.nodes[nodeId] = { status: 'success' };
                   if (verbose)
