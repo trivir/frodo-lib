@@ -1173,6 +1173,19 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "ConnectionProfile",
+    methodName: "saveNewConnectionProfile",
+    signature: "saveNewConnectionProfile( serviceAccount?: boolean, userAccount?: boolean, logApi?: boolean, interactive?: boolean )",
+    description: "Save a new connection profile",
+    params: [
+      { name: "serviceAccount", type: "", description: "true to save the connection using a service account" },
+      { name: "userAccount", type: "", description: "true to save the connection using admin credentials" },
+      { name: "logApi", type: "", description: "true to save the connection with a log API key pair" },
+      { name: "interactive", type: "", description: "true to prompt for user input" },
+    ],
+    returns: "{Promise<boolean>} A promise resolving to true if successful",
+  },
+  {
+    typeName: "ConnectionProfile",
     methodName: "updateConnectionProfile",
     signature: "updateConnectionProfile( serviceAccount?: boolean, userAccount?: boolean, logApi?: boolean, interactive?: boolean )",
     description: "Update an existing connection profile",
