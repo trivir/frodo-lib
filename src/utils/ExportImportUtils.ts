@@ -43,7 +43,7 @@ export type ExportImport = {
     filePath: string,
     options?: {
       overrideValue?: string;
-      envFile?: Record<string, string>;
+      envFileValues?: Record<string, string>;
       base64Encode?: boolean;
     }
   ): any;
@@ -254,7 +254,7 @@ export default (state: State): ExportImport => {
     },
     readJsonFile(
       filePath: string,
-      options: { overrideValue?: string; base64Encode?: boolean } = {}
+      options: { overrideValue?: string; base64Encode?: boolean, envFileValues?: Record<string, string> } = {}
     ): any {
       return readJsonFile(filePath, options);
     },
@@ -629,12 +629,14 @@ export function readJsonFile(
   {
     overrideValue,
     base64Encode = false,
-  }: { overrideValue?: string; base64Encode?: boolean } = {}
+    envFileValues
+  }: { overrideValue?: string; base64Encode?: boolean, envFileValues?: Record<string, string> } = {}
 ): any {
   const content = fs.readFileSync(filePath, 'utf8');
   const resolved = replaceEnvSpecificValues(content, {
     overrideValue,
     base64Encode,
+    envFileValues
   });
   try {
     return JSON.parse(resolved);
@@ -649,7 +651,7 @@ export function readJsonFile(
  * @param {string} content the raw file content to resolve placeholders in
  * @param {Object} options options object
  * @param {string} [overrideValue] value to substitute for the placeholder
- * @param {boolean} [base64Encode] true to base64-encode resolved values, false otherwise. 
+ * @param {boolean} [base64Encode] true to base64-encode resolved values, false otherwise.
  * @returns {string} the content with all placeholders resolved and escaped placeholders unescaped
  */
 export function replaceEnvSpecificValues(
@@ -657,23 +659,26 @@ export function replaceEnvSpecificValues(
   {
     overrideValue,
     base64Encode = false,
-  }: { overrideValue?: string; base64Encode?: boolean } = {}
+    envFileValues = {},
+  }: {
+    overrideValue?: string;
+    base64Encode?: boolean;
+    envFileValues?: Record<string, string>;
+  } = {}
 ): string {
   const BASE64_PRE_ENCODED_PREFIX = 'BASE64:';
+  const env = { ...process.env, ...envFileValues };
   let newContent = content;
   const placeholders = content.match(/\\*?\$\{.*?\}/g);
   if (!placeholders) {
     return unescapePlaceholders(newContent);
   }
-
   const resolvable = placeholders.filter((p) => !p.startsWith('\\\\'));
-
   if (overrideValue !== undefined && resolvable.length !== 1) {
     throw new FrodoError(
       `An override value can only be used with a single placeholder, but ${resolvable.length} were found.`
     );
   }
-
   for (const placeholder of resolvable) {
     let placeholderName = placeholder.replace(/\$\{(.*)\}/, '$1');
     let encodeValue = base64Encode;
@@ -684,9 +689,7 @@ export function replaceEnvSpecificValues(
       );
     }
     let value =
-      overrideValue !== undefined
-        ? overrideValue
-        : process.env[placeholderName];
+      overrideValue !== undefined ? overrideValue : env[placeholderName];
     if (value === undefined) {
       throw new FrodoError(
         `No value found for placeholder "${placeholderName}"`
@@ -701,7 +704,7 @@ export function replaceEnvSpecificValues(
 }
 
 /**
- * Escape any placeholders so they are not resolved as environment placeholders 
+ * Escape any placeholders so they are not resolved as environment placeholders
  *
  * @param {unknown} content the object to escape placeholders in
  * @returns {any} a new object with all `${` sequences escaped
