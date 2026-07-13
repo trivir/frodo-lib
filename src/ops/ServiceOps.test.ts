@@ -107,7 +107,7 @@ describe('ServiceOps', () => {
     //TODO: create tests
   });
 
-  describe('deleteFullService()', () => {
+  describe('deleteFullService(descendentOnly: boolean,)', () => {
     test('0: Method is implemented', async () => {
       expect(ServiceOps.deleteFullService).toBeDefined();
     });
