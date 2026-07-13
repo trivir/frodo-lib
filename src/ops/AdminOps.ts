@@ -1864,7 +1864,7 @@ export async function generateRfc7523ClientAuthNArtefacts({
   };
 
   // create and sign JWT
-  const jwt = createSignedJwtToken(payload, jwk);
+  const jwt = await createSignedJwtToken(payload, jwk);
 
   // create oauth2 client
   const clientData: OAuth2ClientSkeleton = cloneDeep(OAUTH2_CLIENT);

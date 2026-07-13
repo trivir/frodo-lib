@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import jose from 'node-jose';
+
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
@@ -538,7 +540,9 @@ export async function loadConnectionProfileByHost({
   state.setServiceAccountId(conn.svcacctId);
   state.setServiceAccountJwk(conn.svcacctJwk);
   state.setServiceAccountScope(conn.svcacctScope);
-  state.setAmsterPrivateKey(conn.amsterPrivateKey);
+  state.setAmsterPrivateKey(
+    (await jose.JWK.asKey(conn.amsterPrivateKey, 'pem')).toJSON(true) as JwkRsa
+  );
   return true;
 }
 
@@ -711,9 +715,9 @@ export async function saveConnectionProfile({
     }
 
     // Amster account
-    if (state.getAmsterPrivateKey()) {
+    if (await state.getAmsterPrivateKey()) {
       profile.encodedAmsterPrivateKey = await dataProtection.encrypt(
-        state.getAmsterPrivateKey()
+        JSON.stringify(await state.getAmsterPrivateKey())
       );
     }
 
