@@ -46,8 +46,8 @@ export type ExportImport = {
       envFileValues?: Record<string, string>;
       base64Encode?: boolean;
     }
-  ): any;
-  escapePlaceholders(content: unknown): any;
+  ): object;
+  escapePlaceholders(content: object): object;
   unescapePlaceholders(content: string): string;
   /**
    * Save object to file in Frodo export format
@@ -254,11 +254,15 @@ export default (state: State): ExportImport => {
     },
     readJsonFile(
       filePath: string,
-      options: { overrideValue?: string; base64Encode?: boolean, envFileValues?: Record<string, string> } = {}
-    ): any {
+      options: {
+        overrideValue?: string;
+        base64Encode?: boolean;
+        envFileValues?: Record<string, string>;
+      } = {}
+    ): object {
       return readJsonFile(filePath, options);
     },
-    escapePlaceholders(content: unknown): any {
+    escapePlaceholders(content: object): object {
       return escapePlaceholders(content);
     },
     unescapePlaceholders(content: string): string {
@@ -615,30 +619,26 @@ export async function readFiles(directory: string): Promise<
   return filePathsNested.flat();
 }
 
+export interface EnvReplaceOptions {
+  overrideValue?: string;
+  base64Encode?: boolean;
+  envFileValues?: Record<string, string>;
+}
+
 /**
- * Reads a JSON file and resolvs any environment placeholders.
- 
+ * Reads a JSON file and resolves any environment placeholders.
+ *
  * @param {string} filePath path to the JSON file
- * @param {Object} options options object
- * @param {string} [overrideValue] value to substitute for the placeholder; only valid when the file contains one placeholder
- * @param {boolean} [base64Encode] true to base64-encode resolved values, false otherwise. Default: false
- * @returns {any} the parsed JSON with placeholders resolved
+ * @param {EnvReplaceOptions} options options for replacing ENV placeholders
+ * @returns {object} the parsed JSON with placeholders resolved
  */
 export function readJsonFile(
   filePath: string,
-  {
-    overrideValue,
-    base64Encode = false,
-    envFileValues
-  }: { overrideValue?: string; base64Encode?: boolean, envFileValues?: Record<string, string> } = {}
-): any {
-  const content = fs.readFileSync(filePath, 'utf8');
-  const resolved = replaceEnvSpecificValues(content, {
-    overrideValue,
-    base64Encode,
-    envFileValues
-  });
+  options: EnvReplaceOptions = {}
+): object {
   try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const resolved = replaceEnvSpecificValues(content, options);
     return JSON.parse(resolved);
   } catch (error) {
     throw new FrodoError(`Error parsing JSON from ${filePath}`, error);
@@ -656,22 +656,14 @@ export function readJsonFile(
  */
 export function replaceEnvSpecificValues(
   content: string,
-  {
-    overrideValue,
-    base64Encode = false,
-    envFileValues = {},
-  }: {
-    overrideValue?: string;
-    base64Encode?: boolean;
-    envFileValues?: Record<string, string>;
-  } = {}
+  { overrideValue, base64Encode = false, envFileValues }: EnvReplaceOptions = {}
 ): string {
   const BASE64_PRE_ENCODED_PREFIX = 'BASE64:';
   const env = { ...process.env, ...envFileValues };
   let newContent = content;
-  const placeholders = content.match(/\\*?\$\{.*?\}/g);
+  const placeholders = content.match(/\\*?\${.*?}/g);
   if (!placeholders) {
-    return unescapePlaceholders(newContent);
+    return newContent;
   }
   const resolvable = placeholders.filter((p) => !p.startsWith('\\\\'));
   if (overrideValue !== undefined && resolvable.length !== 1) {
@@ -680,7 +672,7 @@ export function replaceEnvSpecificValues(
     );
   }
   for (const placeholder of resolvable) {
-    let placeholderName = placeholder.replace(/\$\{(.*)\}/, '$1');
+    let placeholderName = placeholder.replace(/\${(.*)}/, "$1");
     let encodeValue = base64Encode;
     if (placeholderName.startsWith(BASE64_PRE_ENCODED_PREFIX)) {
       encodeValue = false;
@@ -706,10 +698,10 @@ export function replaceEnvSpecificValues(
 /**
  * Escape any placeholders so they are not resolved as environment placeholders
  *
- * @param {unknown} content the object to escape placeholders in
- * @returns {any} a new object with all `${` sequences escaped
+ * @param {object} content the object to escape placeholders in
+ * @returns {object} a new object with all `${` sequences escaped
  */
-export function escapePlaceholders(content: unknown): any {
+export function escapePlaceholders(content: object): object {
   return JSON.parse(JSON.stringify(content).replace(/\$\{/g, '\\\\${'));
 }
 
