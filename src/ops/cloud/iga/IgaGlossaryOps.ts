@@ -1,3 +1,4 @@
+import { SearchTargetFilterOperation } from '../../../api/ApiTypes';
 import {
   createGlossarySchema as _createGlossarySchema,
   deleteGlossarySchema as _deleteGlossarySchema,
@@ -41,15 +42,18 @@ export type Glossary = {
    * @param {GlossaryObjectType} objectType the glossary schema object type
    * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
    */
-  readGlossarySchemaByNameAndObjectType(
+  readGlossarySchemaByName(
     glossaryName: string,
-    objectType: GlossaryObjectType
+    objectType?: GlossaryObjectType
   ): Promise<GlossarySchemaItemSkeleton<any>>;
   /**
    * Read all glossary schemas
+   * @param {GlossaryObjectType} objectType the glossary schema object type
    * @returns {Promise<GlossarySchemaItemSkeleton[]>} a promise that resolves to an array of glossary schema objects
    */
-  readGlossarySchemas(): Promise<GlossarySchemaItemSkeleton<any>[]>;
+  readGlossarySchemas(
+    objectType?: GlossaryObjectType
+  ): Promise<GlossarySchemaItemSkeleton<any>[]>;
   /**
    * Export glossary schema
    * @param {string} glossaryId the glossary schema id
@@ -64,17 +68,19 @@ export type Glossary = {
    * @param {GlossaryObjectType} objectType the glossary schema object type
    * @returns {Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object
    */
-  exportGlossarySchemaByNameAndObjectType(
+  exportGlossarySchemaByName(
     glossaryName: string,
-    objectType: GlossaryObjectType
+    objectType?: GlossaryObjectType
   ): Promise<GlossarySchemaExportInterface>;
   /**
    * Export all glossary schemas
    * @param {GlossarySchemaExportOptions} options export options
+   * @param {GlossaryObjectType} objectType the glossary schema object type
    * @returns {Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object
    */
   exportGlossarySchemas(
-    options?: GlossarySchemaExportOptions
+    options?: GlossarySchemaExportOptions,
+    objectType?: GlossaryObjectType
   ): Promise<GlossarySchemaExportInterface>;
   /**
    * Update glossary schema
@@ -118,16 +124,18 @@ export type Glossary = {
    * @param {GlossaryObjectType} objectType the glossary schema object type
    * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
    */
-  deleteGlossarySchemaByNameAndObjectType(
+  deleteGlossarySchemaByName(
     glossaryName: string,
-    objectType: GlossaryObjectType
+    objectType?: GlossaryObjectType
   ): Promise<GlossarySchemaItemSkeleton<any>>;
   /**
    * Delete glossary schemas
+   * @param {GlossaryObjectType} objectType the glossary schema object type
    * @param {ResultCallback} resultCallback Optional callback to process individual results
    * @returns {Promise<GlossarySchemaItemSkeleton[]>} promise that resolves to an array of glossary schema objects
    */
   deleteGlossarySchemas(
+    objectType?: GlossaryObjectType,
     resultCallback?: ResultCallback<GlossarySchemaItemSkeleton<any>>
   ): Promise<GlossarySchemaItemSkeleton<any>[]>;
 };
@@ -147,18 +155,21 @@ export default (state: State): Glossary => {
         state,
       });
     },
-    readGlossarySchemaByNameAndObjectType(
+    readGlossarySchemaByName(
       glossaryName: string,
-      objectType: GlossaryObjectType
+      objectType?: GlossaryObjectType
     ): Promise<GlossarySchemaItemSkeleton<any>> {
-      return readGlossarySchemaByNameAndObjectType({
+      return readGlossarySchemaByName({
         glossaryName,
         objectType,
         state,
       });
     },
-    readGlossarySchemas(): Promise<GlossarySchemaItemSkeleton<any>[]> {
+    readGlossarySchemas(
+      objectType?: GlossaryObjectType
+    ): Promise<GlossarySchemaItemSkeleton<any>[]> {
       return readGlossarySchemas({
+        objectType,
         state,
       });
     },
@@ -170,21 +181,23 @@ export default (state: State): Glossary => {
         state,
       });
     },
-    exportGlossarySchemaByNameAndObjectType(
+    exportGlossarySchemaByName(
       glossaryName: string,
-      objectType: GlossaryObjectType
+      objectType?: GlossaryObjectType
     ): Promise<GlossarySchemaExportInterface> {
-      return exportGlossarySchemaByNameAndObjectType({
+      return exportGlossarySchemaByName({
         glossaryName,
         objectType,
         state,
       });
     },
     exportGlossarySchemas(
-      options: GlossarySchemaExportOptions = { includeInternal: false }
+      options: GlossarySchemaExportOptions = { includeInternal: false },
+      objectType?: GlossaryObjectType
     ): Promise<GlossarySchemaExportInterface> {
       return exportGlossarySchemas({
         options,
+        objectType,
         state,
       });
     },
@@ -224,20 +237,22 @@ export default (state: State): Glossary => {
         state,
       });
     },
-    deleteGlossarySchemaByNameAndObjectType(
+    deleteGlossarySchemaByName(
       glossaryName: string,
-      objectType: GlossaryObjectType
+      objectType?: GlossaryObjectType
     ): Promise<GlossarySchemaItemSkeleton<any>> {
-      return deleteGlossarySchemaByNameAndObjectType({
+      return deleteGlossarySchemaByName({
         glossaryName,
         objectType,
         state,
       });
     },
     deleteGlossarySchemas(
+      objectType?: GlossaryObjectType,
       resultCallback: ResultCallback<GlossarySchemaItemSkeleton<any>> = void 0
     ): Promise<GlossarySchemaItemSkeleton<any>[]> {
       return deleteGlossarySchemas({
+        objectType,
         resultCallback,
         state,
       });
@@ -327,49 +342,57 @@ export async function readGlossarySchema({
 }
 
 /**
- * Read glossary schema by its name and object type
+ * Read glossary schema by its name and object type. If name only provided and multiple found, produce error.
  * @param {string} glossaryName the glossary schema name
  * @param {GlossaryObjectType} objectType the glossary schema object type
  * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
  */
-export async function readGlossarySchemaByNameAndObjectType({
+export async function readGlossarySchemaByName({
   glossaryName,
   objectType,
   state,
 }: {
   glossaryName: string;
-  objectType: GlossaryObjectType;
+  objectType?: GlossaryObjectType;
   state: State;
 }): Promise<GlossarySchemaItemSkeleton<any>> {
   try {
+    const operands: SearchTargetFilterOperation[] = [
+      {
+        operator: 'EQUALS',
+        operand: {
+          targetName: 'name',
+          targetValue: glossaryName,
+        },
+      },
+    ];
+    
+    if (objectType) {
+      operands.push({
+        operator: 'EQUALS',
+        operand: {
+          targetName: 'objectType',
+          targetValue: objectType,
+        },
+      });
+    }
     const schemas = await searchGlossarySchemas({
       targetFilter: {
         operator: 'AND',
-        operand: [
-          {
-            operator: 'EQUALS',
-            operand: {
-              targetName: 'name',
-              targetValue: glossaryName,
-            },
-          },
-          {
-            operator: 'EQUALS',
-            operand: {
-              targetName: 'objectType',
-              targetValue: objectType,
-            },
-          },
-        ],
+        operand: operands,
       },
       state,
     });
     if (schemas.length !== 1) {
       throw new FrodoError(
-        `Expected to find a glossary schema of object type ${objectType} with name ${glossaryName}, but ${schemas.length} were found.`
+        objectType
+          ? `Expected to find a glossary schema of object type ${objectType} with name ${glossaryName}, but ${schemas.length} were found.`
+          : `Expected to find exactly one glossary schema with name ${glossaryName}, but ${schemas.length} were found.`
       );
     }
+
     return schemas[0];
+
   } catch (error) {
     throw new FrodoError(
       `Error reading glossary schema ${glossaryName}`,
@@ -379,16 +402,28 @@ export async function readGlossarySchemaByNameAndObjectType({
 }
 
 /**
- * Read all glossary schemas
+ * Read all glossary schemas, can be filtered by objectType
+ * @param {GlossaryObjectType} objectType the glossary schema object type
  * @returns {Promise<GlossarySchemaItemSkeleton[]>} a promise that resolves to an array of glossary schema objects
  */
 export async function readGlossarySchemas({
+  objectType,
   state,
 }: {
+  objectType?: GlossaryObjectType;
   state: State;
 }): Promise<GlossarySchemaItemSkeleton<any>[]> {
   try {
-    return await searchGlossarySchemas({ state });
+    return await searchGlossarySchemas({
+      targetFilter: objectType?{
+        operator: 'EQUALS',
+        operand: {
+          targetName: 'objectType',
+          targetValue: objectType,
+        },
+      }:undefined,
+      state,
+    });
   } catch (error) {
     throw new FrodoError(`Error reading glossary schemas`, error);
   }
@@ -436,29 +471,29 @@ export async function exportGlossarySchema({
  * @param {GlossaryObjectType} objectType the glossary schema object type
  * @returns {Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object
  */
-export async function exportGlossarySchemaByNameAndObjectType({
+export async function exportGlossarySchemaByName({
   glossaryName,
   objectType,
   state,
 }: {
   glossaryName: string;
-  objectType: GlossaryObjectType;
+  objectType?: GlossaryObjectType;
   state: State;
 }): Promise<GlossarySchemaExportInterface> {
   try {
     debugMessage({
-      message: `IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType: start`,
+      message: `IgaGlossaryOps.exportGlossarySchemaByName: start`,
       state,
     });
     const exportData = createGlossarySchemaExportTemplate({ state });
-    const glossarySchema = await readGlossarySchemaByNameAndObjectType({
+    const glossarySchema = await readGlossarySchemaByName({
       glossaryName,
       objectType,
       state,
     });
     exportData.glossarySchema[glossarySchema.id] = glossarySchema;
     debugMessage({
-      message: `IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType: end`,
+      message: `IgaGlossaryOps.exportGlossarySchemaByName: end`,
       state,
     });
     return exportData;
@@ -473,13 +508,16 @@ export async function exportGlossarySchemaByNameAndObjectType({
 /**
  * Export all glossary schemas
  * @param {GlossarySchemaExportOptions} options export options
+ * @param {GlossaryObjectType} objectType the glossary schema object type
  * @returns {Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object
  */
 export async function exportGlossarySchemas({
   options = { includeInternal: false },
+  objectType,
   state,
 }: {
   options?: GlossarySchemaExportOptions;
+  objectType?: GlossaryObjectType;
   state: State;
 }): Promise<GlossarySchemaExportInterface> {
   let indicatorId: string;
@@ -489,9 +527,9 @@ export async function exportGlossarySchemas({
       state,
     });
     const exportData = createGlossarySchemaExportTemplate({ state });
-    const glossarySchemas = (await readGlossarySchemas({ state })).filter(
-      (g) => options.includeInternal || g.isInternal !== true
-    );
+    const glossarySchemas = (
+      await readGlossarySchemas({ objectType, state })
+    ).filter((g) => options.includeInternal || g.isInternal !== true);
     indicatorId = createProgressIndicator({
       total: glossarySchemas.length,
       message: 'Exporting glossary schemas...',
@@ -588,15 +626,26 @@ export async function importGlossarySchemas({
     state,
   });
   const response = [];
+  const schemas = Object.values(importData.glossarySchema);
+  if (glossaryName && !objectType) {
+    const matches = schemas.filter(
+      (schema) => schema.name === glossaryName
+    );
+  
+    if (matches.length > 1) {
+      throw new FrodoError(
+        `Multiple glossary schemas found with name '${glossaryName}'. Please specify objectType.`
+      );
+    }
+  }
+
   for (const existingId of Object.keys(importData.glossarySchema)) {
     try {
       const glossarySchema = importData.glossarySchema[existingId];
       const shouldNotImport =
         (glossaryId && glossaryId !== glossarySchema.id) ||
-        (glossaryName &&
-          objectType &&
-          (glossaryName !== glossarySchema.name ||
-            objectType !== glossarySchema.objectType)) ||
+        (glossaryName && glossaryName !== glossarySchema.name) ||
+        (objectType && objectType !== glossarySchema.objectType) ||
         (!options.includeInternal && glossarySchema.isInternal === true);
       if (shouldNotImport) continue;
       let result;
@@ -665,17 +714,17 @@ export async function deleteGlossarySchema({
  * @param {GlossaryObjectType} objectType the glossary schema object type
  * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
  */
-export async function deleteGlossarySchemaByNameAndObjectType({
+export async function deleteGlossarySchemaByName({
   glossaryName,
   objectType,
   state,
 }: {
   glossaryName: string;
-  objectType: GlossaryObjectType;
+  objectType?: GlossaryObjectType;
   state: State;
 }): Promise<GlossarySchemaItemSkeleton<any>> {
   try {
-    const glossarySchema = await readGlossarySchemaByNameAndObjectType({
+    const glossarySchema = await readGlossarySchemaByName({
       glossaryName,
       objectType,
       state,
@@ -694,17 +743,20 @@ export async function deleteGlossarySchemaByNameAndObjectType({
 
 /**
  * Delete glossary schemas
+ * @param {GlossaryObjectType} objectType the glossary schema object type
  * @param {ResultCallback} resultCallback Optional callback to process individual results
  * @returns {Promise<GlossarySchemaItemSkeleton[]>} promise that resolves to an array of glossary schema objects
  */
 export async function deleteGlossarySchemas({
+  objectType,
   resultCallback = void 0,
   state,
 }: {
+  objectType?: GlossaryObjectType;
   resultCallback?: ResultCallback<GlossarySchemaItemSkeleton<any>>;
   state: State;
 }): Promise<GlossarySchemaItemSkeleton<any>[]> {
-  const result = await readGlossarySchemas({ state });
+  const result = await readGlossarySchemas({ objectType, state });
   //Unable to delete internal schemas, so filter them out
   const glossarySchemas = result.filter((s) => !s.isInternal);
   const deletedGlossarySchemas = [];

@@ -6837,8 +6837,8 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Glossary",
-    methodName: "readGlossarySchemaByNameAndObjectType",
-    signature: "readGlossarySchemaByNameAndObjectType( glossaryName: string, objectType: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>>",
+    methodName: "readGlossarySchemaByName",
+    signature: "readGlossarySchemaByName( glossaryName: string, objectType?: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>>",
     description: "Read glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name" },
@@ -6849,9 +6849,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Glossary",
     methodName: "readGlossarySchemas",
-    signature: "readGlossarySchemas(): Promise<GlossarySchemaItemSkeleton<any>[]>",
+    signature: "readGlossarySchemas( objectType?: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>[]>",
     description: "Read all glossary schemas",
-    params: [],
+    params: [
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type" },
+    ],
     returns: "{Promise<GlossarySchemaItemSkeleton[]>} a promise that resolves to an array of glossary schema objects",
   },
   {
@@ -6866,8 +6868,8 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Glossary",
-    methodName: "exportGlossarySchemaByNameAndObjectType",
-    signature: "exportGlossarySchemaByNameAndObjectType( glossaryName: string, objectType: GlossaryObjectType ): Promise<GlossarySchemaExportInterface>",
+    methodName: "exportGlossarySchemaByName",
+    signature: "exportGlossarySchemaByName( glossaryName: string, objectType?: GlossaryObjectType ): Promise<GlossarySchemaExportInterface>",
     description: "Export glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name" },
@@ -6878,10 +6880,11 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Glossary",
     methodName: "exportGlossarySchemas",
-    signature: "exportGlossarySchemas( options?: GlossarySchemaExportOptions ): Promise<GlossarySchemaExportInterface>",
+    signature: "exportGlossarySchemas( options?: GlossarySchemaExportOptions, objectType?: GlossaryObjectType ): Promise<GlossarySchemaExportInterface>",
     description: "Export all glossary schemas",
     params: [
       { name: "options", type: "GlossarySchemaExportOptions", description: "export options" },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type" },
     ],
     returns: "{Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object",
   },
@@ -6923,8 +6926,8 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Glossary",
-    methodName: "deleteGlossarySchemaByNameAndObjectType",
-    signature: "deleteGlossarySchemaByNameAndObjectType( glossaryName: string, objectType: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>>",
+    methodName: "deleteGlossarySchemaByName",
+    signature: "deleteGlossarySchemaByName( glossaryName: string, objectType?: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>>",
     description: "Delete glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name" },
@@ -6935,9 +6938,10 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Glossary",
     methodName: "deleteGlossarySchemas",
-    signature: "deleteGlossarySchemas( resultCallback?: ResultCallback<GlossarySchemaItemSkeleton<any>> ): Promise<GlossarySchemaItemSkeleton<any>[]>",
+    signature: "deleteGlossarySchemas( objectType?: GlossaryObjectType, resultCallback?: ResultCallback<GlossarySchemaItemSkeleton<any>> ): Promise<GlossarySchemaItemSkeleton<any>[]>",
     description: "Delete glossary schemas",
     params: [
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type" },
       { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results" },
     ],
     returns: "{Promise<GlossarySchemaItemSkeleton[]>} promise that resolves to an array of glossary schema objects",
