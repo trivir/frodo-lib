@@ -576,10 +576,7 @@ export async function importRequestTypes({
     const shouldNotImport =
       (typeId && typeId !== requestType.id) ||
       (typeName && typeName !== requestType.displayName) ||
-      (!typeId &&
-        !typeName &&
-        options.onlyCustom &&
-        !requestType.custom);
+      (!typeId && !typeName && options.onlyCustom && !requestType.custom);
     if (shouldNotImport) continue;
     let result;
     if (requestType.custom) {
