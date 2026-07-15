@@ -97,3 +97,11 @@ export interface PatchOperationInterface {
   value?: any;
   from?: string;
 }
+
+export interface UserInfo {
+  id: string;
+  mail: string;
+  userName: string;
+  givenName: string;
+  sn: string;
+}

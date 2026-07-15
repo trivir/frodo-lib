@@ -6,7 +6,11 @@ import {
   postApiSearchAll,
 } from '../../../utils/ExportImportUtils';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils';
-import { Metadata, SearchTargetFilterOperation } from '../../ApiTypes';
+import {
+  Metadata,
+  SearchTargetFilterOperation,
+  UserInfo,
+} from '../../ApiTypes';
 import { generateGovernanceApi } from '../../BaseApi';
 
 const certificationTemplatesEndpointURLTemplate =
@@ -23,14 +27,6 @@ export type CertificationTemplateType =
   | 'roleMembership'
   | 'role-definition'
   | 'application';
-
-export interface UserInfo {
-  id: string;
-  mail: string;
-  userName: string;
-  givenName: string;
-  sn: string;
-}
 
 export interface RoleInfo {
   id: string;
