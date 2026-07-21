@@ -101,6 +101,7 @@ import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps';
 import SecretStoreOps, { SecretStore } from '../ops/SecretStoreOps';
 import ServiceOps, { Service } from '../ops/ServiceOps';
 import SessionOps, { Session } from '../ops/SessionOps';
+import TelemetryOps, { Telemetry } from '../ops/cloud/TelemetryOps'
 import ThemeOps, { Theme } from '../ops/ThemeOps';
 import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
 import UserOps, { User } from '../ops/UserOps';
@@ -177,6 +178,7 @@ export type Frodo = {
     secret: Secret;
     serviceAccount: ServiceAccount;
     startup: Startup;
+    telemetry: Telemetry
     variable: Variable;
     wsfed: WSFed;
   };
@@ -389,6 +391,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
       serviceAccount: ServiceAccountOps(state),
       startup: StartupOps(state),
       variable: VariablesOps(state),
+      telemetry: TelemetryOps(state),
       wsfed: WSFedOps(state),
     },
 
