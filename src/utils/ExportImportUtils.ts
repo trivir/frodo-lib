@@ -26,6 +26,7 @@ import { debugMessage, printMessage, updateProgressIndicator } from './Console';
 import { deleteDeepByKeys, stringify } from './JsonUtils';
 import { resolveVariable } from '../ops/cloud/VariablesOps';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
+import { state } from '../lib/FrodoLib';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;
@@ -39,6 +40,16 @@ export type ExportImport = {
   getTypedFilename(name: string, type: string, suffix?: string): string;
   getWorkingDirectory(mkdirs?: boolean): string;
   getFilePath(fileName: string, mkdirs?: boolean): string;
+  readJsonFile(
+    filePath: string,
+    options?: {
+      overrideValue?: string;
+      envFileValues?: Record<string, string>;
+      base64Encode?: boolean;
+    }
+  ): object;
+  escapePlaceholders(content: object): object;
+  unescapePlaceholders(content: string): string;
   /**
    * Save object to file in Frodo export format
    * @param {any} data data object
@@ -241,6 +252,22 @@ export default (state: State): ExportImport => {
     },
     isValidUrl(urlString: string): boolean {
       return isValidUrl(urlString);
+    },
+    readJsonFile(
+      filePath: string,
+      options: {
+        overrideValue?: string;
+        base64Encode?: boolean;
+        envFileValues?: Record<string, string>;
+      } = {}
+    ): object {
+      return readJsonFile(filePath, options);
+    },
+    escapePlaceholders(content: object): object {
+      return escapePlaceholders(content);
+    },
+    unescapePlaceholders(content: string): string {
+      return unescapePlaceholders(content);
     },
   };
 };
@@ -591,6 +618,108 @@ export async function readFiles(directory: string): Promise<
   );
 
   return filePathsNested.flat();
+}
+
+export interface EnvReplaceOptions {
+  overrideValue?: string;
+  base64Encode?: boolean;
+  envFileValues?: Record<string, string>;
+}
+
+/**
+ * Reads a JSON file and resolves any environment placeholders.
+ *
+ * @param {string} filePath path to the JSON file
+ * @param {EnvReplaceOptions} options options for replacing ENV placeholders
+ * @returns {object} the parsed JSON with placeholders resolved
+ */
+export function readJsonFile(
+  filePath: string,
+  options: EnvReplaceOptions = {}
+): object {
+  let content: string;
+  try {
+    content = fs.readFileSync(filePath, 'utf8');
+  } catch (error) {
+    throw new FrodoError(`Error reading file ${filePath}`, error);
+  }
+  const resolved = replaceEnvSpecificValues(content, options);
+  try {
+    return JSON.parse(resolved);
+  } catch (error) {
+    throw new FrodoError(`Error parsing JSON from ${filePath}`, error);
+  }
+}
+
+/**
+ * Replace environment placeholders with their resolved values.
+ *
+ * @param {string} content the raw file content to resolve placeholders in
+ * @param {Object} options options object
+ * @param {string} [overrideValue] value to substitute for the placeholder
+ * @param {boolean} [base64Encode] true to base64-encode resolved values, false otherwise.
+ * @returns {string} the content with all placeholders resolved and escaped placeholders unescaped
+ */
+export function replaceEnvSpecificValues(
+  content: string,
+  { overrideValue, base64Encode = false }: EnvReplaceOptions = {}
+): string {
+  const BASE64_PRE_ENCODED_PREFIX = 'BASE64:';
+  const env = state.getEnvValues();
+  
+  let newContent = content;
+  const placeholders = content.match(/\\*?\${.*?}/g);
+  if (!placeholders) {
+    return newContent;
+  }
+  const resolvable = placeholders.filter((p) => !p.startsWith('\\\\'));
+  if (overrideValue !== undefined && resolvable.length !== 1) {
+    throw new FrodoError(
+      `An override value can only be used with a single placeholder, but ${resolvable.length} were found.`
+    );
+  }
+  for (const placeholder of resolvable) {
+    let placeholderName = placeholder.replace(/\${(.*)}/, "$1");
+    let encodeValue = base64Encode;
+    if (placeholderName.startsWith(BASE64_PRE_ENCODED_PREFIX)) {
+      encodeValue = false;
+      placeholderName = placeholderName.substring(
+        BASE64_PRE_ENCODED_PREFIX.length
+      );
+    }
+    let value =
+      overrideValue !== undefined ? overrideValue : env[placeholderName];
+    if (value === undefined) {
+      throw new FrodoError(
+        `No value found for placeholder "${placeholderName}"`
+      );
+    }
+    if (encodeValue) {
+      value = Buffer.from(value).toString('base64');
+    }
+    newContent = newContent.replaceAll(placeholder, value);
+  }
+  return unescapePlaceholders(newContent);
+}
+
+/**
+ * Escape any placeholders so they are not resolved as environment placeholders
+ *
+ * @param {object} content the object to escape placeholders in
+ * @returns {object} a new object with all `${` sequences escaped
+ */
+export function escapePlaceholders(content: object): object {
+  return JSON.parse(JSON.stringify(content).replace(/\$\{/g, '\\\\${'));
+}
+
+/**
+ * Unescape any escaped placeholders back to their original form
+ 
+ * @param {string} content the raw content to unescape
+ * @returns {string} the content with all escaped placeholders restored
+ */
+export function unescapePlaceholders(content: string): string {
+  return content.replace(/\\\\\${/g, '${');
 }
 
 export function substituteEnvParams(input: string, reader: Reader): string {
