@@ -120,6 +120,8 @@ export type State = {
   setOutputFile(file: string): void;
   getOutputFile(): string;
   setDirectory(directory: string): void;
+  setEnvValues(envValues: Record<string, string>): void;
+  getEnvValues(): Record<string, string>;
   getDirectory(): string;
   setAutoRefreshTimer(timer: NodeJS.Timeout): void;
   getAutoRefreshTimer(): NodeJS.Timeout;
@@ -491,7 +493,12 @@ export default (initialState: StateInterface): State => {
     getDirectory() {
       return state.directory;
     },
-
+    setEnvValues(envValues: Record<string, string>) {
+      state.envValues = envValues;
+    },
+    getEnvValues(): Record<string, string> {
+      return state.envValues || {};
+    },
     setAutoRefreshTimer(timer: NodeJS.Timeout): void {
       state.autoRefreshTimer = timer;
     },
@@ -703,6 +710,7 @@ export interface StateInterface {
   outputFile?: string;
   directory?: string;
   autoRefreshTimer?: NodeJS.Timeout;
+  envValues?: Record<string, string>;
   // output handler settings
   printHandler?: (
     message: string | object,

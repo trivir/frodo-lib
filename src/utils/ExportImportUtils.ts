@@ -26,6 +26,7 @@ import { debugMessage, printMessage, updateProgressIndicator } from './Console';
 import { deleteDeepByKeys, stringify } from './JsonUtils';
 import { resolveVariable } from '../ops/cloud/VariablesOps';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
+import { state } from '../lib/FrodoLib';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;
@@ -636,9 +637,14 @@ export function readJsonFile(
   filePath: string,
   options: EnvReplaceOptions = {}
 ): object {
+  let content: string;
   try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    const resolved = replaceEnvSpecificValues(content, options);
+    content = fs.readFileSync(filePath, 'utf8');
+  } catch (error) {
+    throw new FrodoError(`Error reading file ${filePath}`, error);
+  }
+  const resolved = replaceEnvSpecificValues(content, options);
+  try {
     return JSON.parse(resolved);
   } catch (error) {
     throw new FrodoError(`Error parsing JSON from ${filePath}`, error);
@@ -656,10 +662,11 @@ export function readJsonFile(
  */
 export function replaceEnvSpecificValues(
   content: string,
-  { overrideValue, base64Encode = false, envFileValues }: EnvReplaceOptions = {}
+  { overrideValue, base64Encode = false }: EnvReplaceOptions = {}
 ): string {
   const BASE64_PRE_ENCODED_PREFIX = 'BASE64:';
-  const env = { ...process.env, ...envFileValues };
+  const env = state.getEnvValues();
+  
   let newContent = content;
   const placeholders = content.match(/\\*?\${.*?}/g);
   if (!placeholders) {
