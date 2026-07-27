@@ -1522,7 +1522,11 @@ async function authenticateUser(
   const token = await getUserSessionToken(stepHandler, state);
   if (token) state.setUserSessionTokenMeta(token);
   if (usingConnectionProfile && !token.from_cache) {
-    saveConnectionProfile({ host: state.getHost(), state });
+    saveConnectionProfile({
+      name: state.getName(),
+      host: state.getHost(),
+      state,
+    });
   }
   await determineDeploymentTypeAndDefaultRealmAndVersion(state);
 
@@ -1921,6 +1925,7 @@ export async function getTokens({
     // if host is not a valid URL, try to locate a valid URL and deployment type from connections.json
     if (!isValidUrl(state.getHost())) {
       const conn = await getConnectionProfile({ state });
+      if (conn.name) state.setName(conn.name);
       state.setHost(conn.tenant);
       state.setAllowInsecureConnection(conn.allowInsecureConnection);
       state.setDeploymentType(conn.deploymentType);
@@ -2002,7 +2007,11 @@ export async function getTokens({
         }
 
         if (usingConnectionProfile && !token.from_cache) {
-          saveConnectionProfile({ host: state.getHost(), state });
+          saveConnectionProfile({
+            name: state.getName(),
+            host: state.getHost(),
+            state,
+          });
         }
         state.setUseBearerTokenForAmApis(true);
         state.setActiveCredentialSource('svcacct');
