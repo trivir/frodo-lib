@@ -29,7 +29,7 @@ export type State = {
   getState(): StateInterface;
   /**
    * Set the AM host base URL
-   * @param host Access Management base URL, e.g.: https://cdk.iam.example.com/am. To use a connection profile, just specify a unique substring or alias.
+   * @param host Access Management base URL, e.g.: https://cdk.iam.example.com/am. To use a connection profile, just specify a name.
    */
   setHost(host: string): void;
   /**
@@ -39,7 +39,7 @@ export type State = {
   getHost(): string;
   /**
    * Set the IDM host base URL
-   * @param host Identity Management base URL, e.g.: https://cdk.iam.example.com/openidm. To use a connection profile, just specify a unique substring or alias.
+   * @param host Identity Management base URL, e.g.: https://cdk.iam.example.com/openidm. To use a connection profile, just specify a name.
    */
   setIdmHost(host: string): void;
   /**
@@ -47,8 +47,8 @@ export type State = {
    * @returns the IDM host base URL
    */
   getIdmHost(): string;
-  setAlias(alias: string): void;
-  getAlias(): string | undefined;
+  setName(name: string): void;
+  getName(): string;
   setUsername(username: string): void;
   getUsername(): string;
   setPassword(password: string): void;
@@ -224,11 +224,11 @@ export default (initialState: StateInterface): State => {
       return state.idmHost || process.env.FRODO_IDM_HOST;
     },
 
-    setAlias(alias: string) {
-      state.alias = alias;
+    setName(name: string) {
+      state.Name = name;
     },
-    getAlias() {
-      return state.alias;
+    getName() {
+      return state.Name;
     },
 
     setUsername(username: string) {
@@ -678,7 +678,7 @@ export interface StateInterface {
   // connection settings
   host?: string;
   idmHost?: string;
-  alias?: string;
+  Name?: string;
   username?: string;
   password?: string;
   realm?: string;

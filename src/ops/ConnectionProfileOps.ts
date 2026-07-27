@@ -4,7 +4,7 @@ import path from 'path';
 import { IdObjectSkeletonInterface } from '../api/ApiTypes';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
+import { debugMessage, printMessage } from '../utils/Console';
 import DataProtection from '../utils/DataProtection';
 import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils';
 import { getFrodoHome } from '../utils/FrodoUtils';
@@ -27,7 +27,7 @@ export type ConnectionProfile = {
   /**
    * Find connection profiles
    * @param {ConnectionsFileInterface} connectionProfiles connection profile object
-   * @param {string} host host url, unique substring, or alias
+   * @param {string} host connection name, host url, or unique substring of a connection name
    * @returns {SecureConnectionProfileInterface[]} Array of connection profiles
    */
   findConnectionProfiles(
@@ -43,7 +43,7 @@ export type ConnectionProfile = {
   initConnectionProfiles(): Promise<void>;
   /**
    * Get connection profile by host
-   * @param {String} host host tenant, host url, unique substring, or alias
+   * @param {String} host connection name, host url, or unique substring of a connection name
    * @returns {Object} connection profile or null
    */
   getConnectionProfileByHost(host: string): Promise<ConnectionProfileInterface>;
@@ -54,7 +54,7 @@ export type ConnectionProfile = {
   getConnectionProfile(): Promise<ConnectionProfileInterface>;
   /**
    * Load a connection profile into library state
-   * @param {string} host AM host URL, unique substring, or alias
+   * @param {string} host connection name, AM host URL, or unique substring of a connection name
    * @returns {Promise<boolean>} A promise resolving to true if successful
    */
   loadConnectionProfileByHost(host: string): Promise<boolean>;
@@ -65,24 +65,19 @@ export type ConnectionProfile = {
   loadConnectionProfile(): Promise<boolean>;
   /**
    * Save connection profile
-   * @param {string} host host url for new profiles, unique substring or alias for existing profiles
+   * @param {string} name name of connection profile
+   * @param {string} host host url
+   * @param {boolean} createOnly if true, fail when the named profile already exists
    * @returns {Promise<boolean>} true if the operation succeeded, false otherwise
    */
-  saveConnectionProfile(host: string): Promise<boolean>;
-  /**
-   * Set an alias for an existing connection profile
-   * @param {string} host host url, unique substring, or alias of existing connection profile
-   * @param {string} alias alias to be assigned to connection profile
-   */
-  setConnectionProfileAlias(host: string, alias: string): void;
-  /**
-   * Set an alias for an existing connection profile
-   * @param {string} host host url, unique substring, or alias of existing connection profile
-   */
-  deleteConnectionProfileAlias(host: string): void;
+  saveConnectionProfile(
+    name: string,
+    host: string,
+    createOnly?: boolean
+  ): Promise<boolean>;
   /**
    * Delete connection profile
-   * @param {string} host host tenant, host url, unique substring, or alias
+   * @param {string} host connection name, host url, or unique substring of a connection name
    */
   deleteConnectionProfile(host: string): void;
   /**
@@ -124,14 +119,12 @@ export default (state: State): ConnectionProfile => {
     async loadConnectionProfile(): Promise<boolean> {
       return loadConnectionProfile({ state });
     },
-    async saveConnectionProfile(host: string): Promise<boolean> {
-      return saveConnectionProfile({ host, state });
-    },
-    setConnectionProfileAlias(host: string, alias: string): void {
-      setConnectionProfileAlias({ host, alias, state });
-    },
-    deleteConnectionProfileAlias(host: string): void {
-      deleteConnectionProfileAlias({ host, state });
+    async saveConnectionProfile(
+      name: string,
+      host: string,
+      createOnly: boolean = false
+    ): Promise<boolean> {
+      return saveConnectionProfile({ name, host, createOnly, state });
     },
     deleteConnectionProfile(host: string): void {
       deleteConnectionProfile({ host, state });
@@ -147,9 +140,9 @@ const fileOptions = {
 };
 
 export interface SecureConnectionProfileInterface {
+  name?: string;
   tenant: string;
   idmHost?: string;
-  alias?: string;
   allowInsecureConnection?: boolean;
   deploymentType?: string;
   isIGA?: boolean;
@@ -170,9 +163,9 @@ export interface SecureConnectionProfileInterface {
 }
 
 export interface ConnectionProfileInterface {
+  name?: string;
   tenant: string;
   idmHost?: string;
-  alias?: string;
   allowInsecureConnection?: boolean;
   deploymentType?: string;
   isIGA?: boolean;
@@ -193,11 +186,36 @@ export interface ConnectionProfileInterface {
 }
 
 export interface ConnectionsFileInterface {
-  [key: string]: SecureConnectionProfileInterface;
+  [name: string]: SecureConnectionProfileInterface;
+}
+
+type ConnectionsFileRoot = {
+  version?: string;
+  connections?: ConnectionsFileInterface;
+  [key: string]: unknown;
+};
+
+export class AmbiguousConnError extends FrodoError {
+  constructor(host: string, profiles: SecureConnectionProfileInterface[]) {
+    super(
+      `Substring '${host}' is too ambiguous and could match any of these connection profiles:\n  - ${profiles
+        .map((profile) =>
+          profile.name ? `${profile.name} (${profile.tenant})` : profile.tenant
+        )
+        .join('\n  - ')}`
+    );
+    this.name = 'AmbiguousConnError';
+  }
 }
 
 const legacyProfileFilename = '.frodorc';
 const newProfileFilename = 'Connections.json';
+export const CURRENT_CONNECTIONS_FILE_VERSION = '2';
+
+const emptyConnectionsFile = (): ConnectionsFileRoot => ({
+  version: CURRENT_CONNECTIONS_FILE_VERSION,
+  connections: {},
+});
 
 /**
  * Get connection profiles file name
@@ -223,7 +241,7 @@ export function getConnectionProfilesPath({ state }: { state: State }): string {
 /**
  * Find connection profiles
  * @param {ConnectionsFileInterface} connectionProfiles connection profile object
- * @param {string} host host url, unique substring, or alias
+ * @param {string} host connection name, host url, or unique substring of a connection name
  * @param {State} state library state
  * @returns {SecureConnectionProfileInterface[]} Array of connection profiles
  */
@@ -236,29 +254,38 @@ export function findConnectionProfiles({
   host: string;
   state: State;
 }): SecureConnectionProfileInterface[] {
-  const profiles: SecureConnectionProfileInterface[] = [];
-  // First check for aliases
-  for (const tenant in connectionProfiles) {
-    const profile = connectionProfiles[tenant];
-    if (profile.alias === host) {
+  // Exact match on connection name
+  if (connectionProfiles[host]) {
+    debugMessage({
+      message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched connection name, including in result set`,
+      state,
+    });
+    return [{ ...connectionProfiles[host], name: host }];
+  }
+  // Exact match on tenant URL
+  const exactTenantMatches: SecureConnectionProfileInterface[] = [];
+  for (const name in connectionProfiles) {
+    const profile = connectionProfiles[name];
+    if (profile.tenant === host) {
       debugMessage({
-        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched alias for '${tenant}', including in result set`,
+        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched tenant URL for '${name}', including in result set`,
         state,
       });
-      const foundProfile = { ...profile, tenant };
-      return [foundProfile];
+      exactTenantMatches.push({ ...profile, name });
     }
   }
-  // Then check substring
-  for (const tenant in connectionProfiles) {
-    if (tenant.includes(host)) {
+  if (exactTenantMatches.length > 0) {
+    return exactTenantMatches;
+  }
+  // Substring match on connection name
+  const profiles: SecureConnectionProfileInterface[] = [];
+  for (const name in connectionProfiles) {
+    if (name.includes(host)) {
       debugMessage({
-        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched as substring in '${tenant}', including in result set`,
+        message: `ConnectionProfileOps.findConnectionProfiles: '${host}' matched as substring in connection name '${name}', including in result set`,
         state,
       });
-      const foundProfile = { ...connectionProfiles[tenant] };
-      foundProfile.tenant = tenant;
-      profiles.push(foundProfile);
+      profiles.push({ ...connectionProfiles[name], name });
     }
   }
   return profiles;
@@ -275,7 +302,7 @@ function migrateFromLegacyProfile() {
       // no connections file (old or new), create empty new one
       fs.writeFileSync(
         newPath,
-        JSON.stringify({}, null, fileOptions.indentation)
+        JSON.stringify(emptyConnectionsFile(), null, fileOptions.indentation)
       );
     } else if (fs.existsSync(legacyPath) && !fs.existsSync(newPath)) {
       // old exists, new one does not - so copy old to new one
@@ -329,43 +356,130 @@ export async function initConnectionProfiles({ state }: { state: State }) {
         });
         fs.writeFileSync(
           filename,
-          JSON.stringify({}, null, fileOptions.indentation)
+          JSON.stringify(emptyConnectionsFile(), null, fileOptions.indentation)
         );
       }
     }
-    // encrypt the password and logApiSecret from clear text to aes-256-GCM
+    // migrate to version 2 nested shape and encrypt secrets
     else {
       migrateFromLegacyProfile();
       const data = fs.readFileSync(filename, 'utf8');
-      const connectionsData: ConnectionsFileInterface = JSON.parse(data);
+      let connectionsData: ConnectionsFileRoot = JSON.parse(data);
       let convert = false;
-      for (const conn of Object.keys(connectionsData)) {
-        if (connectionsData[conn]['password']) {
+
+      // migrate v1 flat files to nested version 2
+      const hasNestedConnections =
+        typeof connectionsData.connections === 'object' &&
+        connectionsData.connections !== null;
+      const needsMigration =
+        connectionsData.version !== CURRENT_CONNECTIONS_FILE_VERSION ||
+        !hasNestedConnections;
+      if (needsMigration) {
+        debugMessage({
+          message: `ConnectionProfileOps.initConnectionProfiles: migrating connections file to version ${CURRENT_CONNECTIONS_FILE_VERSION}`,
+          state,
+        });
+        const connections: ConnectionsFileInterface = {};
+        const rootProfileKeys = Object.keys(connectionsData).filter(
+          (key) => key !== 'version' && key !== 'connections'
+        );
+        const entries: [
+          string,
+          SecureConnectionProfileInterface & { alias?: string },
+        ][] =
+          rootProfileKeys.length > 0
+            ? rootProfileKeys.map((key) => [
+                key,
+                connectionsData[key] as SecureConnectionProfileInterface & {
+                  alias?: string;
+                },
+              ])
+            : Object.entries(connectionsData.connections || {});
+        for (const [key, profile] of entries) {
+          if (typeof profile !== 'object' || !profile) continue;
+          const name =
+            profile.alias && String(profile.alias).length > 0
+              ? profile.alias
+              : key;
+
+          // split mutually exclusive auth methods for v2
+          const hasServiceAccount =
+            Boolean(profile.svcacctId) && Boolean(profile.encodedSvcacctJwk);
+          const hasUserAccount =
+            Boolean(profile.username) && Boolean(profile.encodedPassword);
+
+          if (hasServiceAccount && hasUserAccount) {
+            const saConn = `service-account|${name}`;
+            const adminConn = `admin-account|${name}`;
+
+            // service account
+            const saProfile: SecureConnectionProfileInterface = {
+              ...profile,
+              tenant: profile.tenant || key,
+            };
+            delete saProfile.username;
+            delete saProfile.encodedPassword;
+            delete (saProfile as { alias?: string }).alias;
+            connections[saConn] = saProfile;
+
+            // admin account
+            const adminProfile: SecureConnectionProfileInterface = {
+              ...profile,
+              tenant: profile.tenant || key,
+            };
+            delete adminProfile.svcacctId;
+            delete adminProfile.encodedSvcacctJwk;
+            delete (adminProfile as { alias?: string }).alias;
+            connections[adminConn] = adminProfile;
+          } else {
+            const migrated: SecureConnectionProfileInterface = {
+              ...profile,
+              tenant: profile.tenant || key,
+            };
+            delete (migrated as { alias?: string }).alias;
+            connections[name] = migrated;
+          }
+        }
+        connectionsData = {
+          version: CURRENT_CONNECTIONS_FILE_VERSION,
+          connections,
+        };
+        convert = true;
+      }
+
+      // encrypt the password and logApiSecret
+      if (!connectionsData.connections) {
+        connectionsData.connections = {};
+      }
+      for (const conn of Object.keys(connectionsData.connections)) {
+        const profile = connectionsData.connections[conn];
+        if (profile['password']) {
           convert = true;
-          connectionsData[conn].encodedPassword = await dataProtection.encrypt(
-            connectionsData[conn]['password']
+          profile.encodedPassword = await dataProtection.encrypt(
+            profile['password']
           );
-          delete connectionsData[conn]['password'];
+          delete profile['password'];
         }
-        if (connectionsData[conn]['logApiSecret']) {
+        if (profile['logApiSecret']) {
           convert = true;
-          connectionsData[conn].encodedLogApiSecret =
-            await dataProtection.encrypt(connectionsData[conn]['logApiSecret']);
-          delete connectionsData[conn]['logApiSecret'];
+          profile.encodedLogApiSecret = await dataProtection.encrypt(
+            profile['logApiSecret']
+          );
+          delete profile['logApiSecret'];
         }
-        if (connectionsData[conn]['svcacctJwk']) {
+        if (profile['svcacctJwk']) {
           convert = true;
-          connectionsData[conn].encodedSvcacctJwk =
-            await dataProtection.encrypt(connectionsData[conn]['svcacctJwk']);
-          delete connectionsData[conn]['svcacctJwk'];
+          profile.encodedSvcacctJwk = await dataProtection.encrypt(
+            profile['svcacctJwk']
+          );
+          delete profile['svcacctJwk'];
         }
-        if (connectionsData[conn]['amsterPrivateKey']) {
+        if (profile['amsterPrivateKey']) {
           convert = true;
-          connectionsData[conn].encodedAmsterPrivateKey =
-            await dataProtection.encrypt(
-              connectionsData[conn]['amsterPrivateKey']
-            );
-          delete connectionsData[conn]['amsterPrivateKey'];
+          profile.encodedAmsterPrivateKey = await dataProtection.encrypt(
+            profile['amsterPrivateKey']
+          );
+          delete profile['amsterPrivateKey'];
         }
       }
       if (convert) {
@@ -386,7 +500,7 @@ export async function initConnectionProfiles({ state }: { state: State }) {
 
 /**
  * Get connection profile by host
- * @param {string} host host tenant, host url, unique substring, or alias
+ * @param {string} host connection name, host url, or unique substring of a connection name
  * @param {State} state library state
  * @returns {Promise<ConnectionProfileInterface>} connection profile
  */
@@ -405,9 +519,11 @@ export async function getConnectionProfileByHost({
   if (!fs.statSync(filename, { throwIfNoEntry: false })) {
     throw new FrodoError(`Connection profiles file ${filename} not found`);
   }
-  const connectionsData = JSON.parse(fs.readFileSync(filename, 'utf8'));
-  const profiles = findConnectionProfiles({
-    connectionProfiles: connectionsData,
+  const connectionsData: ConnectionsFileRoot = JSON.parse(
+    fs.readFileSync(filename, 'utf8')
+  );
+  let profiles = findConnectionProfiles({
+    connectionProfiles: connectionsData.connections || {},
     host,
     state,
   });
@@ -415,19 +531,33 @@ export async function getConnectionProfileByHost({
     throw new FrodoError(`No connection profile found matching '${host}'`);
   }
   if (profiles.length > 1) {
-    throw new FrodoError(
-      `Multiple matching connection profiles found matching '${host}':\n  - ${profiles
-        .map((profile) => profile.tenant)
-        .join(
-          '\n  - '
-        )}\nSpecify a sub-string uniquely identifying a single connection profile host URL.`
-    );
+    const getAccType = (name) => {
+      if (name.startsWith('service-account|'))
+        return { acc: 'sa', base: name.slice(16) };
+      if (name.startsWith('admin-account|'))
+        return { acc: 'user', base: name.slice(14) };
+      return null;
+    };
+    const a = getAccType(profiles[0]?.name ?? '');
+    const b = getAccType(profiles[1]?.name ?? '');
+    const matchingPair =
+      profiles.length === 2 && a && b && a.base === b.base && a.acc !== b.acc;
+    if (matchingPair) {
+      profiles = profiles.filter((p) => p.name.startsWith('service-account|'));
+      printMessage({
+        message: `There are both service account and user account credentials associated with connection '${host}', proceeding with service account`,
+        type: 'warn',
+        state,
+      });
+    } else {
+      throw new AmbiguousConnError(host, profiles);
+    }
   }
   try {
     const connectionProfile = {
+      name: profiles[0].name ? profiles[0].name : null,
       tenant: profiles[0].tenant,
       idmHost: profiles[0].idmHost ? profiles[0].idmHost : null,
-      alias: profiles[0].alias ? profiles[0].alias : null,
       allowInsecureConnection: profiles[0].allowInsecureConnection,
       deploymentType: profiles[0].deploymentType,
       isIGA: profiles[0].isIGA,
@@ -491,7 +621,7 @@ export async function getConnectionProfile({
 /**
  * Load a connection profile into library state
  * @param {Object} params Params object
- * @param {string} params.host AM host URL, unique substring, or alias
+ * @param {string} params.host connection name, AM host URL, or unique substring of a connection name
  * @param {State} params.state State object
  * @returns {Promise<boolean>} A promise resolving to true if successful
  */
@@ -503,6 +633,7 @@ export async function loadConnectionProfileByHost({
   state: State;
 }): Promise<boolean> {
   const conn = await getConnectionProfileByHost({ host, state });
+  if (conn.name) state.setName(conn.name);
   state.setHost(conn.tenant);
   state.setIdmHost(state.getIdmHost() || conn.idmHost);
   state.setAllowInsecureConnection(conn.allowInsecureConnection);
@@ -560,14 +691,20 @@ export async function loadConnectionProfile({
 
 /**
  * Save connection profile
- * @param {string} host host url for new profiles, unique substring or alias for existing profiles
+ * @param {string} name name of connection profile
+ * @param {string} host host url
+ * @param {boolean} createOnly if true, fail when the named profile already exists
  * @returns {Promise<boolean>} true if the operation succeeded, false otherwise
  */
 export async function saveConnectionProfile({
+  name,
   host,
+  createOnly = false,
   state,
 }: {
+  name: string;
   host: string;
+  createOnly?: boolean;
   state: State;
 }): Promise<boolean> {
   try {
@@ -575,73 +712,52 @@ export async function saveConnectionProfile({
       message: `ConnectionProfileOps.saveConnectionProfile: start`,
       state,
     });
+
+    if (!name) {
+      throw new FrodoError(
+        `No connection name provided. A name is required to save a connection profile.`
+      );
+    }
+    if (!host || !isValidUrl(host)) {
+      throw new FrodoError(
+        `Invalid or missing host URL '${host}'. Provide a valid URL for the connection.`
+      );
+    }
+
     const dataProtection = new DataProtection({
       pathToMasterKey: state.getMasterKeyPath(),
       state,
     });
     const filename = getConnectionProfilesPath({ state });
     debugMessage({
-      message: `Saving connection profile in ${filename}`,
+      message: `Saving connection profile '${name}' in ${filename}`,
       state,
     });
-    let profiles: ConnectionsFileInterface = {};
-    let profile: SecureConnectionProfileInterface = { tenant: '' };
+
+    let fileData: ConnectionsFileRoot = emptyConnectionsFile();
     if (fs.statSync(filename, { throwIfNoEntry: false })) {
       const data = fs.readFileSync(filename, 'utf8');
-      profiles = JSON.parse(data);
+      fileData = JSON.parse(data);
+      if (!fileData.connections) fileData.connections = {};
 
-      // find tenant
-      const found = findConnectionProfiles({
-        connectionProfiles: profiles,
-        host,
-        state,
-      });
-
-      // replace tenant in session with real tenant url if necessary
-      if (found.length === 1) {
-        profile = found[0];
-        state.setHost(profile.tenant);
-        debugMessage({
-          message: `Existing profile: ${profile.tenant}`,
-          state,
-        });
-        debugMessage({ message: profile, state });
+      if (
+        createOnly &&
+        (fileData.connections[name] ||
+          fileData.connections[`service-account|${name}`] ||
+          fileData.connections[`admin-account|${name}`])
+      ) {
+        throw new FrodoError(
+          `Connection profile '${name}' already exists. Use 'conn edit' to modify an existing connection profile.`
+        );
       }
-
-      // connection profile not found, validate host is a real URL
-      if (found.length === 0) {
-        if (isValidUrl(host)) {
-          state.setHost(host);
-          debugMessage({ message: `New profile: ${host}`, state });
-        } else {
-          throw new FrodoError(
-            `No existing profile found matching '${host}'. Provide a valid URL as the host argument to create a new profile.`
-          );
-        }
-      }
-    } else {
-      debugMessage({
-        message: `New profiles file ${filename} with new profile ${host}`,
-        state,
-      });
     }
+
+    const profile: SecureConnectionProfileInterface = { tenant: host };
+
+    state.setHost(host);
 
     // idm host
     if (state.getIdmHost()) profile.idmHost = state.getIdmHost();
-
-    // alias
-    if (state.getAlias()) {
-      const alias = state.getAlias();
-      // check for unique alias
-      for (const profile in profiles) {
-        if (profiles[profile].alias === alias) {
-          throw new FrodoError(
-            `Alias '${alias}' is already in use by connection profile '${profile}'. Please use a unique alias.`
-          );
-        }
-      }
-      profile.alias = state.getAlias();
-    }
 
     // allow insecure connection
     if (state.getAllowInsecureConnection())
@@ -701,16 +817,6 @@ export async function saveConnectionProfile({
     ) {
       profile.svcacctScope = state.getBearerTokenMeta().scope;
     }
-    // update existing service account profile
-    if (state.getBearerToken() && profile.svcacctId && !profile.svcacctName) {
-      profile.svcacctName = (
-        await getServiceAccount({ serviceAccountId: profile.svcacctId, state })
-      ).name;
-      debugMessage({
-        message: `ConnectionProfileOps.saveConnectionProfile: added missing service account name`,
-        state,
-      });
-    }
 
     // Amster account
     if (state.getAmsterPrivateKey()) {
@@ -760,29 +866,89 @@ export async function saveConnectionProfile({
       });
     }
 
-    // remove the helper key 'tenant'
-    delete profile.tenant;
+    // name is in-memory only (object key); do not persist on the profile object
+    delete profile.name;
+    // alias is no longer supported
+    delete (profile as { alias?: string }).alias;
 
-    // update profiles
-    profiles[state.getHost()] = profile;
+    // split mutually exclusive auth methods
+    const hasServiceAccount =
+      Boolean(profile.svcacctId) && Boolean(profile.encodedSvcacctJwk);
+    const hasAdminAccount =
+      Boolean(profile.username) && Boolean(profile.encodedPassword);
 
-    // sort profiles
-    const orderedProfiles = Object.keys(profiles)
+    const existing = fileData.connections[name];
+    const saConn = `service-account|${name}`;
+    const adminConn = `admin-account|${name}`;
+
+    // saving both service account and admin account credentials
+    if (hasServiceAccount && hasAdminAccount) {
+      const saOnlyProfile = { ...profile };
+      delete saOnlyProfile.username;
+      delete saOnlyProfile.encodedPassword;
+      fileData.connections[saConn] = saOnlyProfile;
+
+      const adminOnlyProfile = { ...profile };
+      delete adminOnlyProfile.svcacctId;
+      delete adminOnlyProfile.encodedSvcacctJwk;
+      fileData.connections[adminConn] = adminOnlyProfile;
+
+      // saving service account credentials to a tenant with admin account credentials already saved
+    } else if (
+      hasServiceAccount &&
+      existing?.username &&
+      existing?.encodedPassword
+    ) {
+      const adminOnlyProfile = { ...existing };
+      delete adminOnlyProfile.svcacctId;
+      delete adminOnlyProfile.encodedSvcacctJwk;
+      const saOnlyProfile = { ...profile };
+      delete saOnlyProfile.username;
+      delete saOnlyProfile.encodedPassword;
+      fileData.connections[adminConn] = adminOnlyProfile;
+      fileData.connections[saConn] = saOnlyProfile;
+      delete fileData.connections[name];
+
+      // saving admin account credentials to a tenant with service account credentials already saved
+    } else if (
+      hasAdminAccount &&
+      existing?.svcacctId &&
+      existing?.encodedSvcacctJwk
+    ) {
+      const saOnlyProfile = { ...existing };
+      delete saOnlyProfile.username;
+      delete saOnlyProfile.encodedPassword;
+      const adminOnlyProfile = { ...profile };
+      delete adminOnlyProfile.svcacctId;
+      delete adminOnlyProfile.encodedSvcacctJwk;
+      fileData.connections[saConn] = saOnlyProfile;
+      fileData.connections[adminConn] = adminOnlyProfile;
+      delete fileData.connections[name];
+    } else {
+      fileData.connections[name] = profile;
+    }
+    fileData.version = CURRENT_CONNECTIONS_FILE_VERSION;
+
+    // sort connections by name
+    const orderedConnections = Object.keys(fileData.connections)
       .sort()
       .reduce((obj, key) => {
-        obj[key] = profiles[key];
+        obj[key] = fileData.connections[key];
         return obj;
-      }, {});
+      }, {} as ConnectionsFileInterface);
 
     // save profiles
     saveJsonToFile({
-      data: orderedProfiles,
+      data: {
+        version: CURRENT_CONNECTIONS_FILE_VERSION,
+        connections: orderedConnections,
+      },
       filename,
       includeMeta: false,
       state,
     });
     debugMessage({
-      message: `Saved connection profile ${state.getHost()} in ${filename}`,
+      message: `Saved connection profile '${name}' (${host}) in ${filename}`,
       state,
     });
     debugMessage({
@@ -796,112 +962,8 @@ export async function saveConnectionProfile({
 }
 
 /**
- * Sets alias for existing connection profile
- * @param {string} host host url for new profiles, unique substring or alias for existing profiles
- * @param {string} alias alias to be assigned to connection profile
- * @param {State} state library state
- */
-export function setConnectionProfileAlias({
-  host,
-  alias,
-  state,
-}: {
-  host: string;
-  alias: string;
-  state: State;
-}) {
-  const filename = getConnectionProfilesPath({ state });
-  let connectionsData: ConnectionsFileInterface = {};
-  if (!fs.statSync(filename, { throwIfNoEntry: false })) {
-    throw new FrodoError(`Connection profiles file ${filename} not found`);
-  }
-  const data = fs.readFileSync(filename, 'utf8');
-  connectionsData = JSON.parse(data);
-  const profiles = findConnectionProfiles({
-    connectionProfiles: connectionsData,
-    host,
-    state,
-  });
-  if (profiles.length === 0) {
-    throw new FrodoError(`No connection profile found matching '${host}'`);
-  }
-  if (profiles.length > 1) {
-    throw new FrodoError(
-      `Multiple matching connection profiles found matching '${host}':\n  - ${profiles
-        .map((profile) => profile.tenant)
-        .join(
-          '\n  - '
-        )}\nSpecify a sub-string uniquely identifying a single connection profile host URL.`
-    );
-  }
-  const tenant = profiles[0].tenant;
-  for (const existingTenant in connectionsData) {
-    if (
-      existingTenant !== tenant &&
-      connectionsData[existingTenant].alias === alias
-    ) {
-      throw new FrodoError(
-        `Alias '${alias}' is already in use by connection profile '${existingTenant}'. Please use a unique alias.`
-      );
-    }
-  }
-  connectionsData[tenant].alias = alias;
-  fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
-  debugMessage({
-    message: `Alias '${alias}' has been set for connection profile '${tenant}'`,
-    state,
-  });
-}
-
-/**
- * Deletes the alias of an existing connection profile
- * @param {string} host unique substring or alias of an existing profile
- * @param {State} state library state
- */
-export function deleteConnectionProfileAlias({
-  host,
-  state,
-}: {
-  host: string;
-  state: State;
-}) {
-  const filename = getConnectionProfilesPath({ state });
-  if (!fs.statSync(filename, { throwIfNoEntry: false })) {
-    throw new FrodoError(`Connection profiles file ${filename} not found`);
-  }
-  const data = fs.readFileSync(filename, 'utf8');
-  const connectionsData: ConnectionsFileInterface = JSON.parse(data);
-  const profiles = findConnectionProfiles({
-    connectionProfiles: connectionsData,
-    host,
-    state,
-  });
-  if (profiles.length === 0) {
-    throw new FrodoError(`No connection profile found matching '${host}'`);
-  }
-  if (profiles.length > 1) {
-    throw new FrodoError(
-      `Multiple matching connection profiles found matching '${host}':\n - ${profiles
-        .map((profile) => profile.tenant)
-        .join('\n - ')}\nUse a more specific identifier or alias.`
-    );
-  }
-  const tenant = profiles[0].tenant;
-  if (!connectionsData[tenant].alias) {
-    throw new FrodoError(`No alias is set for connection profile '${tenant}'`);
-  }
-  const alias = connectionsData[tenant].alias;
-  delete connectionsData[tenant].alias;
-  fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
-  debugMessage({
-    message: `Alias '${alias}' has been deleted for connection profile '${tenant}'.`,
-    state,
-  });
-}
-
-/**
  * Delete connection profile
- * @param {String} host host tenant, host url, unique substring, or alias
+ * @param {String} host connection name, host url, or unique substring of a connection name
  */
 export function deleteConnectionProfile({
   host,
@@ -911,14 +973,14 @@ export function deleteConnectionProfile({
   state: State;
 }) {
   const filename = getConnectionProfilesPath({ state });
-  let connectionsData: ConnectionsFileInterface = {};
   if (!fs.statSync(filename, { throwIfNoEntry: false })) {
     throw new FrodoError(`Connection profiles file ${filename} not found`);
   }
   const data = fs.readFileSync(filename, 'utf8');
-  connectionsData = JSON.parse(data);
+  const connectionsData: ConnectionsFileRoot = JSON.parse(data);
+  if (!connectionsData.connections) connectionsData.connections = {};
   const profiles = findConnectionProfiles({
-    connectionProfiles: connectionsData,
+    connectionProfiles: connectionsData.connections,
     host,
     state,
   });
@@ -926,15 +988,30 @@ export function deleteConnectionProfile({
     throw new FrodoError(`No connection profile found matching '${host}'`);
   }
   if (profiles.length > 1) {
-    throw new FrodoError(
-      `Multiple matching connection profiles found matching '${host}':\n  - ${profiles
-        .map((profile) => profile.tenant)
-        .join(
-          '\n  - '
-        )}\nSpecify a sub-string uniquely identifying a single connection profile host URL.`
-    );
+    const getAuthType = (name) => {
+      if (name.startsWith('service-account|'))
+        return { acc: 'sa', base: name.slice(16) };
+      if (name.startsWith('admin-account|'))
+        return { acc: 'user', base: name.slice(14) };
+      return null;
+    };
+    const a = getAuthType(profiles[0]?.name ?? '');
+    const b = getAuthType(profiles[1]?.name ?? '');
+    const matching =
+      profiles.length === 2 && a && b && a.base === b.base && a.acc !== b.acc;
+    if (!matching) {
+      throw new AmbiguousConnError(host, profiles);
+    }
+    printMessage({
+      message: `There are both service account and user account credentials associated with connection '${host}', deleting both profiles`,
+      type: 'warn',
+      state,
+    });
   }
-  delete connectionsData[profiles[0].tenant];
+  for (const profile of profiles) {
+    delete connectionsData.connections[profile.name];
+  }
+  connectionsData.version = CURRENT_CONNECTIONS_FILE_VERSION;
   fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
 }
 

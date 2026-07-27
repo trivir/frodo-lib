@@ -1139,7 +1139,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Find connection profiles",
     params: [
       { name: "connectionProfiles", type: "ConnectionsFileInterface", description: "connection profile object", required: true },
-      { name: "host", type: "string", description: "host url, unique substring, or alias", required: true },
+      { name: "host", type: "string", description: "connection name, host url, or unique substring of a connection name", required: true },
     ],
     returns: "{SecureConnectionProfileInterface[]} Array of connection profiles",
   },
@@ -1157,7 +1157,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     signature: "getConnectionProfileByHost(host: string): Promise<ConnectionProfileInterface>",
     description: "Get connection profile by host",
     params: [
-      { name: "host", type: "String", description: "host tenant, host url, unique substring, or alias", required: true },
+      { name: "host", type: "String", description: "connection name, host url, or unique substring of a connection name", required: true },
     ],
     returns: "{Object} connection profile or null",
   },
@@ -1175,7 +1175,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     signature: "loadConnectionProfileByHost(host: string): Promise<boolean>",
     description: "Load a connection profile into library state",
     params: [
-      { name: "host", type: "string", description: "AM host URL, unique substring, or alias", required: true },
+      { name: "host", type: "string", description: "connection name, AM host URL, or unique substring of a connection name", required: true },
     ],
     returns: "{Promise<boolean>} A promise resolving to true if successful",
   },
@@ -1190,33 +1190,14 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "ConnectionProfile",
     methodName: "saveConnectionProfile",
-    signature: "saveConnectionProfile(host: string): Promise<boolean>",
+    signature: "saveConnectionProfile( name: string, host: string, createOnly?: boolean ): Promise<boolean>",
     description: "Save connection profile",
     params: [
-      { name: "host", type: "string", description: "host url for new profiles, unique substring or alias for existing profiles", required: true },
+      { name: "name", type: "string", description: "name of connection profile", required: true },
+      { name: "host", type: "string", description: "host url", required: true },
+      { name: "createOnly", type: "boolean", description: "if true, fail when the named profile already exists", required: false },
     ],
     returns: "{Promise<boolean>} true if the operation succeeded, false otherwise",
-  },
-  {
-    typeName: "ConnectionProfile",
-    methodName: "setConnectionProfileAlias",
-    signature: "setConnectionProfileAlias(host: string, alias: string): void",
-    description: "Set an alias for an existing connection profile",
-    params: [
-      { name: "host", type: "string", description: "host url, unique substring, or alias of existing connection profile", required: true },
-      { name: "alias", type: "string", description: "alias to be assigned to connection profile", required: true },
-    ],
-    returns: "",
-  },
-  {
-    typeName: "ConnectionProfile",
-    methodName: "deleteConnectionProfileAlias",
-    signature: "deleteConnectionProfileAlias(host: string): void",
-    description: "Set an alias for an existing connection profile",
-    params: [
-      { name: "host", type: "string", description: "host url, unique substring, or alias of existing connection profile", required: true },
-    ],
-    returns: "",
   },
   {
     typeName: "ConnectionProfile",
@@ -1224,7 +1205,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     signature: "deleteConnectionProfile(host: string): void",
     description: "Delete connection profile",
     params: [
-      { name: "host", type: "string", description: "host tenant, host url, unique substring, or alias", required: true },
+      { name: "host", type: "string", description: "connection name, host url, or unique substring of a connection name", required: true },
     ],
     returns: "",
   },

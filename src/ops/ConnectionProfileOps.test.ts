@@ -155,7 +155,7 @@ describe('ConnectionProfileOps', () => {
       state.setUsername(user);
       state.setPassword(password);
       state.setConnectionProfilesPath(connectionProfilePath1);
-      await ConnectionProfileOps.saveConnectionProfile({ host, state });
+      await ConnectionProfileOps.saveConnectionProfile({ name, host, state });
       expect(fs.existsSync(connectionProfilePath1)).toBeTruthy();
       const connections = JSON.parse(
         fs.readFileSync(connectionProfilePath1, 'utf8')
@@ -184,7 +184,7 @@ describe('ConnectionProfileOps', () => {
       state.setUsername(user);
       state.setPassword(password);
       state.setConnectionProfilesPath('');
-      await ConnectionProfileOps.saveConnectionProfile({ host, state });
+      await ConnectionProfileOps.saveConnectionProfile({ name, host, state });
       expect(ConnectionProfileOps.getConnectionProfilesPath({ state })).toEqual(
         connectionProfilePath2
       );
@@ -216,7 +216,7 @@ describe('ConnectionProfileOps', () => {
       state.setUsername(user);
       state.setPassword(password);
       state.setConnectionProfilesPath(connectionProfilePath3);
-      await ConnectionProfileOps.saveConnectionProfile({ host, state });
+      await ConnectionProfileOps.saveConnectionProfile({ name, host, state });
       expect(fs.existsSync(connectionProfilePath3)).toBeTruthy();
       const connections = JSON.parse(
         fs.readFileSync(connectionProfilePath3, 'utf8')
@@ -243,7 +243,7 @@ describe('ConnectionProfileOps', () => {
       state.setUsername(user);
       state.setPassword(password);
       state.setDeploymentType(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
-      await ConnectionProfileOps.saveConnectionProfile({ host, state });
+      await ConnectionProfileOps.saveConnectionProfile({ name, host, state });
       const connections = JSON.parse(
         fs.readFileSync(connectionProfilePath1, 'utf8')
       );
