@@ -40,6 +40,8 @@ import Constants from '../shared/Constants';
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jose from 'node-jose';
+import { JwkRsa } from './JoseOps';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -196,7 +198,7 @@ describe('AuthenticateOps', () => {
             'utf8'
           );
           state.setDeploymentType(undefined);
-          state.setAmsterPrivateKey(privateKey);;
+          state.setAmsterPrivateKey((await jose.JWK.asKey(privateKey, 'pem')).toJSON(true) as JwkRsa);
           const result = await AuthenticateOps.getTokens({ autoRefresh: false, state });
           expect(result).toBeTruthy();
           expect(result.subject).toEqual("user " + state.getUsername());
@@ -206,7 +208,7 @@ describe('AuthenticateOps', () => {
             subject: expect.any(String),
           });
           expect(state.getDeploymentType()).toEqual(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
-          expect(state.getAmsterPrivateKey()).toEqual(privateKey);
+          expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey, 'pem')).toJSON(true));
           expect(state.getAuthenticationService()).toEqual(Constants.DEFAULT_AMSTER_SERVICE);
           expect(state.getUsername()).toEqual(Constants.DEFAULT_CLASSIC_USERNAME);
           expect(state.getCookieName()).toBeTruthy();
@@ -232,7 +234,7 @@ describe('AuthenticateOps', () => {
           state.setAuthenticationService(authenticationService);
           state.setUsername(username);
           state.setDeploymentType(undefined);
-          state.setAmsterPrivateKey(privateKey);
+          state.setAmsterPrivateKey((await jose.JWK.asKey(privateKey, 'pem')).toJSON(true) as JwkRsa);
           const result = await AuthenticateOps.getTokens({ autoRefresh: false, state });
           expect(result).toBeTruthy();
           expect(result.subject).toEqual("user " + state.getUsername());
@@ -242,7 +244,7 @@ describe('AuthenticateOps', () => {
             subject: expect.any(String)
           });
           expect(state.getDeploymentType()).toEqual(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
-          expect(state.getAmsterPrivateKey()).toEqual(privateKey);
+          expect(await state.getAmsterPrivateKey()).toEqual((await jose.JWK.asKey(privateKey, 'pem')).toJSON(true) as JwkRsa);
           expect(state.getAuthenticationService()).toEqual(authenticationService);
           expect(state.getUsername()).toEqual(username);
           expect(state.getCookieName()).toBeTruthy();

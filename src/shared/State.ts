@@ -18,7 +18,7 @@ import {
   ProgressIndicatorStatusType,
   ProgressIndicatorType,
 } from '../utils/Console';
-import { convertPrivateKeyToPem } from '../utils/CryptoUtils';
+import { getPrivateKey } from '../utils/CryptoUtils';
 import { cloneDeep, mergeDeep } from '../utils/JsonUtils';
 import { getPackageVersion } from './Version';
 
@@ -91,8 +91,8 @@ export type State = {
   getServiceAccountJwk(): JwkRsa;
   setServiceAccountScope(scope: string): void;
   getServiceAccountScope(): string;
-  setAmsterPrivateKey(key: string): void;
-  getAmsterPrivateKey(): string;
+  setAmsterPrivateKey(key: JwkRsa): void;
+  getAmsterPrivateKey(): Promise<JwkRsa>;
   setUseBearerTokenForAmApis(useBearerTokenForAmApis: boolean): void;
   getUseBearerTokenForAmApis(): boolean;
   setBearerTokenMeta(token: AccessTokenMetaType): void;
@@ -386,12 +386,12 @@ export default (initialState: StateInterface): State => {
       return state.serviceAccountScope;
     },
 
-    setAmsterPrivateKey(key: string) {
+    async setAmsterPrivateKey(key: JwkRsa) {
       state.amsterPrivateKey = key;
     },
-    getAmsterPrivateKey(): string {
+    async getAmsterPrivateKey(): Promise<JwkRsa> {
       if (!state.amsterPrivateKey && process.env.FRODO_AMSTER_PRIVATE_KEY) {
-        state.amsterPrivateKey = convertPrivateKeyToPem({
+        state.amsterPrivateKey = await getPrivateKey({
           key: process.env.FRODO_AMSTER_PRIVATE_KEY,
           passphrase: process.env.FRODO_AMSTER_PASSPHRASE || undefined,
         });
@@ -684,7 +684,7 @@ export interface StateInterface {
   serviceAccountJwk?: JwkRsa;
   serviceAccountScope?: string;
   // Amster settings
-  amsterPrivateKey?: string;
+  amsterPrivateKey?: JwkRsa;
   // bearer token settings
   useBearerTokenForAmApis?: boolean;
   bearerToken?: AccessTokenMetaType;

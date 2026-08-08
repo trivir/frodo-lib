@@ -2,8 +2,6 @@ import { createHash, randomBytes } from 'crypto';
 import { URL } from 'url';
 
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import jose from 'node-jose';
-import sshpk from 'sshpk';
 import c from 'tinyrainbow';
 import { v4 } from 'uuid';
 
@@ -1465,7 +1463,7 @@ export async function getTokens({
       state.getPassword() == null &&
       !state.getServiceAccountId() &&
       !state.getServiceAccountJwk() &&
-      !state.getAmsterPrivateKey()
+      !(await state.getAmsterPrivateKey())
     ) {
       usingConnectionProfile = await loadConnectionProfile({ state });
 
@@ -1550,7 +1548,7 @@ export async function getTokens({
       !forceLoginAsUser &&
       (state.getDeploymentType() === Constants.CLASSIC_DEPLOYMENT_TYPE_KEY ||
         state.getDeploymentType() === undefined) &&
-      state.getAmsterPrivateKey()
+      (await state.getAmsterPrivateKey())
     ) {
       if (!state.getAuthenticationService()) {
         state.setAuthenticationService(Constants.DEFAULT_AMSTER_SERVICE);
@@ -1577,18 +1575,14 @@ export async function getTokens({
               `Expected a single HiddenValueCallback for Amster authentication, but got a ${callback.type}`
             );
           }
-          const key = await jose.JWK.asKey(state.getAmsterPrivateKey(), 'pem');
+          const key = await state.getAmsterPrivateKey();
           const payload = {
             sub: state.getUsername(),
             nonce: getCallbackValue('value', callback.output),
           };
           const header = {
             typ: 'jwt',
-            kid: sshpk
-              .parsePrivateKey(state.getAmsterPrivateKey())
-              .toPublic()
-              .toString('ssh')
-              .split(' ')[1],
+            kid: (await state.getAmsterPrivateKey()).kid,
           };
           const jwt = await createSignedJwtToken(payload, key, header);
           return fillCallbacks({

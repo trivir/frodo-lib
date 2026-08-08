@@ -36,26 +36,26 @@ export default (_state: State) => {
 };
 
 export interface JwkInterface {
-  kty: string;
+  kty?: string;
   use?: string;
   key_ops?: string[];
-  alg: string;
+  alg?: string;
   kid?: string;
   x5u?: string;
-  x5c?: string;
+  x5c?: string | string[];
   x5t?: string;
   'x5t#S256'?: string;
 }
 
 export type JwkRsa = JwkInterface & {
-  d: string;
-  dp: string;
-  dq: string;
-  e: string;
-  n: string;
-  p: string;
-  q: string;
-  qi: string;
+  d?: string;
+  dp?: string;
+  dq?: string;
+  e?: string;
+  n?: string;
+  p?: string;
+  q?: string;
+  qi?: string;
 };
 
 export type JwkRsaPublic = JwkInterface & {
@@ -89,19 +89,22 @@ export async function createSignedJwtToken(
   payload: string | object,
   jwkJson: JwkRsa,
   header: object = {}
-) {
+): Promise<string> {
   const key = await jose.JWK.asKey(jwkJson);
   if (typeof payload === 'object') {
     payload = JSON.stringify(payload);
   }
   const jwt = await jose.JWS.createSign(
-    { alg: 'RS256', compact: true, fields: header },
-    // https://github.com/cisco/node-jose/issues/253
-    { key, reference: false }
+    { alg: 'RS256', format: 'compact', fields: header },
+    key
   )
     .update(payload)
-    .final();
-  return jwt;
+    .final()
+    .then((result) => {
+      return result;
+    });
+  // @ts-expect-error since the format is 'compact' a string is returned
+  return jwt as string;
 }
 
 export async function verifySignedJwtToken(jwt: string, jwkJson: JwkRsaPublic) {
