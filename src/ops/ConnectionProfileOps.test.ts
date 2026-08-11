@@ -6,8 +6,9 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import fs from 'fs';
-import { homedir } from 'os';
+import fs from 'node:fs';
+import { homedir } from 'node:os';
+
 import { FrodoError, state } from '../index';
 import * as ConnectionProfileOps from './ConnectionProfileOps';
 import Constants from '../shared/Constants';

@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import { IdObjectSkeletonInterface } from '../../api/ApiTypes';
 import { State } from '../../shared/State';

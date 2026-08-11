@@ -1,5 +1,5 @@
-import { URL } from 'url';
-import util from 'util';
+import { URL } from 'node:url';
+import util from 'node:util';
 
 import { v4 as uuidv4 } from 'uuid';
 

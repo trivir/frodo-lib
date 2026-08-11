@@ -9,10 +9,10 @@
  * +--------------------+-----------------------+----------------+----------------+
  * This module doesn't take care of data persistence, it's assumed the consuming method/class/package will do so.
  */
-import crypto from 'crypto';
-import fs, { promises as fsp } from 'fs';
-import path from 'path';
-import { promisify } from 'util';
+import crypto from 'node:crypto';
+import fs, { promises as fsp } from 'node:fs';
+import path from 'node:path';
+import { promisify } from 'node:util';
 
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';

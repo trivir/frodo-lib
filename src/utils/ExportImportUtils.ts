@@ -1,6 +1,6 @@
-import fs from 'fs';
-import { lstat, readdir, readFile } from 'fs/promises';
-import { join } from 'path';
+import fs from 'node:fs';
+import { lstat, readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 import { Reader } from 'properties-reader';
 import replaceall from 'replaceall';

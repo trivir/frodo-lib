@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import qs from 'qs';

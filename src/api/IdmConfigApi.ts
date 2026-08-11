@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import { EMAIL_TEMPLATE_TYPE } from '../ops/EmailTemplateOps';
 import { State } from '../shared/State';

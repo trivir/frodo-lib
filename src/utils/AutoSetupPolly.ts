@@ -1,5 +1,5 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   brotliCompressSync,
   brotliDecompressSync,
@@ -7,7 +7,7 @@ import {
   gunzipSync,
   gzipSync,
   inflateSync,
-} from 'zlib';
+} from 'node:zlib';
 
 import { Polly } from '@pollyjs/core';
 import FSPersister from '@pollyjs/persister-fs';

@@ -1,9 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { frodo, frodo as instance0, state as state0 } from '../index';
 import Constants from '../shared/Constants';
 import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import fs from 'fs'
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { isIP } from 'net';
+import { isIP } from 'node:net';
 
 import { expect } from '@jest/globals';
 import forge from 'node-forge';

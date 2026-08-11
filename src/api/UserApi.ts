@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';

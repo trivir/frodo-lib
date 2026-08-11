@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import path from 'path';
+import path from 'node:path';
 
 import { Polly } from '@pollyjs/core';
 import FSPersister from '@pollyjs/persister-fs';

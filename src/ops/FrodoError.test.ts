@@ -32,11 +32,12 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { FrodoError } from '../index';
 import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly';
 import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import axios, { AxiosError, AxiosHeaders } from 'axios';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

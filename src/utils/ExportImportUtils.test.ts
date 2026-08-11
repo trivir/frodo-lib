@@ -1,6 +1,7 @@
+import { resolve } from 'node:path';
+import { rmSync, existsSync, readFileSync } from 'node:fs';
+
 import { state } from '../index';
-import { resolve } from 'path';
-import { rmSync, existsSync, readFileSync } from 'fs';
 import {
   convertTextArrayToBase64,
   convertBase64TextToArray,

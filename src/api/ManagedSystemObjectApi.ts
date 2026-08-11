@@ -1,4 +1,4 @@
-import util from 'util';
+import util from 'node:util';
 
 import { FrodoError } from '../ops/FrodoError';
 import { State } from '../shared/State';

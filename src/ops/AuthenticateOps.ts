@@ -1,5 +1,5 @@
-import { createHash, randomBytes } from 'crypto';
-import { URL } from 'url';
+import { createHash, randomBytes } from 'node:crypto';
+import { URL } from 'node:url';
 
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import jose from 'node-jose';
