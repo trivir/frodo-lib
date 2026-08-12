@@ -50,6 +50,13 @@
   "engines": {
     "node": ">=20"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.21.0",
+      "onFail": "download"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rockcarver/frodo-lib.git"
@@ -90,6 +97,7 @@
     "@pollyjs/adapter-node-http": "^6.0.5",
     "@pollyjs/core": "^6.0.5",
     "@pollyjs/persister-fs": "^6.0.5",
+    "@pollyjs/utils": "6.0.6",
     "@types/esprima": "^4.0.3",
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^30.0.0",
