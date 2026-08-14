@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { expect } from '@jest/globals';
 import MockAdapter from 'axios-mock-adapter';
 
 import { SingleTreeExportInterface } from '../../ops/JourneyOps';
