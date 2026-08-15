@@ -1,7 +1,7 @@
 {
   "name": "@rockcarver/frodo-lib",
   "version": "4.2.1",
-  "type": "commonjs",
+  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
