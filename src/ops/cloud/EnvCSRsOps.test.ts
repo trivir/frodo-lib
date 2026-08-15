@@ -50,6 +50,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import * as EnvCSRsApi from '../../api/cloud/EnvCSRsApi.ts';
 import * as EnvCSRsOps from './EnvCSRsOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
@@ -57,6 +58,7 @@ import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
 import { issueSelfSignedCertificate } from '../../test/utils/TestUtils.ts';
 import { stringify } from '../../utils/JsonUtils.ts';
+
 
 const ctx = autoSetupPolly();
 
@@ -359,7 +361,7 @@ csr7.id:          ${csr7._stagingId}\n\
         });
         expect(response).toMatchSnapshot();
       } else {
-        fail('csr1 not properly staged');
+        throw new Error('csr1 not properly staged');
       }
     });
 
@@ -369,7 +371,7 @@ csr7.id:          ${csr7._stagingId}\n\
           csrId: 'esv-does-not-exist',
           state,
         });
-        fail('request should have failed');
+        throw new Error('request should have failed');
       } catch (error) {
         expect(error).toMatchSnapshot();
       }
@@ -409,7 +411,7 @@ csr7.id:          ${csr7._stagingId}\n\
         });
         expect(response).toMatchSnapshot();
       } else {
-        fail('csr2 not properly staged');
+        throw new Error('csr2 not properly staged');
       }
     });
 
@@ -420,7 +422,7 @@ csr7.id:          ${csr7._stagingId}\n\
           certificate: 'no-certificate',
           state,
         });
-        fail('request should have failed');
+        throw new Error('request should have failed');
       } catch (error) {
         expect(error).toMatchSnapshot();
       }
@@ -440,7 +442,7 @@ csr7.id:          ${csr7._stagingId}\n\
         });
         expect(response).toMatchSnapshot();
       } else {
-        fail('csr3 not properly staged');
+        throw new Error('csr3 not properly staged');
       }
     });
 
@@ -452,7 +454,7 @@ csr7.id:          ${csr7._stagingId}\n\
         });
         expect(response).toMatchSnapshot();
       } catch (error) {
-        fail(
+        throw new Error(
           'request should have succeeded - current API returns a 200OK when deleting non-existing resources'
         );
       }
@@ -475,7 +477,7 @@ csr7.id:          ${csr7._stagingId}\n\
         });
         expect(response).toMatchSnapshot();
       } else {
-        fail('csr5, csr6, csr7 not properly staged');
+        throw new Error('csr5, csr6, csr7 not properly staged');
       }
     });
   });

@@ -45,6 +45,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import * as EnvCertificatesApi from './EnvCertificatesApi.ts';
 import * as EnvCertificatesOps from '../../ops/cloud/EnvCertificatesOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
@@ -58,6 +59,7 @@ import {
   printError,
 } from '../../test/utils/TestUtils.ts';
 import { type CSR } from './EnvCSRsApi.ts';
+
 
 const ctx = autoSetupPolly();
 
@@ -327,7 +329,7 @@ cert5.certificate: ${stringify(cert5._stagingCertificate)}\n\
           certificateId: 'esv-does-not-exist',
           state,
         });
-        fail('request should have failed');
+        throw new Error('request should have failed');
       } catch (error) {
         expect(error.response.data).toMatchSnapshot();
       }
@@ -351,7 +353,7 @@ cert5.certificate: ${stringify(cert5._stagingCertificate)}\n\
         expect(response).toMatchSnapshot();
       } catch (error) {
         printError(error);
-        fail('request should have succeeded');
+        throw new Error('request should have succeeded');
       }
     });
 
@@ -367,7 +369,7 @@ cert5.certificate: ${stringify(cert5._stagingCertificate)}\n\
         expect(response).toMatchSnapshot();
       } catch (error) {
         printError(error);
-        fail('request should have succeeded');
+        throw new Error('request should have succeeded');
       }
     });
   });
@@ -421,7 +423,7 @@ cert5.certificate: ${stringify(cert5._stagingCertificate)}\n\
         });
         expect(response).toMatchSnapshot();
       } catch (error) {
-        fail(
+        throw new Error(
           'request should have succeeded - current API returns a 200OK when deleting non-existing resources'
         );
       }

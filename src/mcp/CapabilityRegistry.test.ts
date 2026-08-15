@@ -6,6 +6,7 @@
  * and MCP runtime work can extend coverage without changing the baseline contract.
  */
 
+import { describe, test, expect } from '@jest/globals';
 import {
   MCP_POLICY_PRESETS,
   applyCapabilityPolicy,

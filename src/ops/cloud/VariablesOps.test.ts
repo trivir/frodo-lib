@@ -33,6 +33,7 @@
  * in case things don't function as expected
  */
 
+import { describe, test, expect } from '@jest/globals';
 import { state } from '../../index.ts';
 import * as VariablesOps from './VariablesOps.ts';
 import { type VariableExpressionType } from '../../api/cloud/VariablesApi.ts';

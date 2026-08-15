@@ -29,6 +29,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, it, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import { state } from '../index.ts';
 import * as OAuth2ClientOps from './OAuth2ClientOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';

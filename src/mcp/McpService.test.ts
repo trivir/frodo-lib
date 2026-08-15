@@ -6,8 +6,8 @@
  * runtime execution are correctly wired by `createMcpService`.
  */
 
-import { jest } from '@jest/globals';
 
+import { describe, test, expect, jest } from '@jest/globals';
 import {
   composeCapabilityPolicy,
   createMcpService,

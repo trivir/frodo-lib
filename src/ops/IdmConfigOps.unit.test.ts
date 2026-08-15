@@ -1,3 +1,4 @@
+import { describe, test, expect } from '@jest/globals';
 import { extractManagedObjectTypes } from './IdmConfigOps.ts';
 
 describe('managed-object type extraction', () => {

@@ -29,6 +29,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, expect } from '@jest/globals';
 import { state } from '../index.ts';
 import { customNode1, customNode2 } from '../test/setup/NodeSetup.ts';
 import { template1, template2 } from '../test/setup/EmailTemplateSetup.ts';

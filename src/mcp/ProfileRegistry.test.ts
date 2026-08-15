@@ -2,6 +2,7 @@
  * Verifies profile registry coverage and subtree mapping completeness.
  */
 
+import { describe, test, expect } from '@jest/globals';
 import { frodo, buildCapabilityInventory } from '../index.ts';
 import {
   capabilityMatchesAnyProfile,

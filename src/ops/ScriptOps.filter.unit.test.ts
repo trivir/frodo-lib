@@ -1,5 +1,5 @@
-import { jest } from '@jest/globals';
 
+import { describe, test, beforeEach, expect, jest } from '@jest/globals';
 import type { ScriptContext } from '../api/ScriptApi.ts';
 
 const deleteScriptApiMock: any = jest.fn();

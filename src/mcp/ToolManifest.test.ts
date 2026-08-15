@@ -10,6 +10,7 @@
  * the full library surface.
  */
 
+import { describe, test, expect } from '@jest/globals';
 import {
   MCP_POLICY_PRESETS,
   type McpToolManifest,

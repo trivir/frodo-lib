@@ -1,3 +1,4 @@
+import { describe, it, expect } from '@jest/globals';
 import StateImpl, { type State } from '../shared/State.ts';
 import { areScriptHooksValid } from './ScriptValidationUtils.ts';
 

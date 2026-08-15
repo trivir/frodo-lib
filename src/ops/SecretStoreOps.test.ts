@@ -37,6 +37,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeEach, afterAll, expect } from '@jest/globals';
 import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
 import { filterRecording } from "../utils/PollyUtils.ts";
 import * as SecretStoreOps from "./SecretStoreOps.ts";

@@ -70,6 +70,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import * as EnvCertificatesApi from '../../api/cloud/EnvCertificatesApi.ts';
 import * as EnvCertificatesOps from './EnvCertificatesOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
@@ -85,6 +86,7 @@ import {
   printError,
 } from '../../test/utils/TestUtils.ts';
 import { type CSR } from '../../api/cloud/EnvCSRsApi.ts';
+
 
 const matchRequestsBy = defaultMatchRequestsBy(true);
 matchRequestsBy.order = true;
@@ -1038,7 +1040,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'esv-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1062,7 +1064,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
           expect(response).toMatchSnapshot();
         } catch (error) {
           printError(error);
-          fail('request should have succeeded');
+          throw new Error('request should have succeeded');
         }
       });
 
@@ -1078,7 +1080,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
           expect(response).toMatchSnapshot();
         } catch (error) {
           printError(error);
-          fail('request should have succeeded');
+          throw new Error('request should have succeeded');
         }
       });
     });
@@ -1104,7 +1106,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             active: true,
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1138,7 +1140,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
           expect(response).toMatchSnapshot();
         } catch (error) {
           printError(error);
-          fail('request should have succeeded');
+          throw new Error('request should have succeeded');
         }
       });
 
@@ -1148,7 +1150,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'certificate-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1187,7 +1189,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'certificate-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1221,7 +1223,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'certificate-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1255,7 +1257,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'certificate-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1281,7 +1283,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: cert6._stagingId || cert6.id,
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1304,7 +1306,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             certificateId: 'certificate-does-not-exist',
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error).toMatchSnapshot();
         }
@@ -1343,7 +1345,7 @@ cert14b.id:         ${cert14b._stagingId}\n\
             });
             expect(response).toMatchSnapshot();
           } else {
-            fail('cert12, cert12a, cert12b not properly staged');
+            throw new Error('cert12, cert12a, cert12b not properly staged');
           }
         });
       }
@@ -1364,12 +1366,12 @@ cert14b.id:         ${cert14b._stagingId}\n\
               await EnvCertificatesOps.deleteCertificates({
                 state,
               });
-              fail('request should have failed');
+              throw new Error('request should have failed');
             } catch (error) {
               expect(error).toMatchSnapshot();
             }
           } else {
-            fail('cert13, cert13a, cert13b not properly staged');
+            throw new Error('cert13, cert13a, cert13b not properly staged');
           }
         });
       }
@@ -1396,10 +1398,10 @@ cert14b.id:         ${cert14b._stagingId}\n\
               expect(response).toMatchSnapshot();
             } catch (error) {
               printError(error);
-              fail('request should have succeeded');
+              throw new Error('request should have succeeded');
             }
           } else {
-            fail('cert14, cert14a, cert14b not properly staged');
+            throw new Error('cert14, cert14a, cert14b not properly staged');
           }
         });
       }

@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import { resolve } from 'node:path';
 import { rmSync, existsSync, readFileSync } from 'node:fs';
 

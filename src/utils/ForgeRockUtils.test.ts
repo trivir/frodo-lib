@@ -6,6 +6,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeEach, expect } from '@jest/globals';
 import * as ForgeRockUtils from './ForgeRockUtils.ts';
 import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
 import { filterRecording } from "../utils/PollyUtils.ts";

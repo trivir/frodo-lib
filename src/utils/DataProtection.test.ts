@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import StateImpl, { type State } from '../shared/State.ts';
 import DataProtection from './DataProtection.ts';
 

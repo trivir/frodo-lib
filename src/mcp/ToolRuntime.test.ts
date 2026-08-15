@@ -2,8 +2,8 @@
  * Focused end-to-end tests for canonical Hybrid MCP tools.
  */
 
-import { jest } from '@jest/globals';
 
+import { describe, test, expect, jest } from '@jest/globals';
 import {
   type McpCapabilityDescriptor,
   type McpToolRuntimeTraceEvent,

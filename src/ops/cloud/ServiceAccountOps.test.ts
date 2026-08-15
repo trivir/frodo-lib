@@ -32,6 +32,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeEach, expect } from '@jest/globals';
 import { state } from '../../index.ts';
 import * as ServiceAccountOps from './ServiceAccountOps.ts';
 import { createJwkRsa, createJwks, getJwkRsaPublic } from '../JoseOps.ts';

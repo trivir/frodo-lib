@@ -49,6 +49,7 @@
  * in case things don't function as expected
  */
 
+import { describe, test, beforeEach, expect } from '@jest/globals';
 import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
 import { filterRecording } from '../utils/PollyUtils.ts';
 import * as ConfigOps from "./ConfigOps.ts";

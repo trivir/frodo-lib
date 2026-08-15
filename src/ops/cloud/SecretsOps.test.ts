@@ -33,11 +33,13 @@
  * in case things don't function as expected
  */
 
+import { describe, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
 import * as SecretsOps from './SecretsOps.ts';
 import { FrodoError } from '../FrodoError.ts';
+
 
 const ctx = autoSetupPolly();
 
@@ -476,7 +478,7 @@ YF5PPxAO+0yKGqkl8PepvymXBrMAeszlHaRFXeRojXVALw==
         expect(response).toMatchSnapshot();
       } catch (error) {
         console.dir(error);
-        // fail("Command should've succeeded");
+        // throw new Error("Command should've succeeded");
       }
     });
 
@@ -491,7 +493,7 @@ YF5PPxAO+0yKGqkl8PepvymXBrMAeszlHaRFXeRojXVALw==
         expect(response).toMatchSnapshot();
       } catch (error) {
         console.dir(error);
-        // fail("Command should've succeeded");
+        // throw new Error("Command should've succeeded");
       }
     });
   });

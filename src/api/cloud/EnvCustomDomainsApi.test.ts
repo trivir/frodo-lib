@@ -40,11 +40,13 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
+import { describe, test, beforeAll, beforeEach, afterAll, expect } from '@jest/globals';
 import * as EnvCustomDomainsApi from './EnvCustomDomainsApi.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
 import { type CustomDomains } from './EnvCustomDomainsApi.ts';
+
 
 const ctx = autoSetupPolly();
 
@@ -130,7 +132,7 @@ describe('EnvCustomDomainsApi', () => {
             name: testDomain3,
             state,
           });
-          fail('request should have failed');
+          throw new Error('request should have failed');
         } catch (error) {
           expect(error.response.data).toMatchSnapshot();
         }
