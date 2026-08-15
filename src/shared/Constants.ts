@@ -1,4 +1,4 @@
-import { GlossaryObjectType } from '../api/cloud/iga/IgaGlossaryApi.ts';
+import { type GlossaryObjectType } from '../api/cloud/iga/IgaGlossaryApi.ts';
 
 export type Constants = {
   DEFAULT_REALM_KEY: string;

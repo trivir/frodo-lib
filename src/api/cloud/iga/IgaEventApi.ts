@@ -1,11 +1,11 @@
 import util from 'node:util';
 
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import { getApiSearchAll } from '../../../utils/ExportImportUtils.ts';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils.ts';
-import { Metadata } from '../../ApiTypes.ts';
+import { type Metadata } from '../../ApiTypes.ts';
 import { generateGovernanceApi } from '../../BaseApi.ts';
-import { CertificationTemplateSkeleton } from './IgaCertificationTemplateApi.ts';
+import { type CertificationTemplateSkeleton } from './IgaCertificationTemplateApi.ts';
 
 const eventEndpointURLTemplate = '%s/iga/governance/event';
 const eventURLTemplate = eventEndpointURLTemplate + '/%s';

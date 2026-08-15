@@ -12,7 +12,7 @@ import {
   type LogEventSkeleton,
   tail as _tail,
 } from '../../api/cloud/LogApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type Log = {

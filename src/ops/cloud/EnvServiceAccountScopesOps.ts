@@ -1,8 +1,8 @@
 import {
   getServiceAccountScopes as _getServiceAccountScopes,
-  ServiceAccountScope,
+  type ServiceAccountScope,
 } from '../../api/cloud/EnvServiceAccountScopesApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvServiceAccountScopes = {

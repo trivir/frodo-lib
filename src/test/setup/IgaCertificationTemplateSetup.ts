@@ -1,8 +1,8 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import {
-  CertificationTemplateSkeleton,
-  CertificationTemplateType,
+  type CertificationTemplateSkeleton,
+  type CertificationTemplateType,
 } from '../../api/cloud/iga/IgaCertificationTemplateApi.ts';
 import { state } from '../../index.ts';
 import * as IgaCertificationTemplateOps from '../../ops/cloud/iga/IgaCertificationTemplateOps.ts';

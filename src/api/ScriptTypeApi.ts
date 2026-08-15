@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
-  AmConfigEntityInterface,
-  IdObjectSkeletonInterface,
-  PagedResult,
+  type AmConfigEntityInterface,
+  type IdObjectSkeletonInterface,
+  type PagedResult,
 } from './ApiTypes.ts';
 import { generateAmApi } from './BaseApi.ts';
 

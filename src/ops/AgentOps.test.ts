@@ -57,7 +57,7 @@
  * in case things don't function as expected
  */
 import { state } from '../index.ts';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import * as AgentApi from '../api/AgentApi.ts';
 import * as AgentOps from './AgentOps.ts';
 import { getAgent } from '../test/mocks/ForgeRockApiMockEngine.ts';

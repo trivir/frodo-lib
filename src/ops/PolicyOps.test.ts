@@ -46,7 +46,7 @@ import { type PolicyCondition, type PolicySkeleton } from '../api/PoliciesApi.ts
 import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
-import { PolicyExportInterface } from './PolicyOps.ts';
+import { type PolicyExportInterface } from './PolicyOps.ts';
 
 const ctx = autoSetupPolly();
 

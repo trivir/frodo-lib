@@ -34,8 +34,8 @@ import * as OAuth2ClientOps from './OAuth2ClientOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
-import { NoIdObjectSkeletonInterface } from '../api/ApiTypes.ts';
-import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
+import { type NoIdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
 
 const ctx = autoSetupPolly();
 

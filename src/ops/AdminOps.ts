@@ -5,10 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { step } from '../api/AuthenticateApi.ts';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
-import { AccessTokenResponseType } from '../api/OAuth2OIDCApi.ts';
-import { OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi.ts';
+import { type AccessTokenResponseType } from '../api/OAuth2OIDCApi.ts';
+import { type OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi.ts';
 import { updateOAuth2Client } from '../ops/OAuth2ClientOps.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { printMessage } from '../utils/Console.ts';
 import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
 import { cloneDeep, stringify } from '../utils/JsonUtils.ts';
@@ -17,8 +17,8 @@ import {
   createJwks,
   createSignedJwtToken,
   getJwkRsaPublic,
-  JwkRsa,
-  JwksInterface,
+  type JwkRsa,
+  type JwksInterface,
 } from './JoseOps.ts';
 import { accessTokenRfc7523AuthZGrant } from './OAuth2OidcOps.ts';
 import { updateOAuth2TrustedJwtIssuer } from './OAuth2TrustedJwtIssuerOps.ts';

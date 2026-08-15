@@ -1,6 +1,6 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import {
   getConfigPath,
@@ -10,9 +10,9 @@ import {
 import { deleteDeepByKey } from '../utils/JsonUtils.ts';
 import {
   type AmConfigEntityInterface,
-  EntityType,
-  PagedResult,
-  QueryResult,
+  type EntityType,
+  type PagedResult,
+  type QueryResult,
 } from './ApiTypes.ts';
 import { generateAmApi } from './BaseApi.ts';
 

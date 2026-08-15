@@ -1,13 +1,13 @@
 import {
   createEvent as _createEvent,
   deleteEvent as _deleteEvent,
-  EventSkeleton,
+  type EventSkeleton,
   getEvent,
   putEvent,
   queryEvents,
 } from '../../../api/cloud/iga/IgaEventApi.ts';
-import { VariableSkeleton } from '../../../api/cloud/VariablesApi.ts';
-import { State } from '../../../shared/State.ts';
+import { type VariableSkeleton } from '../../../api/cloud/VariablesApi.ts';
+import { type State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -21,11 +21,11 @@ import {
   getResult,
 } from '../../../utils/ExportImportUtils.ts';
 import {
-  EmailTemplateSkeleton,
+  type EmailTemplateSkeleton,
   importEmailTemplates,
 } from '../../EmailTemplateOps.ts';
 import { FrodoError } from '../../FrodoError.ts';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from '../../OpsTypes.ts';
 import { importVariables } from '../VariablesOps.ts';
 
 export type IgaEvent = {

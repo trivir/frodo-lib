@@ -7,7 +7,7 @@ import {
   putResourceType as _putResourceType,
   type ResourceTypeSkeleton,
 } from '../api/ResourceTypesApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -17,7 +17,7 @@ import {
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type ResourceType = {
   /**

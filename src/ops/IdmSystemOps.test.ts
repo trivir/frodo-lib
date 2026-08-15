@@ -37,7 +37,7 @@ import { state } from '../index.ts';
 import * as IdmSystemOps from './IdmSystemOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
-import { SystemObjectPatchOperationInterface } from '../api/IdmSystemApi.ts';
+import { type SystemObjectPatchOperationInterface } from '../api/IdmSystemApi.ts';
 import { decode } from '../utils/Base64Utils.ts';
 
 const ctx = autoSetupPolly();

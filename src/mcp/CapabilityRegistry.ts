@@ -8,17 +8,17 @@
  * manifests.
  */
 
-import { Frodo } from '../lib/FrodoLib.ts';
+import { type Frodo } from '../lib/FrodoLib.ts';
 import { resolveCapabilityMeta } from './CapabilityMetadata.ts';
 import {
-  McpCapabilityArgumentMode,
-  McpCapabilityDescriptor,
-  McpCapabilityInventoryOptions,
-  McpCapabilityKind,
-  McpCapabilityOperationType,
-  McpCapabilityParameter,
-  McpCapabilityRiskClass,
-  McpToolAnnotations,
+  type McpCapabilityArgumentMode,
+  type McpCapabilityDescriptor,
+  type McpCapabilityInventoryOptions,
+  type McpCapabilityKind,
+  type McpCapabilityOperationType,
+  type McpCapabilityParameter,
+  type McpCapabilityRiskClass,
+  type McpToolAnnotations,
 } from './CapabilityTypes.ts';
 
 /** Top-level domain keys excluded from the capability inventory by default. */

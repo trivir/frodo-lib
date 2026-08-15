@@ -12,7 +12,7 @@ import {
   updateProvider as _updateProvider,
 } from '../api/Saml2Api.ts';
 import { getScript, type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   decodeBase64Url,
   encode,

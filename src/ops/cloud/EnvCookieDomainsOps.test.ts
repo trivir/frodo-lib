@@ -45,7 +45,7 @@ import * as EnvCookieDomainsOps from './EnvCookieDomainsOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { CookieDomains } from '../../api/cloud/EnvCookieDomainsApi.ts';
+import { type CookieDomains } from '../../api/cloud/EnvCookieDomainsApi.ts';
 
 const ctx = autoSetupPolly();
 

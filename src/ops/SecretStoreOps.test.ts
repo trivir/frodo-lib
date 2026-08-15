@@ -43,8 +43,8 @@ import * as SecretStoreOps from "./SecretStoreOps.ts";
 import { state } from "../lib/FrodoLib.ts";
 import Constants from "../shared/Constants.ts";
 import { snapshotResultCallback } from "../test/utils/TestUtils.ts";
-import { SecretStoreMappingSkeleton } from "../api/SecretStoreApi.ts";
-import { SecretStoreExportInterface } from "./SecretStoreOps.ts";
+import { type SecretStoreMappingSkeleton } from "../api/SecretStoreApi.ts";
+import { type SecretStoreExportInterface } from "./SecretStoreOps.ts";
 
 const ctx = autoSetupPolly();
 

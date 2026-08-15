@@ -1,6 +1,6 @@
 import { getRealms } from '../ops/RealmOps.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 
 export type FRUtils = {

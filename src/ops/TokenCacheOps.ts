@@ -5,11 +5,11 @@ import path from 'node:path';
 import { v5 as uuidv5 } from 'uuid';
 
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import DataProtection from '../utils/DataProtection.ts';
 import { get, put, stringify } from '../utils/JsonUtils.ts';
-import { UserSessionMetaType } from './AuthenticateOps.ts';
+import { type UserSessionMetaType } from './AuthenticateOps.ts';
 import { type AccessTokenMetaType } from './OAuth2OidcOps.ts';
 
 export type TokenCache = {

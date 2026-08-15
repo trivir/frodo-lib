@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getConfigPath, getRealmPathGlobal } from '../utils/ForgeRockUtils.ts';
-import { AmConfigEntityInterface, PagedResult } from './ApiTypes.ts';
+import { type AmConfigEntityInterface, type PagedResult } from './ApiTypes.ts';
 import { generateAmApi } from './BaseApi.ts';
 
 const secretStoreURLTemplate = '%s/json%s/%s/secrets/stores/%s/%s';

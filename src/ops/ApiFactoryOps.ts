@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
 import {
   generateAmApi,
@@ -9,9 +9,9 @@ import {
   generateLogKeysApi,
   generateOauth2Api,
   generateReleaseApi,
-  ResourceConfig,
+  type ResourceConfig,
 } from '../api/BaseApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 
 export type ApiFactory = {
   /**

@@ -57,7 +57,7 @@ import {
   getPrivateKey,
   printError,
 } from '../../test/utils/TestUtils.ts';
-import { CSR } from './EnvCSRsApi.ts';
+import { type CSR } from './EnvCSRsApi.ts';
 
 const ctx = autoSetupPolly();
 

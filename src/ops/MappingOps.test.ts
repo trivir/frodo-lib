@@ -36,7 +36,7 @@ import { autoSetupPolly } from "../utils/AutoSetupPolly.ts";
 import { filterRecording } from "../utils/PollyUtils.ts";
 import * as MappingOps from "./MappingOps.ts";
 import { state } from "../lib/FrodoLib.ts";
-import { MappingSkeleton} from "./MappingOps.ts";
+import { type MappingSkeleton} from "./MappingOps.ts";
 
 const ctx = autoSetupPolly();
 

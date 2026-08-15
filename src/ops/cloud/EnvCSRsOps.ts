@@ -7,7 +7,7 @@ import {
   getCSRs as _getCSRs,
   updateCSR as _updateCSR,
 } from '../../api/cloud/EnvCSRsApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { debugMessage } from '../../utils/Console.ts';
 import { FrodoError } from '../FrodoError.ts';
 

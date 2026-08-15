@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
-import { IdObjectSkeletonInterface } from './ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from './ApiTypes.ts';
 import { generateIdmApi } from './BaseApi.ts';
 
 const apiVersion = 'resource=1.0';

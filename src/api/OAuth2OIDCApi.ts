@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import qs from 'qs';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { encode } from '../utils/Base64Utils.ts';
 import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
 import { generateOauth2Api } from './BaseApi.ts';

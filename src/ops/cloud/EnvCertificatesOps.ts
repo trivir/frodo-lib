@@ -6,7 +6,7 @@ import {
   getCertificates as _getCertificates,
   updateCertificate as _updateCertificate,
 } from '../../api/cloud/EnvCertificatesApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { debugMessage } from '../../utils/Console.ts';
 import { FrodoError } from '../FrodoError.ts';
 

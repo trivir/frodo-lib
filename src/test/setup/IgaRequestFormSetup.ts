@@ -2,8 +2,8 @@ import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import {
   assignRequestForm,
-  RequestFormForm,
-  RequestFormSkeleton,
+  type RequestFormForm,
+  type RequestFormSkeleton,
 } from '../../api/cloud/iga/IgaRequestFormApi.ts';
 import { state } from '../../index.ts';
 import * as IgaRequestFormOps from '../../ops/cloud/iga/IgaRequestFormOps.ts';

@@ -42,7 +42,7 @@ import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
 import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
-import { PolicySetExportInterface } from './PolicySetOps.ts';
+import { type PolicySetExportInterface } from './PolicySetOps.ts';
 
 const ctx = autoSetupPolly();
 

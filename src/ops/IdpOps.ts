@@ -6,7 +6,7 @@ import {
   type SocialIdpSkeleton,
 } from '../api/SocialIdentityProvidersApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

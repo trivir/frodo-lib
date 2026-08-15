@@ -1,6 +1,6 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
 import { generateIdmApi } from './BaseApi.ts';
 

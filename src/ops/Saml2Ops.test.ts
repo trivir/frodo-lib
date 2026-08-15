@@ -49,7 +49,7 @@
 import { state } from '../index.ts';
 import * as Saml2Ops from './Saml2Ops.ts';
 import Constants from '../shared/Constants.ts';
-import { Saml2ProiderLocation } from '../api/Saml2Api.ts';
+import { type Saml2ProiderLocation } from '../api/Saml2Api.ts';
 import {
   getSaml2ProviderImportData,
   getSaml2ProvidersImportData,

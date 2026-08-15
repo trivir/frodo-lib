@@ -4,9 +4,9 @@ import {
   getRealm as _getRealm,
   getRealms as _getRealms,
   putRealm as _putRealm,
-  RealmSkeleton,
+  type RealmSkeleton,
 } from '../api/RealmApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -16,7 +16,7 @@ import {
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { getRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type Realm = {
   /**

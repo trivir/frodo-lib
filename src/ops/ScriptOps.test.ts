@@ -33,7 +33,7 @@ import { state } from '../index.ts';
 import * as ScriptOps from './ScriptOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
-import { ScriptSkeleton } from '../api/ScriptApi.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
 import { snapshotResultCallback } from '../test/utils/TestUtils.ts';
 
 const ctx = autoSetupPolly();

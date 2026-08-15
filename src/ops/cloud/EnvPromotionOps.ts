@@ -20,7 +20,7 @@ import {
   type RollbackResponse,
   unlockEnvironment as _unlockEnvironment,
 } from '../../api/cloud/EnvPromotionApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvPromotion = {

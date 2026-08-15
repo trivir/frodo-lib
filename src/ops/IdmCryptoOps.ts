@@ -1,4 +1,4 @@
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { FrodoError } from './FrodoError.ts';
 import { evaluateScript } from './IdmScriptOps.ts';
 

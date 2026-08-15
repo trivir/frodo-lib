@@ -1,4 +1,4 @@
-import { AuthenticateStep } from '../api/AuthenticateApi.ts';
+import { type AuthenticateStep } from '../api/AuthenticateApi.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
 
 export type CallbackType =

@@ -7,13 +7,13 @@ import {
   getSecretVersions as _getSecretVersions,
   getVersionOfSecret as _getVersionOfSecret,
   putSecret as _putSecret,
-  SecretSkeleton,
+  type SecretSkeleton,
   setSecretDescription as _setSecretDescription,
   setStatusOfVersionOfSecret as _setStatusOfVersionOfSecret,
-  VersionOfSecretSkeleton,
+  type VersionOfSecretSkeleton,
 } from '../../api/cloud/SecretsApi.ts';
 import FrodoLib from '../../lib/FrodoLib.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { decode, encode, isBase64Encoded } from '../../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
@@ -26,7 +26,7 @@ import { getMetadata } from '../../utils/ExportImportUtils.ts';
 import { FrodoError } from '../FrodoError.ts';
 import { decrypt, decryptMap, isEncrypted } from '../IdmCryptoOps.ts';
 import { evaluateScript } from '../IdmScriptOps.ts';
-import { ExportMetaData } from '../OpsTypes.ts';
+import { type ExportMetaData } from '../OpsTypes.ts';
 
 export type Secret = {
   /**

@@ -1,7 +1,7 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import { queryAllManagedObjectsByType } from '../api/ManagedObjectApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';

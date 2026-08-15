@@ -9,7 +9,7 @@ import {
   putService,
   putServiceNextDescendent,
 } from '../api/ServiceApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

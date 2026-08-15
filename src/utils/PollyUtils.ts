@@ -1,4 +1,4 @@
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { decode, encode, isBase64Encoded } from './Base64Utils.ts';
 
 export type Recording = {

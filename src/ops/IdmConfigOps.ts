@@ -1,8 +1,8 @@
 import replaceall from 'replaceall';
 
 import {
-  IdObjectSkeletonInterface,
-  NoIdObjectSkeletonInterface,
+  type IdObjectSkeletonInterface,
+  type NoIdObjectSkeletonInterface,
 } from '../api/ApiTypes.ts';
 import {
   deleteConfigEntity as _deleteConfigEntity,
@@ -11,10 +11,10 @@ import {
   getConfigStubs as _getConfigEntityStubs,
   putConfigEntity as _putConfigEntity,
   getConfigEntity,
-  IdmConfigStub,
+  type IdmConfigStub,
 } from '../api/IdmConfigApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -29,7 +29,7 @@ import {
 import { stringify } from '../utils/JsonUtils.ts';
 import { areScriptHooksValid } from '../utils/ScriptValidationUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 
 export type IdmConfig = {
   /** Read configured managed-object type names. */

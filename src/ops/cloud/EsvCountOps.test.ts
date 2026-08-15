@@ -39,7 +39,7 @@ import { state } from '../../index.ts';
 import * as EsvCountOps from './EsvCountOps.ts';
 import * as SecretsOps from './SecretsOps.ts';
 import * as VariablesOps from './VariablesOps.ts';
-import { VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
+import { type VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
 
 const ctx = autoSetupPolly();
 

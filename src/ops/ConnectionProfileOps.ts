@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import DataProtection from '../utils/DataProtection.ts';
 import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils.ts';
@@ -20,7 +20,7 @@ import {
   createJwkRsa,
   createJwks,
   getJwkRsaPublic,
-  JwkRsa,
+  type JwkRsa,
 } from './JoseOps.ts';
 
 export type ConnectionProfile = {

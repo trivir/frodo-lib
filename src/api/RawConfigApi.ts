@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getHostOnlyUrl, getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
-import { IdObjectSkeletonInterface } from './ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from './ApiTypes.ts';
 import { generateAmApi, generateEnvApi, generateIdmApi } from './BaseApi.ts';
 
 const amTemplate: string = '%s/%s';

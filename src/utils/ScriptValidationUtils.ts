@@ -1,7 +1,7 @@
 import { parseScript } from 'esprima';
 
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { decode, isBase64Encoded } from './Base64Utils.ts';
 import { printMessage } from './Console.ts';
 

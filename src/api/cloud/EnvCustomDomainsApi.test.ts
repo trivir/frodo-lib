@@ -44,7 +44,7 @@ import * as EnvCustomDomainsApi from './EnvCustomDomainsApi.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { CustomDomains } from './EnvCustomDomainsApi.ts';
+import { type CustomDomains } from './EnvCustomDomainsApi.ts';
 
 const ctx = autoSetupPolly();
 

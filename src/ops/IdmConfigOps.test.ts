@@ -34,7 +34,7 @@ import * as IdmConfigApi from '../api/IdmConfigApi.ts';
 import * as IdmConfigOps from './IdmConfigOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import { snapshotResultCallback } from '../test/utils/TestUtils.ts';
 
 const ctx = autoSetupPolly();

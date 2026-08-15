@@ -1,14 +1,17 @@
 import {
-  AmConfigEntitiesInterface,
-  ConfigEntitySkeleton,
-  ConfigSkeleton,
-  EntityInfo,
+  type AmConfigEntitiesInterface,
+  type ConfigEntitySkeleton,
+  type ConfigSkeleton,
+  type EntityInfo,
   getConfigEntity,
   putConfigEntity,
 } from '../api/AmConfigApi.ts';
-import { AmConfigEntityInterface, PagedResult } from '../api/ApiTypes.ts';
+import {
+  type AmConfigEntityInterface,
+  type PagedResult,
+} from '../api/ApiTypes.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -24,7 +27,7 @@ import {
   getRealmsForExport,
   getRealmUsingExportFormat,
 } from '../utils/ForgeRockUtils.ts';
-import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 
 export type AmConfig = {
   /**

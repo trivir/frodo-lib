@@ -1,6 +1,6 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import { putConfigEntity } from '../api/IdmConfigApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -14,7 +14,7 @@ import {
   readConfigEntitiesByType,
   readConfigEntity,
 } from './IdmConfigOps.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type Mapping = {
   /**

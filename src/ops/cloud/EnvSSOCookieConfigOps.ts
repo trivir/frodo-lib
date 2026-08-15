@@ -2,9 +2,9 @@ import {
   getSSOCookieConfig as _getSSOCookieConfig,
   resetSSOCookieConfig as _resetSSOCookieConfig,
   setSSOCookieConfig as _setSSOCookieConfig,
-  SSOCookieConfig,
+  type SSOCookieConfig,
 } from '../../api/cloud/EnvSSOCookieConfigApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvSSOCookieConfig = {

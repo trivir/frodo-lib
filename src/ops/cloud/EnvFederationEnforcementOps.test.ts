@@ -47,7 +47,7 @@ import * as EnvFederationEnforcementOps from './EnvFederationEnforcementOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { FederationEnforcement } from '../../api/cloud/EnvFederationEnforcementApi.ts';
+import { type FederationEnforcement } from '../../api/cloud/EnvFederationEnforcementApi.ts';
 
 const ctx = autoSetupPolly();
 

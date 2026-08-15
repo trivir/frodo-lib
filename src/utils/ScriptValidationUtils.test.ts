@@ -1,4 +1,4 @@
-import StateImpl, { State } from '../shared/State.ts';
+import StateImpl, { type State } from '../shared/State.ts';
 import { areScriptHooksValid } from './ScriptValidationUtils.ts';
 
 const state: State = StateImpl({});

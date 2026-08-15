@@ -1,7 +1,7 @@
 import {
-  IdObjectSkeletonInterface,
-  PagedResult,
-  PatchOperationInterface,
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+  type PatchOperationInterface,
 } from '../api/ApiTypes.ts';
 import {
   countManagedObjects as _countManagedObjects,
@@ -19,7 +19,7 @@ import {
 } from '../api/ManagedObjectApi.ts';
 import { getManagedSystemObject as _getManagedSystemObject } from '../api/ManagedSystemObjectApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
 import { FrodoError } from './FrodoError.ts';

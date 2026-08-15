@@ -8,7 +8,7 @@ import {
 } from '../api/CirclesOfTrustApi.ts';
 import { type Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

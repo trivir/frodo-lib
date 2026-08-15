@@ -1,11 +1,11 @@
 import {
   abortDirectConfigurationSession as _abortDirectConfigurationSession,
   applyDirectConfigurationSession as _applyDirectConfigurationSession,
-  DirectConfigurationSessionState,
+  type DirectConfigurationSessionState,
   getDirectConfigurationSessionState as _getDirectConfigurationSessionState,
   initDirectConfigurationSession as _initDirectConfigurationSession,
 } from '../../api/cloud/EnvDirectConfigurationSessionApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvDirectConfigurationSession = {

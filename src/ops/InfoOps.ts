@@ -1,7 +1,7 @@
-import { EnvInfoInterface, getEnvInfo } from '../api/cloud/EnvInfoApi.ts';
+import { type EnvInfoInterface, getEnvInfo } from '../api/cloud/EnvInfoApi.ts';
 import { getServerVersionInfo } from '../api/ServerInfoApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getServiceAccount } from './cloud/ServiceAccountOps.ts';
 import { FrodoError } from './FrodoError.ts';
 

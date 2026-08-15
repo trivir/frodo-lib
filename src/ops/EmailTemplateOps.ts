@@ -1,11 +1,11 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   deleteConfigEntity,
   getConfigEntity,
   putConfigEntity,
 } from '../api/IdmConfigApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -18,7 +18,7 @@ import {
   AIC_PROTECTED_ENTITIES,
   readConfigEntitiesByType,
 } from './IdmConfigOps.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type EmailTemplate = {
   /**

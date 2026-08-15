@@ -1,6 +1,6 @@
 import {
-  McpCapabilityDescriptor,
-  McpDeploymentType,
+  type McpCapabilityDescriptor,
+  type McpDeploymentType,
 } from './CapabilityTypes.ts';
 
 export type McpCapabilityRoutingStatus =

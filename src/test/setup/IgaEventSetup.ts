@@ -1,11 +1,14 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { EventSkeleton, EventType } from '../../api/cloud/iga/IgaEventApi.ts';
+import {
+  type EventSkeleton,
+  type EventType,
+} from '../../api/cloud/iga/IgaEventApi.ts';
 import { state } from '../../index.ts';
 import * as IgaEventOps from '../../ops/cloud/iga/IgaEventOps.ts';
 import {
   EMAIL_TEMPLATE_TYPE,
-  EmailTemplateSkeleton,
+  type EmailTemplateSkeleton,
 } from '../../ops/EmailTemplateOps.ts';
 import {
   autoSetupPolly,

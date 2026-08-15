@@ -9,12 +9,12 @@ import {
   getSecretStoreSchema,
   putSecretStore,
   putSecretStoreMapping,
-  SecretStoreMappingSkeleton,
-  SecretStoreSchemaSkeleton,
-  SecretStoreSkeleton,
+  type SecretStoreMappingSkeleton,
+  type SecretStoreSchemaSkeleton,
+  type SecretStoreSkeleton,
 } from '../api/SecretStoreApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -24,7 +24,7 @@ import {
 import { getMetadata, getResult } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 
 export type SecretStore = {
   /**

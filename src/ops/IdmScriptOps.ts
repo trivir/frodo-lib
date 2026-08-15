@@ -2,7 +2,7 @@ import {
   compileScript as _compileScript,
   evaluateScript as _evaluateScript,
 } from '../api/IdmScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { FrodoError } from './FrodoError.ts';
 
 export type IdmScript = {

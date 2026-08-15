@@ -5,9 +5,9 @@
 import { jest } from '@jest/globals';
 
 import {
-  McpCapabilityDescriptor,
-  McpToolRuntimeTraceEvent,
-  McpToolManifest,
+  type McpCapabilityDescriptor,
+  type McpToolRuntimeTraceEvent,
+  type McpToolManifest,
   createToolRuntime,
 } from '../index.ts';
 

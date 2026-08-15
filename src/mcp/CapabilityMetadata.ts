@@ -25,8 +25,8 @@
  */
 
 import {
-  McpDeploymentType,
-  OperationCapabilityMeta,
+  type McpDeploymentType,
+  type OperationCapabilityMeta,
 } from './CapabilityTypes.ts';
 
 /** Deployments that include the IDM component (and therefore IDM managed objects). */

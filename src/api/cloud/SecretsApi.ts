@@ -1,8 +1,11 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
-import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes.ts';
+import {
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+} from '../ApiTypes.ts';
 import { generateEnvApi } from '../BaseApi.ts';
 
 const secretsListURLTemplate = '%s/environment/secrets';

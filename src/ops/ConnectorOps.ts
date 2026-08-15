@@ -1,10 +1,10 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   deleteConfigEntity,
   getConfigEntity,
   putConfigEntity,
 } from '../api/IdmConfigApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -16,11 +16,11 @@ import { FrodoError } from './FrodoError.ts';
 import { readConfigEntitiesByType } from './IdmConfigOps.ts';
 import {
   deleteMapping,
-  MappingSkeleton,
+  type MappingSkeleton,
   readMappings,
   updateMapping,
 } from './MappingOps.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type Connector = {
   /**

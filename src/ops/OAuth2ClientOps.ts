@@ -7,7 +7,7 @@ import {
   putOAuth2Client as _putOAuth2Client,
 } from '../api/OAuth2ClientApi.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -22,7 +22,7 @@ import {
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
 import { readOAuth2Provider } from './OAuth2ProviderOps.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 import { readScript, updateScript } from './ScriptOps.ts';
 
 export type OAuth2Client = {

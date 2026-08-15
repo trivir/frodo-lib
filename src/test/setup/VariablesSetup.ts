@@ -1,8 +1,8 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import {
-  VariableExpressionType,
-  VariableSkeleton,
+  type VariableExpressionType,
+  type VariableSkeleton,
 } from '../../api/cloud/VariablesApi.ts';
 import { state } from '../../index.ts';
 import * as VariablesOps from '../../ops/cloud/VariablesOps.ts';

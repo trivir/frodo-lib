@@ -1,12 +1,12 @@
 import util from 'node:util';
 
 import { FrodoError } from '../ops/FrodoError.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
 import {
-  IdObjectSkeletonInterface,
-  PagedResult,
-  PatchOperationInterface,
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+  type PatchOperationInterface,
 } from './ApiTypes.ts';
 import { generateIdmSystemApi } from './BaseApi.ts';
 import type { ManagedObjectSchema } from './ManagedObjectApi.ts';

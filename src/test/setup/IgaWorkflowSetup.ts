@@ -1,12 +1,12 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { EventSkeleton } from '../../api/cloud/iga/IgaEventApi.ts';
+import { type EventSkeleton } from '../../api/cloud/iga/IgaEventApi.ts';
 import {
-  RequestFormAssignment,
-  RequestFormSkeleton,
+  type RequestFormAssignment,
+  type RequestFormSkeleton,
 } from '../../api/cloud/iga/IgaRequestFormApi.ts';
-import { RequestTypeSkeleton } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
-import { WorkflowSkeleton } from '../../api/cloud/iga/IgaWorkflowApi.ts';
+import { type RequestTypeSkeleton } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { type WorkflowSkeleton } from '../../api/cloud/iga/IgaWorkflowApi.ts';
 import { state } from '../../index.ts';
 import {
   deleteDraftWorkflow,

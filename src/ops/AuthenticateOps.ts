@@ -1,26 +1,26 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { URL } from 'node:url';
 
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import jose from 'node-jose';
 import sshpk from 'sshpk';
 import c from 'tinyrainbow';
 import { v4 } from 'uuid';
 
 import {
-  AuthenticateStep,
-  AuthenticateSuccessResponse,
+  type AuthenticateStep,
+  type AuthenticateSuccessResponse,
   step,
 } from '../api/AuthenticateApi.ts';
-import { ServiceAccountScope } from '../api/cloud/EnvServiceAccountScopesApi.ts';
+import { type ServiceAccountScope } from '../api/cloud/EnvServiceAccountScopesApi.ts';
 import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { encodeBase64Url } from '../utils/Base64Utils.ts';
 import { debugMessage, verboseMessage } from '../utils/Console.ts';
 import { isValidUrl, parseUrl } from '../utils/ExportImportUtils.ts';
 import {
-  CallbackHandler,
+  type CallbackHandler,
   fillCallbacks,
   getCallbackValue,
 } from './CallbackOps.ts';
@@ -38,7 +38,7 @@ import {
   saveConnectionProfile,
 } from './ConnectionProfileOps.ts';
 import { FrodoError } from './FrodoError.ts';
-import { createSignedJwtToken, JwkRsa } from './JoseOps.ts';
+import { createSignedJwtToken, type JwkRsa } from './JoseOps.ts';
 import {
   accessToken,
   type AccessTokenMetaType,

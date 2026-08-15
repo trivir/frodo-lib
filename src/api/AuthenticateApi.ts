@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { AxiosRequestConfig } from 'axios';
+import { type AxiosRequestConfig } from 'axios';
 
-import { Callback } from '../ops/CallbackOps.ts';
-import { State } from '../shared/State.ts';
+import { type Callback } from '../ops/CallbackOps.ts';
+import { type State } from '../shared/State.ts';
 import { getRealmPath } from '../utils/ForgeRockUtils.ts';
 import { generateAmAuthApi } from './BaseApi.ts';
 

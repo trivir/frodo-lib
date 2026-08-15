@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -12,7 +12,7 @@ import {
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type ThemeSkeleton = IdObjectSkeletonInterface & {
   name: string;

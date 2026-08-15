@@ -35,7 +35,7 @@
 
 import { state } from '../../index.ts';
 import * as VariablesOps from './VariablesOps.ts';
-import { VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
+import { type VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
 import { FrodoError } from '../FrodoError.ts';
 import { encode } from '../../utils/Base64Utils.ts';
 import * as TestData from '../../test/setup/VariablesSetup.ts'

@@ -8,11 +8,11 @@ import {
   putUser,
   putUserConfig,
   putUserGroup,
-  UserConfigSkeleton,
-  UserGroupSkeleton,
-  UserSkeleton,
+  type UserConfigSkeleton,
+  type UserGroupSkeleton,
+  type UserSkeleton,
 } from '../api/UserApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -21,7 +21,7 @@ import {
 } from '../utils/Console.ts';
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type User = {
   /**

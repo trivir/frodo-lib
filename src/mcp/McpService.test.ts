@@ -11,7 +11,7 @@ import { jest } from '@jest/globals';
 import {
   composeCapabilityPolicy,
   createMcpService,
-  McpCapabilityDescriptor,
+  type McpCapabilityDescriptor,
 } from '../index.ts';
 
 /**

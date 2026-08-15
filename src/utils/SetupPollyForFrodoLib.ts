@@ -4,15 +4,15 @@ import path from 'node:path';
 import { Polly } from '@pollyjs/core';
 import FSPersister from '@pollyjs/persister-fs';
 import { MODES } from '@pollyjs/utils';
-import { LogLevelDesc } from 'loglevel';
+import { type LogLevelDesc } from 'loglevel';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage, printMessage } from './Console.ts';
 import { FrodoNodeHttpAdapter } from './FrodoNodeHttpAdapter.ts';
 import {
   orderedMatchRequestsBy,
   filterRecording,
-  Recording,
+  type Recording,
 } from './PollyUtils.ts';
 
 const FRODO_TEST_NAME = process.env.FRODO_TEST_NAME

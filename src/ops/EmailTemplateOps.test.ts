@@ -32,7 +32,7 @@
 import { state } from '../index.ts';
 import * as TestData from '../test/setup/EmailTemplateSetup.ts';
 import * as EmailTemplateOps from './EmailTemplateOps.ts';
-import { EmailTemplateExportInterface } from './EmailTemplateOps.ts';
+import { type EmailTemplateExportInterface } from './EmailTemplateOps.ts';
 
 describe('EmailTemplateOps', () => {
 

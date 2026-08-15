@@ -8,9 +8,9 @@
  */
 
 import {
-  McpCapabilityDescriptor,
-  McpCapabilityPolicy,
-  McpCapabilityPolicyPresetName,
+  type McpCapabilityDescriptor,
+  type McpCapabilityPolicy,
+  type McpCapabilityPolicyPresetName,
 } from './CapabilityTypes.ts';
 
 /**

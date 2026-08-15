@@ -1,12 +1,15 @@
 import util from 'node:util';
 
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import {
   governanceApiSearchAll,
   postApiSearchAll,
 } from '../../../utils/ExportImportUtils.ts';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils.ts';
-import { Metadata, SearchTargetFilterOperation } from '../../ApiTypes.ts';
+import {
+  type Metadata,
+  type SearchTargetFilterOperation,
+} from '../../ApiTypes.ts';
 import { generateGovernanceApi } from '../../BaseApi.ts';
 
 const certificationTemplatesEndpointURLTemplate =

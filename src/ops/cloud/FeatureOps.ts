@@ -1,8 +1,8 @@
 import {
-  FeatureInterface,
+  type FeatureInterface,
   getFeatures as _getFeatures,
 } from '../../api/cloud/FeatureApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { debugMessage } from '../../utils/Console.ts';
 
 export type Feature = {

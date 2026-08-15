@@ -13,7 +13,7 @@ import {
   type ResourceTypeSkeleton,
 } from '../api/ResourceTypesApi.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

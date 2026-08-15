@@ -37,7 +37,7 @@ import { state } from '../index.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils.ts';
 import { fillCallbacks } from '../ops/CallbackOps.ts';
-import { AuthenticateStep } from './AuthenticateApi.ts';
+import { type AuthenticateStep } from './AuthenticateApi.ts';
 
 // need to modify the default matching rules to allow the mocking to work for an authentication flow.
 const matchConfig = defaultMatchRequestsBy();

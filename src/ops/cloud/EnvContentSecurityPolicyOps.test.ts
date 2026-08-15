@@ -49,7 +49,7 @@ import * as EnvContentSecurityPolicyOps from './EnvContentSecurityPolicyOps.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { ContentSecurityPolicy } from '../../api/cloud/EnvContentSecurityPolicyApi.ts';
+import { type ContentSecurityPolicy } from '../../api/cloud/EnvContentSecurityPolicyApi.ts';
 import { cloneDeep } from '../../utils/JsonUtils.ts';
 
 const ctx = autoSetupPolly();

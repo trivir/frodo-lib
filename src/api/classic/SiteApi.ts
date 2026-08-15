@@ -1,7 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State.ts';
-import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes.ts';
+import { type State } from '../../shared/State.ts';
+import {
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+} from '../ApiTypes.ts';
 import { generateAmApi } from '../BaseApi.ts';
 
 const siteURLTemplate = '%s/json/global-config/sites/%s';

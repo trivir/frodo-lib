@@ -1,5 +1,5 @@
 import { enableAIAgentFeature as _enableAIAgentFeature } from '../../api/cloud/EnvAIAgentApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvAIAgent = {

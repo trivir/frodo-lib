@@ -39,11 +39,11 @@ import {
   updateAuthenticationPolicyById as _updateAuthenticationPolicyById,
   type WSFedAuthenticationPolicyRequest,
   replicate as _replicate,
-  WSFedClusterReplicateResponse,
+  type WSFedClusterReplicateResponse,
   getSpConnectionById,
 } from '../../api/cloud/WSFedApi.ts';
 import { FrodoError } from '../../index.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { debugMessage } from '../../utils/Console.ts';
 
 // add every method implementation from this file as a type but remove structured params (e.g. { state }) and replace with individual params (e.g. state) to be consistent with other ops files. Also, use read instead of get to be consistent with other ops files.

@@ -1,6 +1,6 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { getRealmPath } from '../../utils/ForgeRockUtils.ts';
 import { deleteDeepByKey } from '../../utils/JsonUtils.ts';
 import {

@@ -8,7 +8,7 @@ import {
   createCircleOfTrust,
   updateCircleOfTrust,
 } from '../api/CirclesOfTrustApi.ts';
-import { VariableSkeleton } from '../api/cloud/VariablesApi.ts';
+import { type VariableSkeleton } from '../api/cloud/VariablesApi.ts';
 import {
   type CustomNodeSkeleton,
   type InnerNodeRefSkeletonInterface,
@@ -35,7 +35,7 @@ import {
   type TreeSkeleton,
 } from '../api/TreeApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   decode,
   encode,
@@ -76,7 +76,7 @@ import {
   readSocialIdentityProviders,
 } from './IdpOps.ts';
 import {
-  CustomNodeExportInterface,
+  type CustomNodeExportInterface,
   importCustomNodes,
   isCloudOnlyNode,
   isCustomNode,
@@ -86,7 +86,7 @@ import {
   updateNode,
   deleteNode,
 } from './NodeOps.ts';
-import { type ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 import { readSaml2ProviderStubs } from './Saml2Ops.ts';
 import {
   getLibraryScriptNames,

@@ -12,7 +12,7 @@
 
 import {
   MCP_POLICY_PRESETS,
-  McpToolManifest,
+  type McpToolManifest,
   applyCapabilityPolicy,
   buildCapabilityInventory,
   buildToolManifest,

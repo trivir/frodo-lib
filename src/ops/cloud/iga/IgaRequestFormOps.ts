@@ -5,15 +5,15 @@ import {
   getRequestFormAssignments,
   putRequestForm,
   queryRequestForms,
-  RequestFormAssignment,
-  RequestFormSkeleton,
+  type RequestFormAssignment,
+  type RequestFormSkeleton,
   unassignRequestForm,
 } from '../../../api/cloud/iga/IgaRequestFormApi.ts';
 import {
   queryRequestTypes,
-  RequestTypeSkeleton,
+  type RequestTypeSkeleton,
 } from '../../../api/cloud/iga/IgaRequestTypeApi.ts';
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -28,9 +28,9 @@ import {
 } from '../../../utils/ExportImportUtils.ts';
 import { queryApplications } from '../../ApplicationOps.ts';
 import { FrodoError } from '../../FrodoError.ts';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from '../../OpsTypes.ts';
 import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps.ts';
-import { readGroupedWorkflows, WorkflowGroups } from './IgaWorkflowOps.ts';
+import { readGroupedWorkflows, type WorkflowGroups } from './IgaWorkflowOps.ts';
 
 export type RequestForm = {
   /**

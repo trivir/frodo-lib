@@ -1,7 +1,7 @@
 import {
-  IdObjectSkeletonInterface,
-  PagedResult,
-  PatchOperationInterface,
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+  type PatchOperationInterface,
 } from '../api/ApiTypes.ts';
 import {
   getManagedObject as _getManagedObject,
@@ -21,11 +21,11 @@ import {
   queryRelatedManagedSystemObjects as _queryRelatedManagedSystemObjects,
 } from '../api/ManagedSystemObjectApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import { cloneDeep } from '../utils/JsonUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ManagedObjectSchemaOptions } from './ManagedObjectOps.ts';
+import { type ManagedObjectSchemaOptions } from './ManagedObjectOps.ts';
 
 export type ManagedObject = {
   /**

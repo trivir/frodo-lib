@@ -1,8 +1,11 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { printMessage } from '../../utils/Console.ts';
-import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes.ts';
+import {
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+} from '../ApiTypes.ts';
 import { generateAmApi } from '../BaseApi.ts';
 
 const serverURLTemplate = '%s/json/global-config/servers/%s';

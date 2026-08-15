@@ -1,8 +1,8 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import {
-  SecretSkeleton,
-  SecretEncodingType,
+  type SecretSkeleton,
+  type SecretEncodingType,
 } from '../../api/cloud/SecretsApi.ts';
 import { state } from '../../index.ts';
 import * as SecretsOps from '../../ops/cloud/SecretsOps.ts';

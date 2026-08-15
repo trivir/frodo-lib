@@ -33,7 +33,7 @@ import { state } from '../index.ts';
 import * as IdpOps from './IdpOps.ts';
 import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../utils/PollyUtils.ts';
-import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
+import { type SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
 
 const ctx = autoSetupPolly();
 

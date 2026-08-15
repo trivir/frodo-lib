@@ -1,10 +1,10 @@
 import {
-  CustomDomains,
+  type CustomDomains,
   getCustomDomains as _getCustomDomains,
   setCustomDomains as _setCustomDomains,
   verifyCNAME as _verifyCNAME,
 } from '../../api/cloud/EnvCustomDomainsApi.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { FrodoError } from '../FrodoError.ts';
 
 export type EnvCustomDomains = {

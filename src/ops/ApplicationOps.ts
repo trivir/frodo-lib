@@ -1,22 +1,22 @@
 import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
-import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi.ts';
+import { type CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi.ts';
 import {
   deleteApplicationGlossary,
   getApplicationGlossary,
-  GlossarySchemaItemSkeleton,
-  GlossarySkeleton,
+  type GlossarySchemaItemSkeleton,
+  type GlossarySkeleton,
   putApplicationGlossary,
 } from '../api/cloud/iga/IgaGlossaryApi.ts';
 import {
   getRequestFormAssignments,
-  RequestFormSkeleton,
+  type RequestFormSkeleton,
 } from '../api/cloud/iga/IgaRequestFormApi.ts';
-import { RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi.ts';
+import { type RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi.ts';
 import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
-import { Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
+import { type Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
 import constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { decode } from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
@@ -28,7 +28,7 @@ import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { get, mergeDeep } from '../utils/JsonUtils.ts';
 import {
-  CirclesOfTrustExportInterface,
+  type CirclesOfTrustExportInterface,
   exportCirclesOfTrust,
   importCirclesOfTrust,
   readCirclesOfTrust,
@@ -37,7 +37,7 @@ import {
 import {
   deleteGlossarySchemaByNameAndObjectType,
   exportGlossarySchemaByNameAndObjectType,
-  GlossarySchemaExportInterface,
+  type GlossarySchemaExportInterface,
   importGlossarySchemas,
 } from './cloud/iga/IgaGlossaryOps.ts';
 import {
@@ -48,8 +48,8 @@ import {
 } from './cloud/iga/IgaRequestFormOps.ts';
 import { deleteRequestType } from './cloud/iga/IgaRequestTypeOps.ts';
 import {
-  ConnectorExportInterface,
-  ConnectorSkeleton,
+  type ConnectorExportInterface,
+  type ConnectorSkeleton,
   deleteConnector,
   exportConnector,
   importConnector,
@@ -63,19 +63,19 @@ import {
   readManagedObjects,
   updateManagedObject,
 } from './ManagedObjectOps.ts';
-import { MappingSkeleton } from './MappingOps.ts';
+import { type MappingSkeleton } from './MappingOps.ts';
 import {
   deleteOAuth2Client,
   exportOAuth2Client,
   importOAuth2Client,
-  OAuth2ClientExportInterface,
+  type OAuth2ClientExportInterface,
 } from './OAuth2ClientOps.ts';
 import { type ExportMetaData } from './OpsTypes.ts';
 import {
   deleteSaml2Provider,
   exportSaml2Provider,
   importSaml2Provider,
-  Saml2ExportInterface,
+  type Saml2ExportInterface,
 } from './Saml2Ops.ts';
 
 const defaultFields = [

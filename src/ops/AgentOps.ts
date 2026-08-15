@@ -11,11 +11,11 @@ import {
   putAgentByTypeAndId as _putAgentByTypeAndId,
   putAgentGroupByTypeAndId as _putAgentGroupByTypeAndId,
   getAgentTypes as _getAgentTypes,
-  AgentTypeItem as _AgentTypeItem,
+  type AgentTypeItem as _AgentTypeItem,
 } from '../api/AgentApi.ts';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

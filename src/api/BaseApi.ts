@@ -2,15 +2,15 @@ import { randomUUID } from 'node:crypto';
 
 import axios, {
   AxiosError,
-  AxiosInstance,
-  AxiosProxyConfig,
-  AxiosRequestConfig,
+  type AxiosInstance,
+  type AxiosProxyConfig,
+  type AxiosRequestConfig,
 } from 'axios';
 import axiosRetry from 'axios-retry';
-import { ProxyAgent, ProxyAgentOptions } from 'proxy-agent';
+import { ProxyAgent, type ProxyAgentOptions } from 'proxy-agent';
 
 import _curlirize from '../ext/axios-curlirize/curlirize.ts';
-import StateImpl, { State } from '../shared/State.ts';
+import StateImpl, { type State } from '../shared/State.ts';
 import { getUserAgent } from '../shared/Version.ts';
 import { curlirizeMessage, printMessage } from '../utils/Console.ts';
 import { mergeDeep } from '../utils/JsonUtils.ts';

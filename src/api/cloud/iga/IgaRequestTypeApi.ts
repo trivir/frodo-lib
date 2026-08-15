@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import { getApiSearchAll } from '../../../utils/ExportImportUtils.ts';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils.ts';
-import { Metadata, PatchOperationInterface } from '../../ApiTypes.ts';
+import { type Metadata, type PatchOperationInterface } from '../../ApiTypes.ts';
 import { generateGovernanceApi } from '../../BaseApi.ts';
 
 const requestTypesEndpointURLTemplate = '%s/iga/governance/requestTypes';

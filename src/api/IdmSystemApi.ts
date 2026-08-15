@@ -1,8 +1,11 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
-import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes.ts';
+import {
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+} from './ApiTypes.ts';
 import { generateIdmApi } from './BaseApi.ts';
 
 const systemActionsUrlTemplate = '%s/system?_action=%s';

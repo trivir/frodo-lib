@@ -10,8 +10,8 @@ import {
   putScript as _putScript,
   type ScriptSkeleton,
 } from '../api/ScriptApi.ts';
-import { type ExportMetaData, ResultCallback } from '../ops/OpsTypes.ts';
-import { State } from '../shared/State.ts';
+import { type ExportMetaData, type ResultCallback } from '../ops/OpsTypes.ts';
+import { type State } from '../shared/State.ts';
 import { decode, encode, isBase64Encoded } from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,

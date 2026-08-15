@@ -1,6 +1,6 @@
 import http from 'node:http';
 import https from 'node:https';
-import net, { AddressInfo } from 'node:net';
+import net, { type AddressInfo } from 'node:net';
 
 import forge from 'node-forge';
 

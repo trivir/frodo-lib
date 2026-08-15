@@ -7,7 +7,7 @@ import {
   queryAllInternalObjectsByType,
   queryInternalObjects,
 } from '../api/InternalObjectApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,

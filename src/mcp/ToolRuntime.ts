@@ -14,20 +14,20 @@
  */
 
 import * as ManagedObjectApi from '../api/ManagedObjectApi.ts';
-import { Frodo, frodo } from '../lib/FrodoLib.ts';
+import { type Frodo, frodo } from '../lib/FrodoLib.ts';
 import { FrodoError } from '../ops/FrodoError.ts';
-import { StateInterface } from '../shared/State.ts';
+import { type StateInterface } from '../shared/State.ts';
 import {
   describeCapabilityRouting,
-  McpCapabilityRoutingStatus,
+  type McpCapabilityRoutingStatus,
   rankCapabilitiesForDeployment,
 } from './CapabilityRouting.ts';
 import {
-  McpCapabilityDescriptor,
-  McpCapabilityOperationType,
-  McpCapabilityParameter,
-  McpCapabilityParameterSchema,
-  McpDeploymentType,
+  type McpCapabilityDescriptor,
+  type McpCapabilityOperationType,
+  type McpCapabilityParameter,
+  type McpCapabilityParameterSchema,
+  type McpDeploymentType,
 } from './CapabilityTypes.ts';
 import {
   discoverManagedObjectFamilies,
@@ -35,17 +35,17 @@ import {
   matchManagedObjectFamily,
   MCP_AMBIGUOUS_OBJECT_CONCEPTS,
   MCP_SEMANTIC_OBJECT_SYNONYMS,
-  McpSemanticObjectFamily,
-  McpSemanticObjectFamilyResolution,
+  type McpSemanticObjectFamily,
+  type McpSemanticObjectFamilyResolution,
   normalizeSemanticObjectFamily,
   resolveSemanticObjectFamily,
 } from './SemanticObjectFamilies.ts';
 import {
-  McpDiscoveryEntry,
-  McpGenericTool,
-  McpManagedObjectHydrationStatus,
-  McpSpecialTool,
-  McpToolManifest,
+  type McpDiscoveryEntry,
+  type McpGenericTool,
+  type McpManagedObjectHydrationStatus,
+  type McpSpecialTool,
+  type McpToolManifest,
 } from './ToolManifest.ts';
 
 const FIND_SKILLS_TOOL_NAME = 'frodo_find_skills';

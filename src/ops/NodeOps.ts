@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   createCustomNode,
   createNode as _createNode,
-  CustomNodeSkeleton,
-  CustomNodeUsage,
+  type CustomNodeSkeleton,
+  type CustomNodeUsage,
   deleteCustomNode as _deleteCustomNode,
   deleteNode as _deleteNode,
   getCustomNode,
@@ -25,7 +25,7 @@ import {
 } from '../api/NodeApi.ts';
 import { getTrees } from '../api/TreeApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -39,7 +39,7 @@ import { getMetadata, getResult } from '../utils/ExportImportUtils.ts';
 import { applyNameCollisionPolicy } from '../utils/ForgeRockUtils.ts';
 import { eq, gt, lt } from '../utils/SemverUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 
 /**
  * Semver-style filter used by readNodesByVersion to select node type versions.

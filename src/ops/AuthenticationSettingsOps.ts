@@ -3,7 +3,7 @@ import {
   getAuthenticationSettings as _getAuthenticationSettings,
   putAuthenticationSettings as _putAuthenticationSettings,
 } from '../api/AuthenticationSettingsApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';

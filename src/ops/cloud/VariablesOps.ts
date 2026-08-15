@@ -4,11 +4,11 @@ import {
   getVariables as _getVariables,
   putVariable as _putVariable,
   setVariableDescription as _setVariableDescription,
-  VariableExpressionType,
-  VariableSkeleton,
+  type VariableExpressionType,
+  type VariableSkeleton,
 } from '../../api/cloud/VariablesApi.ts';
 import Constants from '../../shared/Constants.ts';
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { decode, encode } from '../../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
@@ -18,7 +18,7 @@ import {
 } from '../../utils/Console.ts';
 import { getMetadata } from '../../utils/ExportImportUtils.ts';
 import { FrodoError } from '../FrodoError.ts';
-import { ExportMetaData } from '../OpsTypes.ts';
+import { type ExportMetaData } from '../OpsTypes.ts';
 
 export type Variable = {
   /**

@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State.ts';
+import { type State } from '../../shared/State.ts';
 import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
-import { NoIdObjectSkeletonInterface } from '../ApiTypes.ts';
+import { type NoIdObjectSkeletonInterface } from '../ApiTypes.ts';
 import { generateWSFedApi } from '../BaseApi.ts';
 
 const spConnectionsURLTemplate =

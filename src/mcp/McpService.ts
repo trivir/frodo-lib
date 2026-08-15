@@ -8,33 +8,33 @@
  * actual transport wiring to higher layers.
  */
 
-import { Frodo, frodo } from '../lib/FrodoLib.ts';
+import { type Frodo, frodo } from '../lib/FrodoLib.ts';
 import {
   MCP_POLICY_PRESETS,
   applyCapabilityPolicy,
 } from './CapabilityPolicy.ts';
 import { buildCapabilityInventory } from './CapabilityRegistry.ts';
 import {
-  McpCapabilityDescriptor,
-  McpCapabilityInventoryOptions,
-  McpCapabilityPolicy,
-  McpCapabilityPolicyPresetName,
+  type McpCapabilityDescriptor,
+  type McpCapabilityInventoryOptions,
+  type McpCapabilityPolicy,
+  type McpCapabilityPolicyPresetName,
 } from './CapabilityTypes.ts';
 import {
-  McpProfileName,
+  type McpProfileName,
   resolveMcpProfileSelection,
 } from './ProfileRegistry.ts';
 import {
   buildToolManifest,
-  McpDiscoveryContext,
-  McpToolManifest,
+  type McpDiscoveryContext,
+  type McpToolManifest,
 } from './ToolManifest.ts';
 import {
   createToolRuntime,
-  McpToolExecutionRequest,
-  McpToolExecutionResult,
-  McpToolRuntime,
-  McpToolRuntimeOptions,
+  type McpToolExecutionRequest,
+  type McpToolExecutionResult,
+  type McpToolRuntime,
+  type McpToolRuntimeOptions,
 } from './ToolRuntime.ts';
 
 /**

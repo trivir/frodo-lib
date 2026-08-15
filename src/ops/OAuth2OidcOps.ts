@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 
 import {
   accessToken as _accessToken,
@@ -7,8 +7,8 @@ import {
   clientCredentialsGrant as _clientCredentialsGrant,
   getTokenInfo as _getTokenInfo,
 } from '../api/OAuth2OIDCApi.ts';
-import { TokenInfoResponseType } from '../api/OAuth2OIDCApi.ts';
-import { State } from '../shared/State.ts';
+import { type TokenInfoResponseType } from '../api/OAuth2OIDCApi.ts';
+import { type State } from '../shared/State.ts';
 import { mergeDeep } from '../utils/JsonUtils.ts';
 import { FrodoError } from './FrodoError.ts';
 

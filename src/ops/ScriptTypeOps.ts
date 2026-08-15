@@ -1,15 +1,15 @@
 import {
-  EngineConfigurationSkeleton,
+  type EngineConfigurationSkeleton,
   getScriptingContext,
   getScriptingEngineConfiguration,
   getScriptType,
   getScriptTypes,
   putScriptingEngineConfiguration,
   putScriptType,
-  ScriptingContextSkeleton,
-  ScriptTypeSkeleton,
+  type ScriptingContextSkeleton,
+  type ScriptTypeSkeleton,
 } from '../api/ScriptTypeApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -19,7 +19,7 @@ import {
 } from '../utils/Console.ts';
 import { getMetadata } from '../utils/ExportImportUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type ScriptType = {
   /**

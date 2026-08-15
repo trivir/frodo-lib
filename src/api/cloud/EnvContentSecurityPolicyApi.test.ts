@@ -44,7 +44,7 @@ import * as EnvContentSecurityPolicyApi from './EnvContentSecurityPolicyApi.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { ContentSecurityPolicy } from './EnvContentSecurityPolicyApi.ts';
+import { type ContentSecurityPolicy } from './EnvContentSecurityPolicyApi.ts';
 
 const ctx = autoSetupPolly();
 

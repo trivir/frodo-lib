@@ -2,26 +2,29 @@ import fs from 'node:fs';
 import { lstat, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { Reader } from 'properties-reader';
+import { type Reader } from 'properties-reader';
 import replaceall from 'replaceall';
 import slugify from 'slugify';
 
-import { SearchResult, SearchTargetFilterOperation } from '../api/ApiTypes.ts';
+import {
+  type SearchResult,
+  type SearchTargetFilterOperation,
+} from '../api/ApiTypes.ts';
 import { generateGovernanceApi } from '../api/BaseApi.ts';
-import { VariableSkeleton } from '../api/cloud/VariablesApi.ts';
+import { type VariableSkeleton } from '../api/cloud/VariablesApi.ts';
 import { resolveVariable } from '../ops/cloud/VariablesOps.ts';
 import {
-  EmailTemplateSkeleton,
+  type EmailTemplateSkeleton,
   readEmailTemplate,
 } from '../ops/EmailTemplateOps.ts';
 import { FrodoError } from '../ops/FrodoError.ts';
 import {
-  ErrorFilter,
-  ExportMetaData,
-  ResultCallback,
+  type ErrorFilter,
+  type ExportMetaData,
+  type ResultCallback,
 } from '../ops/OpsTypes.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   decode,
   decodeBase64Url,

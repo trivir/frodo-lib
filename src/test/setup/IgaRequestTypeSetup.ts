@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import * as IgaRequestTypeApi from '../../api/cloud/iga/IgaRequestTypeApi.ts';
-import { RequestTypeSchemas } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { type RequestTypeSchemas } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
 import { state } from '../../index.ts';
 import * as IgaRequestTypeOps from '../../ops/cloud/iga/IgaRequestTypeOps.ts';
 import {

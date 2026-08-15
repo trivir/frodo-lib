@@ -2,12 +2,12 @@ import {
   createGlossarySchema as _createGlossarySchema,
   deleteGlossarySchema as _deleteGlossarySchema,
   getGlossarySchema,
-  GlossaryObjectType,
-  GlossarySchemaItemSkeleton,
+  type GlossaryObjectType,
+  type GlossarySchemaItemSkeleton,
   putGlossarySchema,
   searchGlossarySchemas,
 } from '../../../api/cloud/iga/IgaGlossaryApi.ts';
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -16,7 +16,7 @@ import {
 } from '../../../utils/Console.ts';
 import { getMetadata, getResult } from '../../../utils/ExportImportUtils.ts';
 import { FrodoError } from '../../FrodoError.ts';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from '../../OpsTypes.ts';
 
 export type Glossary = {
   /**

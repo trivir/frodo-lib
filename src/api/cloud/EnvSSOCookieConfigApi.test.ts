@@ -46,7 +46,7 @@ import * as EnvSSOCookieConfigApi from './EnvSSOCookieConfigApi.ts';
 import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import { filterRecording } from '../../utils/PollyUtils.ts';
 import { state } from '../../index.ts';
-import { SSOCookieConfig } from './EnvSSOCookieConfigApi.ts';
+import { type SSOCookieConfig } from './EnvSSOCookieConfigApi.ts';
 
 const ctx = autoSetupPolly();
 

@@ -2,12 +2,12 @@ import {
   cancelRecon as _cancelRecon,
   getRecon as _getRecon,
   getRecons as _getRecons,
-  ReconStatusType,
-  ReconType,
+  type ReconStatusType,
+  type ReconType,
   startRecon as _startRecon,
   startReconById as _startReconById,
 } from '../api/ReconApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 
 export type Recon = {
   /**

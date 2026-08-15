@@ -1,4 +1,4 @@
-import { PatchOperationInterface } from '../../../api/ApiTypes.ts';
+import { type PatchOperationInterface } from '../../../api/ApiTypes.ts';
 import {
   createRequestType as _createRequestType,
   deleteRequestType as _deleteRequestType,
@@ -6,10 +6,10 @@ import {
   patchRequestType,
   putRequestType,
   queryRequestTypes,
-  RequestTypeSchema,
-  RequestTypeSkeleton,
+  type RequestTypeSchema,
+  type RequestTypeSkeleton,
 } from '../../../api/cloud/iga/IgaRequestTypeApi.ts';
-import { State } from '../../../shared/State.ts';
+import { type State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -22,7 +22,7 @@ import {
   getResult,
 } from '../../../utils/ExportImportUtils.ts';
 import { FrodoError } from '../../FrodoError.ts';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from '../../OpsTypes.ts';
 import { deleteOrphanedRequestFormAssignments } from './IgaRequestFormOps.ts';
 
 export type RequestType = {

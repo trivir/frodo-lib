@@ -9,10 +9,10 @@
  */
 
 import {
-  McpCapabilityDescriptor,
-  McpCapabilityInventoryOptions,
-  McpCapabilityPolicy,
-  McpCapabilityPolicyPresetName,
+  type McpCapabilityDescriptor,
+  type McpCapabilityInventoryOptions,
+  type McpCapabilityPolicy,
+  type McpCapabilityPolicyPresetName,
 } from './CapabilityTypes.ts';
 
 export type McpProfileName =

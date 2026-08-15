@@ -10,7 +10,7 @@ import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
 import { getResourceType } from '../api/ResourceTypesApi.ts';
 import { type ResourceTypeSkeleton } from '../api/ResourceTypesApi.ts';
 import { type ScriptSkeleton } from '../api/ScriptApi.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -23,7 +23,7 @@ import {
 } from '../utils/ExportImportUtils.ts';
 import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
 import { FrodoError } from './FrodoError.ts';
-import { ExportMetaData } from './OpsTypes.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 import {
   findScriptUuids,
   getScripts,

@@ -15,7 +15,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { printMessage } from './Console.ts';
 import { getFrodoHome } from './FrodoUtils.ts';
 

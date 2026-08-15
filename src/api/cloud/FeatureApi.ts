@@ -1,7 +1,7 @@
 import util from 'node:util';
 
-import { IdObjectSkeletonInterface } from '../../api/ApiTypes.ts';
-import { State } from '../../shared/State.ts';
+import { type IdObjectSkeletonInterface } from '../../api/ApiTypes.ts';
+import { type State } from '../../shared/State.ts';
 import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
 import { generateAmApi } from '../BaseApi.ts';
 

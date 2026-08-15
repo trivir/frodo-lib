@@ -1,29 +1,32 @@
-import { AgentGroupSkeleton, AgentSkeleton } from '../api/AgentApi.ts';
-import { AmConfigEntitiesInterface } from '../api/AmConfigApi.ts';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
-import { AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi.ts';
-import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi.ts';
-import { SiteSkeleton } from '../api/classic/SiteApi.ts';
-import { CertificationTemplateSkeleton } from '../api/cloud/iga/IgaCertificationTemplateApi.ts';
-import { EventSkeleton } from '../api/cloud/iga/IgaEventApi.ts';
-import { GlossarySchemaItemSkeleton } from '../api/cloud/iga/IgaGlossaryApi.ts';
-import { RequestFormSkeleton } from '../api/cloud/iga/IgaRequestFormApi.ts';
-import { RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi.ts';
-import { SecretSkeleton } from '../api/cloud/SecretsApi.ts';
-import { VariableSkeleton } from '../api/cloud/VariablesApi.ts';
-import { CustomNodeSkeleton } from '../api/NodeApi.ts';
-import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
-import { OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi.ts';
-import { PolicySkeleton } from '../api/PoliciesApi.ts';
-import { PolicySetSkeleton } from '../api/PolicySetApi.ts';
-import { RealmSkeleton } from '../api/RealmApi.ts';
-import { ResourceTypeSkeleton } from '../api/ResourceTypesApi.ts';
-import { Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
-import { ScriptSkeleton } from '../api/ScriptApi.ts';
-import { AmServiceSkeleton } from '../api/ServiceApi.ts';
-import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
+import {
+  type AgentGroupSkeleton,
+  type AgentSkeleton,
+} from '../api/AgentApi.ts';
+import { type AmConfigEntitiesInterface } from '../api/AmConfigApi.ts';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { type AuthenticationSettingsSkeleton } from '../api/AuthenticationSettingsApi.ts';
+import { type CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi.ts';
+import { type SiteSkeleton } from '../api/classic/SiteApi.ts';
+import { type CertificationTemplateSkeleton } from '../api/cloud/iga/IgaCertificationTemplateApi.ts';
+import { type EventSkeleton } from '../api/cloud/iga/IgaEventApi.ts';
+import { type GlossarySchemaItemSkeleton } from '../api/cloud/iga/IgaGlossaryApi.ts';
+import { type RequestFormSkeleton } from '../api/cloud/iga/IgaRequestFormApi.ts';
+import { type RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi.ts';
+import { type SecretSkeleton } from '../api/cloud/SecretsApi.ts';
+import { type VariableSkeleton } from '../api/cloud/VariablesApi.ts';
+import { type CustomNodeSkeleton } from '../api/NodeApi.ts';
+import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
+import { type OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi.ts';
+import { type PolicySkeleton } from '../api/PoliciesApi.ts';
+import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
+import { type RealmSkeleton } from '../api/RealmApi.ts';
+import { type ResourceTypeSkeleton } from '../api/ResourceTypesApi.ts';
+import { type Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { type AmServiceSkeleton } from '../api/ServiceApi.ts';
+import { type SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
 import Constants from '../shared/Constants.ts';
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   stopProgressIndicator,
@@ -42,12 +45,12 @@ import {
   importAgents,
 } from './AgentOps.ts';
 import {
-  ConfigEntityExportInterface,
+  type ConfigEntityExportInterface,
   exportAmConfigEntities,
   importAmConfigEntities,
 } from './AmConfigOps.ts';
 import {
-  ApplicationGlossarySkeleton,
+  type ApplicationGlossarySkeleton,
   exportApplications,
   importApplications,
 } from './ApplicationOps.ts';
@@ -56,14 +59,14 @@ import {
   importAuthenticationSettings,
 } from './AuthenticationSettingsOps.ts';
 import {
-  CirclesOfTrustExportInterface,
+  type CirclesOfTrustExportInterface,
   exportCirclesOfTrust,
   importCirclesOfTrust,
 } from './CirclesOfTrustOps.ts';
 import {
   exportServers,
   importServers,
-  ServerExportInterface,
+  type ServerExportInterface,
 } from './classic/ServerOps.ts';
 import { exportSites, importSites } from './classic/SiteOps.ts';
 import {
@@ -86,12 +89,12 @@ import {
 import {
   exportWorkflows,
   importWorkflows,
-  WorkflowGroups,
+  type WorkflowGroups,
 } from './cloud/iga/IgaWorkflowOps.ts';
 import { exportSecrets, importSecrets } from './cloud/SecretsOps.ts';
 import { exportVariables, importVariables } from './cloud/VariablesOps.ts';
 import {
-  EmailTemplateSkeleton,
+  type EmailTemplateSkeleton,
   exportEmailTemplates,
   importEmailTemplates,
 } from './EmailTemplateOps.ts';
@@ -103,18 +106,18 @@ import {
 import {
   exportInternalRoles,
   importInternalRoles,
-  InternalRoleSkeleton,
+  type InternalRoleSkeleton,
 } from './InternalRoleOps.ts';
 import {
   exportJourneys,
   importJourneys,
-  SingleTreeExportInterface,
+  type SingleTreeExportInterface,
 } from './JourneyOps.ts';
 import {
   exportMappings,
   importMappings,
-  MappingSkeleton,
-  SyncSkeleton,
+  type MappingSkeleton,
+  type SyncSkeleton,
 } from './MappingOps.ts';
 import { exportCustomNodes, importCustomNodes } from './NodeOps.ts';
 import { exportOAuth2Clients, importOAuth2Clients } from './OAuth2ClientOps.ts';
@@ -122,7 +125,7 @@ import {
   exportOAuth2TrustedJwtIssuers,
   importOAuth2TrustedJwtIssuers,
 } from './OAuth2TrustedJwtIssuerOps.ts';
-import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { type ExportMetaData, type ResultCallback } from './OpsTypes.ts';
 import { exportPolicies, importPolicies } from './PolicyOps.ts';
 import { exportPolicySets, importPolicySets } from './PolicySetOps.ts';
 import { exportRealms, importRealms } from './RealmOps.ts';
@@ -132,15 +135,15 @@ import { exportScripts, importScripts } from './ScriptOps.ts';
 import {
   exportScriptTypes,
   importScriptTypes,
-  ScriptTypeExportSkeleton,
+  type ScriptTypeExportSkeleton,
 } from './ScriptTypeOps.ts';
 import {
   exportSecretStores,
   importSecretStores,
-  SecretStoreExportSkeleton,
+  type SecretStoreExportSkeleton,
 } from './SecretStoreOps.ts';
 import { exportServices, importServices } from './ServiceOps.ts';
-import { exportThemes, importThemes, ThemeSkeleton } from './ThemeOps.ts';
+import { exportThemes, importThemes, type ThemeSkeleton } from './ThemeOps.ts';
 
 export type Config = {
   /**

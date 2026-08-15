@@ -1,6 +1,6 @@
 import util from 'node:util';
 
-import { State } from '../shared/State.ts';
+import { type State } from '../shared/State.ts';
 import { debugMessage } from '../utils/Console.ts';
 import { getConfigPath, getRealmPathGlobal } from '../utils/ForgeRockUtils.ts';
 import { type IdObjectSkeletonInterface } from './ApiTypes.ts';

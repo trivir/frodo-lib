@@ -84,7 +84,7 @@ import {
   getPrivateKey,
   printError,
 } from '../../test/utils/TestUtils.ts';
-import { CSR } from '../../api/cloud/EnvCSRsApi.ts';
+import { type CSR } from '../../api/cloud/EnvCSRsApi.ts';
 
 const matchRequestsBy = defaultMatchRequestsBy(true);
 matchRequestsBy.order = true;

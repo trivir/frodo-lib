@@ -21,14 +21,14 @@
  */
 
 import {
-  McpCapabilityArgumentMode,
-  McpCapabilityDescriptor,
-  McpCapabilityOperationType,
-  McpCapabilityParameter,
-  McpCapabilityRiskClass,
-  McpDeploymentType,
-  McpIdentitySurface,
-  McpToolAnnotations,
+  type McpCapabilityArgumentMode,
+  type McpCapabilityDescriptor,
+  type McpCapabilityOperationType,
+  type McpCapabilityParameter,
+  type McpCapabilityRiskClass,
+  type McpDeploymentType,
+  type McpIdentitySurface,
+  type McpToolAnnotations,
 } from './CapabilityTypes.ts';
 
 // ---------------------------------------------------------------------------
