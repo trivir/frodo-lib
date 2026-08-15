@@ -3,15 +3,15 @@ import util from 'node:util';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { step } from '../api/AuthenticateApi';
-import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
-import { AccessTokenResponseType } from '../api/OAuth2OIDCApi';
-import { OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi';
-import { updateOAuth2Client } from '../ops/OAuth2ClientOps';
-import { State } from '../shared/State';
-import { printMessage } from '../utils/Console';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { cloneDeep, stringify } from '../utils/JsonUtils';
+import { step } from '../api/AuthenticateApi.ts';
+import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
+import { AccessTokenResponseType } from '../api/OAuth2OIDCApi.ts';
+import { OAuth2TrustedJwtIssuerSkeleton } from '../api/OAuth2TrustedJwtIssuerApi.ts';
+import { updateOAuth2Client } from '../ops/OAuth2ClientOps.ts';
+import { State } from '../shared/State.ts';
+import { printMessage } from '../utils/Console.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep, stringify } from '../utils/JsonUtils.ts';
 import {
   createJwkRsa,
   createJwks,
@@ -19,9 +19,9 @@ import {
   getJwkRsaPublic,
   JwkRsa,
   JwksInterface,
-} from './JoseOps';
-import { accessTokenRfc7523AuthZGrant } from './OAuth2OidcOps';
-import { updateOAuth2TrustedJwtIssuer } from './OAuth2TrustedJwtIssuerOps';
+} from './JoseOps.ts';
+import { accessTokenRfc7523AuthZGrant } from './OAuth2OidcOps.ts';
+import { updateOAuth2TrustedJwtIssuer } from './OAuth2TrustedJwtIssuerOps.ts';
 import templateIpAddresses from './templates/autoaccess/IPAddresses.json';
 import templateUserAgents from './templates/autoaccess/UserAgents.json';
 import templateUsernames from './templates/autoaccess/Usernames.json';

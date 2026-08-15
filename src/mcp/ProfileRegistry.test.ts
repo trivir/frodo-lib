@@ -2,14 +2,14 @@
  * Verifies profile registry coverage and subtree mapping completeness.
  */
 
-import { frodo, buildCapabilityInventory } from '../index';
+import { frodo, buildCapabilityInventory } from '../index.ts';
 import {
   capabilityMatchesAnyProfile,
   capabilityMatchesDisabled,
   getMcpProfileDefinition,
   listAllMcpProfiles,
   listMcpProfiles,
-} from './ProfileRegistry';
+} from './ProfileRegistry.ts';
 
 describe('MCP profile registry', () => {
   test('derives all from the non-disabled profile universe', () => {

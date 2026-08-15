@@ -1,5 +1,5 @@
-import StateImpl, { State } from '../shared/State';
-import { areScriptHooksValid } from './ScriptValidationUtils';
+import StateImpl, { State } from '../shared/State.ts';
+import { areScriptHooksValid } from './ScriptValidationUtils.ts';
 
 const state: State = StateImpl({});
 

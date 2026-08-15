@@ -6,14 +6,14 @@ import FSPersister from '@pollyjs/persister-fs';
 import { MODES } from '@pollyjs/utils';
 import { LogLevelDesc } from 'loglevel';
 
-import { State } from '../shared/State';
-import { debugMessage, printMessage } from './Console';
-import { FrodoNodeHttpAdapter } from './FrodoNodeHttpAdapter';
+import { State } from '../shared/State.ts';
+import { debugMessage, printMessage } from './Console.ts';
+import { FrodoNodeHttpAdapter } from './FrodoNodeHttpAdapter.ts';
 import {
   orderedMatchRequestsBy,
   filterRecording,
   Recording,
-} from './PollyUtils';
+} from './PollyUtils.ts';
 
 const FRODO_TEST_NAME = process.env.FRODO_TEST_NAME
   ? process.env.FRODO_TEST_NAME

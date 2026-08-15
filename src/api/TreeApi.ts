@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import type { IdObjectSkeletonInterface } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
-import { type NodeRefSkeletonInterface } from './NodeApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import type { IdObjectSkeletonInterface } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
+import { type NodeRefSkeletonInterface } from './NodeApi.ts';
 
 const treeByIdURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/trees/%s';

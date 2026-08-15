@@ -1,29 +1,29 @@
-import { type NoIdObjectSkeletonInterface } from '../api/ApiTypes';
+import { type NoIdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   deleteOAuth2Client as _deleteOAuth2Client,
   getOAuth2Client as _getOAuth2Client,
   getOAuth2Clients as _getOAuth2Clients,
   type OAuth2ClientSkeleton,
   putOAuth2Client as _putOAuth2Client,
-} from '../api/OAuth2ClientApi';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { State } from '../shared/State';
+} from '../api/OAuth2ClientApi.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   getMetadata,
-} from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { readOAuth2Provider } from './OAuth2ProviderOps';
-import { ExportMetaData } from './OpsTypes';
-import { readScript, updateScript } from './ScriptOps';
+} from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { readOAuth2Provider } from './OAuth2ProviderOps.ts';
+import { ExportMetaData } from './OpsTypes.ts';
+import { readScript, updateScript } from './ScriptOps.ts';
 
 export type OAuth2Client = {
   /**

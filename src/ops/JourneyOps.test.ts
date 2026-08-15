@@ -48,14 +48,14 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as JourneyOps from './JourneyOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import Constants from '../shared/Constants';
+import { state } from '../index.ts';
+import * as JourneyOps from './JourneyOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import Constants from '../shared/Constants.ts';
 
-import * as TestData from '../test/setup/JourneySetup';
-import { snapshotResultCallback } from '../test/utils/TestUtils';
+import * as TestData from '../test/setup/JourneySetup.ts';
+import { snapshotResultCallback } from '../test/utils/TestUtils.ts';
 
 const ctx = autoSetupPolly();
 const pollyMode = process.env.FRODO_POLLY_MODE;

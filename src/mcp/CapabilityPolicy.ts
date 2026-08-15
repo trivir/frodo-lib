@@ -11,7 +11,7 @@ import {
   McpCapabilityDescriptor,
   McpCapabilityPolicy,
   McpCapabilityPolicyPresetName,
-} from './CapabilityTypes';
+} from './CapabilityTypes.ts';
 
 /**
  * Built-in policy presets representing common launch safety postures.

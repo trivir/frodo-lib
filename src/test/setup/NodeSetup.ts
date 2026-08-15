@@ -1,7 +1,7 @@
 import { beforeAll, afterAll } from '@jest/globals';
 
-import * as NodeApi from '../../api/NodeApi';
-import { state } from '../../index';
+import * as NodeApi from '../../api/NodeApi.ts';
+import { state } from '../../index.ts';
 
 export const node1: NodeApi.NodeSkeleton = {
   _id: '67693475-3a58-4e38-bcc6-037b3fe46a58',

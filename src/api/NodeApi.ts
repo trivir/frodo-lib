@@ -1,17 +1,17 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { deleteDeepByKey } from '../utils/JsonUtils';
-import { eq, gt } from '../utils/SemverUtils';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { deleteDeepByKey } from '../utils/JsonUtils.ts';
+import { eq, gt } from '../utils/SemverUtils.ts';
 import {
   AmConfigEntityInterface,
   type IdObjectSkeletonInterface,
   type NoIdObjectSkeletonInterface,
   type PagedResult,
   type QueryResult,
-} from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const queryAllNodeTypesURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes?_action=getAllTypes';

@@ -11,40 +11,40 @@ import {
   AuthenticateStep,
   AuthenticateSuccessResponse,
   step,
-} from '../api/AuthenticateApi';
-import { ServiceAccountScope } from '../api/cloud/EnvServiceAccountScopesApi';
-import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { encodeBase64Url } from '../utils/Base64Utils';
-import { debugMessage, verboseMessage } from '../utils/Console';
-import { isValidUrl, parseUrl } from '../utils/ExportImportUtils';
+} from '../api/AuthenticateApi.ts';
+import { ServiceAccountScope } from '../api/cloud/EnvServiceAccountScopesApi.ts';
+import { getServerInfo, getServerVersionInfo } from '../api/ServerInfoApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { encodeBase64Url } from '../utils/Base64Utils.ts';
+import { debugMessage, verboseMessage } from '../utils/Console.ts';
+import { isValidUrl, parseUrl } from '../utils/ExportImportUtils.ts';
 import {
   CallbackHandler,
   fillCallbacks,
   getCallbackValue,
-} from './CallbackOps';
+} from './CallbackOps.ts';
 import {
   readServiceAccountScopes,
   flattenScopes,
-} from './cloud/EnvServiceAccountScopesOps';
+} from './cloud/EnvServiceAccountScopesOps.ts';
 import {
   getServiceAccount,
   SERVICE_ACCOUNT_DEFAULT_SCOPES,
-} from './cloud/ServiceAccountOps';
+} from './cloud/ServiceAccountOps.ts';
 import {
   getConnectionProfile,
   loadConnectionProfile,
   saveConnectionProfile,
-} from './ConnectionProfileOps';
-import { FrodoError } from './FrodoError';
-import { createSignedJwtToken, JwkRsa } from './JoseOps';
+} from './ConnectionProfileOps.ts';
+import { FrodoError } from './FrodoError.ts';
+import { createSignedJwtToken, JwkRsa } from './JoseOps.ts';
 import {
   accessToken,
   type AccessTokenMetaType,
   authorize,
-} from './OAuth2OidcOps';
-import { getSessionInfo } from './SessionOps';
+} from './OAuth2OidcOps.ts';
+import { getSessionInfo } from './SessionOps.ts';
 import {
   hasToken,
   readToken,
@@ -58,7 +58,7 @@ import {
   saveSaBearerToken,
   saveUserBearerToken,
   saveUserSessionToken,
-} from './TokenCacheOps';
+} from './TokenCacheOps.ts';
 
 export type Authenticate = {
   /**

@@ -1,7 +1,7 @@
-import { getRealms } from '../ops/RealmOps';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
+import { getRealms } from '../ops/RealmOps.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { debugMessage } from '../utils/Console.ts';
 
 export type FRUtils = {
   applyNameCollisionPolicy(name: string): string;

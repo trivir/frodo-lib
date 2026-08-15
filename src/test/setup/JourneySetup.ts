@@ -1,8 +1,8 @@
 import { beforeAll, afterAll } from '@jest/globals';
 
-import { state } from '../../index';
-import * as JourneyOps from '../../ops/JourneyOps';
-import { getJourney } from '../mocks/ForgeRockApiMockEngine';
+import { state } from '../../index.ts';
+import * as JourneyOps from '../../ops/JourneyOps.ts';
+import { getJourney } from '../mocks/ForgeRockApiMockEngine.ts';
 
 function getJourneyFixture(
   journeyId: string

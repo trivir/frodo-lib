@@ -12,9 +12,9 @@ import { fileURLToPath } from 'node:url';
 
 import { jest } from '@jest/globals';
 
-import { state } from '../index';
-import { JwkRsa } from '../ops/JoseOps';
-import Constants from './Constants';
+import { state } from '../index.ts';
+import { JwkRsa } from '../ops/JoseOps.ts';
+import Constants from './Constants.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { printMessage } from '../../utils/Console';
-import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes';
-import { generateAmApi } from '../BaseApi';
+import { State } from '../../shared/State.ts';
+import { printMessage } from '../../utils/Console.ts';
+import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes.ts';
+import { generateAmApi } from '../BaseApi.ts';
 
 const serverURLTemplate = '%s/json/global-config/servers/%s';
 const serversURLTemplate = '%s/json/global-config/servers?_queryFilter=true';

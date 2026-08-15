@@ -1,4 +1,4 @@
-import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   createInternalObject,
   deleteInternalObject,
@@ -6,17 +6,17 @@ import {
   putInternalObject,
   queryAllInternalObjectsByType,
   queryInternalObjects,
-} from '../api/InternalObjectApi';
-import { State } from '../shared/State';
+} from '../api/InternalObjectApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 const defaultFields = [
   'condition',

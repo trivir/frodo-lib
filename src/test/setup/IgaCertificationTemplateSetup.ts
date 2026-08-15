@@ -3,15 +3,15 @@ import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 import {
   CertificationTemplateSkeleton,
   CertificationTemplateType,
-} from '../../api/cloud/iga/IgaCertificationTemplateApi';
-import { state } from '../../index';
-import * as IgaCertificationTemplateOps from '../../ops/cloud/iga/IgaCertificationTemplateOps';
-import { EMAIL_TEMPLATE_TYPE } from '../../ops/EmailTemplateOps';
+} from '../../api/cloud/iga/IgaCertificationTemplateApi.ts';
+import { state } from '../../index.ts';
+import * as IgaCertificationTemplateOps from '../../ops/cloud/iga/IgaCertificationTemplateOps.ts';
+import { EMAIL_TEMPLATE_TYPE } from '../../ops/EmailTemplateOps.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
-import { stageEmailTemplate, template1 } from './EmailTemplateSetup';
+} from '../../utils/AutoSetupPolly.ts';
+import { stageEmailTemplate, template1 } from './EmailTemplateSetup.ts';
 
 export function getTestCertificationTemplate(
   id: string,

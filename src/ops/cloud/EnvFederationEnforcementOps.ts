@@ -2,9 +2,9 @@ import {
   FederationEnforcement,
   getFederationEnforcement as _getFederationEnforcement,
   setFederationEnforcement as _setFederationEnforcement,
-} from '../../api/cloud/EnvFederationEnforcementApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvFederationEnforcementApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvFederationEnforcement = {
   /**

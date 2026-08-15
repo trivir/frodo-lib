@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { type NoIdObjectSkeletonInterface } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { type NoIdObjectSkeletonInterface } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const queryAllPolicySetURLTemplate =
   '%s/json%s/applications?_sortKeys=name&_queryFilter=name+eq+%22%5E(%3F!sunAMDelegationService%24).*%22';

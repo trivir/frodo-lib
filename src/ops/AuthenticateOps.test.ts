@@ -36,11 +36,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { state } from '../index';
-import * as AuthenticateOps from './AuthenticateOps';
-import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly';
-import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils';
-import Constants from '../shared/Constants';
+import { state } from '../index.ts';
+import * as AuthenticateOps from './AuthenticateOps.ts';
+import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly.ts';
+import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils.ts';
+import Constants from '../shared/Constants.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

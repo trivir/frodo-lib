@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { expect } from '@jest/globals';
 import MockAdapter from 'axios-mock-adapter';
 
-import { SingleTreeExportInterface } from '../../ops/JourneyOps';
-import { getTypedFilename } from '../../utils/ExportImportUtils';
+import { SingleTreeExportInterface } from '../../ops/JourneyOps.ts';
+import { getTypedFilename } from '../../utils/ExportImportUtils.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

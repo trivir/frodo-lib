@@ -1,9 +1,9 @@
 import {
   EsvCountResponse,
   getEsvCount as _getCountOfESVs,
-} from '../../api/cloud/EsvCountApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EsvCountApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EsvCount = {
   /**

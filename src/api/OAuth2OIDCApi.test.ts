@@ -12,14 +12,14 @@
  */
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import * as OAuth2OIDCApi from './OAuth2OIDCApi';
-import { state } from '../index';
-import Constants from '../shared/Constants';
+import * as OAuth2OIDCApi from './OAuth2OIDCApi.ts';
+import { state } from '../index.ts';
+import Constants from '../shared/Constants.ts';
 import {
   mockAuthorize,
   mockAccessToken,
-} from '../test/mocks/ForgeRockApiMockEngine';
-import { parseUrl } from '../utils/ExportImportUtils';
+} from '../test/mocks/ForgeRockApiMockEngine.ts';
+import { parseUrl } from '../utils/ExportImportUtils.ts';
 
 const mock = new MockAdapter(axios);
 

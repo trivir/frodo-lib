@@ -1,13 +1,13 @@
 import { resolve } from 'node:path';
 import { rmSync, existsSync, readFileSync } from 'node:fs';
 
-import { state } from '../index';
+import { state } from '../index.ts';
 import {
   convertTextArrayToBase64,
   convertBase64TextToArray,
   saveToFile,
   validateImport,
-} from './ExportImportUtils';
+} from './ExportImportUtils.ts';
 // Warning! implimentation file contains non determinisitc functions which are either; not reasonable to test or imposible
 // Cause: date based non overidable functions
 // Not tested: getCurrentTimestamp

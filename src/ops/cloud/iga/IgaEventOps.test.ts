@@ -43,12 +43,12 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../../../index';
-import * as IgaEventOps from './IgaEventOps';
-import * as TestData from '../../../test/setup/IgaEventSetup';
-import { snapshotResultCallback } from '../../../test/utils/TestUtils';
-import { debugMessage } from '../../../utils/Console';
-import { template1 } from '../../../test/setup/EmailTemplateSetup';
+import { state } from '../../../index.ts';
+import * as IgaEventOps from './IgaEventOps.ts';
+import * as TestData from '../../../test/setup/IgaEventSetup.ts';
+import { snapshotResultCallback } from '../../../test/utils/TestUtils.ts';
+import { debugMessage } from '../../../utils/Console.ts';
+import { template1 } from '../../../test/setup/EmailTemplateSetup.ts';
 
 describe('IgaEventOps', () => {
   

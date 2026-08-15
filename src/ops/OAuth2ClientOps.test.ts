@@ -29,13 +29,13 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as OAuth2ClientOps from './OAuth2ClientOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { NoIdObjectSkeletonInterface } from '../api/ApiTypes';
-import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
+import { state } from '../index.ts';
+import * as OAuth2ClientOps from './OAuth2ClientOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { NoIdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
 
 const ctx = autoSetupPolly();
 

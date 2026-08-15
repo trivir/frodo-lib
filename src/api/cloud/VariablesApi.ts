@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes';
-import { generateEnvApi } from '../BaseApi';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
+import { IdObjectSkeletonInterface, PagedResult } from '../ApiTypes.ts';
+import { generateEnvApi } from '../BaseApi.ts';
 
 const variablesListURLTemplate = '%s/environment/variables';
 const variableURLTemplate = '%s/environment/variables/%s';

@@ -29,14 +29,14 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import { customNode1, customNode2 } from '../test/setup/NodeSetup';
-import { template1, template2 } from '../test/setup/EmailTemplateSetup';
-import { variable1, variable2 } from '../test/setup/VariablesSetup';
-import * as TestData from '../test/setup/RawConfigSetup';
-import * as RawConfigOps from './RawConfigOps';
-import { EMAIL_TEMPLATE_TYPE } from './EmailTemplateOps';
-import { encode } from '../utils/Base64Utils';
+import { state } from '../index.ts';
+import { customNode1, customNode2 } from '../test/setup/NodeSetup.ts';
+import { template1, template2 } from '../test/setup/EmailTemplateSetup.ts';
+import { variable1, variable2 } from '../test/setup/VariablesSetup.ts';
+import * as TestData from '../test/setup/RawConfigSetup.ts';
+import * as RawConfigOps from './RawConfigOps.ts';
+import { EMAIL_TEMPLATE_TYPE } from './EmailTemplateOps.ts';
+import { encode } from '../utils/Base64Utils.ts';
 
 describe('RawConfigOps', () => {
   TestData.setup();

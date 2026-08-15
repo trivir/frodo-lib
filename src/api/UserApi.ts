@@ -1,11 +1,11 @@
 import util from 'node:util';
 
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { printMessage } from '../utils/Console';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { printMessage } from '../utils/Console.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const userURLTemplate = '%s/json%s/users/%s';
 const usersURLTemplate = '%s/json%s/users?_queryFilter=true';

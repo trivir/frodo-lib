@@ -42,11 +42,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../../../index';
-import * as IgaRequestTypeOps from './IgaRequestTypeOps';
+import { state } from '../../../index.ts';
+import * as IgaRequestTypeOps from './IgaRequestTypeOps.ts';
 
-import * as TestData from '../../../test/setup/IgaRequestTypeSetup';
-import { snapshotResultCallback } from '../../../test/utils/TestUtils';
+import * as TestData from '../../../test/setup/IgaRequestTypeSetup.ts';
+import { snapshotResultCallback } from '../../../test/utils/TestUtils.ts';
 
 describe('IgaRequestTypeOps', () => {
 

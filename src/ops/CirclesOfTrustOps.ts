@@ -5,21 +5,21 @@ import {
   getCircleOfTrust as _getCircleOfTrust,
   getCirclesOfTrust as _getCirclesOfTrust,
   updateCircleOfTrust as _updateCircleOfTrust,
-} from '../api/CirclesOfTrustApi';
-import { type Saml2ProviderSkeleton } from '../api/Saml2Api';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { State } from '../shared/State';
+} from '../api/CirclesOfTrustApi.ts';
+import { type Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
-import { readSaml2EntityIds } from './Saml2Ops';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
+import { readSaml2EntityIds } from './Saml2Ops.ts';
 
 export type CirclesOfTrust = {
   /**

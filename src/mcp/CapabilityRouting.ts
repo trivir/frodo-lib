@@ -1,4 +1,7 @@
-import { McpCapabilityDescriptor, McpDeploymentType } from './CapabilityTypes';
+import {
+  McpCapabilityDescriptor,
+  McpDeploymentType,
+} from './CapabilityTypes.ts';
 
 export type McpCapabilityRoutingStatus =
   | 'preferred'

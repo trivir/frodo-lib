@@ -1,6 +1,6 @@
-import { State } from '../shared/State';
-import { FrodoError } from './FrodoError';
-import { evaluateScript } from './IdmScriptOps';
+import { State } from '../shared/State.ts';
+import { FrodoError } from './FrodoError.ts';
+import { evaluateScript } from './IdmScriptOps.ts';
 
 export type IdmCrypto = {
   /**

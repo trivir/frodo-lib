@@ -9,9 +9,9 @@
 import fs from 'node:fs';
 import { homedir } from 'node:os';
 
-import { FrodoError, state } from '../index';
-import * as ConnectionProfileOps from './ConnectionProfileOps';
-import Constants from '../shared/Constants';
+import { FrodoError, state } from '../index.ts';
+import * as ConnectionProfileOps from './ConnectionProfileOps.ts';
+import Constants from '../shared/Constants.ts';
 
 const exampleHost = 'https://openam-tenant-name.forgeblocks.com/am';
 const exampleUsername = 'frodo.baggins@shire.me';

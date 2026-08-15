@@ -1,5 +1,5 @@
-import { state } from '../index';
-import * as AdminOps from './AdminOps';
+import { state } from '../index.ts';
+import * as AdminOps from './AdminOps.ts';
 
 describe('AdminOps', () => {
   describe('getAccessTokenUrl()', () => {

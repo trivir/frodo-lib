@@ -1,4 +1,4 @@
-import { helpMetadata, type MethodHelpDoc } from '../lib/Help';
+import { helpMetadata, type MethodHelpDoc } from '../lib/Help.ts';
 
 export type HelpUtils = {
   /**

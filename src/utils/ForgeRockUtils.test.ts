@@ -6,11 +6,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as ForgeRockUtils from './ForgeRockUtils';
-import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly";
-import { filterRecording } from "../utils/PollyUtils";
-import { state } from '../index';
-import Constants from '../shared/Constants';
+import * as ForgeRockUtils from './ForgeRockUtils.ts';
+import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
+import { filterRecording } from "../utils/PollyUtils.ts";
+import { state } from '../index.ts';
+import Constants from '../shared/Constants.ts';
 
 const ctx = autoSetupPolly();
 

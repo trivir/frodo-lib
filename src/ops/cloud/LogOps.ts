@@ -1,4 +1,4 @@
-import { type PagedResult } from '../../api/ApiTypes';
+import { type PagedResult } from '../../api/ApiTypes.ts';
 import {
   createLogApiKey as _createLogApiKey,
   deleteLogApiKey as _deleteLogApiKey,
@@ -11,9 +11,9 @@ import {
   type LogEventPayloadSkeleton,
   type LogEventSkeleton,
   tail as _tail,
-} from '../../api/cloud/LogApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/LogApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type Log = {
   /**

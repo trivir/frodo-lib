@@ -1,4 +1,4 @@
-import { FrodoError } from './FrodoError';
+import { FrodoError } from './FrodoError.ts';
 
 export interface ExportMetaData {
   origin: string;

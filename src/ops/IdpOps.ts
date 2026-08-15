@@ -1,28 +1,28 @@
-import { type ScriptSkeleton } from '../api/ScriptApi';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
 import {
   getSocialIdentityProviders as _getSocialIdentityProviders,
   putProviderByTypeAndId as _putProviderByTypeAndId,
   deleteProviderByTypeAndId,
   type SocialIdpSkeleton,
-} from '../api/SocialIdentityProvidersApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/SocialIdentityProvidersApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   convertTextArrayToBase64,
   getMetadata,
-} from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
-import { readScript, updateScript } from './ScriptOps';
+} from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
+import { readScript, updateScript } from './ScriptOps.ts';
 
 export type Idp = {
   /**

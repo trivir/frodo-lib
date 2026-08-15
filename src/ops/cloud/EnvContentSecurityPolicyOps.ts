@@ -4,9 +4,9 @@ import {
   getReportOnlyContentSecurityPolicy as _getReportOnlyContentSecurityPolicy,
   setEnforcedContentSecurityPolicy as _setEnforcedContentSecurityPolicy,
   setReportOnlyContentSecurityPolicy as _setReportOnlyContentSecurityPolicy,
-} from '../../api/cloud/EnvContentSecurityPolicyApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvContentSecurityPolicyApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvContentSecurityPolicy = {
   /**

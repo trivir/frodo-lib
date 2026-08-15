@@ -2,11 +2,11 @@ import {
   IdObjectSkeletonInterface,
   PagedResult,
   PatchOperationInterface,
-} from '../api/ApiTypes';
+} from '../api/ApiTypes.ts';
 import {
   getManagedObject as _getManagedObject,
   type ManagedObjectSchema,
-} from '../api/ManagedObjectApi';
+} from '../api/ManagedObjectApi.ts';
 import {
   countManagedSystemObjects as _countManagedSystemObjects,
   createManagedSystemObject as _createManagedSystemObject,
@@ -19,13 +19,13 @@ import {
   queryAllManagedSystemObjectsByType as _queryAllManagedSystemObjectsByType,
   queryManagedSystemObjects as _queryManagedSystemObjects,
   queryRelatedManagedSystemObjects as _queryRelatedManagedSystemObjects,
-} from '../api/ManagedSystemObjectApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
-import { cloneDeep } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
-import { ManagedObjectSchemaOptions } from './ManagedObjectOps';
+} from '../api/ManagedSystemObjectApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { debugMessage } from '../utils/Console.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { ManagedObjectSchemaOptions } from './ManagedObjectOps.ts';
 
 export type ManagedObject = {
   /**

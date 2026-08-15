@@ -42,11 +42,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../../../index';
-import * as IgaGlossaryOps from './IgaGlossaryOps';
+import { state } from '../../../index.ts';
+import * as IgaGlossaryOps from './IgaGlossaryOps.ts';
 
-import * as TestData from '../../../test/setup/IgaGlossarySetup';
-import { snapshotResultCallback } from '../../../test/utils/TestUtils';
+import * as TestData from '../../../test/setup/IgaGlossarySetup.ts';
+import { snapshotResultCallback } from '../../../test/utils/TestUtils.ts';
 
 describe('IgaGlossaryOps', () => {
 

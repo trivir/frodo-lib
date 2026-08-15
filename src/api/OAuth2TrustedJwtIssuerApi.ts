@@ -1,16 +1,16 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { deleteDeepByKey } from '../utils/JsonUtils';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { deleteDeepByKey } from '../utils/JsonUtils.ts';
 import {
   type IdObjectSkeletonInterface,
   type NoIdObjectSkeletonInterface,
   type PagedResult,
   type Readable,
   type Writable,
-} from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const oauth2TrustedJwtIssuerURLTemplate =
   '%s/json%s/realm-config/agents/TrustedJwtIssuer/%s';

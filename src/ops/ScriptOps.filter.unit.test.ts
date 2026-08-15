@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import type { ScriptContext } from '../api/ScriptApi';
+import type { ScriptContext } from '../api/ScriptApi.ts';
 
 const deleteScriptApiMock: any = jest.fn();
 const getLibraryScriptConfigByNameMock: any = jest.fn();
@@ -19,7 +19,7 @@ jest.unstable_mockModule('../api/ScriptApi', () => ({
   putScript: putScriptMock,
 }));
 
-const ScriptOps = await import('./ScriptOps');
+const ScriptOps = await import('./ScriptOps.ts');
 
 const state = {
   getAmVersion: () => '7.5.0',

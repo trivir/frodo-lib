@@ -8,28 +8,34 @@
  * actual transport wiring to higher layers.
  */
 
-import { Frodo, frodo } from '../lib/FrodoLib';
-import { MCP_POLICY_PRESETS, applyCapabilityPolicy } from './CapabilityPolicy';
-import { buildCapabilityInventory } from './CapabilityRegistry';
+import { Frodo, frodo } from '../lib/FrodoLib.ts';
+import {
+  MCP_POLICY_PRESETS,
+  applyCapabilityPolicy,
+} from './CapabilityPolicy.ts';
+import { buildCapabilityInventory } from './CapabilityRegistry.ts';
 import {
   McpCapabilityDescriptor,
   McpCapabilityInventoryOptions,
   McpCapabilityPolicy,
   McpCapabilityPolicyPresetName,
-} from './CapabilityTypes';
-import { McpProfileName, resolveMcpProfileSelection } from './ProfileRegistry';
+} from './CapabilityTypes.ts';
+import {
+  McpProfileName,
+  resolveMcpProfileSelection,
+} from './ProfileRegistry.ts';
 import {
   buildToolManifest,
   McpDiscoveryContext,
   McpToolManifest,
-} from './ToolManifest';
+} from './ToolManifest.ts';
 import {
   createToolRuntime,
   McpToolExecutionRequest,
   McpToolExecutionResult,
   McpToolRuntime,
   McpToolRuntimeOptions,
-} from './ToolRuntime';
+} from './ToolRuntime.ts';
 
 /**
  * Lightweight tool metadata surface suitable for MCP tool registration calls.

@@ -4,9 +4,9 @@ import net, { AddressInfo } from 'node:net';
 
 import forge from 'node-forge';
 
-import { generateAmApi } from './BaseApi';
-import StateImpl from '../shared/State';
-import { getPrivateKey, getPublicKey } from '../test/utils/TestUtils';
+import { generateAmApi } from './BaseApi.ts';
+import StateImpl from '../shared/State.ts';
+import { getPrivateKey, getPublicKey } from '../test/utils/TestUtils.ts';
 
 function createExpiredCertificate(): { key: string; cert: string } {
   const pki = forge.pki;

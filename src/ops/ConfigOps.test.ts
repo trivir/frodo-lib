@@ -49,12 +49,12 @@
  * in case things don't function as expected
  */
 
-import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly";
-import { filterRecording } from '../utils/PollyUtils';
-import * as ConfigOps from "./ConfigOps";
-import { state } from "../index";
-import Constants from '../shared/Constants';
-import { snapshotResultCallback } from "../test/utils/TestUtils";
+import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
+import { filterRecording } from '../utils/PollyUtils.ts';
+import * as ConfigOps from "./ConfigOps.ts";
+import { state } from "../index.ts";
+import Constants from '../shared/Constants.ts';
+import { snapshotResultCallback } from "../test/utils/TestUtils.ts";
 
 const ctx = autoSetupPolly();
 

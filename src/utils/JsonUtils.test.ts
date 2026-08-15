@@ -6,7 +6,7 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { isEqualJson, get } from './JsonUtils';
+import { isEqualJson, get } from './JsonUtils.ts';
 
 describe('JsonUtils', () => {
   describe('isEqualJson()', () => {

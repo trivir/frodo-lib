@@ -11,22 +11,22 @@ import {
   setSecretDescription as _setSecretDescription,
   setStatusOfVersionOfSecret as _setStatusOfVersionOfSecret,
   VersionOfSecretSkeleton,
-} from '../../api/cloud/SecretsApi';
-import FrodoLib from '../../lib/FrodoLib';
-import { State } from '../../shared/State';
-import { decode, encode, isBase64Encoded } from '../../utils/Base64Utils';
+} from '../../api/cloud/SecretsApi.ts';
+import FrodoLib from '../../lib/FrodoLib.ts';
+import { State } from '../../shared/State.ts';
+import { decode, encode, isBase64Encoded } from '../../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
   debugMessage,
   printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../utils/Console';
-import { getMetadata } from '../../utils/ExportImportUtils';
-import { FrodoError } from '../FrodoError';
-import { decrypt, decryptMap, isEncrypted } from '../IdmCryptoOps';
-import { evaluateScript } from '../IdmScriptOps';
-import { ExportMetaData } from '../OpsTypes';
+} from '../../utils/Console.ts';
+import { getMetadata } from '../../utils/ExportImportUtils.ts';
+import { FrodoError } from '../FrodoError.ts';
+import { decrypt, decryptMap, isEncrypted } from '../IdmCryptoOps.ts';
+import { evaluateScript } from '../IdmScriptOps.ts';
+import { ExportMetaData } from '../OpsTypes.ts';
 
 export type Secret = {
   /**

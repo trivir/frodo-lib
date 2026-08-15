@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { IdObjectSkeletonInterface } from '../../api/ApiTypes';
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
-import { generateAmApi } from '../BaseApi';
+import { IdObjectSkeletonInterface } from '../../api/ApiTypes.ts';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
+import { generateAmApi } from '../BaseApi.ts';
 
 const envInfoURLTemplate = '%s/feature?_queryFilter=true';
 

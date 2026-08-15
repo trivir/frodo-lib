@@ -5,28 +5,28 @@ import {
   getEvent,
   putEvent,
   queryEvents,
-} from '../../../api/cloud/iga/IgaEventApi';
-import { VariableSkeleton } from '../../../api/cloud/VariablesApi';
-import { State } from '../../../shared/State';
+} from '../../../api/cloud/iga/IgaEventApi.ts';
+import { VariableSkeleton } from '../../../api/cloud/VariablesApi.ts';
+import { State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../../utils/Console';
+} from '../../../utils/Console.ts';
 import {
   getErrorCallback,
   getIGANotificationEmailTemplateDependencies,
   getMetadata,
   getResult,
-} from '../../../utils/ExportImportUtils';
+} from '../../../utils/ExportImportUtils.ts';
 import {
   EmailTemplateSkeleton,
   importEmailTemplates,
-} from '../../EmailTemplateOps';
-import { FrodoError } from '../../FrodoError';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { importVariables } from '../VariablesOps';
+} from '../../EmailTemplateOps.ts';
+import { FrodoError } from '../../FrodoError.ts';
+import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { importVariables } from '../VariablesOps.ts';
 
 export type IgaEvent = {
   /**

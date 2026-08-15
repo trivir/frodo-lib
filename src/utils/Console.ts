@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { State } from '../shared/State';
+import { State } from '../shared/State.ts';
 
 /**
  * Handles data / messages output. The caller decides and implements how

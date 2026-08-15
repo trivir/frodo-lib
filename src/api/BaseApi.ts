@@ -9,12 +9,12 @@ import axios, {
 import axiosRetry from 'axios-retry';
 import { ProxyAgent, ProxyAgentOptions } from 'proxy-agent';
 
-import _curlirize from '../ext/axios-curlirize/curlirize';
-import StateImpl, { State } from '../shared/State';
-import { getUserAgent } from '../shared/Version';
-import { curlirizeMessage, printMessage } from '../utils/Console';
-import { mergeDeep } from '../utils/JsonUtils';
-import { setupPollyForFrodoLib } from '../utils/SetupPollyForFrodoLib';
+import _curlirize from '../ext/axios-curlirize/curlirize.ts';
+import StateImpl, { State } from '../shared/State.ts';
+import { getUserAgent } from '../shared/Version.ts';
+import { curlirizeMessage, printMessage } from '../utils/Console.ts';
+import { mergeDeep } from '../utils/JsonUtils.ts';
+import { setupPollyForFrodoLib } from '../utils/SetupPollyForFrodoLib.ts';
 
 export type ResourceConfig = { apiVersion?: string };
 

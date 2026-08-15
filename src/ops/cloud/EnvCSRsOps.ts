@@ -6,10 +6,10 @@ import {
   getCSR as _getCSR,
   getCSRs as _getCSRs,
   updateCSR as _updateCSR,
-} from '../../api/cloud/EnvCSRsApi';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvCSRsApi.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvCSR = {
   /**

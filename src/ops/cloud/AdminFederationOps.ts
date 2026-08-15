@@ -3,14 +3,14 @@ import {
   deleteProviderByTypeAndId as _deleteProviderByTypeAndId,
   getAdminFederationProviders as _getAdminFederationProviders,
   putProviderByTypeAndId as _putProviderByTypeAndId,
-} from '../../api/cloud/AdminFederationProvidersApi';
-import { getConfigEntity, putConfigEntity } from '../../api/IdmConfigApi';
-import { SocialIdpSkeleton } from '../../api/SocialIdentityProvidersApi';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
-import { getMetadata } from '../../utils/ExportImportUtils';
-import { FrodoError } from '../FrodoError';
-import { ExportMetaData } from '../OpsTypes';
+} from '../../api/cloud/AdminFederationProvidersApi.ts';
+import { getConfigEntity, putConfigEntity } from '../../api/IdmConfigApi.ts';
+import { SocialIdpSkeleton } from '../../api/SocialIdentityProvidersApi.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
+import { getMetadata } from '../../utils/ExportImportUtils.ts';
+import { FrodoError } from '../FrodoError.ts';
+import { ExportMetaData } from '../OpsTypes.ts';
 
 export type AdminFederation = {
   /**

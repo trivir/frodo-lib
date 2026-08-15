@@ -3,11 +3,11 @@ import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 import {
   VariableExpressionType,
   VariableSkeleton,
-} from '../../api/cloud/VariablesApi';
-import { state } from '../../index';
-import * as VariablesOps from '../../ops/cloud/VariablesOps';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
+} from '../../api/cloud/VariablesApi.ts';
+import { state } from '../../index.ts';
+import * as VariablesOps from '../../ops/cloud/VariablesOps.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
 
 export const variable1 = createTestVariable({
   id: 'esv-frodo-test-variable-1',

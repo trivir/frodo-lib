@@ -1,7 +1,7 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { generateAmAuthApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { generateAmAuthApi } from './BaseApi.ts';
 
 const serverInfoUrlTemplate = '%s/json/serverinfo/%s';
 

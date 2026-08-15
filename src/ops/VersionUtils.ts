@@ -1,6 +1,6 @@
-import { generateReleaseApi } from '../api/BaseApi';
-import { State } from '../shared/State';
-import { getVersionFromPackage } from '../shared/Version';
+import { generateReleaseApi } from '../api/BaseApi.ts';
+import { State } from '../shared/State.ts';
+import { getVersionFromPackage } from '../shared/Version.ts';
 
 export type Version = {
   getVersion(): string;

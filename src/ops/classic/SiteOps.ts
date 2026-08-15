@@ -3,17 +3,17 @@ import {
   getSites,
   putSite,
   SiteSkeleton,
-} from '../../api/classic/SiteApi';
-import { State } from '../../shared/State';
+} from '../../api/classic/SiteApi.ts';
+import { State } from '../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../utils/Console';
-import { getMetadata } from '../../utils/ExportImportUtils';
-import { FrodoError } from '../FrodoError';
-import { ExportMetaData } from '../OpsTypes';
+} from '../../utils/Console.ts';
+import { getMetadata } from '../../utils/ExportImportUtils.ts';
+import { FrodoError } from '../FrodoError.ts';
+import { ExportMetaData } from '../OpsTypes.ts';
 
 export type Site = {
   /**

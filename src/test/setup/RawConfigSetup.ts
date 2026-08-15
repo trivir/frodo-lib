@@ -1,11 +1,15 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { state } from '../../index';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
-import { stageEmailTemplate, template1, template2 } from './EmailTemplateSetup';
-import { customNode1, customNode2, stageCustomNode } from './NodeSetup';
-import { stageVariable, variable1, variable2 } from './VariablesSetup';
+import { state } from '../../index.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
+import {
+  stageEmailTemplate,
+  template1,
+  template2,
+} from './EmailTemplateSetup.ts';
+import { customNode1, customNode2, stageCustomNode } from './NodeSetup.ts';
+import { stageVariable, variable1, variable2 } from './VariablesSetup.ts';
 
 export function setup() {
   const ctx = autoSetupPolly();

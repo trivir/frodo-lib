@@ -1,5 +1,5 @@
-import * as EnvPromotionOps from './EnvPromotionOps';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
+import * as EnvPromotionOps from './EnvPromotionOps.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 // import { filterRecording } from '../../utils/PollyUtils';
 // import { state } from '../../index';
 

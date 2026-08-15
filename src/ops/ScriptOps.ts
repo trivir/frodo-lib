@@ -9,29 +9,29 @@ import {
   getScripts as _getScripts,
   putScript as _putScript,
   type ScriptSkeleton,
-} from '../api/ScriptApi';
-import { type ExportMetaData, ResultCallback } from '../ops/OpsTypes';
-import { State } from '../shared/State';
-import { decode, encode, isBase64Encoded } from '../utils/Base64Utils';
+} from '../api/ScriptApi.ts';
+import { type ExportMetaData, ResultCallback } from '../ops/OpsTypes.ts';
+import { State } from '../shared/State.ts';
+import { decode, encode, isBase64Encoded } from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
   verboseMessage,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   convertTextArrayToBase64,
   getMetadata,
   getResult,
-} from '../utils/ExportImportUtils';
+} from '../utils/ExportImportUtils.ts';
 import {
   applyNameCollisionPolicy,
   getCurrentRealmName,
-} from '../utils/ForgeRockUtils';
-import { isScriptValid } from '../utils/ScriptValidationUtils';
-import { FrodoError } from './FrodoError';
+} from '../utils/ForgeRockUtils.ts';
+import { isScriptValid } from '../utils/ScriptValidationUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type Script = {
   /**

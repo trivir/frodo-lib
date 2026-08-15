@@ -1,13 +1,13 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import * as IgaGlossaryApi from '../../api/cloud/iga/IgaGlossaryApi';
-import { state } from '../../index';
-import * as IgaGlossaryOps from '../../ops/cloud/iga/IgaGlossaryOps';
-import Constants from '../../shared/Constants';
+import * as IgaGlossaryApi from '../../api/cloud/iga/IgaGlossaryApi.ts';
+import { state } from '../../index.ts';
+import * as IgaGlossaryOps from '../../ops/cloud/iga/IgaGlossaryOps.ts';
+import Constants from '../../shared/Constants.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
+} from '../../utils/AutoSetupPolly.ts';
 
 export const glossary1: IgaGlossaryApi.GlossarySchemaItemSkeleton<any> = {
   name: 'testBoolean',

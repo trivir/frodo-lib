@@ -1,16 +1,16 @@
-import { IdObjectSkeletonInterface } from '../../api/ApiTypes';
+import { IdObjectSkeletonInterface } from '../../api/ApiTypes.ts';
 import {
   createManagedSystemObject,
   getManagedSystemObject,
-} from '../../api/ManagedSystemObjectApi';
-import Constants from '../../shared/Constants';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
-import { getFreshSaBearerToken } from '../AuthenticateOps';
-import { FrodoError } from '../FrodoError';
-import { JwkRsa, JwksInterface } from '../JoseOps';
-import { AccessTokenMetaType } from '../OAuth2OidcOps';
-import { hasFeature } from './FeatureOps';
+} from '../../api/ManagedSystemObjectApi.ts';
+import Constants from '../../shared/Constants.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
+import { getFreshSaBearerToken } from '../AuthenticateOps.ts';
+import { FrodoError } from '../FrodoError.ts';
+import { JwkRsa, JwksInterface } from '../JoseOps.ts';
+import { AccessTokenMetaType } from '../OAuth2OidcOps.ts';
+import { hasFeature } from './FeatureOps.ts';
 
 export type ServiceAccount = {
   /**

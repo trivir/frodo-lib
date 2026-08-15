@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
-import { generateAmApi } from '../BaseApi';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
+import { generateAmApi } from '../BaseApi.ts';
 
 const envInfoURLTemplate = '%s/environment/info';
 

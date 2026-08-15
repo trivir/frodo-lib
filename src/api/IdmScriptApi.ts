@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { generateIdmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
+import { generateIdmApi } from './BaseApi.ts';
 
 const scriptActionsUrlTemplate = '%s/script?_action=%s';
 

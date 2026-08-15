@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { type NoIdObjectSkeletonInterface } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { type NoIdObjectSkeletonInterface } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const queryAllResourceTypesURLTemplate =
   '%s/json%s/resourcetypes?_sortKeys=name&_queryFilter=name+eq+%22%5E(%3F!Delegation%20Service%24).*%22';

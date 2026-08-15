@@ -34,7 +34,7 @@ jest.unstable_mockModule('../utils/ForgeRockUtils', () => ({
   getCurrentRealmName: jest.fn(() => 'alpha'),
 }));
 
-const ServiceOps = await import('./ServiceOps');
+const ServiceOps = await import('./ServiceOps.ts');
 
 const state = {
   getRealm: () => 'alpha',

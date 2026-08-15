@@ -70,21 +70,21 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as EnvCertificatesApi from '../../api/cloud/EnvCertificatesApi';
-import * as EnvCertificatesOps from './EnvCertificatesOps';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
+import * as EnvCertificatesApi from '../../api/cloud/EnvCertificatesApi.ts';
+import * as EnvCertificatesOps from './EnvCertificatesOps.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
 import {
   defaultMatchRequestsBy,
   filterRecording,
-} from '../../utils/PollyUtils';
-import { state } from '../../index';
-import { stringify } from '../../utils/JsonUtils';
+} from '../../utils/PollyUtils.ts';
+import { state } from '../../index.ts';
+import { stringify } from '../../utils/JsonUtils.ts';
 import {
   createSelfSignedCertificate,
   getPrivateKey,
   printError,
-} from '../../test/utils/TestUtils';
-import { CSR } from '../../api/cloud/EnvCSRsApi';
+} from '../../test/utils/TestUtils.ts';
+import { CSR } from '../../api/cloud/EnvCSRsApi.ts';
 
 const matchRequestsBy = defaultMatchRequestsBy(true);
 matchRequestsBy.order = true;

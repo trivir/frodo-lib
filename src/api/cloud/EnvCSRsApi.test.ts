@@ -44,12 +44,12 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as EnvCSRsApi from './EnvCSRsApi';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
-import { state } from '../../index';
-import { issueSelfSignedCertificate } from '../../test/utils/TestUtils';
-import { stringify } from '../../utils/JsonUtils';
+import * as EnvCSRsApi from './EnvCSRsApi.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
+import { state } from '../../index.ts';
+import { issueSelfSignedCertificate } from '../../test/utils/TestUtils.ts';
+import { stringify } from '../../utils/JsonUtils.ts';
 
 const ctx = autoSetupPolly();
 

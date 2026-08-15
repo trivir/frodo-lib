@@ -4,9 +4,9 @@ import {
   DirectConfigurationSessionState,
   getDirectConfigurationSessionState as _getDirectConfigurationSessionState,
   initDirectConfigurationSession as _initDirectConfigurationSession,
-} from '../../api/cloud/EnvDirectConfigurationSessionApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvDirectConfigurationSessionApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvDirectConfigurationSession = {
   /**

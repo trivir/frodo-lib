@@ -29,12 +29,12 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as ScriptOps from './ScriptOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { ScriptSkeleton } from '../api/ScriptApi';
-import { snapshotResultCallback } from '../test/utils/TestUtils';
+import { state } from '../index.ts';
+import * as ScriptOps from './ScriptOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { ScriptSkeleton } from '../api/ScriptApi.ts';
+import { snapshotResultCallback } from '../test/utils/TestUtils.ts';
 
 const ctx = autoSetupPolly();
 

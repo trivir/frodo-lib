@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../../../shared/State';
-import { getApiSearchAll } from '../../../utils/ExportImportUtils';
-import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils';
-import { Metadata } from '../../ApiTypes';
-import { generateGovernanceApi } from '../../BaseApi';
+import { State } from '../../../shared/State.ts';
+import { getApiSearchAll } from '../../../utils/ExportImportUtils.ts';
+import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils.ts';
+import { Metadata } from '../../ApiTypes.ts';
+import { generateGovernanceApi } from '../../BaseApi.ts';
 
 const requestFormsEndpointURLTemplate = '%s/iga/governance/requestForms';
 const requestFormURLTemplate = requestFormsEndpointURLTemplate + '/%s';

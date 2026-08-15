@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { IdObjectSkeletonInterface, PagedResult } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const providerByLocationAndIdURLTemplate = '%s/json%s/realm-config/saml2/%s/%s';
 const createHostedProviderURLTemplate =

@@ -1,4 +1,4 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
+import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   ApiVersion,
   getRawAm,
@@ -7,10 +7,10 @@ import {
   putRawAm,
   putRawEnv,
   putRawIdm,
-} from '../api/RawConfigApi';
-import { State } from '../shared/State';
-import { mergeDeep } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
+} from '../api/RawConfigApi.ts';
+import { State } from '../shared/State.ts';
+import { mergeDeep } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type RawConfig = {
   /**

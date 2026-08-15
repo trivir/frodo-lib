@@ -24,7 +24,10 @@
  * need to specify the fields that differ from the defaults.
  */
 
-import { McpDeploymentType, OperationCapabilityMeta } from './CapabilityTypes';
+import {
+  McpDeploymentType,
+  OperationCapabilityMeta,
+} from './CapabilityTypes.ts';
 
 /** Deployments that include the IDM component (and therefore IDM managed objects). */
 const IDM_DEPLOYMENTS: McpDeploymentType[] = ['cloud', 'forgeops'];

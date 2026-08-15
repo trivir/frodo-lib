@@ -1,18 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
-import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi';
-import { State } from '../shared/State';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { getConfigEntity, putConfigEntity } from '../api/IdmConfigApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { ExportMetaData } from './OpsTypes';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { ExportMetaData } from './OpsTypes.ts';
 
 export type ThemeSkeleton = IdObjectSkeletonInterface & {
   name: string;

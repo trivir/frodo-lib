@@ -8,20 +8,20 @@ import {
   getServiceDescendents,
   putService,
   putServiceNextDescendent,
-} from '../api/ServiceApi';
-import { State } from '../shared/State';
+} from '../api/ServiceApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type Service = {
   createServiceExportTemplate(): ServiceExportInterface;
@@ -31,7 +31,7 @@ export type Service = {
    */
   getListOfServices(
     globalConfig?: boolean
-  ): Promise<import('../api/ServiceApi').AmServiceSkeleton[]>;
+  ): Promise<import('../api/ServiceApi.ts').AmServiceSkeleton[]>;
   /**
    * Get all services including their descendents.
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.

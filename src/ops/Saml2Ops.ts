@@ -10,28 +10,32 @@ import {
   type Saml2ProviderSkeleton,
   type Saml2ProviderStub,
   updateProvider as _updateProvider,
-} from '../api/Saml2Api';
-import { getScript, type ScriptSkeleton } from '../api/ScriptApi';
-import { State } from '../shared/State';
-import { decodeBase64Url, encode, encodeBase64Url } from '../utils/Base64Utils';
+} from '../api/Saml2Api.ts';
+import { getScript, type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { State } from '../shared/State.ts';
+import {
+  decodeBase64Url,
+  encode,
+  encodeBase64Url,
+} from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   convertBase64UrlTextToArray,
   convertTextArrayToBase64,
   convertTextArrayToBase64Url,
   getMetadata,
-} from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { get } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
-import { updateScript } from './ScriptOps';
+} from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { get } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
+import { updateScript } from './ScriptOps.ts';
 
 export type Saml2 = {
   /**

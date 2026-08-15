@@ -15,7 +15,7 @@ jest.unstable_mockModule('../AuthenticateOps', () => ({
   getFreshSaBearerToken: jest.fn(),
 }));
 
-const { getServiceAccount } = await import('./ServiceAccountOps');
+const { getServiceAccount } = await import('./ServiceAccountOps.ts');
 
 describe('ServiceAccountOps debug output', () => {
   test('summarizes service accounts without logging the returned record', async () => {

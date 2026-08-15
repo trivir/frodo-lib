@@ -1,60 +1,60 @@
-import { type IdObjectSkeletonInterface } from '../api/ApiTypes';
-import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi';
+import { type IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import { CircleOfTrustSkeleton } from '../api/CirclesOfTrustApi.ts';
 import {
   deleteApplicationGlossary,
   getApplicationGlossary,
   GlossarySchemaItemSkeleton,
   GlossarySkeleton,
   putApplicationGlossary,
-} from '../api/cloud/iga/IgaGlossaryApi';
+} from '../api/cloud/iga/IgaGlossaryApi.ts';
 import {
   getRequestFormAssignments,
   RequestFormSkeleton,
-} from '../api/cloud/iga/IgaRequestFormApi';
-import { RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi';
-import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
-import { Saml2ProviderSkeleton } from '../api/Saml2Api';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { decode } from '../utils/Base64Utils';
+} from '../api/cloud/iga/IgaRequestFormApi.ts';
+import { RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi.ts';
+import { type OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
+import { Saml2ProviderSkeleton } from '../api/Saml2Api.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { decode } from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { get, mergeDeep } from '../utils/JsonUtils';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { get, mergeDeep } from '../utils/JsonUtils.ts';
 import {
   CirclesOfTrustExportInterface,
   exportCirclesOfTrust,
   importCirclesOfTrust,
   readCirclesOfTrust,
   updateCircleOfTrust,
-} from './CirclesOfTrustOps';
+} from './CirclesOfTrustOps.ts';
 import {
   deleteGlossarySchemaByNameAndObjectType,
   exportGlossarySchemaByNameAndObjectType,
   GlossarySchemaExportInterface,
   importGlossarySchemas,
-} from './cloud/iga/IgaGlossaryOps';
+} from './cloud/iga/IgaGlossaryOps.ts';
 import {
   deleteOrphanedRequestFormAssignments,
   deleteRequestForm,
   exportRequestForm,
   importRequestForms,
-} from './cloud/iga/IgaRequestFormOps';
-import { deleteRequestType } from './cloud/iga/IgaRequestTypeOps';
+} from './cloud/iga/IgaRequestFormOps.ts';
+import { deleteRequestType } from './cloud/iga/IgaRequestTypeOps.ts';
 import {
   ConnectorExportInterface,
   ConnectorSkeleton,
   deleteConnector,
   exportConnector,
   importConnector,
-} from './ConnectorOps';
-import { FrodoError } from './FrodoError';
+} from './ConnectorOps.ts';
+import { FrodoError } from './FrodoError.ts';
 import {
   createManagedObject,
   deleteManagedObject,
@@ -62,21 +62,21 @@ import {
   readManagedObject,
   readManagedObjects,
   updateManagedObject,
-} from './ManagedObjectOps';
-import { MappingSkeleton } from './MappingOps';
+} from './ManagedObjectOps.ts';
+import { MappingSkeleton } from './MappingOps.ts';
 import {
   deleteOAuth2Client,
   exportOAuth2Client,
   importOAuth2Client,
   OAuth2ClientExportInterface,
-} from './OAuth2ClientOps';
-import { type ExportMetaData } from './OpsTypes';
+} from './OAuth2ClientOps.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 import {
   deleteSaml2Provider,
   exportSaml2Provider,
   importSaml2Provider,
   Saml2ExportInterface,
-} from './Saml2Ops';
+} from './Saml2Ops.ts';
 
 const defaultFields = [
   'authoritative',

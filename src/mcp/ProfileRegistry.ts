@@ -13,7 +13,7 @@ import {
   McpCapabilityInventoryOptions,
   McpCapabilityPolicy,
   McpCapabilityPolicyPresetName,
-} from './CapabilityTypes';
+} from './CapabilityTypes.ts';
 
 export type McpProfileName =
   | 'all'

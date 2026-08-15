@@ -6,30 +6,30 @@ import {
   type PolicyCondition,
   type PolicySkeleton,
   putPolicy as _putPolicy,
-} from '../api/PoliciesApi';
-import { type PolicySetSkeleton } from '../api/PolicySetApi';
+} from '../api/PoliciesApi.ts';
+import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
 import {
   getResourceType,
   type ResourceTypeSkeleton,
-} from '../api/ResourceTypesApi';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { State } from '../shared/State';
+} from '../api/ResourceTypesApi.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   getMetadata,
-} from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
-import { readPolicySet, updatePolicySet } from './PolicySetOps';
-import { updateResourceType } from './ResourceTypeOps';
-import { readScript, updateScript } from './ScriptOps';
+} from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
+import { readPolicySet, updatePolicySet } from './PolicySetOps.ts';
+import { updateResourceType } from './ResourceTypeOps.ts';
+import { readScript, updateScript } from './ScriptOps.ts';
 
 export type Policy = {
   /**

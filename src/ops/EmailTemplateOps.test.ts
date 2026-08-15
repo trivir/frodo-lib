@@ -29,10 +29,10 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as TestData from '../test/setup/EmailTemplateSetup';
-import * as EmailTemplateOps from './EmailTemplateOps';
-import { EmailTemplateExportInterface } from './EmailTemplateOps';
+import { state } from '../index.ts';
+import * as TestData from '../test/setup/EmailTemplateSetup.ts';
+import * as EmailTemplateOps from './EmailTemplateOps.ts';
+import { EmailTemplateExportInterface } from './EmailTemplateOps.ts';
 
 describe('EmailTemplateOps', () => {
 

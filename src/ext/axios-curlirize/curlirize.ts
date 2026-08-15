@@ -1,7 +1,7 @@
 import c from 'tinyrainbow';
 
-import { printError, printMessage } from '../../utils/Console';
-import { CurlHelper } from './lib/CurlHelper';
+import { printError, printMessage } from '../../utils/Console.ts';
+import { CurlHelper } from './lib/CurlHelper.ts';
 
 function defaultLogCallback(curlResult, err = undefined) {
   const { command } = curlResult;

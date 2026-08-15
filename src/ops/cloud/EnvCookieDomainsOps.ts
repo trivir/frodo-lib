@@ -2,9 +2,9 @@ import {
   CookieDomains,
   getCookieDomains as _getCookieDomains,
   setCookieDomains as _setCookieDomains,
-} from '../../api/cloud/EnvCookieDomainsApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvCookieDomainsApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvCookieDomains = {
   /**

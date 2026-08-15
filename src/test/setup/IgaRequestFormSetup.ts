@@ -4,14 +4,14 @@ import {
   assignRequestForm,
   RequestFormForm,
   RequestFormSkeleton,
-} from '../../api/cloud/iga/IgaRequestFormApi';
-import { state } from '../../index';
-import * as IgaRequestFormOps from '../../ops/cloud/iga/IgaRequestFormOps';
+} from '../../api/cloud/iga/IgaRequestFormApi.ts';
+import { state } from '../../index.ts';
+import * as IgaRequestFormOps from '../../ops/cloud/iga/IgaRequestFormOps.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
-import * as RequestTypeTestData from './IgaRequestTypeSetup';
+} from '../../utils/AutoSetupPolly.ts';
+import * as RequestTypeTestData from './IgaRequestTypeSetup.ts';
 
 const EXAMPLE_FORM: RequestFormForm = {
   fields: [

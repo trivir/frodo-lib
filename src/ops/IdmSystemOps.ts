@@ -1,4 +1,4 @@
-import { IdObjectSkeletonInterface, PagedResult } from '../api/ApiTypes';
+import { IdObjectSkeletonInterface, PagedResult } from '../api/ApiTypes.ts';
 import {
   authenticateSystemObject as _authenticateSystemObject,
   ConnectorServerStatusInterface,
@@ -16,10 +16,10 @@ import {
   SystemObjectPatchOperationInterface,
   SystemStatusInterface,
   testConnectorServers as _testConnectorServers,
-} from '../api/IdmSystemApi';
-import { State } from '../shared/State';
-import { ObjectTypeSkeleton, readConnector } from './ConnectorOps';
-import { FrodoError } from './FrodoError';
+} from '../api/IdmSystemApi.ts';
+import { State } from '../shared/State.ts';
+import { ObjectTypeSkeleton, readConnector } from './ConnectorOps.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type IdmSystem = {
   /**

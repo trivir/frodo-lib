@@ -4,9 +4,9 @@ import {
   getOAuth2Provider as _getOAuth2Provider,
   OAuth2ProviderSkeleton,
   putOAuth2Provider as _putOAuth2Provider,
-} from '../api/OAuth2ProviderApi';
-import { State } from '../shared/State';
-import { FrodoError } from './FrodoError';
+} from '../api/OAuth2ProviderApi.ts';
+import { State } from '../shared/State.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type OAuth2Provider = {
   /**

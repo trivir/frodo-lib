@@ -1,5 +1,5 @@
-import { AuthenticateStep } from '../api/AuthenticateApi';
-import { cloneDeep } from '../utils/JsonUtils';
+import { AuthenticateStep } from '../api/AuthenticateApi.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
 
 export type CallbackType =
   | 'NameCallback'

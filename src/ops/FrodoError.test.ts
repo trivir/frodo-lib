@@ -35,9 +35,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { FrodoError } from '../index';
-import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly';
-import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils';
+import { FrodoError } from '../index.ts';
+import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly.ts';
+import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils.ts';
 import axios, { AxiosError, AxiosHeaders } from 'axios';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

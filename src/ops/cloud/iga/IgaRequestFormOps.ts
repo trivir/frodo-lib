@@ -8,29 +8,29 @@ import {
   RequestFormAssignment,
   RequestFormSkeleton,
   unassignRequestForm,
-} from '../../../api/cloud/iga/IgaRequestFormApi';
+} from '../../../api/cloud/iga/IgaRequestFormApi.ts';
 import {
   queryRequestTypes,
   RequestTypeSkeleton,
-} from '../../../api/cloud/iga/IgaRequestTypeApi';
-import { State } from '../../../shared/State';
+} from '../../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../../utils/Console';
+} from '../../../utils/Console.ts';
 import {
   getMetadata,
   getResult,
   transformScriptArraysToStrings,
   transformScriptStringsToArrays,
-} from '../../../utils/ExportImportUtils';
-import { queryApplications } from '../../ApplicationOps';
-import { FrodoError } from '../../FrodoError';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps';
-import { readGroupedWorkflows, WorkflowGroups } from './IgaWorkflowOps';
+} from '../../../utils/ExportImportUtils.ts';
+import { queryApplications } from '../../ApplicationOps.ts';
+import { FrodoError } from '../../FrodoError.ts';
+import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps.ts';
+import { readGroupedWorkflows, WorkflowGroups } from './IgaWorkflowOps.ts';
 
 export type RequestForm = {
   /**

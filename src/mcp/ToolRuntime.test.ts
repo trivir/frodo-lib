@@ -9,7 +9,7 @@ import {
   McpToolRuntimeTraceEvent,
   McpToolManifest,
   createToolRuntime,
-} from '../index';
+} from '../index.ts';
 
 function makeDescriptor(
   overrides: Partial<McpCapabilityDescriptor> = {}

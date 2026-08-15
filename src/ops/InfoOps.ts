@@ -1,9 +1,9 @@
-import { EnvInfoInterface, getEnvInfo } from '../api/cloud/EnvInfoApi';
-import { getServerVersionInfo } from '../api/ServerInfoApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { getServiceAccount } from './cloud/ServiceAccountOps';
-import { FrodoError } from './FrodoError';
+import { EnvInfoInterface, getEnvInfo } from '../api/cloud/EnvInfoApi.ts';
+import { getServerVersionInfo } from '../api/ServerInfoApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { getServiceAccount } from './cloud/ServiceAccountOps.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type Info = {
   /**

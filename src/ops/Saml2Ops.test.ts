@@ -46,17 +46,17 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as Saml2Ops from './Saml2Ops';
-import Constants from '../shared/Constants';
-import { Saml2ProiderLocation } from '../api/Saml2Api';
+import { state } from '../index.ts';
+import * as Saml2Ops from './Saml2Ops.ts';
+import Constants from '../shared/Constants.ts';
+import { Saml2ProiderLocation } from '../api/Saml2Api.ts';
 import {
   getSaml2ProviderImportData,
   getSaml2ProvidersImportData,
-} from '../test/mocks/ForgeRockApiMockEngine';
-import { encodeBase64Url } from '../utils/Base64Utils';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
+} from '../test/mocks/ForgeRockApiMockEngine.ts';
+import { encodeBase64Url } from '../utils/Base64Utils.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
 const ctx = autoSetupPolly();
 
 state.setDeploymentType(Constants.CLOUD_DEPLOYMENT_TYPE_KEY);

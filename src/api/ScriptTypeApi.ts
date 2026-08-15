@@ -1,12 +1,12 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
+import { State } from '../shared/State.ts';
 import {
   AmConfigEntityInterface,
   IdObjectSkeletonInterface,
   PagedResult,
-} from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const scriptTypeURLTemplate =
   '%s/json/global-config/services/scripting/contexts/%s';

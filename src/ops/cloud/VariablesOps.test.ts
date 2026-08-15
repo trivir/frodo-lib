@@ -33,12 +33,12 @@
  * in case things don't function as expected
  */
 
-import { state } from '../../index';
-import * as VariablesOps from './VariablesOps';
-import { VariableExpressionType } from '../../api/cloud/VariablesApi';
-import { FrodoError } from '../FrodoError';
-import { encode } from '../../utils/Base64Utils';
-import * as TestData from '../../test/setup/VariablesSetup'
+import { state } from '../../index.ts';
+import * as VariablesOps from './VariablesOps.ts';
+import { VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
+import { FrodoError } from '../FrodoError.ts';
+import { encode } from '../../utils/Base64Utils.ts';
+import * as TestData from '../../test/setup/VariablesSetup.ts'
 
 describe('VariablesOps', () => {
 

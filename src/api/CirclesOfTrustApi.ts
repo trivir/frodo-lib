@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { type AmConfigEntityInterface, type PagedResult } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { type AmConfigEntityInterface, type PagedResult } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const circleOfTrustByIdURLTemplate =
   '%s/json%s/realm-config/federation/circlesoftrust/%s';

@@ -35,18 +35,18 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { FrodoError, state } from '../index';
-import * as PolicySetApi from '../api/PolicySetApi';
-import * as PoliciesApi from '../api/PoliciesApi';
-import * as ScriptOps from './ScriptOps';
-import * as PolicyOps from './PolicyOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { type PolicyCondition, type PolicySkeleton } from '../api/PoliciesApi';
-import { type PolicySetSkeleton } from '../api/PolicySetApi';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { cloneDeep } from '../utils/JsonUtils';
-import { PolicyExportInterface } from './PolicyOps';
+import { FrodoError, state } from '../index.ts';
+import * as PolicySetApi from '../api/PolicySetApi.ts';
+import * as PoliciesApi from '../api/PoliciesApi.ts';
+import * as ScriptOps from './ScriptOps.ts';
+import * as PolicyOps from './PolicyOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { type PolicyCondition, type PolicySkeleton } from '../api/PoliciesApi.ts';
+import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { PolicyExportInterface } from './PolicyOps.ts';
 
 const ctx = autoSetupPolly();
 

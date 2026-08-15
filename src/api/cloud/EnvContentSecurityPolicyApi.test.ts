@@ -40,11 +40,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as EnvContentSecurityPolicyApi from './EnvContentSecurityPolicyApi';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
-import { state } from '../../index';
-import { ContentSecurityPolicy } from './EnvContentSecurityPolicyApi';
+import * as EnvContentSecurityPolicyApi from './EnvContentSecurityPolicyApi.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
+import { state } from '../../index.ts';
+import { ContentSecurityPolicy } from './EnvContentSecurityPolicyApi.ts';
 
 const ctx = autoSetupPolly();
 

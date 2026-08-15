@@ -1,22 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
-import DataProtection from '../utils/DataProtection';
-import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils';
-import { getFrodoHome } from '../utils/FrodoUtils';
-import { mergeDeep } from '../utils/JsonUtils';
-import { readServiceAccountScopes } from './cloud/EnvServiceAccountScopesOps';
+import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { debugMessage } from '../utils/Console.ts';
+import DataProtection from '../utils/DataProtection.ts';
+import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils.ts';
+import { getFrodoHome } from '../utils/FrodoUtils.ts';
+import { mergeDeep } from '../utils/JsonUtils.ts';
+import { readServiceAccountScopes } from './cloud/EnvServiceAccountScopesOps.ts';
 import {
   createServiceAccount,
   getServiceAccount,
   SERVICE_ACCOUNT_DEFAULT_SCOPES,
-} from './cloud/ServiceAccountOps';
-import { FrodoError } from './FrodoError';
-import { createJwkRsa, createJwks, getJwkRsaPublic, JwkRsa } from './JoseOps';
+} from './cloud/ServiceAccountOps.ts';
+import { FrodoError } from './FrodoError.ts';
+import {
+  createJwkRsa,
+  createJwks,
+  getJwkRsaPublic,
+  JwkRsa,
+} from './JoseOps.ts';
 
 export type ConnectionProfile = {
   /**

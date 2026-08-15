@@ -1,8 +1,8 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { generateAmAuthApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import { generateAmAuthApi } from './BaseApi.ts';
 
 const getSessionInfoURLTemplate = '%s/json%s/sessions/?_action=getSessionInfo';
 const apiVersion = 'resource=4.0';

@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
-import { NoIdObjectSkeletonInterface } from '../ApiTypes';
-import { generateWSFedApi } from '../BaseApi';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
+import { NoIdObjectSkeletonInterface } from '../ApiTypes.ts';
+import { generateWSFedApi } from '../BaseApi.ts';
 
 const spConnectionsURLTemplate =
   '%s/ws/admin/pf-admin-api/v1/idp/spConnections';

@@ -1,9 +1,9 @@
 import {
   getSessionInfo as _getSessionInfo,
   type SessionInfoType,
-} from '../api/SessionApi';
-import { State } from '../shared/State';
-import { FrodoError } from './FrodoError';
+} from '../api/SessionApi.ts';
+import { State } from '../shared/State.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type Session = {
   /**

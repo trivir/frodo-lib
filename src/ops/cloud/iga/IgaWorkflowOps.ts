@@ -1,12 +1,15 @@
-import { EventSkeleton, queryEvents } from '../../../api/cloud/iga/IgaEventApi';
+import {
+  EventSkeleton,
+  queryEvents,
+} from '../../../api/cloud/iga/IgaEventApi.ts';
 import {
   getRequestFormAssignments,
   RequestFormSkeleton,
-} from '../../../api/cloud/iga/IgaRequestFormApi';
+} from '../../../api/cloud/iga/IgaRequestFormApi.ts';
 import {
   queryRequestTypes,
   RequestTypeSkeleton,
-} from '../../../api/cloud/iga/IgaRequestTypeApi';
+} from '../../../api/cloud/iga/IgaRequestTypeApi.ts';
 import {
   deleteDraftWorkflow as _deleteDraftWorkflow,
   deletePublishedWorkflow as _deletePublishedWorkflow,
@@ -16,15 +19,15 @@ import {
   publishWorkflow as _publishWorkflow,
   putWorkflow,
   WorkflowSkeleton,
-} from '../../../api/cloud/iga/IgaWorkflowApi';
-import { VariableSkeleton } from '../../../api/cloud/VariablesApi';
-import { State } from '../../../shared/State';
+} from '../../../api/cloud/iga/IgaWorkflowApi.ts';
+import { VariableSkeleton } from '../../../api/cloud/VariablesApi.ts';
+import { State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../../utils/Console';
+} from '../../../utils/Console.ts';
 import {
   getErrorCallback,
   getIGANotificationEmailTemplateDependencies,
@@ -34,24 +37,24 @@ import {
   settlePromises,
   transformScriptArraysToStrings,
   transformScriptStringsToArrays,
-} from '../../../utils/ExportImportUtils';
-import { mergeDeep } from '../../../utils/JsonUtils';
+} from '../../../utils/ExportImportUtils.ts';
+import { mergeDeep } from '../../../utils/JsonUtils.ts';
 import {
   EmailTemplateSkeleton,
   importEmailTemplates,
-} from '../../EmailTemplateOps';
-import { FrodoError } from '../../FrodoError';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { importVariables } from '../VariablesOps';
-import { importEvents } from './IgaEventOps';
+} from '../../EmailTemplateOps.ts';
+import { FrodoError } from '../../FrodoError.ts';
+import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { importVariables } from '../VariablesOps.ts';
+import { importEvents } from './IgaEventOps.ts';
 import {
   createRequestFormExportTemplate,
   deleteOrphanedRequestFormAssignments,
   exportRequestForm,
   importRequestForms,
   RequestFormExportInterface,
-} from './IgaRequestFormOps';
-import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps';
+} from './IgaRequestFormOps.ts';
+import { exportRequestType, importRequestTypes } from './IgaRequestTypeOps.ts';
 
 export type Workflow = {
   /**

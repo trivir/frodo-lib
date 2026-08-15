@@ -1,123 +1,123 @@
 // instantiable modules
-import AdminOps, { Admin } from '../ops/AdminOps';
-import AgentOps, { Agent } from '../ops/AgentOps';
-import AmConfigOps, { AmConfig } from '../ops/AmConfigOps';
-import ApiOps, { ApiFactory } from '../ops/ApiFactoryOps';
-import ApplicationOps, { Application } from '../ops/ApplicationOps';
-import AuthenticateOps, { Authenticate } from '../ops/AuthenticateOps';
+import AdminOps, { Admin } from '../ops/AdminOps.ts';
+import AgentOps, { Agent } from '../ops/AgentOps.ts';
+import AmConfigOps, { AmConfig } from '../ops/AmConfigOps.ts';
+import ApiOps, { ApiFactory } from '../ops/ApiFactoryOps.ts';
+import ApplicationOps, { Application } from '../ops/ApplicationOps.ts';
+import AuthenticateOps, { Authenticate } from '../ops/AuthenticateOps.ts';
 import AuthenticationSettingsOps, {
   AuthenticationSettings,
-} from '../ops/AuthenticationSettingsOps';
-import CirclesOfTrustOps, { CirclesOfTrust } from '../ops/CirclesOfTrustOps';
-import ServerOps, { Server } from '../ops/classic/ServerOps';
-import SiteOps, { Site } from '../ops/classic/SiteOps';
+} from '../ops/AuthenticationSettingsOps.ts';
+import CirclesOfTrustOps, { CirclesOfTrust } from '../ops/CirclesOfTrustOps.ts';
+import ServerOps, { Server } from '../ops/classic/ServerOps.ts';
+import SiteOps, { Site } from '../ops/classic/SiteOps.ts';
 import AdminFederationOps, {
   AdminFederation,
-} from '../ops/cloud/AdminFederationOps';
-import EnvAIAgentOps, { EnvAIAgent } from '../ops/cloud/EnvAIAgentOps';
+} from '../ops/cloud/AdminFederationOps.ts';
+import EnvAIAgentOps, { EnvAIAgent } from '../ops/cloud/EnvAIAgentOps.ts';
 import EnvCertificatesOps, {
   EnvCertificate,
-} from '../ops/cloud/EnvCertificatesOps';
+} from '../ops/cloud/EnvCertificatesOps.ts';
 import EnvContentSecurityOps, {
   EnvContentSecurityPolicy,
-} from '../ops/cloud/EnvContentSecurityPolicyOps';
+} from '../ops/cloud/EnvContentSecurityPolicyOps.ts';
 import EnvCookieDomainsOps, {
   EnvCookieDomains,
-} from '../ops/cloud/EnvCookieDomainsOps';
-import EnvCSRsOps, { EnvCSR } from '../ops/cloud/EnvCSRsOps';
+} from '../ops/cloud/EnvCookieDomainsOps.ts';
+import EnvCSRsOps, { EnvCSR } from '../ops/cloud/EnvCSRsOps.ts';
 import EnvCustomDomainsOps, {
   EnvCustomDomains,
-} from '../ops/cloud/EnvCustomDomainsOps';
+} from '../ops/cloud/EnvCustomDomainsOps.ts';
 import EnvDirectConfigurationSessionOps, {
   EnvDirectConfigurationSession,
-} from '../ops/cloud/EnvDirectConfigurationSessionOps';
+} from '../ops/cloud/EnvDirectConfigurationSessionOps.ts';
 import EnvFederationEnforcementOps, {
   EnvFederationEnforcement,
-} from '../ops/cloud/EnvFederationEnforcementOps';
-import EnvPromotionOps, { EnvPromotion } from '../ops/cloud/EnvPromotionOps';
-import EnvReleaseOps, { EnvRelease } from '../ops/cloud/EnvReleaseOps';
+} from '../ops/cloud/EnvFederationEnforcementOps.ts';
+import EnvPromotionOps, { EnvPromotion } from '../ops/cloud/EnvPromotionOps.ts';
+import EnvReleaseOps, { EnvRelease } from '../ops/cloud/EnvReleaseOps.ts';
 import EnvServiceAccountScopesOps, {
   EnvServiceAccountScopes,
-} from '../ops/cloud/EnvServiceAccountScopesOps';
+} from '../ops/cloud/EnvServiceAccountScopesOps.ts';
 import EnvSSOCookieConfigOps, {
   EnvSSOCookieConfig,
-} from '../ops/cloud/EnvSSOCookieConfigOps';
-import EsvCountOps, { EsvCount } from '../ops/cloud/EsvCountOps';
-import FeatureOps, { Feature } from '../ops/cloud/FeatureOps';
+} from '../ops/cloud/EnvSSOCookieConfigOps.ts';
+import EsvCountOps, { EsvCount } from '../ops/cloud/EsvCountOps.ts';
+import FeatureOps, { Feature } from '../ops/cloud/FeatureOps.ts';
 import IgaCertificationTemplateOps, {
   CertificationTemplate,
-} from '../ops/cloud/iga/IgaCertificationTemplateOps';
-import IgaEventOps, { IgaEvent } from '../ops/cloud/iga/IgaEventOps';
-import IgaGlossaryOps, { Glossary } from '../ops/cloud/iga/IgaGlossaryOps';
+} from '../ops/cloud/iga/IgaCertificationTemplateOps.ts';
+import IgaEventOps, { IgaEvent } from '../ops/cloud/iga/IgaEventOps.ts';
+import IgaGlossaryOps, { Glossary } from '../ops/cloud/iga/IgaGlossaryOps.ts';
 import IgaRequestFormOps, {
   RequestForm,
-} from '../ops/cloud/iga/IgaRequestFormOps';
+} from '../ops/cloud/iga/IgaRequestFormOps.ts';
 import IgaRequestTypeOps, {
   RequestType,
-} from '../ops/cloud/iga/IgaRequestTypeOps';
-import IgaWorkflowOps, { Workflow } from '../ops/cloud/iga/IgaWorkflowOps';
-import LogOps, { Log } from '../ops/cloud/LogOps';
-import SecretsOps, { Secret } from '../ops/cloud/SecretsOps';
+} from '../ops/cloud/iga/IgaRequestTypeOps.ts';
+import IgaWorkflowOps, { Workflow } from '../ops/cloud/iga/IgaWorkflowOps.ts';
+import LogOps, { Log } from '../ops/cloud/LogOps.ts';
+import SecretsOps, { Secret } from '../ops/cloud/SecretsOps.ts';
 import ServiceAccountOps, {
   ServiceAccount,
-} from '../ops/cloud/ServiceAccountOps';
-import StartupOps, { Startup } from '../ops/cloud/StartupOps';
-import VariablesOps, { Variable } from '../ops/cloud/VariablesOps';
-import WSFedOps, { WSFed } from '../ops/cloud/WSFedOps';
-import ConfigOps, { Config } from '../ops/ConfigOps';
+} from '../ops/cloud/ServiceAccountOps.ts';
+import StartupOps, { Startup } from '../ops/cloud/StartupOps.ts';
+import VariablesOps, { Variable } from '../ops/cloud/VariablesOps.ts';
+import WSFedOps, { WSFed } from '../ops/cloud/WSFedOps.ts';
+import ConfigOps, { Config } from '../ops/ConfigOps.ts';
 import ConnectionProfileOps, {
   ConnectionProfile,
-} from '../ops/ConnectionProfileOps';
-import ConnectorOps, { Connector } from '../ops/ConnectorOps';
-import EmailTemplateOps, { EmailTemplate } from '../ops/EmailTemplateOps';
-import IdmConfigOps, { IdmConfig } from '../ops/IdmConfigOps';
-import IdmCryptoOps, { IdmCrypto } from '../ops/IdmCryptoOps';
-import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps';
-import IdmSystemOps, { IdmSystem } from '../ops/IdmSystemOps';
-import IdpOps, { Idp } from '../ops/IdpOps';
-import InfoOps, { Info } from '../ops/InfoOps';
-import InternalRoleOps, { InternalRole } from '../ops/InternalRoleOps';
-import JoseOps, { Jose } from '../ops/JoseOps';
-import JourneyOps, { Journey } from '../ops/JourneyOps';
-import ManagedObjectOps, { ManagedObject } from '../ops/ManagedObjectOps';
-import MappingOps, { Mapping } from '../ops/MappingOps';
-import NodeOps, { Node } from '../ops/NodeOps';
-import OAuth2ClientOps, { OAuth2Client } from '../ops/OAuth2ClientOps';
-import OAuth2OidcOps, { OAuth2Oidc } from '../ops/OAuth2OidcOps';
-import OAuth2ProviderOps, { OAuth2Provider } from '../ops/OAuth2ProviderOps';
+} from '../ops/ConnectionProfileOps.ts';
+import ConnectorOps, { Connector } from '../ops/ConnectorOps.ts';
+import EmailTemplateOps, { EmailTemplate } from '../ops/EmailTemplateOps.ts';
+import IdmConfigOps, { IdmConfig } from '../ops/IdmConfigOps.ts';
+import IdmCryptoOps, { IdmCrypto } from '../ops/IdmCryptoOps.ts';
+import IdmScriptOps, { IdmScript } from '../ops/IdmScriptOps.ts';
+import IdmSystemOps, { IdmSystem } from '../ops/IdmSystemOps.ts';
+import IdpOps, { Idp } from '../ops/IdpOps.ts';
+import InfoOps, { Info } from '../ops/InfoOps.ts';
+import InternalRoleOps, { InternalRole } from '../ops/InternalRoleOps.ts';
+import JoseOps, { Jose } from '../ops/JoseOps.ts';
+import JourneyOps, { Journey } from '../ops/JourneyOps.ts';
+import ManagedObjectOps, { ManagedObject } from '../ops/ManagedObjectOps.ts';
+import MappingOps, { Mapping } from '../ops/MappingOps.ts';
+import NodeOps, { Node } from '../ops/NodeOps.ts';
+import OAuth2ClientOps, { OAuth2Client } from '../ops/OAuth2ClientOps.ts';
+import OAuth2OidcOps, { OAuth2Oidc } from '../ops/OAuth2OidcOps.ts';
+import OAuth2ProviderOps, { OAuth2Provider } from '../ops/OAuth2ProviderOps.ts';
 import OAuth2TrustedJwtIssuerOps, {
   OAuth2TrustedJwtIssuer,
-} from '../ops/OAuth2TrustedJwtIssuerOps';
-import OrganizationOps, { Organization } from '../ops/OrganizationOps';
-import PolicyOps, { Policy } from '../ops/PolicyOps';
-import PolicySetOps, { PolicySet } from '../ops/PolicySetOps';
-import RawConfigOps, { RawConfig } from '../ops/RawConfigOps';
-import RealmOps, { Realm } from '../ops/RealmOps';
-import ReconOps, { Recon } from '../ops/ReconOps';
-import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps';
-import Saml2Ops, { Saml2 } from '../ops/Saml2Ops';
-import ScriptOps, { Script } from '../ops/ScriptOps';
-import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps';
-import SecretStoreOps, { SecretStore } from '../ops/SecretStoreOps';
-import ServiceOps, { Service } from '../ops/ServiceOps';
-import SessionOps, { Session } from '../ops/SessionOps';
-import ThemeOps, { Theme } from '../ops/ThemeOps';
-import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps';
-import UserOps, { User } from '../ops/UserOps';
-import VersionUtils, { Version } from '../ops/VersionUtils';
+} from '../ops/OAuth2TrustedJwtIssuerOps.ts';
+import OrganizationOps, { Organization } from '../ops/OrganizationOps.ts';
+import PolicyOps, { Policy } from '../ops/PolicyOps.ts';
+import PolicySetOps, { PolicySet } from '../ops/PolicySetOps.ts';
+import RawConfigOps, { RawConfig } from '../ops/RawConfigOps.ts';
+import RealmOps, { Realm } from '../ops/RealmOps.ts';
+import ReconOps, { Recon } from '../ops/ReconOps.ts';
+import ResourceTypeOps, { ResourceType } from '../ops/ResourceTypeOps.ts';
+import Saml2Ops, { Saml2 } from '../ops/Saml2Ops.ts';
+import ScriptOps, { Script } from '../ops/ScriptOps.ts';
+import ScriptTypeOps, { ScriptType } from '../ops/ScriptTypeOps.ts';
+import SecretStoreOps, { SecretStore } from '../ops/SecretStoreOps.ts';
+import ServiceOps, { Service } from '../ops/ServiceOps.ts';
+import SessionOps, { Session } from '../ops/SessionOps.ts';
+import ThemeOps, { Theme } from '../ops/ThemeOps.ts';
+import TokenCacheOps, { TokenCache } from '../ops/TokenCacheOps.ts';
+import UserOps, { User } from '../ops/UserOps.ts';
+import VersionUtils, { Version } from '../ops/VersionUtils.ts';
 // non-instantiable modules
-import ConstantsImpl, { Constants } from '../shared/Constants';
-import StateImpl, { State, StateInterface } from '../shared/State';
-import Base64Utils, { Base64 } from '../utils/Base64Utils';
-import CryptoUtils, { FrodoCrypto } from '../utils/CryptoUtils';
-import ExportImportUtils, { ExportImport } from '../utils/ExportImportUtils';
-import ForgeRockUtils, { FRUtils } from '../utils/ForgeRockUtils';
-import FrodoUtilsImpl, { FrodoUtils } from '../utils/FrodoUtils';
-import HelpUtilsImpl, { HelpUtils } from '../utils/HelpUtils';
-import JsonUtils, { Json } from '../utils/JsonUtils';
+import ConstantsImpl, { Constants } from '../shared/Constants.ts';
+import StateImpl, { State, StateInterface } from '../shared/State.ts';
+import Base64Utils, { Base64 } from '../utils/Base64Utils.ts';
+import CryptoUtils, { FrodoCrypto } from '../utils/CryptoUtils.ts';
+import ExportImportUtils, { ExportImport } from '../utils/ExportImportUtils.ts';
+import ForgeRockUtils, { FRUtils } from '../utils/ForgeRockUtils.ts';
+import FrodoUtilsImpl, { FrodoUtils } from '../utils/FrodoUtils.ts';
+import HelpUtilsImpl, { HelpUtils } from '../utils/HelpUtils.ts';
+import JsonUtils, { Json } from '../utils/JsonUtils.ts';
 import ScriptValidationUtils, {
   ScriptValidation,
-} from '../utils/ScriptValidationUtils';
+} from '../utils/ScriptValidationUtils.ts';
 
 /**
  * Frodo Library

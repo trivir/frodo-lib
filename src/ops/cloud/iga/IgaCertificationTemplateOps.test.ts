@@ -42,11 +42,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../../../index';
-import * as IgaCertificationTemplateOps from './IgaCertificationTemplateOps';
-import * as TestData from '../../../test/setup/IgaCertificationTemplateSetup';
-import { snapshotResultCallback } from '../../../test/utils/TestUtils';
-import { template1 } from '../../../test/setup/EmailTemplateSetup';
+import { state } from '../../../index.ts';
+import * as IgaCertificationTemplateOps from './IgaCertificationTemplateOps.ts';
+import * as TestData from '../../../test/setup/IgaCertificationTemplateSetup.ts';
+import { snapshotResultCallback } from '../../../test/utils/TestUtils.ts';
+import { template1 } from '../../../test/setup/EmailTemplateSetup.ts';
 
 describe('IgaCertificationTemplateOps', () => {
 

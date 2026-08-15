@@ -6,11 +6,11 @@ import {
   authorize as _authorize,
   clientCredentialsGrant as _clientCredentialsGrant,
   getTokenInfo as _getTokenInfo,
-} from '../api/OAuth2OIDCApi';
-import { TokenInfoResponseType } from '../api/OAuth2OIDCApi';
-import { State } from '../shared/State';
-import { mergeDeep } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
+} from '../api/OAuth2OIDCApi.ts';
+import { TokenInfoResponseType } from '../api/OAuth2OIDCApi.ts';
+import { State } from '../shared/State.ts';
+import { mergeDeep } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 
 export type AccessTokenMetaType = AccessTokenResponseType & {
   expires: number;

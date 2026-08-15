@@ -1,11 +1,11 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
+import { State } from '../../shared/State.ts';
 import {
   getCurrentRealmName,
   getHostOnlyUrl,
-} from '../../utils/ForgeRockUtils';
-import { generateEnvApi } from '../BaseApi';
+} from '../../utils/ForgeRockUtils.ts';
+import { generateEnvApi } from '../BaseApi.ts';
 
 const customDomainsURLTemplate = '%s/environment/custom-domains/%s';
 const verifyCNAMEURLTemplate = '%s/environment/custom-domains?_action=verify';

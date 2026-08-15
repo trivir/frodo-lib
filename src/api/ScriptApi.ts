@@ -1,9 +1,12 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
-import { type IdObjectSkeletonInterface, type PagedResult } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
+import {
+  type IdObjectSkeletonInterface,
+  type PagedResult,
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const scriptURLTemplate = '%s/json%s/scripts/%s';
 const scriptListURLTemplate = '%s/json%s/scripts?_queryFilter=true';

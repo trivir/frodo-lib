@@ -27,7 +27,7 @@ jest.unstable_mockModule('../api/NodeApi', () => ({
   requireVersion: requireVersionMock,
 }));
 
-const NodeOps = await import('./NodeOps');
+const NodeOps = await import('./NodeOps.ts');
 
 const state = {} as any;
 

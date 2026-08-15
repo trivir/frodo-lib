@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { getVersion } from './VersionUtils';
-import { state } from '../index';
+import { getVersion } from './VersionUtils.ts';
+import { state } from '../index.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

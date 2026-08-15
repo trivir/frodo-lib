@@ -50,7 +50,7 @@ jest.unstable_mockModule('../utils/ForgeRockUtils', () => ({
   getRealmUsingExportFormat: jest.fn((realm: string) => realm),
 }));
 
-const JourneyOps = await import('./JourneyOps');
+const JourneyOps = await import('./JourneyOps.ts');
 
 beforeEach(() => {
   jest.clearAllMocks();

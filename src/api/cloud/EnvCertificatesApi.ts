@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
-import { NoIdObjectSkeletonInterface } from '../ApiTypes';
-import { generateEnvApi } from '../BaseApi';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
+import { NoIdObjectSkeletonInterface } from '../ApiTypes.ts';
+import { generateEnvApi } from '../BaseApi.ts';
 
 const certificatesURLTemplate = '%s/environment/certificates';
 const certificateByIdURLTemplate = '%s/environment/certificates/%s';

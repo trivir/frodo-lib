@@ -15,11 +15,11 @@ import { MODES } from '@pollyjs/utils';
 import { LogLevelDesc } from 'loglevel';
 import pollyJest from 'setup-polly-jest';
 
-import { FrodoError, state } from '../index';
-import { getTokens } from '../ops/AuthenticateOps';
-import Constants from '../shared/Constants';
-import { FrodoNodeHttpAdapter } from './FrodoNodeHttpAdapter';
-import { defaultMatchRequestsBy, filterRecording } from './PollyUtils';
+import { FrodoError, state } from '../index.ts';
+import { getTokens } from '../ops/AuthenticateOps.ts';
+import Constants from '../shared/Constants.ts';
+import { FrodoNodeHttpAdapter } from './FrodoNodeHttpAdapter.ts';
+import { defaultMatchRequestsBy, filterRecording } from './PollyUtils.ts';
 
 const { setupPolly } = pollyJest;
 

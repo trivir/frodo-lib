@@ -24,7 +24,7 @@ jest.unstable_mockModule('../utils/JsonUtils', () => ({
   deleteDeepByKey: (value: unknown) => value,
 }));
 
-const NodeApi = await import('./NodeApi');
+const NodeApi = await import('./NodeApi.ts');
 
 const makeState = (amVersion?: string) =>
   ({

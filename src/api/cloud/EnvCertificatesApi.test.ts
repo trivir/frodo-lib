@@ -45,19 +45,19 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as EnvCertificatesApi from './EnvCertificatesApi';
-import * as EnvCertificatesOps from '../../ops/cloud/EnvCertificatesOps';
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
-import { state } from '../../index';
-import { encode } from '../../utils/Base64Utils';
-import { stringify } from '../../utils/JsonUtils';
+import * as EnvCertificatesApi from './EnvCertificatesApi.ts';
+import * as EnvCertificatesOps from '../../ops/cloud/EnvCertificatesOps.ts';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
+import { state } from '../../index.ts';
+import { encode } from '../../utils/Base64Utils.ts';
+import { stringify } from '../../utils/JsonUtils.ts';
 import {
   createSelfSignedCertificate,
   getPrivateKey,
   printError,
-} from '../../test/utils/TestUtils';
-import { CSR } from './EnvCSRsApi';
+} from '../../test/utils/TestUtils.ts';
+import { CSR } from './EnvCSRsApi.ts';
 
 const ctx = autoSetupPolly();
 

@@ -5,10 +5,10 @@ import {
   getCertificate as _getCertificate,
   getCertificates as _getCertificates,
   updateCertificate as _updateCertificate,
-} from '../../api/cloud/EnvCertificatesApi';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvCertificatesApi.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 const defaultInterval = 5000;
 const defaultRetries = 24;

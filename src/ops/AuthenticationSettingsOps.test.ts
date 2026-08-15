@@ -45,11 +45,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly";
-import { filterRecording } from "../utils/PollyUtils";
-import * as AuthenticationSettingsOps from "./AuthenticationSettingsOps";
-import { state } from "../lib/FrodoLib";
-import Constants from "../shared/Constants";
+import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
+import { filterRecording } from "../utils/PollyUtils.ts";
+import * as AuthenticationSettingsOps from "./AuthenticationSettingsOps.ts";
+import { state } from "../lib/FrodoLib.ts";
+import Constants from "../shared/Constants.ts";
 
 const ctx = autoSetupPolly();
 

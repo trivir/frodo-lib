@@ -42,18 +42,18 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as CirclesOfTrustOps from './CirclesOfTrustOps';
-import * as Saml2Ops from './Saml2Ops';
-import Constants from '../shared/Constants';
+import { state } from '../index.ts';
+import * as CirclesOfTrustOps from './CirclesOfTrustOps.ts';
+import * as Saml2Ops from './Saml2Ops.ts';
+import Constants from '../shared/Constants.ts';
 import {
   getCircleOfTrustRawData,
   getCirclesOfTrustImportData,
   getSaml2ProvidersImportData,
-} from '../test/mocks/ForgeRockApiMockEngine';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { getCircleOfTrustImportData } from '../test/mocks/ForgeRockApiMockEngine';
+} from '../test/mocks/ForgeRockApiMockEngine.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { getCircleOfTrustImportData } from '../test/mocks/ForgeRockApiMockEngine.ts';
 
 const ctx = autoSetupPolly();
 

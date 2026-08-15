@@ -8,8 +8,8 @@
  * manifests.
  */
 
-import { Frodo } from '../lib/FrodoLib';
-import { resolveCapabilityMeta } from './CapabilityMetadata';
+import { Frodo } from '../lib/FrodoLib.ts';
+import { resolveCapabilityMeta } from './CapabilityMetadata.ts';
 import {
   McpCapabilityArgumentMode,
   McpCapabilityDescriptor,
@@ -19,7 +19,7 @@ import {
   McpCapabilityParameter,
   McpCapabilityRiskClass,
   McpToolAnnotations,
-} from './CapabilityTypes';
+} from './CapabilityTypes.ts';
 
 /** Top-level domain keys excluded from the capability inventory by default. */
 const DEFAULT_EXCLUDED_TOP_LEVEL_DOMAINS = new Set<string>(['state']);

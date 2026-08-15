@@ -37,14 +37,14 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly";
-import { filterRecording } from "../utils/PollyUtils";
-import * as SecretStoreOps from "./SecretStoreOps";
-import { state } from "../lib/FrodoLib";
-import Constants from "../shared/Constants";
-import { snapshotResultCallback } from "../test/utils/TestUtils";
-import { SecretStoreMappingSkeleton } from "../api/SecretStoreApi";
-import { SecretStoreExportInterface } from "./SecretStoreOps";
+import { autoSetupPolly, setDefaultState } from "../utils/AutoSetupPolly.ts";
+import { filterRecording } from "../utils/PollyUtils.ts";
+import * as SecretStoreOps from "./SecretStoreOps.ts";
+import { state } from "../lib/FrodoLib.ts";
+import Constants from "../shared/Constants.ts";
+import { snapshotResultCallback } from "../test/utils/TestUtils.ts";
+import { SecretStoreMappingSkeleton } from "../api/SecretStoreApi.ts";
+import { SecretStoreExportInterface } from "./SecretStoreOps.ts";
 
 const ctx = autoSetupPolly();
 

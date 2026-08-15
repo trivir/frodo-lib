@@ -1,7 +1,7 @@
 import jwkToPem from 'jwk-to-pem';
 import sshpk from 'sshpk';
 
-import { FrodoError } from '../ops/FrodoError';
+import { FrodoError } from '../ops/FrodoError.ts';
 
 export type FrodoCrypto = {
   /**

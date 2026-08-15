@@ -56,28 +56,28 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
-import * as AgentApi from '../api/AgentApi';
-import * as AgentOps from './AgentOps';
-import { getAgent } from '../test/mocks/ForgeRockApiMockEngine';
-import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly';
-import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
+import { state } from '../index.ts';
+import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import * as AgentApi from '../api/AgentApi.ts';
+import * as AgentOps from './AgentOps.ts';
+import { getAgent } from '../test/mocks/ForgeRockApiMockEngine.ts';
+import { autoSetupPolly, setDefaultState } from '../utils/AutoSetupPolly.ts';
+import { defaultMatchRequestsBy, filterRecording } from '../utils/PollyUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 import {
   createManagedObject,
   deleteManagedObject,
   readManagedObjectSchema,
-} from './ManagedObjectOps';
+} from './ManagedObjectOps.ts';
 import {
   importApplication,
   deleteApplication,
   type ApplicationExportInterface,
   type ApplicationGlossarySkeleton,
-} from './ApplicationOps';
-import type { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi';
-import Constants from '../shared/Constants';
+} from './ApplicationOps.ts';
+import type { OAuth2ClientSkeleton } from '../api/OAuth2ClientApi.ts';
+import Constants from '../shared/Constants.ts';
 
 // enable ordered request matching so that the same URL recorded twice
 // (e.g. AIAgent existence check → 404, post-create read → 200) replays

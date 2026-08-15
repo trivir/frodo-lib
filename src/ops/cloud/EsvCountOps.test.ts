@@ -33,13 +33,13 @@
  * in case things don't function as expected
  */
 
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
-import { state } from '../../index';
-import * as EsvCountOps from './EsvCountOps';
-import * as SecretsOps from './SecretsOps';
-import * as VariablesOps from './VariablesOps';
-import { VariableExpressionType } from '../../api/cloud/VariablesApi';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../../utils/PollyUtils.ts';
+import { state } from '../../index.ts';
+import * as EsvCountOps from './EsvCountOps.ts';
+import * as SecretsOps from './SecretsOps.ts';
+import * as VariablesOps from './VariablesOps.ts';
+import { VariableExpressionType } from '../../api/cloud/VariablesApi.ts';
 
 const ctx = autoSetupPolly();
 

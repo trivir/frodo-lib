@@ -17,7 +17,7 @@ import {
   buildCapabilityInventory,
   buildToolManifest,
   frodo,
-} from '../index';
+} from '../index.ts';
 
 describe('MCP tool manifest builder', () => {
   test('includes target metadata and managed type count without the catalog', () => {

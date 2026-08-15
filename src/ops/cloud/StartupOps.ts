@@ -2,15 +2,15 @@ import {
   getStatus,
   initiateRestart,
   RestartStatus,
-} from '../../api/cloud/StartupApi';
-import { State } from '../../shared/State';
+} from '../../api/cloud/StartupApi.ts';
+import { State } from '../../shared/State.ts';
 import {
   createProgressIndicator,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../utils/Console';
-import { readSecrets } from './SecretsOps';
-import { readVariables } from './VariablesOps';
+} from '../../utils/Console.ts';
+import { readSecrets } from './SecretsOps.ts';
+import { readVariables } from './VariablesOps.ts';
 
 export type Startup = {
   /**

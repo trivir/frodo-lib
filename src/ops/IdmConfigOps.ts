@@ -3,7 +3,7 @@ import replaceall from 'replaceall';
 import {
   IdObjectSkeletonInterface,
   NoIdObjectSkeletonInterface,
-} from '../api/ApiTypes';
+} from '../api/ApiTypes.ts';
 import {
   deleteConfigEntity as _deleteConfigEntity,
   getConfigEntities as _getConfigEntities,
@@ -12,24 +12,24 @@ import {
   putConfigEntity as _putConfigEntity,
   getConfigEntity,
   IdmConfigStub,
-} from '../api/IdmConfigApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/IdmConfigApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   getErrorCallback,
   getMetadata,
   getResult,
-} from '../utils/ExportImportUtils';
-import { stringify } from '../utils/JsonUtils';
-import { areScriptHooksValid } from '../utils/ScriptValidationUtils';
-import { FrodoError } from './FrodoError';
-import { ExportMetaData, ResultCallback } from './OpsTypes';
+} from '../utils/ExportImportUtils.ts';
+import { stringify } from '../utils/JsonUtils.ts';
+import { areScriptHooksValid } from '../utils/ScriptValidationUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
 
 export type IdmConfig = {
   /** Read configured managed-object type names. */

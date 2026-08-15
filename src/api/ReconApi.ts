@@ -1,9 +1,9 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface } from './ApiTypes';
-import { generateIdmApi } from './BaseApi';
+import { State } from '../shared/State.ts';
+import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
+import { IdObjectSkeletonInterface } from './ApiTypes.ts';
+import { generateIdmApi } from './BaseApi.ts';
 
 const apiVersion = 'resource=1.0';
 const apiConfig = { headers: { 'Accept-API-Version': apiVersion } };

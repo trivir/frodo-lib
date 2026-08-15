@@ -1,9 +1,9 @@
 import {
   FeatureInterface,
   getFeatures as _getFeatures,
-} from '../../api/cloud/FeatureApi';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
+} from '../../api/cloud/FeatureApi.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
 
 export type Feature = {
   /**

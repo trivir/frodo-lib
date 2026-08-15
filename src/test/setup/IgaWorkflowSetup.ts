@@ -1,33 +1,33 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { EventSkeleton } from '../../api/cloud/iga/IgaEventApi';
+import { EventSkeleton } from '../../api/cloud/iga/IgaEventApi.ts';
 import {
   RequestFormAssignment,
   RequestFormSkeleton,
-} from '../../api/cloud/iga/IgaRequestFormApi';
-import { RequestTypeSkeleton } from '../../api/cloud/iga/IgaRequestTypeApi';
-import { WorkflowSkeleton } from '../../api/cloud/iga/IgaWorkflowApi';
-import { state } from '../../index';
+} from '../../api/cloud/iga/IgaRequestFormApi.ts';
+import { RequestTypeSkeleton } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { WorkflowSkeleton } from '../../api/cloud/iga/IgaWorkflowApi.ts';
+import { state } from '../../index.ts';
 import {
   deleteDraftWorkflow,
   deletePublishedWorkflow,
   updateWorkflow,
-} from '../../ops/cloud/iga/IgaWorkflowOps';
+} from '../../ops/cloud/iga/IgaWorkflowOps.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
-import { defaultMatchRequestsBy } from '../../utils/PollyUtils';
+} from '../../utils/AutoSetupPolly.ts';
+import { defaultMatchRequestsBy } from '../../utils/PollyUtils.ts';
 import {
   stageEmailTemplate,
   template1,
   template2,
   template3,
   template4,
-} from './EmailTemplateSetup';
-import { getTestEvent, oldEventIds, stageEvent } from './IgaEventSetup';
-import { stageRequestForm } from './IgaRequestFormSetup';
-import { stageRequestType } from './IgaRequestTypeSetup';
+} from './EmailTemplateSetup.ts';
+import { getTestEvent, oldEventIds, stageEvent } from './IgaEventSetup.ts';
+import { stageRequestForm } from './IgaRequestFormSetup.ts';
+import { stageRequestType } from './IgaRequestTypeSetup.ts';
 
 export function getTestWorkflow(
   id: string,

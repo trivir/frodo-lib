@@ -6,26 +6,34 @@ import { Reader } from 'properties-reader';
 import replaceall from 'replaceall';
 import slugify from 'slugify';
 
-import { SearchResult, SearchTargetFilterOperation } from '../api/ApiTypes';
-import { generateGovernanceApi } from '../api/BaseApi';
-import { VariableSkeleton } from '../api/cloud/VariablesApi';
-import { resolveVariable } from '../ops/cloud/VariablesOps';
+import { SearchResult, SearchTargetFilterOperation } from '../api/ApiTypes.ts';
+import { generateGovernanceApi } from '../api/BaseApi.ts';
+import { VariableSkeleton } from '../api/cloud/VariablesApi.ts';
+import { resolveVariable } from '../ops/cloud/VariablesOps.ts';
 import {
   EmailTemplateSkeleton,
   readEmailTemplate,
-} from '../ops/EmailTemplateOps';
-import { FrodoError } from '../ops/FrodoError';
-import { ErrorFilter, ExportMetaData, ResultCallback } from '../ops/OpsTypes';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../ops/EmailTemplateOps.ts';
+import { FrodoError } from '../ops/FrodoError.ts';
+import {
+  ErrorFilter,
+  ExportMetaData,
+  ResultCallback,
+} from '../ops/OpsTypes.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   decode,
   decodeBase64Url,
   encode,
   encodeBase64Url,
-} from './Base64Utils';
-import { debugMessage, printMessage, updateProgressIndicator } from './Console';
-import { deleteDeepByKeys, stringify } from './JsonUtils';
+} from './Base64Utils.ts';
+import {
+  debugMessage,
+  printMessage,
+  updateProgressIndicator,
+} from './Console.ts';
+import { deleteDeepByKeys, stringify } from './JsonUtils.ts';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;

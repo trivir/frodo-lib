@@ -42,12 +42,12 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../../../index';
-import * as IgaWorkflowOps from './IgaWorkflowOps';
-import * as TestData from '../../../test/setup/IgaWorkflowSetup';
-import * as EmailTemplateTestData from '../../../test/setup/EmailTemplateSetup';
-import { snapshotResultCallback } from '../../../test/utils/TestUtils';
-import { EMAIL_TEMPLATE_TYPE } from '../../EmailTemplateOps';
+import { state } from '../../../index.ts';
+import * as IgaWorkflowOps from './IgaWorkflowOps.ts';
+import * as TestData from '../../../test/setup/IgaWorkflowSetup.ts';
+import * as EmailTemplateTestData from '../../../test/setup/EmailTemplateSetup.ts';
+import { snapshotResultCallback } from '../../../test/utils/TestUtils.ts';
+import { EMAIL_TEMPLATE_TYPE } from '../../EmailTemplateOps.ts';
 
 describe('IgaWorkflowOps', () => {
 

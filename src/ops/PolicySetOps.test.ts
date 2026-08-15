@@ -35,14 +35,14 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { FrodoError, state } from '../index';
-import * as PolicySetApi from '../api/PolicySetApi';
-import * as PolicySetOps from './PolicySetOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { type PolicySetSkeleton } from '../api/PolicySetApi';
-import { cloneDeep } from '../utils/JsonUtils';
-import { PolicySetExportInterface } from './PolicySetOps';
+import { FrodoError, state } from '../index.ts';
+import * as PolicySetApi from '../api/PolicySetApi.ts';
+import * as PolicySetOps from './PolicySetOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { type PolicySetSkeleton } from '../api/PolicySetApi.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { PolicySetExportInterface } from './PolicySetOps.ts';
 
 const ctx = autoSetupPolly();
 

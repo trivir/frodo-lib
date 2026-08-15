@@ -1,6 +1,6 @@
 import NodeHttpAdapter from '@pollyjs/adapter-node-http';
 
-import { cleanupProxyRequestUrl } from './PollyUtils';
+import { cleanupProxyRequestUrl } from './PollyUtils.ts';
 
 export class FrodoNodeHttpAdapter extends NodeHttpAdapter {
   async onRequest(pollyRequest) {

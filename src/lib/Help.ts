@@ -7038,7 +7038,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     typeName: 'Service',
     methodName: 'getListOfServices',
     signature:
-      "getListOfServices( globalConfig?: boolean ): Promise<import('../api/ServiceApi').AmServiceSkeleton[]>",
+      "getListOfServices( globalConfig?: boolean ): Promise<import('../api/ServiceApi.ts').AmServiceSkeleton[]>",
     description: 'Get list of services',
     params: [
       {

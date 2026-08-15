@@ -12,8 +12,8 @@ import { fileURLToPath } from 'node:url';
 
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import * as StartupApi from './StartupApi';
-import { state } from '../../index';
+import * as StartupApi from './StartupApi.ts';
+import { state } from '../../index.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

@@ -1,13 +1,13 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import * as IgaRequestTypeApi from '../../api/cloud/iga/IgaRequestTypeApi';
-import { RequestTypeSchemas } from '../../api/cloud/iga/IgaRequestTypeApi';
-import { state } from '../../index';
-import * as IgaRequestTypeOps from '../../ops/cloud/iga/IgaRequestTypeOps';
+import * as IgaRequestTypeApi from '../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { RequestTypeSchemas } from '../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { state } from '../../index.ts';
+import * as IgaRequestTypeOps from '../../ops/cloud/iga/IgaRequestTypeOps.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
+} from '../../utils/AutoSetupPolly.ts';
 
 const EXAMPLE_SCHEMAS: RequestTypeSchemas = {
   common: [

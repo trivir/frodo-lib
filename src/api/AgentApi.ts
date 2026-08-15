@@ -1,20 +1,20 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
+import { State } from '../shared/State.ts';
+import { debugMessage } from '../utils/Console.ts';
 import {
   getConfigPath,
   getCurrentRealmPath,
   getRealmPathGlobal,
-} from '../utils/ForgeRockUtils';
-import { deleteDeepByKey } from '../utils/JsonUtils';
+} from '../utils/ForgeRockUtils.ts';
+import { deleteDeepByKey } from '../utils/JsonUtils.ts';
 import {
   type AmConfigEntityInterface,
   EntityType,
   PagedResult,
   QueryResult,
-} from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 const getAgentTypesURLTemplate =
   '%s/json%s/realm-config/agents?_action=getAllTypes';

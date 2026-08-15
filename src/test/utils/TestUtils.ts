@@ -4,8 +4,8 @@ import { isIP } from 'node:net';
 import { expect } from '@jest/globals';
 import forge from 'node-forge';
 
-import { CSR } from '../../api/cloud/EnvCSRsApi';
-import { FrodoError } from '../../ops/FrodoError';
+import { CSR } from '../../api/cloud/EnvCSRsApi.ts';
+import { FrodoError } from '../../ops/FrodoError.ts';
 
 const pki = forge.pki;
 

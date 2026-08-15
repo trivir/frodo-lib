@@ -29,7 +29,7 @@ import {
   McpDeploymentType,
   McpIdentitySurface,
   McpToolAnnotations,
-} from './CapabilityTypes';
+} from './CapabilityTypes.ts';
 
 // ---------------------------------------------------------------------------
 // Constants

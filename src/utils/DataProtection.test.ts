@@ -1,5 +1,5 @@
-import StateImpl, { type State } from '../shared/State';
-import DataProtection from './DataProtection';
+import StateImpl, { type State } from '../shared/State.ts';
+import DataProtection from './DataProtection.ts';
 
 const state: State = StateImpl({});
 

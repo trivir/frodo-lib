@@ -1,17 +1,17 @@
-import { type NoIdObjectSkeletonInterface } from '../api/ApiTypes';
+import { type NoIdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   deleteOAuth2TrustedJwtIssuer as _deleteOAuth2TrustedJwtIssuer,
   getOAuth2TrustedJwtIssuer as _getOAuth2TrustedJwtIssuer,
   getOAuth2TrustedJwtIssuers as _getOAuth2TrustedJwtIssuers,
   type OAuth2TrustedJwtIssuerSkeleton,
   putOAuth2TrustedJwtIssuer as _putOAuth2TrustedJwtIssuer,
-} from '../api/OAuth2TrustedJwtIssuerApi';
-import { State } from '../shared/State';
-import { debugMessage, printMessage } from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { ExportMetaData } from './OpsTypes';
+} from '../api/OAuth2TrustedJwtIssuerApi.ts';
+import { State } from '../shared/State.ts';
+import { debugMessage, printMessage } from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { ExportMetaData } from './OpsTypes.ts';
 
 export type OAuth2TrustedJwtIssuer = {
   /**

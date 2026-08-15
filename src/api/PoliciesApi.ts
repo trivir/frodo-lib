@@ -1,12 +1,12 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
+import { State } from '../shared/State.ts';
+import { getCurrentRealmPath } from '../utils/ForgeRockUtils.ts';
 import {
   type IdObjectSkeletonInterface,
   type NoIdObjectSkeletonInterface,
-} from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 // const queryAllPoliciesByApplicationURLTemplate =
 //   '%s/json%s/policies?_sortKeys=name&_queryFilter=applicationName+eq+%22%s%22';

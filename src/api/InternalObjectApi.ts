@@ -1,13 +1,13 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
+import { State } from '../shared/State.ts';
+import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
 import {
   IdObjectSkeletonInterface,
   PagedResult,
   PatchOperationInterface,
-} from './ApiTypes';
-import { generateIdmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateIdmApi } from './BaseApi.ts';
 
 const createInternalObjectURLTemplate = '%s/internal/%s?_action=create';
 const internalObjectByIdURLTemplate = '%s/internal/%s/%s';

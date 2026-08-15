@@ -2,13 +2,13 @@ import {
   type AuthenticationSettingsSkeleton,
   getAuthenticationSettings as _getAuthenticationSettings,
   putAuthenticationSettings as _putAuthenticationSettings,
-} from '../api/AuthenticationSettingsApi';
-import { State } from '../shared/State';
-import { debugMessage } from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { FrodoError } from './FrodoError';
-import { type ExportMetaData } from './OpsTypes';
+} from '../api/AuthenticationSettingsApi.ts';
+import { State } from '../shared/State.ts';
+import { debugMessage } from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type AuthenticationSettings = {
   /**

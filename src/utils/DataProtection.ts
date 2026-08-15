@@ -14,10 +14,10 @@ import fs, { promises as fsp } from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
-import { printMessage } from './Console';
-import { getFrodoHome } from './FrodoUtils';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
+import { printMessage } from './Console.ts';
+import { getFrodoHome } from './FrodoUtils.ts';
 
 const scrypt = promisify(crypto.scrypt);
 // using WeakMaps for added security since it gets garbage collected

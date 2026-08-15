@@ -1,9 +1,9 @@
 import { parseScript } from 'esprima';
 
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { State } from '../shared/State';
-import { decode, isBase64Encoded } from './Base64Utils';
-import { printMessage } from './Console';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { State } from '../shared/State.ts';
+import { decode, isBase64Encoded } from './Base64Utils.ts';
+import { printMessage } from './Console.ts';
 
 export type ScriptValidation = {
   validateScriptHooks(jsonData: object): void;

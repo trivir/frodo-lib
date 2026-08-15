@@ -6,8 +6,8 @@ import {
   ReconType,
   startRecon as _startRecon,
   startReconById as _startReconById,
-} from '../api/ReconApi';
-import { State } from '../shared/State';
+} from '../api/ReconApi.ts';
+import { State } from '../shared/State.ts';
 
 export type Recon = {
   /**

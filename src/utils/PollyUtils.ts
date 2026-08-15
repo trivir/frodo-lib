@@ -1,5 +1,5 @@
-import { State } from '../shared/State';
-import { decode, encode, isBase64Encoded } from './Base64Utils';
+import { State } from '../shared/State.ts';
+import { decode, encode, isBase64Encoded } from './Base64Utils.ts';
 
 export type Recording = {
   request: {

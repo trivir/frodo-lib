@@ -16,14 +16,17 @@ export {
   McpCapabilityRiskClass,
   McpDeploymentType,
   McpToolAnnotations,
-} from './CapabilityTypes';
-export { MCP_POLICY_PRESETS, applyCapabilityPolicy } from './CapabilityPolicy';
+} from './CapabilityTypes.ts';
+export {
+  MCP_POLICY_PRESETS,
+  applyCapabilityPolicy,
+} from './CapabilityPolicy.ts';
 export {
   McpCapabilityRouting,
   McpCapabilityRoutingStatus,
   describeCapabilityRouting,
   rankCapabilitiesForDeployment,
-} from './CapabilityRouting';
+} from './CapabilityRouting.ts';
 export {
   MCP_AMBIGUOUS_OBJECT_CONCEPTS,
   MCP_SEMANTIC_OBJECT_SYNONYMS,
@@ -35,7 +38,7 @@ export {
   matchManagedObjectFamily,
   normalizeSemanticObjectFamily,
   resolveSemanticObjectFamily,
-} from './SemanticObjectFamilies';
+} from './SemanticObjectFamilies.ts';
 export {
   capabilityMatchesAnyProfile,
   capabilityMatchesDisabled,
@@ -43,13 +46,13 @@ export {
   listAllMcpProfiles,
   listMcpProfiles,
   resolveMcpProfileSelection,
-} from './ProfileRegistry';
+} from './ProfileRegistry.ts';
 export {
   buildCapabilityInventory,
   inferObjectType,
   inferOperationType,
   inferRiskClass,
-} from './CapabilityRegistry';
+} from './CapabilityRegistry.ts';
 export {
   McpCanonicalTool,
   McpDiscoveryContext,
@@ -61,7 +64,7 @@ export {
   McpSpecialTool,
   McpToolManifest,
   buildToolManifest,
-} from './ToolManifest';
+} from './ToolManifest.ts';
 export {
   McpDiscoverArguments,
   McpExecutionPaginationMetadata,
@@ -84,11 +87,11 @@ export {
   McpToolRuntimeTraceHandler,
   createToolRuntime,
   resolveRequestScopedFrodo,
-} from './ToolRuntime';
+} from './ToolRuntime.ts';
 export {
   McpService,
   McpServiceOptions,
   McpServiceToolDefinition,
   composeCapabilityPolicy,
   createMcpService,
-} from './McpService';
+} from './McpService.ts';

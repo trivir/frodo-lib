@@ -1,14 +1,14 @@
 import util from 'node:util';
 
-import { EMAIL_TEMPLATE_TYPE } from '../ops/EmailTemplateOps';
-import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
+import { EMAIL_TEMPLATE_TYPE } from '../ops/EmailTemplateOps.ts';
+import { State } from '../shared/State.ts';
+import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
 import {
   IdObjectSkeletonInterface,
   NoIdObjectSkeletonInterface,
   PagedResult,
-} from './ApiTypes';
-import { generateIdmApi } from './BaseApi';
+} from './ApiTypes.ts';
+import { generateIdmApi } from './BaseApi.ts';
 
 const idmAllConfigURLTemplate = '%s/config';
 const idmConfigURLTemplate = '%s/config/%s';

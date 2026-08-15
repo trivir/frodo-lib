@@ -6,20 +6,20 @@ import {
 } from 'axios-retry';
 import c from 'tinyrainbow';
 
-import { RetryStrategy } from '../api/BaseApi';
-import { FeatureInterface } from '../api/cloud/FeatureApi';
-import { UserSessionMetaType } from '../ops/AuthenticateOps';
-import { FrodoError } from '../ops/FrodoError';
-import { JwkRsa } from '../ops/JoseOps';
-import { AccessTokenMetaType } from '../ops/OAuth2OidcOps';
-import Constants from '../shared/Constants';
+import { RetryStrategy } from '../api/BaseApi.ts';
+import { FeatureInterface } from '../api/cloud/FeatureApi.ts';
+import { UserSessionMetaType } from '../ops/AuthenticateOps.ts';
+import { FrodoError } from '../ops/FrodoError.ts';
+import { JwkRsa } from '../ops/JoseOps.ts';
+import { AccessTokenMetaType } from '../ops/OAuth2OidcOps.ts';
+import Constants from '../shared/Constants.ts';
 import {
   ProgressIndicatorStatusType,
   ProgressIndicatorType,
-} from '../utils/Console';
-import { convertPrivateKeyToPem } from '../utils/CryptoUtils';
-import { cloneDeep, mergeDeep } from '../utils/JsonUtils';
-import { getPackageVersion } from './Version';
+} from '../utils/Console.ts';
+import { convertPrivateKeyToPem } from '../utils/CryptoUtils.ts';
+import { cloneDeep, mergeDeep } from '../utils/JsonUtils.ts';
+import { getPackageVersion } from './Version.ts';
 
 export type State = {
   /**

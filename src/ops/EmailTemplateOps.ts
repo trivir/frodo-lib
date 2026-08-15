@@ -1,24 +1,24 @@
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
+import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
 import {
   deleteConfigEntity,
   getConfigEntity,
   putConfigEntity,
-} from '../api/IdmConfigApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/IdmConfigApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { FrodoError } from './FrodoError';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 import {
   AIC_PROTECTED_ENTITIES,
   readConfigEntitiesByType,
-} from './IdmConfigOps';
-import { ExportMetaData } from './OpsTypes';
+} from './IdmConfigOps.ts';
+import { ExportMetaData } from './OpsTypes.ts';
 
 export type EmailTemplate = {
   /**

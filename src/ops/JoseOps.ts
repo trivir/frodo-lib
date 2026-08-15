@@ -1,6 +1,6 @@
 import jose from 'node-jose';
 
-import { State } from '../shared/State';
+import { State } from '../shared/State.ts';
 
 export type Jose = {
   createJwkRsa(): Promise<JwkRsa>;

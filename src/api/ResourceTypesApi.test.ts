@@ -29,11 +29,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as ResourceTypesApi from './ResourceTypesApi';
-import { state } from '../index';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { type ResourceTypeSkeleton } from './ResourceTypesApi';
+import * as ResourceTypesApi from './ResourceTypesApi.ts';
+import { state } from '../index.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { type ResourceTypeSkeleton } from './ResourceTypesApi.ts';
 
 const ctx = autoSetupPolly();
 

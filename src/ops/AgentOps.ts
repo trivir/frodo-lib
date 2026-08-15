@@ -12,20 +12,20 @@ import {
   putAgentGroupByTypeAndId as _putAgentGroupByTypeAndId,
   getAgentTypes as _getAgentTypes,
   AgentTypeItem as _AgentTypeItem,
-} from '../api/AgentApi';
-import { IdObjectSkeletonInterface } from '../api/ApiTypes';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/AgentApi.ts';
+import { IdObjectSkeletonInterface } from '../api/ApiTypes.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
-import { getMetadata } from '../utils/ExportImportUtils';
-import { getCurrentRealmName } from '../utils/ForgeRockUtils';
-import { cloneDeep } from '../utils/JsonUtils';
-import { FrodoError } from './FrodoError';
+} from '../utils/Console.ts';
+import { getMetadata } from '../utils/ExportImportUtils.ts';
+import { getCurrentRealmName } from '../utils/ForgeRockUtils.ts';
+import { cloneDeep } from '../utils/JsonUtils.ts';
+import { FrodoError } from './FrodoError.ts';
 import {
   createManagedObject,
   queryManagedObjects,
@@ -34,8 +34,8 @@ import {
   readManagedObjects,
   readManagedObjectSchema,
   updateManagedObjectProperties,
-} from './ManagedObjectOps';
-import { type ExportMetaData } from './OpsTypes';
+} from './ManagedObjectOps.ts';
+import { type ExportMetaData } from './OpsTypes.ts';
 
 export type Agent = {
   /**

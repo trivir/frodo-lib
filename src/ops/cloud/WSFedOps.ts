@@ -1,4 +1,3 @@
-import { FrodoError } from '../..';
 import {
   createSpConnection as _createSpConnection,
   getSpConnections as _getSpConnections,
@@ -42,9 +41,10 @@ import {
   replicate as _replicate,
   WSFedClusterReplicateResponse,
   getSpConnectionById,
-} from '../../api/cloud/WSFedApi';
-import { State } from '../../shared/State';
-import { debugMessage } from '../../utils/Console';
+} from '../../api/cloud/WSFedApi.ts';
+import { FrodoError } from '../../index.ts';
+import { State } from '../../shared/State.ts';
+import { debugMessage } from '../../utils/Console.ts';
 
 // add every method implementation from this file as a type but remove structured params (e.g. { state }) and replace with individual params (e.g. state) to be consistent with other ops files. Also, use read instead of get to be consistent with other ops files.
 export type WSFed = {

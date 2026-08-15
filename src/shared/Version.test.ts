@@ -1,4 +1,4 @@
-import { getUserAgent } from './Version';
+import { getUserAgent } from './Version.ts';
 
 describe('Versions', () => {
     test('user agent is compiled from package', () => {

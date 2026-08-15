@@ -1,12 +1,12 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getHostOnlyUrl } from '../../utils/ForgeRockUtils';
+import { State } from '../../shared/State.ts';
+import { getHostOnlyUrl } from '../../utils/ForgeRockUtils.ts';
 import {
   type NoIdObjectSkeletonInterface,
   type PagedResult,
-} from '../ApiTypes';
-import { generateLogApi, generateLogKeysApi } from '../BaseApi';
+} from '../ApiTypes.ts';
+import { generateLogApi, generateLogKeysApi } from '../BaseApi.ts';
 
 const logsTailURLTemplate = '%s/monitoring/logs/tail?source=%s';
 const logsFetchURLTemplate = '%s/monitoring/logs?source=%s';

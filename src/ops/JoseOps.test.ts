@@ -6,11 +6,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import * as Jose from './JoseOps';
-import { parseUrl } from '../utils/ExportImportUtils';
+import * as Jose from './JoseOps.ts';
+import { parseUrl } from '../utils/ExportImportUtils.ts';
 import { v4 } from 'uuid';
-import { isEqualJson } from '../utils/JsonUtils';
-import { decode } from '../utils/Base64Utils';
+import { isEqualJson } from '../utils/JsonUtils.ts';
+import { decode } from '../utils/Base64Utils.ts';
 
 describe('JoseOps - createJWK()', () => {
   test('createJWK() 0: Method is implemented', async () => {

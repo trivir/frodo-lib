@@ -1,10 +1,10 @@
 import util from 'node:util';
 
-import { State } from '../../../shared/State';
-import { governanceApiSearchAll } from '../../../utils/ExportImportUtils';
-import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils';
-import { generateGovernanceApi } from '../../BaseApi';
-import { StaticNodeRefSkeletonInterface } from '../../NodeApi';
+import { State } from '../../../shared/State.ts';
+import { governanceApiSearchAll } from '../../../utils/ExportImportUtils.ts';
+import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils.ts';
+import { generateGovernanceApi } from '../../BaseApi.ts';
+import { StaticNodeRefSkeletonInterface } from '../../NodeApi.ts';
 
 const allWorkflowsURLTemplate = '%s/iga/governance/workflow';
 const workflowURLTemplate = allWorkflowsURLTemplate + '/%s';

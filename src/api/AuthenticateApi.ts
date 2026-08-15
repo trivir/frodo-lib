@@ -2,10 +2,10 @@ import util from 'node:util';
 
 import { AxiosRequestConfig } from 'axios';
 
-import { Callback } from '../ops/CallbackOps';
-import { State } from '../shared/State';
-import { getRealmPath } from '../utils/ForgeRockUtils';
-import { generateAmAuthApi } from './BaseApi';
+import { Callback } from '../ops/CallbackOps.ts';
+import { State } from '../shared/State.ts';
+import { getRealmPath } from '../utils/ForgeRockUtils.ts';
+import { generateAmAuthApi } from './BaseApi.ts';
 
 const authenticateUrlTemplate = '%s/json%s/authenticate';
 const authenticateWithServiceUrlTemplate = `${authenticateUrlTemplate}?authIndexType=service&authIndexValue=%s`;

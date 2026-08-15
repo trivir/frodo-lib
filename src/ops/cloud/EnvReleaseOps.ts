@@ -1,9 +1,9 @@
 import {
   getRelease as _getRelease,
   Release,
-} from '../../api/cloud/EnvReleaseApi';
-import { State } from '../../shared/State';
-import { FrodoError } from '../FrodoError';
+} from '../../api/cloud/EnvReleaseApi.ts';
+import { State } from '../../shared/State.ts';
+import { FrodoError } from '../FrodoError.ts';
 
 export type EnvRelease = {
   /**

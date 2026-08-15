@@ -14,7 +14,7 @@ import {
   inferObjectType,
   inferOperationType,
   inferRiskClass,
-} from '../index';
+} from '../index.ts';
 import knownContractGaps from './contract-gap-baseline.json';
 
 const HIGH_RISK_DOMAINS = ['script', 'oauth2oidc', 'authn', 'idm'];

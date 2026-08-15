@@ -7,15 +7,15 @@ import {
   type CircleOfTrustSkeleton,
   createCircleOfTrust,
   updateCircleOfTrust,
-} from '../api/CirclesOfTrustApi';
-import { VariableSkeleton } from '../api/cloud/VariablesApi';
+} from '../api/CirclesOfTrustApi.ts';
+import { VariableSkeleton } from '../api/cloud/VariablesApi.ts';
 import {
   type CustomNodeSkeleton,
   type InnerNodeRefSkeletonInterface,
   type NodeRefSkeletonInterface,
   type NodeSkeleton,
   type StaticNodeRefSkeletonInterface,
-} from '../api/NodeApi';
+} from '../api/NodeApi.ts';
 import {
   createProvider,
   getProvider,
@@ -23,9 +23,9 @@ import {
   queryProviderStubs,
   type Saml2ProviderSkeleton,
   updateProvider,
-} from '../api/Saml2Api';
-import { type ScriptSkeleton } from '../api/ScriptApi';
-import { type SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi';
+} from '../api/Saml2Api.ts';
+import { type ScriptSkeleton } from '../api/ScriptApi.ts';
+import { type SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
 import {
   deleteTree,
   getTree,
@@ -33,22 +33,22 @@ import {
   getTrees,
   putTree,
   type TreeSkeleton,
-} from '../api/TreeApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/TreeApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   decode,
   encode,
   encodeBase64Url,
   isBase64Encoded,
-} from '../utils/Base64Utils';
+} from '../utils/Base64Utils.ts';
 import {
   createProgressIndicator,
   debugMessage,
   printMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   convertBase64TextToArray,
   convertTextArrayToBase64,
@@ -57,24 +57,24 @@ import {
   getMetadata,
   getResult,
   getTypedFilename,
-} from '../utils/ExportImportUtils';
+} from '../utils/ExportImportUtils.ts';
 import {
   getCurrentRealmManagedUser,
   getCurrentRealmName,
-} from '../utils/ForgeRockUtils';
-import { findInArray } from '../utils/JsonUtils';
-import { readCirclesOfTrust } from './CirclesOfTrustOps';
-import { resolveVariable, updateVariable } from './cloud/VariablesOps';
+} from '../utils/ForgeRockUtils.ts';
+import { findInArray } from '../utils/JsonUtils.ts';
+import { readCirclesOfTrust } from './CirclesOfTrustOps.ts';
+import { resolveVariable, updateVariable } from './cloud/VariablesOps.ts';
 import {
   type EmailTemplateSkeleton,
   readEmailTemplate,
   updateEmailTemplate,
-} from './EmailTemplateOps';
-import { FrodoError } from './FrodoError';
+} from './EmailTemplateOps.ts';
+import { FrodoError } from './FrodoError.ts';
 import {
   createSocialIdentityProvider,
   readSocialIdentityProviders,
-} from './IdpOps';
+} from './IdpOps.ts';
 import {
   CustomNodeExportInterface,
   importCustomNodes,
@@ -85,16 +85,16 @@ import {
   readNode,
   updateNode,
   deleteNode,
-} from './NodeOps';
-import { type ExportMetaData, ResultCallback } from './OpsTypes';
-import { readSaml2ProviderStubs } from './Saml2Ops';
+} from './NodeOps.ts';
+import { type ExportMetaData, ResultCallback } from './OpsTypes.ts';
+import { readSaml2ProviderStubs } from './Saml2Ops.ts';
 import {
   getLibraryScriptNames,
   readScript,
   readScriptByName,
   updateScript,
-} from './ScriptOps';
-import { readThemes, type ThemeSkeleton, updateThemes } from './ThemeOps';
+} from './ScriptOps.ts';
+import { readThemes, type ThemeSkeleton, updateThemes } from './ThemeOps.ts';
 
 export type Journey = {
   /**

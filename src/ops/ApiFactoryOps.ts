@@ -10,8 +10,8 @@ import {
   generateOauth2Api,
   generateReleaseApi,
   ResourceConfig,
-} from '../api/BaseApi';
-import { State } from '../shared/State';
+} from '../api/BaseApi.ts';
+import { State } from '../shared/State.ts';
 
 export type ApiFactory = {
   /**

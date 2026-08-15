@@ -12,7 +12,7 @@ import {
   composeCapabilityPolicy,
   createMcpService,
   McpCapabilityDescriptor,
-} from '../index';
+} from '../index.ts';
 
 /**
  * Builds a descriptor fixture for MCP service tests.

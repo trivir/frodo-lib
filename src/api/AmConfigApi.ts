@@ -1,8 +1,8 @@
-import { FrodoError } from '../ops/FrodoError';
-import { State } from '../shared/State';
-import { getRealmPathGlobal } from '../utils/ForgeRockUtils';
-import { AmConfigEntityInterface, PagedResult } from './ApiTypes';
-import { generateAmApi } from './BaseApi';
+import { FrodoError } from '../ops/FrodoError.ts';
+import { State } from '../shared/State.ts';
+import { getRealmPathGlobal } from '../utils/ForgeRockUtils.ts';
+import { AmConfigEntityInterface, PagedResult } from './ApiTypes.ts';
+import { generateAmApi } from './BaseApi.ts';
 
 export interface AmConfigEntitiesInterface {
   applicationTypes: AmConfigEntityInterface;

@@ -5,26 +5,26 @@ import {
   EntityInfo,
   getConfigEntity,
   putConfigEntity,
-} from '../api/AmConfigApi';
-import { AmConfigEntityInterface, PagedResult } from '../api/ApiTypes';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/AmConfigApi.ts';
+import { AmConfigEntityInterface, PagedResult } from '../api/ApiTypes.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../utils/Console';
+} from '../utils/Console.ts';
 import {
   getErrorCallback,
   getMetadata,
   getResult,
-} from '../utils/ExportImportUtils';
+} from '../utils/ExportImportUtils.ts';
 import {
   getRealmsForExport,
   getRealmUsingExportFormat,
-} from '../utils/ForgeRockUtils';
-import { ExportMetaData, ResultCallback } from './OpsTypes';
+} from '../utils/ForgeRockUtils.ts';
+import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
 
 export type AmConfig = {
   /**

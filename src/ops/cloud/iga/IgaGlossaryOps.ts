@@ -6,17 +6,17 @@ import {
   GlossarySchemaItemSkeleton,
   putGlossarySchema,
   searchGlossarySchemas,
-} from '../../../api/cloud/iga/IgaGlossaryApi';
-import { State } from '../../../shared/State';
+} from '../../../api/cloud/iga/IgaGlossaryApi.ts';
+import { State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../../utils/Console';
-import { getMetadata, getResult } from '../../../utils/ExportImportUtils';
-import { FrodoError } from '../../FrodoError';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes';
+} from '../../../utils/Console.ts';
+import { getMetadata, getResult } from '../../../utils/ExportImportUtils.ts';
+import { FrodoError } from '../../FrodoError.ts';
+import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
 
 export type Glossary = {
   /**

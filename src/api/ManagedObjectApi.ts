@@ -1,14 +1,14 @@
 import util from 'node:util';
 
-import { State } from '../shared/State';
-import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
+import { State } from '../shared/State.ts';
+import { getIdmBaseUrl } from '../utils/ForgeRockUtils.ts';
 import {
   IdObjectSkeletonInterface,
   PagedResult,
   PatchOperationInterface,
-} from './ApiTypes';
-import { generateIdmApi } from './BaseApi';
-import { MANAGED_SYSTEM_OBJECT_TYPES } from './ManagedSystemObjectApi';
+} from './ApiTypes.ts';
+import { generateIdmApi } from './BaseApi.ts';
+import { MANAGED_SYSTEM_OBJECT_TYPES } from './ManagedSystemObjectApi.ts';
 
 const managedObjectSchemaURLTemplate = '%s/schema/managed/%s';
 const createManagedObjectURLTemplate = '%s/managed/%s?_action=create';

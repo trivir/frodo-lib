@@ -22,10 +22,10 @@ import {
   putNode as _putNode,
   getCustomNodeSchema as _getCustomNodeSchema,
   requireVersion,
-} from '../api/NodeApi';
-import { getTrees } from '../api/TreeApi';
-import Constants from '../shared/Constants';
-import { State } from '../shared/State';
+} from '../api/NodeApi.ts';
+import { getTrees } from '../api/TreeApi.ts';
+import Constants from '../shared/Constants.ts';
+import { State } from '../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
@@ -34,12 +34,12 @@ import {
   stopProgressIndicator,
   updateProgressIndicator,
   verboseMessage,
-} from '../utils/Console';
-import { getMetadata, getResult } from '../utils/ExportImportUtils';
-import { applyNameCollisionPolicy } from '../utils/ForgeRockUtils';
-import { eq, gt, lt } from '../utils/SemverUtils';
-import { FrodoError } from './FrodoError';
-import { ExportMetaData, ResultCallback } from './OpsTypes';
+} from '../utils/Console.ts';
+import { getMetadata, getResult } from '../utils/ExportImportUtils.ts';
+import { applyNameCollisionPolicy } from '../utils/ForgeRockUtils.ts';
+import { eq, gt, lt } from '../utils/SemverUtils.ts';
+import { FrodoError } from './FrodoError.ts';
+import { ExportMetaData, ResultCallback } from './OpsTypes.ts';
 
 /**
  * Semver-style filter used by readNodesByVersion to select node type versions.

@@ -29,11 +29,11 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { state } from '../index';
-import * as IdpOps from './IdpOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi';
+import { state } from '../index.ts';
+import * as IdpOps from './IdpOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import { SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi.ts';
 
 const ctx = autoSetupPolly();
 

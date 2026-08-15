@@ -42,14 +42,14 @@
  * Note: FRODO_DEBUG=1 is optional and enables debug logging for some output
  * in case things don't function as expected
  */
-import { frodo, state } from '../index';
-import * as NodeOps from './NodeOps';
-import { autoSetupPolly } from '../utils/AutoSetupPolly';
-import { filterRecording } from '../utils/PollyUtils';
-import Constants from '../shared/Constants';
+import { frodo, state } from '../index.ts';
+import * as NodeOps from './NodeOps.ts';
+import { autoSetupPolly } from '../utils/AutoSetupPolly.ts';
+import { filterRecording } from '../utils/PollyUtils.ts';
+import Constants from '../shared/Constants.ts';
 
-import * as TestData from '../test/setup/NodeSetup';
-import { snapshotResultCallback } from '../test/utils/TestUtils';
+import * as TestData from '../test/setup/NodeSetup.ts';
+import { snapshotResultCallback } from '../test/utils/TestUtils.ts';
 
 const ctx = autoSetupPolly();
 type SnapshotRecord = Record<string, any> & { _id?: string };

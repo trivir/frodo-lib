@@ -1,15 +1,15 @@
 import util from 'node:util';
 
-import { State } from '../../shared/State';
-import { getRealmPath } from '../../utils/ForgeRockUtils';
-import { deleteDeepByKey } from '../../utils/JsonUtils';
+import { State } from '../../shared/State.ts';
+import { getRealmPath } from '../../utils/ForgeRockUtils.ts';
+import { deleteDeepByKey } from '../../utils/JsonUtils.ts';
 import {
   type EntityType,
   type IdObjectSkeletonInterface,
   type PagedResult,
-} from '../ApiTypes';
-import { generateAmApi } from '../BaseApi';
-import { type SocialIdpSkeleton } from '../SocialIdentityProvidersApi';
+} from '../ApiTypes.ts';
+import { generateAmApi } from '../BaseApi.ts';
+import { type SocialIdpSkeleton } from '../SocialIdentityProvidersApi.ts';
 
 const getAllProviderTypesURLTemplate =
   '%s/json%s/realm-config/services/SocialIdentityProviders?_action=getAllTypes';

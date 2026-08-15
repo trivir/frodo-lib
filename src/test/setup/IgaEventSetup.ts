@@ -1,18 +1,18 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { EventSkeleton, EventType } from '../../api/cloud/iga/IgaEventApi';
-import { state } from '../../index';
-import * as IgaEventOps from '../../ops/cloud/iga/IgaEventOps';
+import { EventSkeleton, EventType } from '../../api/cloud/iga/IgaEventApi.ts';
+import { state } from '../../index.ts';
+import * as IgaEventOps from '../../ops/cloud/iga/IgaEventOps.ts';
 import {
   EMAIL_TEMPLATE_TYPE,
   EmailTemplateSkeleton,
-} from '../../ops/EmailTemplateOps';
+} from '../../ops/EmailTemplateOps.ts';
 import {
   autoSetupPolly,
   setupPollyRecordingContext,
-} from '../../utils/AutoSetupPolly';
-import { stageEmailTemplate, template1 } from './EmailTemplateSetup';
-import { getTestCertificationTemplate } from './IgaCertificationTemplateSetup';
+} from '../../utils/AutoSetupPolly.ts';
+import { stageEmailTemplate, template1 } from './EmailTemplateSetup.ts';
+import { getTestCertificationTemplate } from './IgaCertificationTemplateSetup.ts';
 
 export function getTestEvent({
   id,

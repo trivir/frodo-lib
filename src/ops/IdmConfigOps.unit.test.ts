@@ -1,4 +1,4 @@
-import { extractManagedObjectTypes } from './IdmConfigOps';
+import { extractManagedObjectTypes } from './IdmConfigOps.ts';
 
 describe('managed-object type extraction', () => {
   test('validates, trims, deduplicates, and sorts names', () => {

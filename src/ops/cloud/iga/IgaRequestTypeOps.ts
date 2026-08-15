@@ -1,4 +1,4 @@
-import { PatchOperationInterface } from '../../../api/ApiTypes';
+import { PatchOperationInterface } from '../../../api/ApiTypes.ts';
 import {
   createRequestType as _createRequestType,
   deleteRequestType as _deleteRequestType,
@@ -8,22 +8,22 @@ import {
   queryRequestTypes,
   RequestTypeSchema,
   RequestTypeSkeleton,
-} from '../../../api/cloud/iga/IgaRequestTypeApi';
-import { State } from '../../../shared/State';
+} from '../../../api/cloud/iga/IgaRequestTypeApi.ts';
+import { State } from '../../../shared/State.ts';
 import {
   createProgressIndicator,
   debugMessage,
   stopProgressIndicator,
   updateProgressIndicator,
-} from '../../../utils/Console';
+} from '../../../utils/Console.ts';
 import {
   getErrorCallback,
   getMetadata,
   getResult,
-} from '../../../utils/ExportImportUtils';
-import { FrodoError } from '../../FrodoError';
-import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { deleteOrphanedRequestFormAssignments } from './IgaRequestFormOps';
+} from '../../../utils/ExportImportUtils.ts';
+import { FrodoError } from '../../FrodoError.ts';
+import { ExportMetaData, ResultCallback } from '../../OpsTypes.ts';
+import { deleteOrphanedRequestFormAssignments } from './IgaRequestFormOps.ts';
 
 export type RequestType = {
   /**
