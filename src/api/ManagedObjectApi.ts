@@ -263,7 +263,7 @@ export async function patchManagedObject({
   type,
   id,
   operations: operations,
-  rev = null,
+  rev,
   state,
 }: {
   type: string;

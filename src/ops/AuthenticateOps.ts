@@ -1441,7 +1441,7 @@ export async function getTokens({
   forceLoginAsUser = process.env.FRODO_FORCE_LOGIN_AS_USER ? true : false,
   autoRefresh = true,
   types = Constants.DEPLOYMENT_TYPES,
-  callbackHandler = null,
+  callbackHandler,
   state,
 }: {
   forceLoginAsUser?: boolean;

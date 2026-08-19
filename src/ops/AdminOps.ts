@@ -1694,8 +1694,8 @@ export function getAccessTokenUrl(state: State) {
 export async function generateRfc7523AuthZGrantArtefacts({
   clientId,
   iss,
-  jwk = null,
-  sub = null,
+  jwk,
+  sub,
   scope = ['fr:am:*', 'fr:idm:*', 'openid'],
   options = { save: false },
   state,
@@ -1826,8 +1826,8 @@ export async function executeRfc7523AuthZGrantFlow({
 
 export async function generateRfc7523ClientAuthNArtefacts({
   clientId,
-  aud = null,
-  jwk = null,
+  aud,
+  jwk,
   options = {
     save: false,
   },

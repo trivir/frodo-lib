@@ -187,7 +187,7 @@ export async function patchManagedSystemObject({
   type,
   id,
   operations: operations,
-  rev = null,
+  rev,
   state,
 }: {
   type: string;

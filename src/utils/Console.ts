@@ -200,7 +200,7 @@ export type ProgressIndicatorStatusType = 'none' | 'success' | 'warn' | 'fail';
  */
 export function stopProgressIndicator({
   id,
-  message = null,
+  message,
   status = 'none',
   state,
 }: {

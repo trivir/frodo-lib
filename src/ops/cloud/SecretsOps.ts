@@ -618,7 +618,7 @@ async function encryptExternalMap({
 export async function readSecretValue({
   secretId,
   decrypt = false,
-  target = null,
+  target,
   state,
 }: {
   secretId: string;
@@ -658,7 +658,7 @@ export async function readSecretValue({
 export async function readSecretValues({
   secretIds,
   decrypt = false,
-  target = null,
+  target,
   state,
 }: {
   secretIds: string[];

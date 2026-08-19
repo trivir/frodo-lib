@@ -126,7 +126,7 @@ export async function patchInternalObject({
   type,
   id,
   operations: operations,
-  rev = null,
+  rev,
   state,
 }: {
   type: string;

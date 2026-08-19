@@ -547,7 +547,7 @@ export async function updateManagedSystemObjectProperties({
   type,
   id,
   operations,
-  rev = null,
+  rev,
   state,
 }: {
   type: string;
@@ -570,7 +570,7 @@ export async function updateManagedSystemObjectsProperties({
   type,
   filter,
   operations,
-  rev = null,
+  rev,
   pageSize = DEFAULT_PAGE_SIZE,
   state,
 }: {

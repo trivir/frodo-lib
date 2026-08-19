@@ -250,7 +250,7 @@ function getRealmThemes({
  * @returns {Promise<ThemeSkeleton[]>} a promise that resolves to an array of themes
  */
 export async function readThemes({
-  realm = null,
+  realm,
   state,
 }: {
   realm?: string;
@@ -566,7 +566,7 @@ export async function updateThemeByName({
  */
 export async function updateThemes({
   themeMap,
-  realm = null,
+  realm,
   state,
 }: {
   themeMap: Record<string, ThemeSkeleton>;
@@ -647,7 +647,7 @@ export async function updateThemes({
  */
 export async function importThemes({
   importData,
-  realm = null,
+  realm,
   state,
 }: {
   importData: ThemeExportInterface;
