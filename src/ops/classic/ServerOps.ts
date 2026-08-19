@@ -426,7 +426,7 @@ export async function createServer({
   state,
 }: {
   serverData: ServerSkeleton;
-  state;
+  state: any;
 }): Promise<ServerSkeleton> {
   try {
     return await _createServer({ serverData, state });
@@ -493,7 +493,7 @@ export async function importServers({
   serverUrl?: string;
   importData: ServerExportInterface;
   options: ServerImportOptions;
-  state;
+  state: any;
 }): Promise<ServerExportInterface> {
   const errors = [];
   try {

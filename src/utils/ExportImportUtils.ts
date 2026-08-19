@@ -904,7 +904,7 @@ export async function governanceApiSearchAll<T>({
   pageSize?: number;
   body?: any;
   queryParamBuilder?: (pageSize: number, offset: number) => string;
-  state;
+  state: any;
 }) {
   const results: T[] = [];
   let currentSearchResult: SearchResult<T>;

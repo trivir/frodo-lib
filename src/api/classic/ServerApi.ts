@@ -173,7 +173,7 @@ export async function createServer({
   state,
 }: {
   serverData: ServerSkeleton;
-  state;
+  state: any;
 }): Promise<ServerSkeleton> {
   const urlString = util.format(
     serverURLTemplate,
@@ -200,9 +200,9 @@ export async function putServerProperties({
   serverPropertiesData,
   state,
 }: {
-  serverId;
+  serverId: any;
   serverPropertiesData: ServerPropertiesSkeleton;
-  state;
+  state: any;
 }): Promise<ServerPropertiesSkeleton> {
   const result = {} as ServerPropertiesSkeleton;
   for (const [property, propertyData] of Object.entries(serverPropertiesData)) {
@@ -234,7 +234,7 @@ export async function putDefaultServerProperties({
   state,
 }: {
   defaultServerPropertiesData: ServerPropertiesSkeleton;
-  state;
+  state: any;
 }): Promise<ServerPropertiesSkeleton> {
   const result = {} as ServerPropertiesSkeleton;
   for (const [property, propertyData] of Object.entries(

@@ -371,10 +371,10 @@ export type ApplicationSkeleton = IdObjectSkeletonInterface & {
   description: string;
   icon: string;
   mappingNames: string[];
-  members;
+  members: any;
   name: string;
-  owners;
-  roles;
+  owners: any;
+  roles: any;
   ssoEntities: {
     idpLocation: string;
     idpPrivateId: string;
