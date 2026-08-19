@@ -1,5 +1,6 @@
 import util from 'util';
 
+import { FrodoError } from '../ops/FrodoError';
 import { State } from '../shared/State';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
 import {
@@ -8,7 +9,6 @@ import {
   PatchOperationInterface,
 } from './ApiTypes';
 import { generateIdmSystemApi } from './BaseApi';
-import { FrodoError } from '../ops/FrodoError';
 import type { ManagedObjectSchema } from './ManagedObjectApi';
 
 const managedObjectSchemaURLTemplate = '%s/schema/managed/%s';

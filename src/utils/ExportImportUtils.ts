@@ -8,6 +8,8 @@ import slugify from 'slugify';
 
 import { SearchResult, SearchTargetFilterOperation } from '../api/ApiTypes';
 import { generateGovernanceApi } from '../api/BaseApi';
+import { VariableSkeleton } from '../api/cloud/VariablesApi';
+import { resolveVariable } from '../ops/cloud/VariablesOps';
 import {
   EmailTemplateSkeleton,
   readEmailTemplate,
@@ -24,8 +26,6 @@ import {
 } from './Base64Utils';
 import { debugMessage, printMessage, updateProgressIndicator } from './Console';
 import { deleteDeepByKeys, stringify } from './JsonUtils';
-import { resolveVariable } from '../ops/cloud/VariablesOps';
-import { VariableSkeleton } from '../api/cloud/VariablesApi';
 
 export type ExportImport = {
   getMetadata(): ExportMetaData;

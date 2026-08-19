@@ -8,6 +8,7 @@ import { debugMessage } from '../utils/Console';
 import DataProtection from '../utils/DataProtection';
 import { isValidUrl, saveJsonToFile } from '../utils/ExportImportUtils';
 import { getFrodoHome } from '../utils/FrodoUtils';
+import { mergeDeep } from '../utils/JsonUtils';
 import { readServiceAccountScopes } from './cloud/EnvServiceAccountScopesOps';
 import {
   createServiceAccount,
@@ -16,7 +17,6 @@ import {
 } from './cloud/ServiceAccountOps';
 import { FrodoError } from './FrodoError';
 import { createJwkRsa, createJwks, getJwkRsaPublic, JwkRsa } from './JoseOps';
-import { mergeDeep } from '../utils/JsonUtils';
 
 export type ConnectionProfile = {
   /**

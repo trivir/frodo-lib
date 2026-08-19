@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { isIP } from 'net';
 
-import forge from 'node-forge';
 import { expect } from '@jest/globals';
+import forge from 'node-forge';
 
 import { CSR } from '../../api/cloud/EnvCSRsApi';
 import { FrodoError } from '../../ops/FrodoError';

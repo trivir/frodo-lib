@@ -13,10 +13,15 @@
  * the established Frodo factory helpers (`createInstance*`).
  */
 
+import * as ManagedObjectApi from '../api/ManagedObjectApi';
 import { Frodo, frodo } from '../lib/FrodoLib';
 import { FrodoError } from '../ops/FrodoError';
-import * as ManagedObjectApi from '../api/ManagedObjectApi';
 import { StateInterface } from '../shared/State';
+import {
+  describeCapabilityRouting,
+  McpCapabilityRoutingStatus,
+  rankCapabilitiesForDeployment,
+} from './CapabilityRouting';
 import {
   McpCapabilityDescriptor,
   McpCapabilityOperationType,
@@ -24,18 +29,6 @@ import {
   McpCapabilityParameterSchema,
   McpDeploymentType,
 } from './CapabilityTypes';
-import {
-  McpDiscoveryEntry,
-  McpGenericTool,
-  McpManagedObjectHydrationStatus,
-  McpSpecialTool,
-  McpToolManifest,
-} from './ToolManifest';
-import {
-  describeCapabilityRouting,
-  McpCapabilityRoutingStatus,
-  rankCapabilitiesForDeployment,
-} from './CapabilityRouting';
 import {
   discoverManagedObjectFamilies,
   descriptorPatternsSupportFamily,
@@ -47,6 +40,13 @@ import {
   normalizeSemanticObjectFamily,
   resolveSemanticObjectFamily,
 } from './SemanticObjectFamilies';
+import {
+  McpDiscoveryEntry,
+  McpGenericTool,
+  McpManagedObjectHydrationStatus,
+  McpSpecialTool,
+  McpToolManifest,
+} from './ToolManifest';
 
 const FIND_SKILLS_TOOL_NAME = 'frodo_find_skills';
 const DESCRIBE_SKILL_TOOL_NAME = 'frodo_describe_skill';

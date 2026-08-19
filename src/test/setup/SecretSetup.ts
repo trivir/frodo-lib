@@ -1,10 +1,10 @@
 import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
-import { autoSetupPolly } from '../../utils/AutoSetupPolly';
-import { filterRecording } from '../../utils/PollyUtils';
+import { SecretSkeleton, SecretEncodingType } from '../../api/cloud/SecretsApi';
 import { state } from '../../index';
 import * as SecretsOps from '../../ops/cloud/SecretsOps';
-import { SecretSkeleton, SecretEncodingType } from '../../api/cloud/SecretsApi';
+import { autoSetupPolly } from '../../utils/AutoSetupPolly';
+import { filterRecording } from '../../utils/PollyUtils';
 
 type TestSecret = SecretSkeleton & {
   value: string;

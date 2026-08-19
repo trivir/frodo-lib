@@ -4,6 +4,10 @@ import {
   PatchOperationInterface,
 } from '../api/ApiTypes';
 import {
+  getManagedObject as _getManagedObject,
+  type ManagedObjectSchema,
+} from '../api/ManagedObjectApi';
+import {
   countManagedSystemObjects as _countManagedSystemObjects,
   createManagedSystemObject as _createManagedSystemObject,
   DEFAULT_PAGE_SIZE,
@@ -16,15 +20,11 @@ import {
   queryManagedSystemObjects as _queryManagedSystemObjects,
   queryRelatedManagedSystemObjects as _queryRelatedManagedSystemObjects,
 } from '../api/ManagedSystemObjectApi';
-import {
-  getManagedObject as _getManagedObject,
-  type ManagedObjectSchema,
-} from '../api/ManagedObjectApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { FrodoError } from './FrodoError';
 import { debugMessage } from '../utils/Console';
 import { cloneDeep } from '../utils/JsonUtils';
+import { FrodoError } from './FrodoError';
 import { ManagedObjectSchemaOptions } from './ManagedObjectOps';
 
 export type ManagedObject = {

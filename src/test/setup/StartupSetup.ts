@@ -2,8 +2,8 @@ import { beforeAll, beforeEach, afterAll } from '@jest/globals';
 
 import { autoSetupPolly } from '../../utils/AutoSetupPolly';
 import { filterRecording } from '../../utils/PollyUtils';
-import { stageVariable, variable1, variable2 } from './VariablesSetup';
 import { stageSecret, secret1, secret2 } from './SecretSetup';
+import { stageVariable, variable1, variable2 } from './VariablesSetup';
 
 export async function setup() {
   const ctx = autoSetupPolly();
