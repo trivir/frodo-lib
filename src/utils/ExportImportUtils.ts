@@ -317,7 +317,9 @@ export function convertTextArrayToBase64Url(textArray: string[]) {
   return b64encodedScript;
 }
 
-export function validateImport(metadata): boolean {
+// TODO what is this for? Metadata seems to be an ExportMetaData but this
+// returns boolean and we have test that says it should always return true
+export function validateImport(metadata: any): boolean {
   return metadata || true;
 }
 
@@ -416,23 +418,28 @@ export function saveToFile({
   state,
 }: {
   type: string;
-  data: object;
+  data: Record<string, unknown> | Record<string, unknown>[];
   identifier: string;
   filename: string;
   includeMeta?: boolean;
   keepModifiedProperties?: boolean;
   state: State;
 }): void {
-  const exportData = {};
-  exportData[type] = {};
+  const exportData: Record<string, Record<string, unknown>> = {
+    [type]: {},
+  };
 
-  if (Array.isArray(data)) {
-    data.forEach((element) => {
-      exportData[type][element[identifier]] = element;
-    });
-  } else {
-    exportData[type][data[identifier]] = data;
-  }
+  const elements = Array.isArray(data) ? data : [data];
+  elements.forEach((element) => {
+    const id = element[identifier];
+    if (typeof id !== 'string') {
+      throw new Error(
+        `Expected "${identifier}" to contain a string identifier`
+      );
+    }
+    exportData[type][id] = element;
+  });
+
   saveJsonToFile({
     data: exportData,
     includeMeta,
