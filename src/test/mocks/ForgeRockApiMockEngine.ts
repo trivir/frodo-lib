@@ -175,7 +175,7 @@ export function getCircleOfTrustRawData(cotId: string) {
  * Agent Mock Data
  */
 
-export function getAgent(agentType, agentId) {
+export function getAgent(agentType: any, agentId: any) {
   const objects = JSON.parse(
     fs.readFileSync(
       path.resolve(

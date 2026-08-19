@@ -413,7 +413,7 @@ const UNKNOWN_AM_VERSION = '0.0.0';
  * @param {Object} versionInfo version info object
  * @returns {String} semantic version
  */
-export function getSemanticVersion(versionInfo) {
+export function getSemanticVersion(versionInfo: any) {
   const versionFields = [versionInfo?.version, versionInfo?.fullVersion];
   const semanticVersionRegex = /(\d+\.\d+\.\d+(?:\.\d+)*)/;
 

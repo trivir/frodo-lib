@@ -54,11 +54,11 @@ function authenticationMatchRequestsBy(pathname: boolean = true) {
 }
 
 // returns a delayed promise
-async function delay(ms) {
+async function delay(ms: any) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function countdown(ms) {
+async function countdown(ms: any) {
   await delay(ms);
   return --ttl;
 }

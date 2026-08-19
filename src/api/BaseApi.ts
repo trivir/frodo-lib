@@ -133,7 +133,7 @@ function createAxiosInstance(
  * @param params.request axios request object
  * @param {State} params.state State object
  */
-function curlirize(request, state: State) {
+function curlirize(request: any, state: State) {
   _curlirize(request, (result, err: Error | AxiosError) => {
     if (err) {
       if (axios.isAxiosError(err)) {

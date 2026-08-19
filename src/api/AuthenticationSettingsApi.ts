@@ -9,7 +9,7 @@ import { generateAmApi } from './BaseApi.ts';
 const authenticationSettingsURLTemplate = '%s/json%s/%s/authentication';
 const globalApiVersion = 'protocol=1.0,resource=1.0';
 const realmApiVersion = 'protocol=2.1,resource=1.0';
-const getApiConfig = (globalConfig) => {
+const getApiConfig = (globalConfig: any) => {
   return {
     apiVersion: globalConfig ? globalApiVersion : realmApiVersion,
   };

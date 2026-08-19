@@ -64,7 +64,7 @@ async function stageOAuth2Client(
   }
 }
 
-function applyOAuth2ClientImportTemplate(template, ids: string[]) {
+function applyOAuth2ClientImportTemplate(template: any, ids: string[]) {
   const configured: OAuth2ClientOps.OAuth2ClientExportInterface =
     cloneDeep(template);
   const key = cloneDeep(Object.keys(configured.application)[0]);
@@ -2035,7 +2035,7 @@ describe('OAuth2ClientOps', () => {
   });
   beforeEach(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
-      ctx.polly.server.any().on('beforePersist', (_req, recording) => {
+      ctx.polly.server.any().on('beforePersist', (_req: any, recording: any) => {
         filterRecording(recording);
       });
     }

@@ -84,7 +84,7 @@ async function stageProviders(create = true) {
   }
 }
 
-async function stageCircleOfTrust(cotId, create = true) {
+async function stageCircleOfTrust(cotId: any, create = true) {
   // delete if exists, then create
   try {
     await CirclesOfTrustOps.readCircleOfTrust({ cotId, state });
@@ -240,7 +240,7 @@ describe('CirclesOfTrustOps', () => {
   });
   beforeEach(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
-      ctx.polly.server.any().on('beforePersist', (_req, recording) => {
+      ctx.polly.server.any().on('beforePersist', (_req: any, recording: any) => {
         filterRecording(recording);
       });
     }

@@ -598,7 +598,7 @@ export default (initialState: StateInterface): State => {
           axiosRetryConfig = {
             retries: 3, // Number of retry attempts
             retryDelay: exponentialDelay, // Use exponential backoff for delay
-            retryCondition: (error) => {
+            retryCondition: (error: any) => {
               // Retry on all errors except 429 Too Many Requests
               return error.response.status !== 429;
             },
@@ -609,7 +609,7 @@ export default (initialState: StateInterface): State => {
           axiosRetryConfig = {
             retries: 3, // Number of retry attempts
             retryDelay: exponentialDelay, // Use exponential backoff for delay
-            retryCondition: (error) => {
+            retryCondition: (error: any) => {
               // Custom condition: retry on network errors or specific status codes
               return isNetworkOrIdempotentRequestError(error);
             },

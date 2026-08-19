@@ -131,7 +131,7 @@ export function autoSetupPolly(matchRequestsBy = defaultMatchRequestsBy()) {
 }
 
 export function setupPollyRecordingContext(
-  ctx,
+  ctx: any,
   idReplacementStrategies?: {
     pathToObj: string[];
     identifier: string;
@@ -141,7 +141,7 @@ export function setupPollyRecordingContext(
   }[],
   keepResponsesCompressed: boolean = false
 ): void {
-  ctx.polly.server.any().on('beforePersist', (_req, recording) => {
+  ctx.polly.server.any().on('beforePersist', (_req: any, recording: any) => {
     // Filter recordings
     filterRecording(recording, true, state);
     // Replace ids
@@ -164,15 +164,15 @@ export function setupPollyRecordingContext(
   });
   if (!idReplacementStrategies) return;
   // Normalize id's from created ids to test ids
-  ctx.polly.config.matchRequestsBy.url.pathname = (path) => {
+  ctx.polly.config.matchRequestsBy.url.pathname = (path: any) => {
     for (const strategy of idReplacementStrategies) {
-      const id = strategy.oldObjIds.keys().find((k) => path.endsWith(k));
+      const id = strategy.oldObjIds.keys().find((k: any) => path.endsWith(k));
       if (!id) continue;
       path = path.replaceAll(id, strategy.oldObjIds.get(id));
     }
     return path;
   };
-  ctx.polly.config.matchRequestsBy.body = (bodyString) => {
+  ctx.polly.config.matchRequestsBy.body = (bodyString: any) => {
     for (const strategy of idReplacementStrategies) {
       const id = getIdFromPath(
         JSON.parse(bodyString),
@@ -185,7 +185,7 @@ export function setupPollyRecordingContext(
     }
     return bodyString;
   };
-  ctx.polly.server.any().on('beforeResponse', (req, res) => {
+  ctx.polly.server.any().on('beforeResponse', (req: any, res: any) => {
     let responseBody;
     try {
       responseBody = JSON.parse(res.body);
@@ -200,7 +200,7 @@ export function setupPollyRecordingContext(
       res.headers['transfer-encoding'] === 'chunked';
     if (isCompressed) {
       const buffer = Buffer.concat(
-        responseBody.map((chunk) => Buffer.from(chunk, 'base64'))
+        responseBody.map((chunk: any) => Buffer.from(chunk, 'base64'))
       );
       let decompressedBuffer;
       switch (res.headers['content-encoding']) {
@@ -226,7 +226,7 @@ export function setupPollyRecordingContext(
       const ids = [];
       const pathId = strategy.oldObjIds
         .keys()
-        .find((k) => req.pathname.endsWith(k));
+        .find((k: any) => req.pathname.endsWith(k));
       if (pathId) {
         ids.push(pathId);
       } else {

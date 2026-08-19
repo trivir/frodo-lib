@@ -21,7 +21,7 @@ const secretTypesThatIgnoreId = ['EnvironmentAndSystemPropertySecretStore'];
 const apiVersion = 'protocol=2.1,resource=%s';
 const globalVersion = '1.0';
 const realmVersion = '2.0';
-const getApiConfig = (globalConfig) => {
+const getApiConfig = (globalConfig: any) => {
   return {
     apiVersion: util.format(
       apiVersion,

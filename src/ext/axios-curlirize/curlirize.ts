@@ -3,7 +3,7 @@ import c from 'tinyrainbow';
 import { printError, printMessage } from '../../utils/Console.ts';
 import { CurlHelper } from './lib/CurlHelper.ts';
 
-function defaultLogCallback(curlResult, err = undefined) {
+function defaultLogCallback(curlResult: any, err = undefined) {
   const { command } = curlResult;
   if (err) {
     printError(err);
@@ -12,9 +12,9 @@ function defaultLogCallback(curlResult, err = undefined) {
   }
 }
 
-export default (instance, callback = defaultLogCallback) => {
+export default (instance: any, callback = defaultLogCallback) => {
   instance.interceptors.request.use(
-    (req) => {
+    (req: any) => {
       try {
         const curl = new CurlHelper(req);
         req.curlObject = curl;
@@ -38,14 +38,14 @@ export default (instance, callback = defaultLogCallback) => {
         return req;
       }
     },
-    (error) => {
+    (error: any) => {
       // Do something with request error
       callback(null, error);
       return Promise.reject(error);
     }
   );
   instance.interceptors.response.use(
-    (response) => {
+    (response: any) => {
       // Any status code that lie within the range of 2xx cause this function to trigger
       // Do something with response data
       callback({
@@ -53,7 +53,7 @@ export default (instance, callback = defaultLogCallback) => {
       });
       return response;
     },
-    (error) => {
+    (error: any) => {
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
       callback(null, error);

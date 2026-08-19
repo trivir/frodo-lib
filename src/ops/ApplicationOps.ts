@@ -647,7 +647,7 @@ function isOidcApplication(applicationData: ApplicationSkeleton): boolean {
   return get(applicationData, ['ssoEntities', 'oidcId']) ? true : false;
 }
 
-function getOAuth2ClientId(applicationData): string {
+function getOAuth2ClientId(applicationData: any): string {
   return get(applicationData, ['ssoEntities', 'oidcId']);
 }
 

@@ -41,7 +41,7 @@ const base64regex =
  * @param {String} input
  * @returns {boolean} true if input is Base64-encoded, false otherwise
  */
-export function isBase64Encoded(input) {
+export function isBase64Encoded(input: any) {
   return base64regex.test(input);
 }
 
@@ -70,12 +70,12 @@ export function decode(input: string): string {
 
 let enc;
 if (Buffer.isEncoding('base64url')) {
-  enc = (input, encoding: BufferEncoding = 'utf8') =>
+  enc = (input: any, encoding: BufferEncoding = 'utf8') =>
     Buffer.from(input, encoding).toString('base64url');
 } else {
-  const fromBase64 = (base64) =>
+  const fromBase64 = (base64: any) =>
     base64.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-  enc = (input, encoding: BufferEncoding = 'utf8') =>
+  enc = (input: any, encoding: BufferEncoding = 'utf8') =>
     fromBase64(Buffer.from(input, encoding).toString('base64'));
 }
 
@@ -84,7 +84,7 @@ if (Buffer.isEncoding('base64url')) {
  * @param {*} input the string to decode
  * @returns {String} the decoded string.
  */
-export const decodeBase64Url = (input) => `${Buffer.from(input, 'base64')}`;
+export const decodeBase64Url = (input: any) => `${Buffer.from(input, 'base64')}`;
 
 /**
  * Encode Base65URL

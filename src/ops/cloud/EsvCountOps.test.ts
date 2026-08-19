@@ -143,7 +143,7 @@ describe('EsvCountOps', () => {
   // filter out secrets when recording
   beforeEach(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
-      ctx.polly.server.any().on('beforePersist', (_req, recording) => {
+      ctx.polly.server.any().on('beforePersist', (_req: any, recording: any) => {
         filterRecording(recording);
       });
     }

@@ -70,11 +70,11 @@ class DataProtection {
     // The function that derives the key, this supports sync and async operations
     _key.set(
       this,
-      async (masterKey, salt) => await scrypt(masterKey, salt, 32)
+      async (masterKey: any, salt: any) => await scrypt(masterKey, salt, 32)
     );
 
     // private method to encrypt and return encrypted data. cleaner code
-    _encrypt.set(this, (key, nonce, data, salt) => {
+    _encrypt.set(this, (key: any, nonce: any, data: any, salt: any) => {
       const cipher = crypto.createCipheriv('aes-256-gcm', key, nonce);
       const encrypted = Buffer.concat([
         cipher.update(JSON.stringify(data), 'utf8'),
@@ -86,7 +86,7 @@ class DataProtection {
     });
   }
 
-  async encrypt(data) {
+  async encrypt(data: any) {
     const nonce = _nonce.get(this)();
     const salt = _salt.get(this)();
     const masterKey = await _masterKey.get(this)();
@@ -94,7 +94,7 @@ class DataProtection {
     return _encrypt.get(this)(key, nonce, data, salt);
   }
 
-  async decrypt(data) {
+  async decrypt(data: any) {
     const buffer = Buffer.from(data.toString(), 'base64');
     const salt = buffer.subarray(0, 64);
     const nonce = buffer.subarray(64, 80);

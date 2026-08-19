@@ -1598,7 +1598,7 @@ export async function readJourneys({
 }): Promise<TreeSkeleton[]> {
   try {
     const { result } = await getTrees({ state });
-    result.sort((a, b) => a._id.localeCompare(b._id));
+    result.sort((a: any, b: any) => a._id.localeCompare(b._id));
     return result;
   } catch (error) {
     throw new FrodoError(
