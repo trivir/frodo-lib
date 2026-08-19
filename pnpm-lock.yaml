@@ -203,6 +203,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  slugify: 27b602c3364d8936bcf306925eb7f6b6764cabf9016cbb82b4b457369ac98106
+
 importers:
 
   .:
@@ -338,7 +341,7 @@ importers:
         version: 0.11.0(@pollyjs/core@6.0.6)
       slugify:
         specifier: ^1.6.5
-        version: 1.6.6
+        version: 1.6.6(patch_hash=27b602c3364d8936bcf306925eb7f6b6764cabf9016cbb82b4b457369ac98106)
       sshpk:
         specifier: ^1.18.0
         version: 1.18.0
@@ -4331,7 +4334,7 @@ snapshots:
       lodash-es: 4.18.1
       loglevel: 1.9.2
       route-recognizer: 0.3.4
-      slugify: 1.6.6
+      slugify: 1.6.6(patch_hash=27b602c3364d8936bcf306925eb7f6b6764cabf9016cbb82b4b457369ac98106)
 
   '@pollyjs/node-server@6.0.6(supports-color@8.1.1)':
     dependencies:
@@ -6600,7 +6603,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slugify@1.6.6: {}
+  slugify@1.6.6(patch_hash=27b602c3364d8936bcf306925eb7f6b6764cabf9016cbb82b4b457369ac98106): {}
 
   smart-buffer@4.2.0: {}
 
