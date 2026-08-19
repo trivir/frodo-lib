@@ -304,9 +304,9 @@ export async function getFullServices({
       serviceList.map(async (listItem) => {
         try {
           const [service, nextDescendents] = await Promise.all([
-            getService({ serviceId: listItem._id, globalConfig, state }),
+            getService({ serviceId: listItem._id!, globalConfig, state }),
             getServiceDescendents({
-              serviceId: listItem._id,
+              serviceId: listItem._id!,
               globalConfig,
               state,
             }),
@@ -631,7 +631,7 @@ export async function deleteFullServices({
       serviceList.map(async (serviceListItem) => {
         try {
           return deleteFullService({
-            serviceId: serviceListItem._id,
+            serviceId: serviceListItem._id!,
             globalConfig,
             state,
           });

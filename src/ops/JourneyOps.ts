@@ -577,7 +577,7 @@ const scriptedNodesConditions = {
 };
 
 export function hasScriptDependency(nodeConfig: NodeSkeleton): boolean {
-  if (Object.keys(scriptedNodesConditions).includes(nodeConfig._type._id)) {
+  if (Object.keys(scriptedNodesConditions).includes(nodeConfig._type._id!)) {
     const handler: any = scriptedNodesConditions[nodeConfig._type._id];
     return handler(nodeConfig);
   }
@@ -706,7 +706,7 @@ export async function updateCoordinates({
   }
   if (serverTree === null) {
     try {
-      serverTree = await getTree({ id: tree._id, state: state });
+      serverTree = await getTree({ id: tree._id!, state: state });
     } catch (e) {
       if (!axios.isAxiosError(e) || (e as AxiosError).response.status !== 404) {
         throw e;
@@ -942,8 +942,8 @@ async function exportSingleJourney({
 
     // iterate over every node in tree
     for (const nodeObject of nodeObjects) {
-      const nodeId: string = nodeObject._id;
-      const nodeType: string = nodeObject._type._id;
+      const nodeId: string = nodeObject._id!;
+      const nodeType: string = nodeObject._type._id!;
       if (verbose)
         printMessage({
           message: `\n    - ${nodeId} (${nodeType})`,
@@ -1098,8 +1098,8 @@ async function exportSingleJourney({
       for (const settledPromise of settledPromises) {
         if (settledPromise.status === 'fulfilled' && settledPromise.value) {
           const innerNodeObject = settledPromise.value as NodeSkeleton;
-          const innerNodeId: string = innerNodeObject._id;
-          const innerNodeType: string = innerNodeObject._type._id;
+          const innerNodeId: string = innerNodeObject._id!;
+          const innerNodeType: string = innerNodeObject._type._id!;
           if (verbose)
             printMessage({
               message: `\n    - ${innerNodeId} (${innerNodeType})`,
@@ -1246,7 +1246,7 @@ async function exportSingleJourney({
         if (settledPromise.status === 'fulfilled' && settledPromise.value) {
           if (verbose)
             printMessage({
-              message: `\n    - ${settledPromise.value._id.split('/')[1]}${
+              message: `\n    - ${settledPromise.value._id!.split('/')[1]}${
                 settledPromise.value.displayName
                   ? ` (${settledPromise.value.displayName})`
                   : ''
@@ -1255,7 +1255,7 @@ async function exportSingleJourney({
               newline: false,
               state,
             });
-          exportData.emailTemplates[settledPromise.value._id.split('/')[1]] =
+          exportData.emailTemplates[settledPromise.value._id!.split('/')[1]] =
             settledPromise.value;
         }
       }
@@ -1328,7 +1328,7 @@ async function exportSingleJourney({
             socialProvider &&
             (!filteredSocialProviders ||
               filteredSocialProviders.length === 0 ||
-              filteredSocialProviders.includes(socialProvider._id))
+              filteredSocialProviders.includes(socialProvider._id!))
           ) {
             if (verbose)
               printMessage({
@@ -1437,7 +1437,7 @@ async function exportSingleJourney({
           if (
             themeObject &&
             // has the theme been specified by id or name in a page node?
-            (themes.includes(themeObject._id) ||
+            (themes.includes(themeObject._id!) ||
               themes.includes(themeObject.name) ||
               // has this journey been linked to a theme?
               themeObject.linkedTrees?.includes(treeObject._id))
@@ -2781,7 +2781,7 @@ export function getNodeRef(
     return singleTreeExport.tree.nodes[nodeObj._id];
   } else {
     for (const node of Object.values(singleTreeExport.nodes)) {
-      if (containerNodes.includes(node._type._id)) {
+      if (containerNodes.includes(node._type._id!)) {
         for (const nodeRef of node.nodes) {
           if (nodeRef._id === nodeObj._id) {
             return nodeRef;
@@ -3092,7 +3092,7 @@ export async function deleteJourney({
               });
             }
             deleteTasks.push({
-              key: containerNode._id,
+              key: containerNode._id!,
               reportError: (error: unknown) => {
                 status.nodes[containerNode._id] = {
                   status: 'error',
@@ -3110,7 +3110,7 @@ export async function deleteJourney({
               run: async () => {
                 try {
                   await deleteNode({
-                    nodeId: containerNode._id,
+                    nodeId: containerNode._id!,
                     nodeType: containerNode['_type']['_id'],
                     state,
                   });

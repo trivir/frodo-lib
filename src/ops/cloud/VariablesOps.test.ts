@@ -93,7 +93,7 @@ describe('VariablesOps', () => {
 
     test('1: Export variable1', async () => {
       const response = await VariablesOps.exportVariable({
-        variableId: TestData.variable1._id,
+        variableId: TestData.variable1._id!,
         noDecode: false,
         state: state,
       });
@@ -104,7 +104,7 @@ describe('VariablesOps', () => {
 
     test('2: Export variable2 without decoding', async () => {
       const response = await VariablesOps.exportVariable({
-        variableId: TestData.variable2._id,
+        variableId: TestData.variable2._id!,
         noDecode: true,
         state: state,
       });
@@ -117,7 +117,7 @@ describe('VariablesOps', () => {
       expect.assertions(2);
       try {
         await VariablesOps.exportVariable({
-          variableId: TestData.variable3._id,
+          variableId: TestData.variable3._id!,
           noDecode: false,
           state: state,
         });
@@ -157,7 +157,7 @@ describe('VariablesOps', () => {
 
     test('1: Read variable1', async () => {
       const response = await VariablesOps.readVariable({
-        variableId: TestData.variable1._id,
+        variableId: TestData.variable1._id!,
         noDecode: false,
         state: state,
       });
@@ -166,7 +166,7 @@ describe('VariablesOps', () => {
 
     test('2: Read variable2 without decoding', async () => {
       const response = await VariablesOps.readVariable({
-        variableId: TestData.variable2._id,
+        variableId: TestData.variable2._id!,
         noDecode: true,
         state: state,
       });
@@ -177,7 +177,7 @@ describe('VariablesOps', () => {
       expect.assertions(2);
       try {
         await VariablesOps.readVariable({
-          variableId: TestData.variable3._id,
+          variableId: TestData.variable3._id!,
           noDecode: false,
           state: state,
         });
@@ -259,7 +259,7 @@ describe('VariablesOps', () => {
 
     test('1: Create variable12 (pre-encoded)', async () => {
       const response = await VariablesOps.createVariable({
-        variableId: TestData.variable12._id,
+        variableId: TestData.variable12._id!,
         value: encode(TestData.variable12.value),
         description: TestData.variable12.description,
         expressionType: TestData.variable12.expressionType as VariableExpressionType,
@@ -271,7 +271,7 @@ describe('VariablesOps', () => {
 
     test('2: Create variable13 (not encoded)', async () => {
       const response = await VariablesOps.createVariable({
-        variableId: TestData.variable13._id,
+        variableId: TestData.variable13._id!,
         value: TestData.variable13.value,
         description: TestData.variable13.description,
         expressionType: TestData.variable13.expressionType as VariableExpressionType,
@@ -289,7 +289,7 @@ describe('VariablesOps', () => {
 
     test('1: Update existing variable14 (pre-encoded)', async () => {
       const response = await VariablesOps.updateVariable({
-        variableId: TestData.variable14._id,
+        variableId: TestData.variable14._id!,
         value: encode(TestData.variable14.value),
         description: TestData.variable14.description,
         expressionType: TestData.variable14.expressionType as VariableExpressionType,
@@ -301,7 +301,7 @@ describe('VariablesOps', () => {
 
     test('2: Update existing variable15 (not encoded)', async () => {
       const response = await VariablesOps.updateVariable({
-        variableId: TestData.variable15._id,
+        variableId: TestData.variable15._id!,
         value: TestData.variable15.value,
         description: TestData.variable15.description,
         expressionType: TestData.variable15.expressionType as VariableExpressionType,
@@ -313,7 +313,7 @@ describe('VariablesOps', () => {
 
     test('3: Update/create non-existing variable16 (pre-encoded)', async () => {
       const response = await VariablesOps.updateVariable({
-        variableId: TestData.variable16._id,
+        variableId: TestData.variable16._id!,
         value: encode(TestData.variable16.value),
         description: TestData.variable16.description,
         expressionType: TestData.variable16.expressionType as VariableExpressionType,
@@ -325,7 +325,7 @@ describe('VariablesOps', () => {
 
     test('4: Update/create non-existing variable17 (not encoded)', async () => {
       const response = await VariablesOps.updateVariable({
-        variableId: TestData.variable17._id,
+        variableId: TestData.variable17._id!,
         value: TestData.variable17.value,
         description: TestData.variable17.description,
         expressionType: TestData.variable17.expressionType as VariableExpressionType,
@@ -343,7 +343,7 @@ describe('VariablesOps', () => {
 
     test('1: Update variable18 description', async () => {
       const response = await VariablesOps.updateVariableDescription({
-        variableId: TestData.variable18._id,
+        variableId: TestData.variable18._id!,
         description: TestData.variable18.description,
         state: state,
       });
@@ -358,7 +358,7 @@ describe('VariablesOps', () => {
 
     test('1: Delete variable19', async () => {
       const response = await VariablesOps.deleteVariable({
-        variableId: TestData.variable19._id,
+        variableId: TestData.variable19._id!,
         state: state,
       });
       expect(response).toMatchSnapshot();
@@ -368,7 +368,7 @@ describe('VariablesOps', () => {
       expect.assertions(2);
       try {
         await VariablesOps.deleteVariable({
-          variableId: TestData.variable3._id,
+          variableId: TestData.variable3._id!,
           state: state,
         });
       } catch (e: any) {

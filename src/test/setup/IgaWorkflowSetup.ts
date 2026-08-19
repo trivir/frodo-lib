@@ -441,7 +441,7 @@ export function getTestWorkflow(
             hello: 'goodbye',
             hi: 'hola',
           },
-          templateName: template4._id,
+          templateName: template4._id!,
         },
       },
       {
@@ -628,7 +628,7 @@ export function getTestWorkflow(
           cc: 'cc@email.com',
           bcc: 'bcc@email.com',
           object: {},
-          templateName: template4._id,
+          templateName: template4._id!,
         },
       },
       {

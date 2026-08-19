@@ -240,7 +240,7 @@ export async function exportEmailTemplates({
       state,
     });
     for (const emailTemplate of emailTemplates) {
-      const templateId = emailTemplate._id.replace(
+      const templateId = emailTemplate._id!.replace(
         `${EMAIL_TEMPLATE_TYPE}/`,
         ''
       );

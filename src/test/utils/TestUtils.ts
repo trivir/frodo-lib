@@ -6,6 +6,7 @@ import forge from 'node-forge';
 
 import { type CSR } from '../../api/cloud/EnvCSRsApi.ts';
 import { FrodoError } from '../../ops/FrodoError.ts';
+import { AxiosError } from 'axios';
 
 const pki = forge.pki;
 
@@ -162,7 +163,7 @@ export function issueSelfSignedCertificate(csrpem: string): string {
   // console.debug(`subject attributes:`, csr.subject);
 
   const cert = pki.createCertificate();
-  cert.publicKey = csr.publicKey;
+  cert.publicKey = csr.publicKey!;
 
   // serial number from csr
   cert.serialNumber = csr.subject.getField({ name: 'serialNumber' }).value;
@@ -176,7 +177,7 @@ export function issueSelfSignedCertificate(csrpem: string): string {
   cert.setIssuer(csr.subject.attributes);
 
   // set extensions from csr
-  const extensions = csr.getAttribute({ name: 'extensionRequest' }).extensions;
+  const extensions = csr.getAttribute({ name: 'extensionRequest' })!.extensions!;
 
   // optionally add more extensions
   extensions.push.apply(extensions, [
@@ -211,6 +212,7 @@ export function issueSelfSignedCertificate(csrpem: string): string {
  */
 export function printError(error: Error, message?: string) {
   if (message) console.debug('' + message);
+  // TODO change this to do instance of rather than .name matching so typing is correct
   switch (error.name) {
     case 'FrodoError':
       console.debug('' + (error as FrodoError).getCombinedMessage());

@@ -48,11 +48,11 @@ async function stageMapping(
   // delete if exists, then create
   try {
     await MappingOps.readMapping({
-      mappingId: mapping._id,
+      mappingId: mapping._id!,
       state
     });
     await MappingOps.deleteMapping({
-      mappingId: mapping._id,
+      mappingId: mapping._id!,
       state,
     });
   } catch (error) {
@@ -60,7 +60,7 @@ async function stageMapping(
   } finally {
     if (create) {
       await MappingOps.createMapping({
-        mappingId: mapping._id,
+        mappingId: mapping._id!,
         mappingData: mapping,
         state
       });
@@ -214,14 +214,14 @@ describe('MappingOps', () => {
 
     test('1: Should read sync mapping', async () => {
       expect(await MappingOps.readMapping({
-        mappingId: mapping1._id,
+        mappingId: mapping1._id!,
         state
       })).toMatchSnapshot();
     });
 
     test('2: Should read regular mapping', async () => {
       expect(await MappingOps.readMapping({
-        mappingId: mapping2._id,
+        mappingId: mapping2._id!,
         state
       })).toMatchSnapshot();
     });
@@ -234,7 +234,7 @@ describe('MappingOps', () => {
 
     test('1: Should create sync mapping', async () => {
       expect(await MappingOps.createMapping({
-        mappingId: mapping3._id,
+        mappingId: mapping3._id!,
         mappingData: mapping3,
         state
       })).toMatchSnapshot();
@@ -242,7 +242,7 @@ describe('MappingOps', () => {
 
     test('2: Should create regular mapping', async () => {
       expect(await MappingOps.createMapping({
-        mappingId: mapping4._id,
+        mappingId: mapping4._id!,
         mappingData: mapping4,
         state
       })).toMatchSnapshot();
@@ -256,7 +256,7 @@ describe('MappingOps', () => {
 
     test('1: Should update sync mapping', async () => {
       expect(await MappingOps.updateMapping({
-        mappingId: mapping11._id,
+        mappingId: mapping11._id!,
         mappingData: {...mapping11, consentRequired: true, },
         state
       })).toMatchSnapshot();
@@ -264,7 +264,7 @@ describe('MappingOps', () => {
 
     test('2: Should update regular mapping', async () => {
       expect(await MappingOps.updateMapping({
-        mappingId: mapping12._id,
+        mappingId: mapping12._id!,
         mappingData: {...mapping12, consentRequired: true, },
         state
       })).toMatchSnapshot();
@@ -278,7 +278,7 @@ describe('MappingOps', () => {
 
     test('1: Should export sync mapping', async () => {
       expect(await MappingOps.exportMapping({
-        mappingId: mapping1._id,
+        mappingId: mapping1._id!,
         options: {
           useStringArrays: false,
           deps: false,
@@ -293,7 +293,7 @@ describe('MappingOps', () => {
 
     test('2: Should export regular mapping', async () => {
       expect(await MappingOps.exportMapping({
-        mappingId: mapping2._id,
+        mappingId: mapping2._id!,
         options: {
           useStringArrays: true,
           deps: true,
@@ -329,7 +329,7 @@ describe('MappingOps', () => {
       const importData = MappingOps.createMappingExportTemplate({ state });
       importData.sync.mappings.push(mapping5);
       expect(await MappingOps.importMapping({
-        mappingId: mapping5._id,
+        mappingId: mapping5._id!,
         importData,
         options: {
           deps: false,
@@ -342,7 +342,7 @@ describe('MappingOps', () => {
       const importData = MappingOps.createMappingExportTemplate({ state });
       importData.mapping[mapping6._id] = mapping6;
       expect(await MappingOps.importMapping({
-        mappingId: mapping6._id,
+        mappingId: mapping6._id!,
         importData,
         options: {
           deps: false,

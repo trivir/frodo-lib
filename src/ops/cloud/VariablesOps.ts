@@ -457,7 +457,7 @@ export async function importVariable({
           delete variable.value;
         }
         response = await updateVariable({
-          variableId: variable._id,
+          variableId: variable._id!,
           value: variable.value ? variable.value : variable.valueBase64,
           description: variable.description,
           expressionType: variable.expressionType || 'string',
@@ -499,7 +499,7 @@ export async function importVariables({
     try {
       response.push(
         await updateVariable({
-          variableId: variable._id,
+          variableId: variable._id!,
           value: variable.value ? variable.value : variable.valueBase64,
           description: variable.description,
           expressionType: variable.expressionType || 'string',

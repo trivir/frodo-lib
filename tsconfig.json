@@ -10,7 +10,10 @@
     "lib": ["es2023"],
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+
+    // I want to turn this on, but it's a lot
+    "useUnknownInCatchVariables": false
   },
   "typedocOptions": {
     "name": "Frodo Library",

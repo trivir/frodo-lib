@@ -715,7 +715,7 @@ async function importPolicySetDependencies({
           message: `Importing ${getCurrentRealmName(state) + ' realm'} policy ${policyData._id}`,
           state,
         });
-        await updatePolicy({ policyId: policyData._id, policyData, state });
+        await updatePolicy({ policyId: policyData._id!, policyData, state });
       } catch (error) {
         errors.push(
           new FrodoError(

@@ -301,8 +301,8 @@ describe('NodeOps', () => {
 
       test(`1: Read existing node`, async () => {
         const response = await NodeOps.readNode({
-          nodeId: TestData.node1._id,
-          nodeType: TestData.node1._type._id,
+          nodeId: TestData.node1._id!,
+          nodeType: TestData.node1._type._id!,
           state,
         });
         expect(response).toMatchSnapshot();
@@ -344,7 +344,7 @@ describe('NodeOps', () => {
         await TestData.stageNode(TestData.node5);
         const response = await NodeOps.createNode({
           nodeId: TestData.node5._id,
-          nodeType: TestData.node5._type._id,
+          nodeType: TestData.node5._type._id!,
           nodeData: TestData.node5,
           state,
         });
@@ -354,7 +354,7 @@ describe('NodeOps', () => {
       test(`2: Create new node without id`, async () => {
         await TestData.stageNode(TestData.node5);
         const response = await NodeOps.createNode({
-          nodeType: TestData.node5._type._id,
+          nodeType: TestData.node5._type._id!,
           nodeData: TestData.node5,
           state,
         });
@@ -366,7 +366,7 @@ describe('NodeOps', () => {
         await expect(
           NodeOps.createNode({
             nodeId: TestData.node5._id,
-            nodeType: TestData.node5._type._id,
+            nodeType: TestData.node5._type._id!,
             nodeData: TestData.node5,
             state,
           })
@@ -379,7 +379,7 @@ describe('NodeOps', () => {
         await TestData.stageNode(TestData.node5, true);
         await expect(
           NodeOps.createNode({
-            nodeType: TestData.node5._type._id,
+            nodeType: TestData.node5._type._id!,
             nodeData: TestData.node5,
             state,
           })
@@ -395,8 +395,8 @@ describe('NodeOps', () => {
       test(`1: Update existing node`, async () => {
         await TestData.stageNode(TestData.node3, true);
         const node = await NodeOps.updateNode({
-          nodeId: TestData.node3._id,
-          nodeType: TestData.node3._type._id,
+          nodeId: TestData.node3._id!,
+          nodeType: TestData.node3._type._id!,
           nodeData: TestData.node3,
           state,
         });
@@ -406,8 +406,8 @@ describe('NodeOps', () => {
       test(`2: Update non-existing node`, async () => {
         await TestData.stageNode(TestData.node3);
         const node = await NodeOps.updateNode({
-          nodeId: TestData.node3._id,
-          nodeType: TestData.node3._type._id,
+          nodeId: TestData.node3._id!,
+          nodeType: TestData.node3._type._id!,
           nodeData: TestData.node3,
           state,
         });
@@ -422,8 +422,8 @@ describe('NodeOps', () => {
 
       test(`1: Delete existing node`, async () => {
         const node = await NodeOps.deleteNode({
-          nodeId: TestData.node4._id,
-          nodeType: TestData.node4._type._id,
+          nodeId: TestData.node4._id!,
+          nodeType: TestData.node4._type._id!,
           state,
         });
         expect(node).toMatchSnapshot();
@@ -569,7 +569,7 @@ describe('NodeOps', () => {
         await TestData.stageCustomNode(TestData.customNode2);
         await expect(
           NodeOps.updateCustomNode({
-            nodeId: TestData.customNode2._id,
+            nodeId: TestData.customNode2._id!,
             nodeData: TestData.customNode2,
             state,
           })

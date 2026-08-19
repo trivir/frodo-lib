@@ -434,7 +434,7 @@ export async function deleteOAuth2TrustedJwtIssuers({
         });
         result.push(
           await deleteOAuth2TrustedJwtIssuer({
-            issuerId: issuer._id,
+            issuerId: issuer._id!,
             state,
           })
         );

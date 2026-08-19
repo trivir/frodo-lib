@@ -341,7 +341,7 @@ export async function exportServerByUrl({
       state,
     })) as ServerExportSkeleton;
     server.properties = await getServerProperties({
-      serverId: server._id,
+      serverId: server._id!,
       state,
     });
     const exportData = createServerExportTemplate({ state });
@@ -388,7 +388,7 @@ export async function exportServers({
         state,
       });
       server.properties = await getServerProperties({
-        serverId: server._id,
+        serverId: server._id!,
         state,
       });
       exportData.server[server._id] = server as ServerExportSkeleton;

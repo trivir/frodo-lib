@@ -191,7 +191,7 @@ export async function exportScriptTypes({
       });
       try {
         scriptType.engineConfiguration = await getScriptingEngineConfiguration({
-          scriptTypeId: scriptType._id,
+          scriptTypeId: scriptType._id!,
           state,
         });
       } catch (e) {
@@ -207,7 +207,7 @@ export async function exportScriptTypes({
       }
       try {
         scriptType.context = await getScriptingContext({
-          scriptTypeId: scriptType._id,
+          scriptTypeId: scriptType._id!,
           state,
         });
       } catch (e) {
@@ -284,7 +284,7 @@ export async function importScriptTypes({
         let engineConfiguration;
         if (scriptType.engineConfiguration) {
           engineConfiguration = await putScriptingEngineConfiguration({
-            scriptTypeId: scriptType._id,
+            scriptTypeId: scriptType._id!,
             engineConfigurationData: scriptType.engineConfiguration,
             state,
           });
@@ -292,7 +292,7 @@ export async function importScriptTypes({
         delete scriptType.context;
         delete scriptType.engineConfiguration;
         const result = (await updateScriptType({
-          scriptTypeId: scriptType._id,
+          scriptTypeId: scriptType._id!,
           scriptTypeData: scriptType,
           state,
         })) as ScriptTypeExportSkeleton;

@@ -243,7 +243,7 @@ export async function deleteScriptByName({
   if (!result[0]) {
     throw new Error(`Script with name ${scriptName} does not exist.`);
   }
-  const scriptId = result[0]._id;
+  const scriptId = result[0]._id!;
   return deleteScript({
     scriptId,
     state,

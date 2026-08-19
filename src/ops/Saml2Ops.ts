@@ -688,7 +688,7 @@ export async function deleteSaml2Providers({
     for (const stub of stubs) {
       const provider = await _deleteProvider({
         location: stub.location,
-        entityId64: stub._id,
+        entityId64: stub._id!,
         state,
       });
       providers.push(provider);
@@ -782,7 +782,7 @@ export async function exportSaml2Providers({
         });
         const providerData = await _getProviderByLocationAndId({
           location: stub.location,
-          entityId64: stub._id,
+          entityId64: stub._id!,
           state,
         });
         await exportMetadata({ providerData, fileData, state });

@@ -329,7 +329,7 @@ export async function putSecretStore({
     getRealmPathGlobal(globalConfig, state),
     getConfigPath(globalConfig),
     secretStoreData._type._id,
-    secretTypesThatIgnoreId.includes(secretStoreData._type._id)
+    secretTypesThatIgnoreId.includes(secretStoreData._type._id!)
       ? ''
       : secretStoreData._id
   );

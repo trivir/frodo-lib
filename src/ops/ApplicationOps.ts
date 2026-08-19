@@ -1059,7 +1059,7 @@ async function deleteDependencies({
               .join('\n')}.`,
             state,
           });
-          await updateCircleOfTrust({ cotId: cot._id, cotData: cot, state });
+          await updateCircleOfTrust({ cotId: cot._id!, cotData: cot, state });
         }
       } catch (error) {
         errors.push(error);
@@ -1215,7 +1215,7 @@ export async function deleteApplicationByName({
     });
     if (applications.length == 1) {
       return await deleteApplication({
-        applicationId: applications[0]._id,
+        applicationId: applications[0]._id!,
         options,
         state,
       });
@@ -1335,7 +1335,7 @@ export async function exportApplication({
     })) as ApplicationGlossarySkeleton;
     if (state.getIsIGA()) {
       applicationData.glossary = await readApplicationGlossary({
-        applicationId: applicationData._id,
+        applicationId: applicationData._id!,
         state,
       });
     }
@@ -1382,7 +1382,7 @@ export async function exportApplicationByName({
     })) as ApplicationGlossarySkeleton;
     if (state.getIsIGA()) {
       applicationData.glossary = await readApplicationGlossary({
-        applicationId: applicationData._id,
+        applicationId: applicationData._id!,
         state,
       });
     }
@@ -1438,7 +1438,7 @@ export async function exportApplications({
       if (state.getIsIGA()) {
         try {
           applicationData.glossary = await readApplicationGlossary({
-            applicationId: applicationData._id,
+            applicationId: applicationData._id!,
             state,
           });
         } catch (error) {

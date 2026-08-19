@@ -231,7 +231,7 @@ describe('JourneyOps', () => {
 
       test(`1: Export journey '${TestData.journey3.tree._id}' w/o dependencies`, async () => {
         const response = await JourneyOps.exportJourney({
-          journeyId: TestData.journey3.tree._id,
+          journeyId: TestData.journey3.tree._id!,
           options: {
             useStringArrays: false,
             deps: false,
@@ -254,7 +254,7 @@ describe('JourneyOps', () => {
 
       test(`2: Export journey '${TestData.journey3.tree._id}' w/ dependencies`, async () => {
         const response = await JourneyOps.exportJourney({
-          journeyId: TestData.journey3.tree._id,
+          journeyId: TestData.journey3.tree._id!,
           options: {
             useStringArrays: false,
             deps: true,
@@ -293,7 +293,7 @@ describe('JourneyOps', () => {
 
       test(`3: Export journey '${TestData.journey3.tree._id}' w/ dependencies and w/o coordinates`, async () => {
         const response = await JourneyOps.exportJourney({
-          journeyId: TestData.journey3.tree._id,
+          journeyId: TestData.journey3.tree._id!,
           options: {
             useStringArrays: false,
             deps: true,
@@ -332,7 +332,7 @@ describe('JourneyOps', () => {
 
       test(`4: Export journey '${TestData.journey12.tree._id}' w/ custom node dependencies`, async () => {
         const response = await JourneyOps.exportJourney({
-          journeyId: TestData.journey12.tree._id,
+          journeyId: TestData.journey12.tree._id!,
           options: {
             useStringArrays: true,
             deps: true,
@@ -486,7 +486,7 @@ describe('JourneyOps', () => {
       test(`1: Enable disabled journey '${TestData.journey6.tree._id}'`, async () => {
         expect.assertions(1);
         const result = await JourneyOps.enableJourney({
-          journeyId: TestData.journey6.tree._id,
+          journeyId: TestData.journey6.tree._id!,
           state,
         });
         expect(result).toBeTruthy();
@@ -495,7 +495,7 @@ describe('JourneyOps', () => {
       test(`2: Enable already enabled journey '${TestData.journey7.tree._id}'`, async () => {
         expect.assertions(1);
         const result = await JourneyOps.enableJourney({
-          journeyId: TestData.journey7.tree._id,
+          journeyId: TestData.journey7.tree._id!,
           state,
         });
         expect(result).toBeTruthy();
@@ -510,7 +510,7 @@ describe('JourneyOps', () => {
       test(`1: Disable enabled journey '${TestData.journey8.tree._id}'`, async () => {
         expect.assertions(1);
         const result = await JourneyOps.disableJourney({
-          journeyId: TestData.journey8.tree._id,
+          journeyId: TestData.journey8.tree._id!,
           state,
         });
         expect(result).toBeTruthy();
@@ -519,7 +519,7 @@ describe('JourneyOps', () => {
       test(`2: Disable already disabled journey '${TestData.journey9.tree._id}'`, async () => {
         expect.assertions(1);
         const result = await JourneyOps.disableJourney({
-          journeyId: TestData.journey9.tree._id,
+          journeyId: TestData.journey9.tree._id!,
           state,
         });
         expect(result).toBeTruthy();

@@ -1246,7 +1246,7 @@ async function getWorkflowExport({
       state
     ).then((templates) => {
       exportData.emailTemplate = Object.fromEntries(
-        templates.map((e) => [e._id.split('/')[1], e])
+        templates.map((e) => [e._id!.split('/')[1], e])
       );
     });
     // Get events

@@ -224,8 +224,8 @@ export const customNode4: NodeApi.CustomNodeSkeleton = {
 export async function stageNode(node: NodeApi.NodeSkeleton, createNew = false) {
   try {
     await NodeApi.deleteNode({
-      nodeId: node._id,
-      nodeType: node._type._id,
+      nodeId: node._id!,
+      nodeType: node._type!._id!,
       state,
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -234,8 +234,8 @@ export async function stageNode(node: NodeApi.NodeSkeleton, createNew = false) {
   } finally {
     if (createNew) {
       await NodeApi.putNode({
-        nodeId: node._id,
-        nodeType: node._type._id,
+        nodeId: node._id!,
+        nodeType: node._type!._id!,
         nodeData: node,
         state,
       });
@@ -249,7 +249,7 @@ export async function stageCustomNode(
 ) {
   try {
     await NodeApi.deleteCustomNode({
-      nodeId: customNode._id,
+      nodeId: customNode._id!,
       state,
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

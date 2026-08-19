@@ -39,8 +39,8 @@ export function getTestEvent({
       type,
       ...(type === 'certification' && {
         template: getTestCertificationTemplate(
-          certificateId,
-          certificateName,
+          certificateId!,
+          certificateName!,
           'identity',
           emailTemplate ? `${EMAIL_TEMPLATE_TYPE}/${emailTemplate._id}` : '',
           true
@@ -245,11 +245,11 @@ export const event7: EventSkeleton = getTestEvent({
 const allEvents = [event1, event2, event3, event4, event5, event6, event7];
 
 const allCertificationTemplates = [
-  event1.action.template,
-  event2.action.template,
-  event3.action.template,
-  event4.action.template,
-  event6.action.template,
+  event1.action.template!,
+  event2.action.template!,
+  event3.action.template!,
+  event4.action.template!,
+  event6.action.template!,
 ];
 
 export const oldEventIds = new Map<string, string>();
@@ -277,9 +277,9 @@ export async function stageEvent(event: EventSkeleton, createNew = false) {
       // We store the old ids for after the tests are finished running to update the recordings to use the old id instead so that tests will pass future runs.
       oldEventIds.set(event.id, oldEventId);
       if (oldTemplateId) {
-        event.action.template.id = createdEvent.action.template.id;
+        event.action.template!.id = createdEvent.action.template!.id;
         oldCertificationTemplateIds.set(
-          event.action.template.id,
+          event.action.template!.id,
           oldTemplateId
         );
       }

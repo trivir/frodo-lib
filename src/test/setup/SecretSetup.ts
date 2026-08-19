@@ -83,13 +83,13 @@ export function createTestSecretExport(
 export async function stageSecret(secret: TestSecret, create = true) {
   // delete if exists, then create
   try {
-    await SecretsOps.deleteSecret({ secretId: secret._id, state });
+    await SecretsOps.deleteSecret({ secretId: secret._id!, state });
   } catch {
     // ignore
   }
   if (create) {
     await SecretsOps.createSecret({
-      secretId: secret._id,
+      secretId: secret._id!,
       value: secret.value,
       description: secret.description,
       encoding: secret.encoding,

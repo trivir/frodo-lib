@@ -2646,7 +2646,7 @@ export async function createAIAgent({
                 // Link privilege to agent identity
                 await updateManagedObjectProperties({
                   type: `${getCurrentRealmName(state)}_aiagentprivilege`,
-                  id: privilege._id,
+                  id: privilege._id!,
                   operations: [
                     {
                       operation: 'replace',
@@ -2678,7 +2678,7 @@ export async function createAIAgent({
                   // Link privilege to application
                   await updateManagedObjectProperties({
                     type: `${getCurrentRealmName(state)}_aiagentprivilege`,
-                    id: privilege._id,
+                    id: privilege._id!,
                     operations: [
                       {
                         operation: 'replace',
@@ -2745,7 +2745,7 @@ export async function createAIAgent({
                   }
                   await updateManagedObjectProperties({
                     type: `${getCurrentRealmName(state)}_aiagentprivilege`,
-                    id: privilege._id,
+                    id: privilege._id!,
                     operations: [
                       {
                         operation: 'replace',
@@ -2809,7 +2809,7 @@ export async function createAIAgent({
                   }
                   await updateManagedObjectProperties({
                     type: `${getCurrentRealmName(state)}_aiagentprivilege`,
-                    id: privilege._id,
+                    id: privilege._id!,
                     operations: [
                       {
                         operation: 'replace',
@@ -2867,7 +2867,7 @@ export async function createAIAgent({
             }
             await updateManagedObjectProperties({
               type: `${getCurrentRealmName(state)}_aiagent`,
-              id: aiAgentIdentity._id,
+              id: aiAgentIdentity._id!,
               operations: [
                 {
                   operation: 'replace',

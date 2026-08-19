@@ -983,7 +983,7 @@ export async function addNewServiceAccount({
       message: `ConnectionProfileOps.addNewServiceAccount: id=${sa._id}`,
       state,
     });
-    state.setServiceAccountId(sa._id);
+    state.setServiceAccountId(sa._id!);
     state.setServiceAccountJwk(jwkPrivate);
     debugMessage({
       message: `ConnectionProfileOps.addNewServiceAccount: end`,

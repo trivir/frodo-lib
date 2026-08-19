@@ -70,7 +70,7 @@ export function validateScriptHooks({ jsonData }: { jsonData: object }): void {
   const scriptHooks = findAllScriptHooks(jsonData);
 
   for (const scriptHook of scriptHooks) {
-    if (!('source' in scriptHook)) {
+    if (scriptHook.source === undefined) {
       continue;
     }
 
@@ -106,7 +106,7 @@ export function areScriptHooksValid({
   const scriptHooks = findAllScriptHooks(jsonData);
 
   for (const scriptHook of scriptHooks) {
-    if (!('source' in scriptHook)) {
+    if (scriptHook.source === undefined) {
       continue;
     }
 

@@ -48,7 +48,7 @@ export async function stageJourney(
   // delete if exists, then create
   try {
     await JourneyOps.deleteJourney({
-      journeyId: journey.tree._id,
+      journeyId: journey.tree._id!,
       options: {
         deep: true,
         verbose: false,
@@ -62,7 +62,7 @@ export async function stageJourney(
   } finally {
     if (create) {
       await JourneyOps.importJourney({
-        importData: getJourneyFixture(journey.tree._id),
+        importData: getJourneyFixture(journey.tree._id!),
         options: {
           reUuid: false,
           deps: true,

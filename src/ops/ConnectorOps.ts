@@ -475,7 +475,7 @@ export async function deleteConnectors({
           const mappings = await readMappings({ connectorId, state });
           for (const mapping of mappings) {
             await deleteMapping({
-              mappingId: mapping._id,
+              mappingId: mapping._id!,
               state,
             });
           }
@@ -527,7 +527,7 @@ export async function deleteConnector({
       const mappings = await readMappings({ connectorId, state });
       for (const mapping of mappings) {
         await deleteMapping({
-          mappingId: mapping._id,
+          mappingId: mapping._id!,
           state,
         });
       }
@@ -595,7 +595,7 @@ export async function exportConnectors({
       state,
     });
     for (const connectorData of allConnectorsData) {
-      const connectorId = connectorData._id.split('/')[1];
+      const connectorId = connectorData._id!.split('/')[1];
       updateProgressIndicator({
         id: indicatorId,
         message: `Exporting connector ${connectorId}`,
@@ -646,7 +646,7 @@ export async function importConnector({
         if (options.deps) {
           for (const connKey of Object.keys(importData.mapping)) {
             response = await updateMapping({
-              mappingId: importData.mapping[connKey]._id,
+              mappingId: importData.mapping[connKey]._id!,
               mappingData: importData.mapping[connKey],
               state,
             });

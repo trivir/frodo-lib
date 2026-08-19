@@ -606,7 +606,7 @@ export async function updateManagedSystemObjectsProperties({
           result.push(
             await _patchManagedSystemObject({
               type,
-              id: obj._id,
+              id: obj._id!,
               operations,
               rev,
               state,
@@ -677,7 +677,7 @@ export async function deleteManagedSystemObjects({
         state,
       });
       for (const obj of result.result) {
-        await deleteManagedSystemObject({ type, id: obj._id, state });
+        await deleteManagedSystemObject({ type, id: obj._id!, state });
         count++;
       }
     } catch (error) {

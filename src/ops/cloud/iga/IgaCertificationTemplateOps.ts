@@ -857,7 +857,7 @@ async function prepareCertificationTemplateForExport({
     );
     exportData.emailTemplate = Object.fromEntries(
       templates.map((e) => {
-        return [e._id.split('/').pop(), e];
+        return [e._id!.split('/').pop(), e];
       })
     );
     exportData.variable = variables;

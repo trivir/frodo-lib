@@ -286,7 +286,7 @@ export async function importSites({
           continue;
         }
         const result = await updateSite({
-          siteId: site._id,
+          siteId: site._id!,
           siteData: site,
           state,
         });

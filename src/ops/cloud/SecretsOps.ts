@@ -420,12 +420,12 @@ export async function exportSecret({
     if (includeActiveValues) {
       if (secret.useInPlaceholders) {
         secret.activeValue = await readSecretValue({
-          secretId: secret._id,
+          secretId: secret._id!,
           target,
           state,
         });
       } else {
-        warnSkippedActiveValueExport({ secretId: secret._id, state });
+        warnSkippedActiveValueExport({ secretId: secret._id!, state });
       }
     }
     exportData.secret[secret._id] = secret;
@@ -469,7 +469,7 @@ export async function exportSecrets({
         if (secret.useInPlaceholders) {
           secret.activeValue = mapOfSecrets[secret._id];
         } else {
-          warnSkippedActiveValueExport({ secretId: secret._id, state });
+          warnSkippedActiveValueExport({ secretId: secret._id!, state });
         }
         exportData.secret[secret._id] = secret;
       }
@@ -724,7 +724,7 @@ async function resolveSecretValue({
   let secretValue = 'placeholder secret value';
   try {
     if (includeActiveValues) {
-      const secretEnvName = '' + secretData._id.replaceAll('-', '_');
+      const secretEnvName = '' + secretData._id!.replaceAll('-', '_');
       if (process.env[secretEnvName]) {
         secretValue = process.env[secretEnvName];
       } else if (isEncrypted(secretData.activeValue)) {
@@ -773,7 +773,7 @@ async function resolveSecretValues({
     if (includeActiveValues) {
       for (const secret of secrets) {
         let secretValue = 'placeholder secret value';
-        const secretEnvName = '' + secret._id.replaceAll('-', '_');
+        const secretEnvName = '' + secret._id!.replaceAll('-', '_');
         if (process.env[secretEnvName]) {
           secretValue = process.env[secretEnvName];
         } else {
@@ -843,7 +843,7 @@ export async function importSecret({
         delete secretData._rev;
         try {
           response = await createSecret({
-            secretId: secretData._id,
+            secretId: secretData._id!,
             value: await resolveSecretValue({
               secretData,
               includeActiveValues,
@@ -864,14 +864,14 @@ export async function importSecret({
           ) {
             // secret already exists so just trying to update the description
             await updateSecretDescription({
-              secretId: secretData._id,
+              secretId: secretData._id!,
               description: secretData.description,
               state,
             });
             // only create a new secret version if requested
             if (includeActiveValues) {
               await createVersionOfSecret({
-                secretId: secretData._id,
+                secretId: secretData._id!,
                 value: await resolveSecretValue({
                   secretData,
                   includeActiveValues,
@@ -882,7 +882,7 @@ export async function importSecret({
               });
             }
             // read the final secret definition to return as the response
-            response = await readSecret({ secretId: secretData._id, state });
+            response = await readSecret({ secretId: secretData._id!, state });
             imported.push(id);
           } else {
             throw error;
@@ -935,7 +935,7 @@ export async function importSecrets({
       try {
         response.push(
           await createSecret({
-            secretId: secretData._id,
+            secretId: secretData._id!,
             value: resolvedSecretValues[secretData._id],
             description: secretData.description,
             encoding: secretData.encoding,
@@ -951,20 +951,20 @@ export async function importSecrets({
         ) {
           // secret already exists so just trying to update the description
           await updateSecretDescription({
-            secretId: secretData._id,
+            secretId: secretData._id!,
             description: secretData.description,
             state,
           });
           // only create a new secret version if requested
           if (includeActiveValues) {
             await createVersionOfSecret({
-              secretId: secretData._id,
+              secretId: secretData._id!,
               value: resolvedSecretValues[secretData._id],
               state,
             });
           }
           // read the final secret definition to return as the response
-          response.push(await readSecret({ secretId: secretData._id, state }));
+          response.push(await readSecret({ secretId: secretData._id!, state }));
         }
       }
     } catch (error) {

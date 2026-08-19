@@ -301,7 +301,7 @@ export async function importRealms({
           continue;
         }
         const result = await updateRealm({
-          realmId: realm._id,
+          realmId: realm._id!,
           realmData: realm,
           state,
         });
@@ -390,7 +390,7 @@ export async function deleteRealmByName({
   const realms = await getRealms({ state });
   for (const realm of realms) {
     if (getRealmName(realmName) === realm.name) {
-      return deleteRealm({ realmId: realm._id, state });
+      return deleteRealm({ realmId: realm._id!, state });
     }
   }
   throw new Error(`Realm ${realmName} not found!`);
@@ -423,7 +423,7 @@ export async function addCustomDomain({
       try {
         realmData.aliases.push(domain.toLowerCase());
         realmData = await _putRealm({
-          realmId: realmData._id,
+          realmId: realmData._id!,
           realmData: realmData,
           state,
         });
@@ -463,7 +463,7 @@ export async function removeCustomDomain({
       try {
         realmData.aliases = aliases;
         realmData = await _putRealm({
-          realmId: realmData._id,
+          realmId: realmData._id!,
           realmData: realmData,
           state,
         });

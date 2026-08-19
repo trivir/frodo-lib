@@ -447,7 +447,7 @@ export async function deleteOAuth2Clients({
         });
         result.push(
           await deleteOAuth2Client({
-            clientId: client._id,
+            clientId: client._id!,
             state,
           })
         );

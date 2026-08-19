@@ -308,7 +308,7 @@ export async function exportUsers({
         message: `Exporting user ${user._id}`,
         state,
       });
-      user.config = await getUserConfig({ userId: user._id, state });
+      user.config = await getUserConfig({ userId: user._id!, state });
       exportData.user[user._id] = user as UserExportSkeleton;
     }
     stopProgressIndicator({
@@ -380,7 +380,7 @@ export async function readUserGroups({
     const { result } = await getUserGroups({ state });
     // getUserGroups doesn't return groups with the privileges attribute, so request each group individually
     const groups = Promise.all(
-      result.map((g) => readUserGroup({ groupId: g._id, state }))
+      result.map((g) => readUserGroup({ groupId: g._id!, state }))
     );
     debugMessage({ message: `UserOps.readUserGroups: end`, state });
     return groups;
@@ -493,7 +493,7 @@ export async function importUsers({
           state,
         });
         importedUser.config = await putUserConfig({
-          userId: user._id,
+          userId: user._id!,
           configData: config,
           state,
         });

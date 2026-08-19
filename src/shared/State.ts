@@ -780,7 +780,7 @@ const globalState: StateInterface = {
   },
 };
 
-export const getVerbose = (): boolean => globalState.verbose;
+export const getVerbose = (): boolean => globalState.verbose!;
 
 export const getDebug = (): boolean =>
   globalState.debug || process.env.FRODO_DEBUG !== undefined;

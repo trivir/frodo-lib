@@ -661,13 +661,13 @@ export async function deleteMappings({
         mappings: [],
         state,
       });
-      for (const mapping of mappings.filter((it) => isLegacyMapping(it._id))) {
+      for (const mapping of mappings.filter((it) => isLegacyMapping(it._id!))) {
         deletedMappings.push(mapping);
       }
       // delete all the new mappings
-      for (const mapping of mappings.filter((it) => !isLegacyMapping(it._id))) {
+      for (const mapping of mappings.filter((it) => !isLegacyMapping(it._id!))) {
         deletedMappings.push(
-          await deleteMapping({ mappingId: mapping._id, state })
+          await deleteMapping({ mappingId: mapping._id!, state })
         );
       }
       return deletedMappings;
@@ -699,7 +699,7 @@ export async function deleteMappings({
       }
       // filter only sync mappings
       const legacyMappingIdsToDelete = mappingsToDelete
-        .filter((it) => isLegacyMapping(it._id))
+        .filter((it) => isLegacyMapping(it._id!))
         .map((it) => it._id);
       debugMessage({
         message: `MappingOps.deleteMappings: selected ${
@@ -723,7 +723,7 @@ export async function deleteMappings({
         mappings: updatedLegacyMappings,
         state,
       });
-      for (const mapping of mappings.filter((it) => isLegacyMapping(it._id))) {
+      for (const mapping of mappings.filter((it) => isLegacyMapping(it._id!))) {
         deletedMappings.push(mapping);
       }
       debugMessage({
@@ -739,9 +739,9 @@ export async function deleteMappings({
         legacyMappingIdsToDelete.includes(mapping._id)
       );
       // delete all the new mappings
-      for (const mapping of mappings.filter((it) => !isLegacyMapping(it._id))) {
+      for (const mapping of mappings.filter((it) => !isLegacyMapping(it._id!))) {
         deletedMappings.push(
-          await deleteMapping({ mappingId: mapping._id, state })
+          await deleteMapping({ mappingId: mapping._id!, state })
         );
       }
       // if there were undeleted mappings, throw exception
@@ -930,7 +930,7 @@ export async function exportMappings({
       if (options.useStringArrays) {
         // TODO
       }
-      if (isLegacyMapping(mappingData._id)) {
+      if (isLegacyMapping(mappingData._id!)) {
         exportData.sync.mappings.push(mappingData);
       } else {
         exportData.mapping[mappingData._id] = mappingData;
@@ -1140,8 +1140,8 @@ export function isLegacyMapping(mappingId: string): boolean {
 export function sortMappings(mappings: MappingSkeleton[]) {
   return mappings.sort((m1, m2) => {
     // Order by mapping type first. Sync (legacy) mappings get synced first according to the documentation: https://backstage.forgerock.com/docs/idm/7.5/synchronization-guide/mappings.html
-    const m1IsLegacy = isLegacyMapping(m1._id);
-    const m2IsLegacy = isLegacyMapping(m2._id);
+    const m1IsLegacy = isLegacyMapping(m1._id!);
+    const m2IsLegacy = isLegacyMapping(m2._id!);
     if (m1IsLegacy && !m2IsLegacy) {
       return -1;
     }

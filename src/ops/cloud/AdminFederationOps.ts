@@ -363,8 +363,8 @@ export async function deleteAdminFederationProvider({
   switch (foundProviders.length) {
     case 1:
       return await _deleteProviderByTypeAndId({
-        providerType: foundProviders[0]._type._id,
-        providerId: foundProviders[0]._id,
+        providerType: foundProviders[0]._type._id!,
+        providerId: foundProviders[0]._id!,
         state,
       });
     case 0:
@@ -481,7 +481,7 @@ export async function importAdminFederationProvider({
     if (idpId === providerId) {
       try {
         response = await updateAdminFederationProvider({
-          providerType: importData.idp[idpId]._type._id,
+          providerType: importData.idp[idpId]._type._id!,
           providerId: idpId,
           providerData: importData.idp[idpId],
           state,
@@ -531,7 +531,7 @@ export async function importFirstAdminFederationProvider({
   for (const idpId of Object.keys(importData.idp)) {
     try {
       response = await updateAdminFederationProvider({
-        providerType: importData.idp[idpId]._type._id,
+        providerType: importData.idp[idpId]._type._id!,
         providerId: idpId,
         providerData: importData.idp[idpId],
         state,
@@ -578,7 +578,7 @@ export async function importAdminFederationProviders({
     try {
       response.push(
         await updateAdminFederationProvider({
-          providerType: importData.idp[idpId]._type._id,
+          providerType: importData.idp[idpId]._type._id!,
           providerId: idpId,
           providerData: importData.idp[idpId],
           state,

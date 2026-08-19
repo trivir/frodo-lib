@@ -46,7 +46,7 @@ describe('EmailTemplateOps', () => {
 
     test(`1: Read email template '${TestData.template1._id}'`, async () => {
       const response = await EmailTemplateOps.readEmailTemplate({
-        templateId: TestData.template1._id,
+        templateId: TestData.template1._id!,
         state,
       });
       expect(response).toMatchSnapshot();
@@ -96,7 +96,7 @@ describe('EmailTemplateOps', () => {
 
     test(`1: Create email template '${TestData.template3._id}'`, async () => {
       const response = await EmailTemplateOps.updateEmailTemplate({
-        templateId: TestData.template3._id,
+        templateId: TestData.template3._id!,
         templateData: TestData.template3,
         state,
       });

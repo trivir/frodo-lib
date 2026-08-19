@@ -458,7 +458,7 @@ export async function deleteInternalRoleByName({
     });
     if (roles.length == 1) {
       return deleteInternalRole({
-        roleId: roles[0]._id,
+        roleId: roles[0]._id!,
         state,
       });
     }

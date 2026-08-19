@@ -766,7 +766,7 @@ export async function readNodesByVersion({
         }
         try {
           const byType = await _getNodesByType({
-            nodeType: type._id,
+            nodeType: type._id!,
             nodeTypeVersion: version,
             state,
           });
@@ -1426,15 +1426,15 @@ export async function findOrphanedNodes({
         try {
           const nodes = (
             await _getNodesByType({
-              nodeType: type._id,
+              nodeType: type._id!,
               nodeTypeVersion: version,
               state,
             })
           ).result;
           for (const node of nodes) {
             allNodes.push(node);
-            if (!allNodeMap.has(node._id)) {
-              allNodeMap.set(node._id, node);
+            if (!allNodeMap.has(node._id!)) {
+              allNodeMap.set(node._id!, node);
             }
             updateProgressIndicator({
               id: indicatorId,
@@ -1455,12 +1455,12 @@ export async function findOrphanedNodes({
       }
     } else {
       try {
-        const nodes = (await _getNodesByType({ nodeType: type._id, state }))
+        const nodes = (await _getNodesByType({ nodeType: type._id!, state }))
           .result;
         for (const node of nodes) {
           allNodes.push(node);
-          if (!allNodeMap.has(node._id)) {
-            allNodeMap.set(node._id, node);
+          if (!allNodeMap.has(node._id!)) {
+            allNodeMap.set(node._id!, node);
           }
           updateProgressIndicator({
             id: indicatorId,
@@ -1596,11 +1596,11 @@ export async function findOrphanedNodes({
   });
   const orphanedNodeMap = new Map<string, NodeSkeleton>();
   const diff = Array.from(allNodeMap.values()).filter(
-    (x) => !activeNodeSetInTotal.has(x._id)
+    (x) => !activeNodeSetInTotal.has(x._id!)
   );
   for (const node of diff) {
-    if (!orphanedNodeMap.has(node._id)) {
-      orphanedNodeMap.set(node._id, node);
+    if (!orphanedNodeMap.has(node._id!)) {
+      orphanedNodeMap.set(node._id!, node);
     }
   }
   for (const orphanedNode of orphanedNodeMap.values()) {
@@ -1632,14 +1632,14 @@ export async function removeOrphanedNodes({
 
   const orphanedNodeMap = new Map<string, NodeSkeleton>();
   for (const node of orphanedNodes) {
-    if (!orphanedNodeMap.has(node._id)) {
-      orphanedNodeMap.set(node._id, node);
+    if (!orphanedNodeMap.has(node._id!)) {
+      orphanedNodeMap.set(node._id!, node);
     }
   }
   const uniqueOrphanedNodes = Array.from(orphanedNodeMap.values());
   const orderedOrphanedNodes = uniqueOrphanedNodes.sort((a, b) => {
-    const aIsContainer = containerNodes.includes(a['_type']?._id);
-    const bIsContainer = containerNodes.includes(b['_type']?._id);
+    const aIsContainer = containerNodes.includes(a['_type']?._id!);
+    const bIsContainer = containerNodes.includes(b['_type']?._id!);
     if (aIsContainer === bIsContainer) {
       return 0;
     }
@@ -1674,8 +1674,8 @@ export async function removeOrphanedNodes({
         state,
       });
     } catch (deleteError) {
-      if (!errorNodeIds.has(node._id)) {
-        errorNodeIds.add(node._id);
+      if (!errorNodeIds.has(node._id!)) {
+        errorNodeIds.add(node._id!);
         errorNodes.push(node);
       }
       const failedRequestUrl = getFailedRequestUrl(deleteError);

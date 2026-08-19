@@ -1148,7 +1148,7 @@ export async function importPolicy({
         }
         try {
           response = await updatePolicy({
-            policyId: policyData._id,
+            policyId: policyData._id!,
             policyData,
             state,
           });
@@ -1232,7 +1232,7 @@ export async function importFirstPolicy({
       }
       try {
         response = await updatePolicy({
-          policyId: policyData._id,
+          policyId: policyData._id!,
           policyData,
           state,
         });
@@ -1315,7 +1315,7 @@ export async function importPolicies({
       }
       try {
         response.push(
-          await updatePolicy({ policyId: policyData._id, policyData, state })
+          await updatePolicy({ policyId: policyData._id!, policyData, state })
         );
       } catch (error) {
         errors.push(error);

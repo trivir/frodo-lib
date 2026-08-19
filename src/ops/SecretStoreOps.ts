@@ -795,10 +795,10 @@ export async function exportSecretStores({
         message: `Exporting secret store ${secretStore._id}`,
         state,
       });
-      if (canSecretStoreHaveMappings(secretStore._type._id)) {
+      if (canSecretStoreHaveMappings(secretStore._type._id!)) {
         try {
           secretStore.mappings = await readSecretStoreMappings({
-            secretStoreId: secretStore._id,
+            secretStoreId: secretStore._id!,
             secretStoreTypeId: secretStore._type._id,
             globalConfig,
             state,
@@ -947,7 +947,7 @@ export async function importSecretStores({
           for (const mapping of secretStoreMappings) {
             result.mappings.push(
               await updateSecretStoreMapping({
-                secretStoreId: secretStore._id,
+                secretStoreId: secretStore._id!,
                 secretStoreTypeId: secretStore._type._id,
                 secretStoreMappingData: mapping,
                 globalConfig,

@@ -391,7 +391,7 @@ export async function deleteCirclesOfTrust({
     const cots = await readCirclesOfTrust({ entityProviders, state });
     for (const cot of cots) {
       try {
-        deleted.push(await deleteCircleOfTrust({ cotId: cot._id, state }));
+        deleted.push(await deleteCircleOfTrust({ cotId: cot._id!, state }));
       } catch (error) {
         errors.push(error);
       }

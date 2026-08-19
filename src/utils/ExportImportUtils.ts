@@ -418,7 +418,7 @@ export function saveToFile({
   state,
 }: {
   type: string;
-  data: Record<string, unknown> | Record<string, unknown>[];
+  data: object;
   identifier: string;
   filename: string;
   includeMeta?: boolean;
@@ -808,7 +808,7 @@ export function getErrorCallback<T, R>(
   resultCallback: ResultCallback<T>,
   errorFilter: ErrorFilter = () => true
 ): ResultCallback<R> {
-  return (e: FrodoError) => {
+  return (e?: FrodoError) => {
     if (!e || !errorFilter(e)) {
       return;
     }
@@ -1021,7 +1021,7 @@ export async function getIGANotificationEmailTemplateDependencies(
         emailTemplateIdPromises.push(
           resolveVariable({
             // Sometimes, the name is of the form "emailTemplate/<id>", so this ensures we get only the id from each name
-            input: o[field].split('/').pop(),
+            input: o[field].split('/').pop()!,
             variables,
             state,
           })

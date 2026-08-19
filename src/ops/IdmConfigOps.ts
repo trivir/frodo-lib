@@ -528,7 +528,7 @@ export async function exportConfigEntities({
   let configurations = await readConfigEntities({ state });
   if (options.entitiesToExport && options.entitiesToExport.length > 0) {
     configurations = configurations.filter((c) =>
-      options.entitiesToExport.includes(c._id)
+      options.entitiesToExport.includes(c._id!)
     );
   }
   const indicatorId = createProgressIndicator({
@@ -558,7 +558,7 @@ export async function exportConfigEntities({
             ) &&
             // list of config entities, which do not exist by default or ever.
             !(
-              IDM_UNAVAILABLE_ENTITIES.includes(configEntity._id) &&
+              IDM_UNAVAILABLE_ENTITIES.includes(configEntity._id!) &&
               error.httpStatus === 404 &&
               error.httpErrorReason === 'Not Found'
             ) &&

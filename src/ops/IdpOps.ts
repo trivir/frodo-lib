@@ -478,7 +478,7 @@ export async function deleteSocialIdentityProviders({
         });
         result.push(
           await deleteSocialIdentityProvider({
-            providerId: provider._id,
+            providerId: provider._id!,
             state,
           })
         );
@@ -526,8 +526,8 @@ export async function deleteSocialIdentityProvider({
     switch (foundProviders.length) {
       case 1:
         return await deleteProviderByTypeAndId({
-          type: foundProviders[0]._type._id,
-          providerId: foundProviders[0]._id,
+          type: foundProviders[0]._type._id!,
+          providerId: foundProviders[0]._id!,
           state,
         });
       case 0:
@@ -697,7 +697,7 @@ export async function importSocialIdentityProvider({
           }
         }
         response = await updateSocialIdentityProvider({
-          providerType: importData.idp[idpId]._type._id,
+          providerType: importData.idp[idpId]._type._id!,
           providerId: idpId,
           providerData: importData.idp[idpId],
           state,
@@ -757,7 +757,7 @@ export async function importFirstSocialIdentityProvider({
         }
       }
       response = await updateSocialIdentityProvider({
-        providerType: importData.idp[idpId]._type._id,
+        providerType: importData.idp[idpId]._type._id!,
         providerId: idpId,
         providerData: importData.idp[idpId],
         state,
@@ -819,7 +819,7 @@ export async function importSocialIdentityProviders({
       }
       response.push(
         await updateSocialIdentityProvider({
-          providerType: importData.idp[idpId]._type._id,
+          providerType: importData.idp[idpId]._type._id!,
           providerId: idpId,
           providerData: importData.idp[idpId],
           state,
@@ -866,7 +866,7 @@ export async function importSocialProvider({
         await updateScript({ scriptId, scriptData, state });
       }
       await updateSocialIdentityProvider({
-        providerType: importData.idp[idpId]._type._id,
+        providerType: importData.idp[idpId]._type._id!,
         providerId: idpId,
         providerData: importData.idp[idpId],
         state,
@@ -899,7 +899,7 @@ export async function importFirstSocialProvider({
       await updateScript({ scriptId, scriptData, state });
     }
     await updateSocialIdentityProvider({
-      providerType: importData.idp[idpId]._type._id,
+      providerType: importData.idp[idpId]._type._id!,
       providerId: idpId,
       providerData: importData.idp[idpId],
       state,
@@ -933,7 +933,7 @@ export async function importSocialProviders({
         await updateScript({ scriptId, scriptData, state });
       }
       await updateSocialIdentityProvider({
-        providerType: importData.idp[idpId]._type._id,
+        providerType: importData.idp[idpId]._type._id!,
         providerId: idpId,
         providerData: importData.idp[idpId],
         state,
