@@ -16,7 +16,7 @@ import {
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../../utils/Console';
-import { getMetadata } from '../../utils/ExportImportUtils';
+import { getMetadata, updateRemote } from '../../utils/ExportImportUtils';
 import { FrodoError } from '../FrodoError';
 import { ExportMetaData } from '../OpsTypes';
 
@@ -57,12 +57,12 @@ export type Variable = {
    * Import variable by id
    * @param {string} variableId variable id/name
    * @param {VariablesExportInterface} importData import data
-   * @returns {Promise<VariableSkeleton>} imported variable object
+   * @returns {Promise<VariableSkeleton | null>} imported variable object, or null if no update was made
    */
   importVariable(
     variableId: string,
     importData: VariablesExportInterface
-  ): Promise<VariableSkeleton>;
+  ): Promise<VariableSkeleton | null>;
   /**
    * Import variables
    * @param {VariablesExportInterface} importData import data
@@ -94,7 +94,7 @@ export type Variable = {
    * @param {string} description variable description
    * @param {VariableExpressionType} expressionType type of the value
    * @param {boolean} noEncode do not encode if passing a pre-encoded (base64) value
-   * @returns {Promise<VariableSkeleton>} a promise that resolves to a variable object
+   * @returns {Promise<VariableSkeleton | null>} a promise that resolves to a variable object, or null if no update was made
    */
   updateVariable(
     variableId: string,
@@ -102,7 +102,7 @@ export type Variable = {
     description: string,
     expressionType?: VariableExpressionType,
     noEncode?: boolean
-  ): Promise<VariableSkeleton>;
+  ): Promise<VariableSkeleton | null>;
   /**
    * Update variable description
    * @param {string} variableId variable id/name
@@ -213,7 +213,7 @@ export default (state: State): Variable => {
     async importVariable(
       variableId: string,
       importData: VariablesExportInterface
-    ): Promise<VariableSkeleton> {
+    ): Promise<VariableSkeleton | null> {
       return importVariable({ variableId, importData, state });
     },
     async importVariables(
@@ -243,7 +243,7 @@ export default (state: State): Variable => {
       description: string = '',
       expressionType: VariableExpressionType = 'string',
       noEncode: boolean = false
-    ): Promise<VariableSkeleton> {
+    ): Promise<VariableSkeleton | null> {
       return updateVariable({
         variableId,
         value,
@@ -433,7 +433,7 @@ export async function exportVariables({
  * Import variable
  * @param {string} variableId variable id/name
  * @param {VariablesExportInterface} importData import data
- * @returns {Promise<VariableSkeleton[]>} array of imported variable objects
+ * @returns {Promise<VariableSkeleton | null>} imported variable object, or null if no update was made
  */
 export async function importVariable({
   variableId,
@@ -443,7 +443,7 @@ export async function importVariable({
   variableId?: string;
   importData: VariablesExportInterface;
   state: State;
-}): Promise<VariableSkeleton> {
+}): Promise<VariableSkeleton | null> {
   let response = null;
   const errors = [];
   const imported = [];
@@ -516,7 +516,7 @@ export async function importVariables({
   if (errors.length > 0) {
     throw new FrodoError(`Error importing variables`, errors);
   }
-  return response;
+  return response.filter((v) => v);
 }
 
 export async function createVariable({
@@ -562,6 +562,15 @@ export async function createVariable({
   throw new FrodoError(`Variable ${variableId} already exists`);
 }
 
+/**
+ * Update or create variable
+ * @param {string} variableId variable id/name
+ * @param {string} value variable value
+ * @param {string} description variable description
+ * @param {VariableExpressionType} expressionType type of the value
+ * @param {boolean} noEncode do not encode if passing a pre-encoded (base64) value
+ * @returns {Promise<VariableSkeleton | null>} a promise that resolves to a variable object, or null if no update was made
+ */
 export async function updateVariable({
   variableId,
   value,
@@ -576,16 +585,28 @@ export async function updateVariable({
   expressionType?: VariableExpressionType;
   noEncode?: boolean;
   state: State;
-}): Promise<VariableSkeleton> {
+}): Promise<VariableSkeleton | null> {
   try {
-    const result = await _putVariable({
-      variableId,
-      valueBase64: noEncode ? value : encode(value),
-      description,
-      expressionType,
+    const valueBase64 = noEncode ? value : encode(value);
+    return await updateRemote({
+      data: {
+        valueBase64,
+        description,
+      },
+      type: 'ESV variable',
+      readFn: async () => await readVariable({ variableId, state }),
+      updateFn: async () =>
+        await _putVariable({
+          variableId,
+          valueBase64,
+          description,
+          expressionType,
+          state,
+        }),
+      // Note that expressionType cannot be updated (even though it's being provided in the update function), so we ignore it when comparing
+      ignoreAttributes: ['loaded', 'expressionType'],
       state,
     });
-    return result;
   } catch (error) {
     throw new FrodoError(`Error updating variable ${variableId}`, error);
   }

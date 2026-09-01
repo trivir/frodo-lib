@@ -22,8 +22,13 @@ import {
   encode,
   encodeBase64Url,
 } from './Base64Utils';
-import { debugMessage, printMessage, updateProgressIndicator } from './Console';
-import { deleteDeepByKeys, stringify } from './JsonUtils';
+import {
+  debugMessage,
+  printMessage,
+  updateProgressIndicator,
+  verboseMessage,
+} from './Console';
+import { deleteDeepByKeys, isEqualJson, stringify } from './JsonUtils';
 import { resolveVariable } from '../ops/cloud/VariablesOps';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
 
@@ -1164,4 +1169,89 @@ export function objectRecurse(
   }
   objOp(obj);
   Object.values(obj).forEach((o) => objectRecurse(o, objOp));
+}
+
+/**
+ * Helper that handles updating a remote entity if there have been changes
+ * @param {string} type The type of data being updated (used for verbose messaging)
+ * @param {() => Promise<T>} updateFn The function that updates the remote entity
+ * @param {T} data If state.getForceUpdate() is false and readFn is provided, compares this data with the remote data to determine if update is needed
+ * @param {() => Promise<T>} readFn optional function that reads in the remote entity for comparison (if state.getForceUpdate() is false); if not provided, will just attempt to update (and create if createFn is provided)
+ * @param {() => Promise<T>} createFn optional function that creates the remote entity if update fails; if not provided, will just throw the update error
+ * @param {string[]} ignoreAttributes attributes to ignore during remote comparison in addition to the usual ones (e.g. _rev, _id) that automatically get ignored
+ * @param {boolean} forceReturn if true, will always return an object even if no update was made. Default: false
+ * @param {State} state The library state
+ * @returns {T | null} the updated object, or null if no update was made
+ */
+export async function updateRemote<T extends object>({
+  type,
+  updateFn,
+  data,
+  readFn,
+  createFn,
+  ignoreAttributes = [],
+  forceReturn = false,
+  state,
+}: {
+  type: string;
+  updateFn: () => Promise<T>;
+  data?: T;
+  readFn?: () => Promise<T>;
+  createFn?: () => Promise<T>;
+  ignoreAttributes?: string[];
+  forceReturn?: boolean;
+  state: State;
+}): Promise<T | null> {
+  if (!state.getForceUpdate() && readFn) {
+    verboseMessage({
+      message: `Comparing ${type} with remote...`,
+      state,
+    });
+    try {
+      const remoteData = await readFn();
+      const isEqual = await isEqualJson(remoteData, data, [
+        '_id',
+        'id',
+        '_rev',
+        'createdBy',
+        'creationDate',
+        'lastModifiedBy',
+        'lastModifiedDate',
+        'lastChangeDate',
+        'lastChangedBy',
+        'modifiedDate',
+        'createdDate',
+        ...ignoreAttributes,
+      ]);
+      if (isEqual) {
+        verboseMessage({
+          message: `Identical ${type} already exists in remote. Update skipped.`,
+          state,
+        });
+        // Return remoteData instead of data if forceReturn is true since data may be incomplete due to the ignored attributes during comparison
+        return forceReturn ? remoteData : null;
+      }
+      verboseMessage({
+        message: `Different ${type} exists in remote. Attempting update...`,
+        state,
+      });
+    } catch (e) {
+      verboseMessage({
+        message: `Unable to compare ${type} due to error (${e}). Attempting update...`,
+        state,
+      });
+    }
+  }
+  try {
+    return await updateFn();
+  } catch (e) {
+    if (createFn) {
+      verboseMessage({
+        message: `Unable to update ${type} due to error (${e}). Attempting create...`,
+        state,
+      });
+      return await createFn();
+    }
+    throw e;
+  }
 }

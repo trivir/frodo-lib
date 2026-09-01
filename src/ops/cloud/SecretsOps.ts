@@ -23,7 +23,7 @@ import {
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../../utils/Console';
-import { getMetadata, getResult } from '../../utils/ExportImportUtils';
+import { getMetadata, getResult, updateRemote } from '../../utils/ExportImportUtils';
 import { FrodoError } from '../FrodoError';
 import { decrypt, decryptMap, isEncrypted } from '../IdmCryptoOps';
 import { evaluateScript } from '../IdmScriptOps';
@@ -93,14 +93,14 @@ export type Secret = {
    * @param {SecretsExportInterface} importData import data
    * @param {boolean} includeActiveValue include active value of secret (default: false)
    * @param {string} source Host URL of source environment where the secret was exported from
-   * @returns {Promise<SecretSkeleton>} imported secret object
+   * @returns {Promise<SecretSkeleton | null>} imported secret object, or null if no update was made
    */
   importSecret(
     secretId: string,
     importData: SecretsExportInterface,
     includeActiveValue?: boolean,
     source?: string
-  ): Promise<SecretSkeleton>;
+  ): Promise<SecretSkeleton | null>;
   /**
    * Import secrets
    * @param {SecretsExportInterface} importData import data
@@ -158,6 +158,18 @@ export type Secret = {
     secretId: string,
     value: string
   ): Promise<VersionOfSecretSkeleton>;
+  /**
+   * Update secret
+   * @param {string} secretId secret id/name
+   * @param {string} description secret description
+   * @param {string} value optional secret value; if provided, attempts to create a new version of the secret
+   * @returns {Promise<SecretSkeleton | null>} imported secret object, or null if no update was made
+   */
+  updateSecret(
+    secretId: string,
+    description: string,
+    value?: string
+  ): Promise<SecretSkeleton | null>;
   /**
    * Read version of secret
    * @param {string} secretId secret id/name
@@ -258,7 +270,7 @@ export default (state: State): Secret => {
       importData: SecretsExportInterface,
       includeActiveValue: boolean = false,
       source: string = null
-    ): Promise<SecretSkeleton> {
+    ): Promise<SecretSkeleton | null> {
       return importSecret({
         secretId,
         importData,
@@ -304,6 +316,18 @@ export default (state: State): Secret => {
     },
     async createVersionOfSecret(secretId: string, value: string) {
       return createVersionOfSecret({ secretId, value, state });
+    },
+    async updateSecret(
+      secretId: string,
+      description: string,
+      value?: string
+    ): Promise<SecretSkeleton | null> {
+      return updateSecret({
+        secretId,
+        description,
+        value,
+        state,
+      });
     },
     async readVersionOfSecret(secretId: string, version: string) {
       return _getVersionOfSecret({ secretId, version, state });
@@ -844,10 +868,11 @@ async function resolveSecretValues({
 }
 
 /**
- * Import secret
+ * Import secret by id
  * @param {string} secretId secret id/name
  * @param {SecretsExportInterface} importData import data
- * @returns {Promise<SecretSkeleton[]>} array of imported secret objects
+ * @param {SecretImportOptions} options import options
+ * @returns {Promise<SecretSkeleton | null>} imported secret object, or null if no update was made
  */
 export async function importSecret({
   secretId,
@@ -859,7 +884,7 @@ export async function importSecret({
   importData: SecretsExportInterface;
   options?: SecretImportOptions;
   state: State;
-}): Promise<SecretSkeleton> {
+}): Promise<SecretSkeleton | null> {
   debugMessage({ message: `SecretsOps.importSecret: start`, state });
   let response = null;
   const { includeActiveValues, source } = options;
@@ -870,53 +895,39 @@ export async function importSecret({
       try {
         const secretData = importData.secret[id];
         delete secretData._rev;
-        try {
-          response = await createSecret({
-            secretId: secretData._id,
-            value: await resolveSecretValue({
-              secretData,
-              includeActiveValues,
-              source,
-              state,
-            }),
-            description: secretData.description,
-            encoding: secretData.encoding,
-            useInPlaceholders: secretData.useInPlaceholders,
-            state,
-          });
-          imported.push(id);
-        } catch (error) {
-          if (
-            (error as FrodoError).httpStatus === 400 &&
-            (error as FrodoError).httpMessage ===
-              'Failed to create secret, the secret already exists'
-          ) {
-            // secret already exists so just trying to update the description
-            await updateSecretDescription({
+        response = await updateRemote({
+          type: 'ESV secret',
+          updateFn: async () =>
+            await updateSecret({
               secretId: secretData._id,
               description: secretData.description,
+              value: includeActiveValues
+                ? await resolveSecretValue({
+                    secretData,
+                    includeActiveValues,
+                    source,
+                    state,
+                  })
+                : undefined,
               state,
-            });
-            // only create a new secret version if requested
-            if (includeActiveValues) {
-              await createVersionOfSecret({
-                secretId: secretData._id,
-                value: await resolveSecretValue({
-                  secretData,
-                  includeActiveValues,
-                  source,
-                  state,
-                }),
+            }),
+          createFn: async () =>
+            await createSecret({
+              secretId: secretData._id,
+              value: await resolveSecretValue({
+                secretData,
+                includeActiveValues,
+                source,
                 state,
-              });
-            }
-            // read the final secret definition to return as the response
-            response = await readSecret({ secretId: secretData._id, state });
-            imported.push(id);
-          } else {
-            throw error;
-          }
-        }
+              }),
+              description: secretData.description,
+              encoding: secretData.encoding,
+              useInPlaceholders: secretData.useInPlaceholders,
+              state,
+            }),
+          state,
+        });
+        imported.push(id);
       } catch (error) {
         errors.push(error);
       }
@@ -936,6 +947,7 @@ export async function importSecret({
 /**
  * Import secrets
  * @param {SecretsExportInterface} importData import data
+ * @param {SecretImportOptions} options import options
  * @returns {Promise<SecretSkeleton[]>} array of imported secret objects
  */
 export async function importSecrets({
@@ -961,41 +973,30 @@ export async function importSecrets({
     try {
       const secretData = importData.secret[id];
       delete secretData._rev;
-      try {
-        response.push(
-          await createSecret({
-            secretId: secretData._id,
-            value: resolvedSecretValues[secretData._id],
-            description: secretData.description,
-            encoding: secretData.encoding,
-            useInPlaceholders: secretData.useInPlaceholders,
-            state,
-          })
-        );
-      } catch (error) {
-        if (
-          (error as FrodoError).httpStatus === 400 &&
-          (error as FrodoError).httpMessage ===
-            'Failed to create secret, the secret already exists'
-        ) {
-          // secret already exists so just trying to update the description
-          await updateSecretDescription({
-            secretId: secretData._id,
-            description: secretData.description,
-            state,
-          });
-          // only create a new secret version if requested
-          if (includeActiveValues) {
-            await createVersionOfSecret({
+      response.push(
+        await updateRemote({
+          type: 'ESV secret',
+          updateFn: async () =>
+            await updateSecret({
+              secretId: secretData._id,
+              description: secretData.description,
+              value: includeActiveValues
+                ? resolvedSecretValues[secretData._id]
+                : undefined,
+              state,
+            }),
+          createFn: async () =>
+            await createSecret({
               secretId: secretData._id,
               value: resolvedSecretValues[secretData._id],
+              description: secretData.description,
+              encoding: secretData.encoding,
+              useInPlaceholders: secretData.useInPlaceholders,
               state,
-            });
-          }
-          // read the final secret definition to return as the response
-          response.push(await readSecret({ secretId: secretData._id, state }));
-        }
-      }
+            }),
+          state,
+        })
+      );
     } catch (error) {
       errors.push(error);
     }
@@ -1004,7 +1005,7 @@ export async function importSecrets({
     throw new FrodoError(`Error importing secrets`, errors);
   }
   debugMessage({ message: `SecretsOps.importSecrets: end`, state });
-  return response;
+  return response.filter((s) => s);
 }
 
 export async function enableVersionOfSecret({
@@ -1161,6 +1162,68 @@ export async function createVersionOfSecret({
       `Error creating new version of secret ${secretId}`,
       error
     );
+  }
+}
+
+/**
+ * Update secret
+ * @param {string} secretId secret id/name
+ * @param {string} description secret description
+ * @param {string} value optional secret value; if provided, attempts to create a new version of the secret
+ * @returns {Promise<SecretSkeleton | null>} imported secret object, or null if no update was made
+ */
+export async function updateSecret({
+  secretId,
+  description,
+  value,
+  state,
+}: {
+  secretId: string;
+  description: string;
+  value?: string;
+  state: State;
+}): Promise<SecretSkeleton | null> {
+  try {
+    let versionUpdated = false;
+    // There isn't a way to compare the value with the current version in AIC (since the loaded version, which we can access, may differ from the current version which we can't access)
+    // However, a new version does not get created unless it differs from the current version, so attempting to create a new one should be fine even if state.getForceUpdate() is false
+    if (value) {
+      const beforeSecret = await readSecret({ secretId, state });
+      const versionResponse = await createVersionOfSecret({
+        secretId,
+        value: value,
+        state,
+      });
+      versionUpdated = versionResponse.version !== beforeSecret.activeVersion;
+    }
+    return await updateRemote({
+      data: {
+        description,
+      } as SecretSkeleton,
+      type: 'ESV secret description',
+      readFn: async () => await readSecret({ secretId, state }),
+      updateFn: async () => {
+        await updateSecretDescription({
+          secretId,
+          description,
+          state,
+        });
+        // Must return the updated ESV since updateSecretDescription doesn't return it
+        return await readSecret({ secretId, state });
+      },
+      ignoreAttributes: [
+        'loaded',
+        'activeVersion',
+        'encoding',
+        'loadedVersion',
+        'useInPlaceholders',
+      ],
+      // We want to return the updated ESV when version is updated but the description is not
+      forceReturn: versionUpdated,
+      state,
+    });
+  } catch (error) {
+    throw new FrodoError(`Error updating secret ${secretId}`, error);
   }
 }
 

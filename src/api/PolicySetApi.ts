@@ -72,7 +72,7 @@ export async function getPolicySet({
 /**
  * Create a policy set
  * @param {Object} policySetData Object representing an policy set
- * @returns {Promise} a promise that resolves to a policy set object
+ * @returns {Promise<PolicySetSkeleton>} a promise that resolves to a policy set object
  */
 export async function createPolicySet({
   policySetData,
@@ -80,7 +80,7 @@ export async function createPolicySet({
 }: {
   policySetData: PolicySetSkeleton;
   state: State;
-}) {
+}): Promise<PolicySetSkeleton> {
   const postData = cloneDeep(policySetData);
   const urlString = util.format(
     createApplicationURLTemplate,
@@ -100,7 +100,7 @@ export async function createPolicySet({
 /**
  * Update policy set
  * @param {Object} policySetData Object representing a policy set
- * @returns {Promise} a promise that resolves to a policy set object
+ * @returns {Promise<PolicySetSkeleton>} a promise that resolves to a policy set object
  */
 export async function updatePolicySet({
   policySetName = undefined,
@@ -110,7 +110,7 @@ export async function updatePolicySet({
   policySetName?: string;
   policySetData: PolicySetSkeleton;
   state: State;
-}) {
+}): Promise<PolicySetSkeleton> {
   const appData = cloneDeep(policySetData);
   if (policySetName) appData.name = policySetName;
   const urlString = util.format(

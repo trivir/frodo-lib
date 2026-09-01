@@ -87,11 +87,25 @@ export function setDefaultState(
     state.setServiceAccountJwk(undefined);
     state.setServiceAccountScope(undefined);
   }
+  const forgeopsHostUrl = 'https://nightly.gcp.forgeops.com/am';
+  const forgeopsRealm = '/';
   const classicHostUrl = 'http://openam-frodo-dev.classic.com:8080/am';
   const classicRealm = '/';
   const cloudHostUrl = 'https://openam-frodo-dev.forgeblocks.com/am';
   const cloudRealm = 'alpha';
   switch (process.env.FRODO_DEPLOY || deployment) {
+    case Constants.FORGEOPS_DEPLOYMENT_TYPE_KEY:
+      state.setHost(
+        process.env.FRODO_HOST === cloudHostUrl
+          ? forgeopsHostUrl
+          : process.env.FRODO_HOST || forgeopsHostUrl
+      );
+      state.setRealm(
+        process.env.FRODO_REALM === cloudRealm
+          ? forgeopsRealm
+          : process.env.FRODO_REALM || forgeopsRealm
+      );
+      break;
     case Constants.CLASSIC_DEPLOYMENT_TYPE_KEY:
       state.setHost(
         process.env.FRODO_HOST === cloudHostUrl
