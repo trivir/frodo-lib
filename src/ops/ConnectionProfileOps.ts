@@ -417,16 +417,19 @@ export async function initConnectionProfiles({ state }: { state: State }) {
               ? profile.alias
               : key;
 
-          // split mutually exclusive auth methods for v2
+          // split mutually exclusive auth methods and log api for v2
           const hasServiceAccount =
             Boolean(profile.svcacctId) && Boolean(profile.encodedSvcacctJwk);
-          const hasUserAccount =
+          const hasAdminAccount =
             Boolean(profile.username) && Boolean(profile.encodedPassword);
+          const hasLogApiKey =
+            Boolean(profile.logApiKey) && Boolean(profile.encodedLogApiSecret);
 
-          if (hasServiceAccount && hasUserAccount) {
-            const saConn = `service-account|${name}`;
-            const adminConn = `admin-account|${name}`;
+          const saConn = `service-account|${name}`;
+          const adminConn = `admin-account|${name}`;
+          const logApiConn = `log-api|${name}`;
 
+          if (hasServiceAccount && hasAdminAccount) {
             // service account
             const saProfile: SecureConnectionProfileInterface = {
               ...profile,
@@ -434,6 +437,8 @@ export async function initConnectionProfiles({ state }: { state: State }) {
             };
             delete saProfile.username;
             delete saProfile.encodedPassword;
+            delete saProfile.logApiKey;
+            delete saProfile.encodedLogApiSecret;
             delete (saProfile as { alias?: string }).alias;
             connections[saConn] = saProfile;
 
@@ -444,6 +449,8 @@ export async function initConnectionProfiles({ state }: { state: State }) {
             };
             delete adminProfile.svcacctId;
             delete adminProfile.encodedSvcacctJwk;
+            delete adminProfile.logApiKey;
+            delete adminProfile.encodedLogApiSecret;
             delete (adminProfile as { alias?: string }).alias;
             connections[adminConn] = adminProfile;
           } else {
@@ -453,6 +460,20 @@ export async function initConnectionProfiles({ state }: { state: State }) {
             };
             delete (migrated as { alias?: string }).alias;
             connections[name] = migrated;
+          }
+
+          // log api credentials
+          if (hasLogApiKey) {
+            const logApiProfile: SecureConnectionProfileInterface = {
+              ...profile,
+              tenant: profile.tenant || key,
+            };
+            delete logApiProfile.username;
+            delete logApiProfile.encodedPassword;
+            delete logApiProfile.svcacctId;
+            delete logApiProfile.encodedSvcacctJwk;
+            delete (logApiProfile as { alias?: string }).alias;
+            connections[logApiConn] = logApiProfile;
           }
         }
         connectionsData = {
@@ -542,21 +563,37 @@ export async function getConnectionProfileByHost({
     host,
     state,
   });
-  if (profiles.length == 0) {
+  if (profiles.length === 0) {
     throw new FrodoError(`No connection profile found matching '${host}'`);
   }
+
+  // log api keys should not cause ambiguity errors
+  profiles = profiles.filter((profile) => !profile.name.startsWith('log-api|'));
+  if (profiles.length === 0) {
+    throw new FrodoError(
+      `No account connection profile found matching '${host}'`
+    );
+  }
+
   if (profiles.length > 1) {
-    const getAccType = (name) => {
+    const getAuthType = (name) => {
       if (name.startsWith('service-account|'))
-        return { acc: 'sa', base: name.slice(16) };
+        return { creds: 'sa', base: name.slice(16) };
       if (name.startsWith('admin-account|'))
-        return { acc: 'user', base: name.slice(14) };
+        return { creds: 'user', base: name.slice(14) };
       return null;
     };
-    const a = getAccType(profiles[0]?.name ?? '');
-    const b = getAccType(profiles[1]?.name ?? '');
+
+    const a = getAuthType(profiles[0]?.name ?? '');
+    const b = getAuthType(profiles[1]?.name ?? '');
+
     const matchingPair =
-      profiles.length === 2 && a && b && a.base === b.base && a.acc !== b.acc;
+      profiles.length === 2 &&
+      a &&
+      b &&
+      a.base === b.base &&
+      a.creds !== b.creds;
+
     if (matchingPair) {
       profiles = profiles.filter((p) => p.name.startsWith('service-account|'));
       printMessage({
@@ -926,29 +963,39 @@ export async function saveConnectionProfile({
     // alias is no longer supported
     delete (profile as { alias?: string }).alias;
 
-    // split mutually exclusive auth methods
+    // split mutually exclusive auth methods and log api
     const hasServiceAccount =
       Boolean(profile.svcacctId) && Boolean(profile.encodedSvcacctJwk);
+
     const hasAdminAccount =
       Boolean(profile.username) && Boolean(profile.encodedPassword);
 
+    const hasLogApiKey =
+      Boolean(profile.logApiKey) && Boolean(profile.encodedLogApiSecret);
+
     const existing = fileData.connections[name];
+
     const saConn = `service-account|${name}`;
     const adminConn = `admin-account|${name}`;
+    const logApiConn = `log-api|${name}`;
 
-    // saving both service account and admin account credentials
+    // saving service account and admin account credentials
     if (hasServiceAccount && hasAdminAccount) {
       const saOnlyProfile = { ...profile };
       delete saOnlyProfile.username;
       delete saOnlyProfile.encodedPassword;
+      delete saOnlyProfile.logApiKey;
+      delete saOnlyProfile.encodedLogApiSecret;
       fileData.connections[saConn] = saOnlyProfile;
 
       const adminOnlyProfile = { ...profile };
       delete adminOnlyProfile.svcacctId;
       delete adminOnlyProfile.encodedSvcacctJwk;
+      delete adminOnlyProfile.logApiKey;
+      delete adminOnlyProfile.encodedLogApiSecret;
       fileData.connections[adminConn] = adminOnlyProfile;
 
-      // saving service account credentials to a tenant with admin account credentials already saved
+      // saving service account credentials to a tenant with admin account already present
     } else if (
       hasServiceAccount &&
       existing?.username &&
@@ -957,14 +1004,20 @@ export async function saveConnectionProfile({
       const adminOnlyProfile = { ...existing };
       delete adminOnlyProfile.svcacctId;
       delete adminOnlyProfile.encodedSvcacctJwk;
+      delete adminOnlyProfile.logApiKey;
+      delete adminOnlyProfile.encodedLogApiSecret;
+      fileData.connections[adminConn] = adminOnlyProfile;
+
       const saOnlyProfile = { ...profile };
       delete saOnlyProfile.username;
       delete saOnlyProfile.encodedPassword;
-      fileData.connections[adminConn] = adminOnlyProfile;
+      delete saOnlyProfile.logApiKey;
+      delete saOnlyProfile.encodedLogApiSecret;
       fileData.connections[saConn] = saOnlyProfile;
+
       delete fileData.connections[name];
 
-      // saving admin account credentials to a tenant with service account credentials already saved
+      // saving admin account credentials to a tenant with service account already present
     } else if (
       hasAdminAccount &&
       existing?.svcacctId &&
@@ -973,15 +1026,35 @@ export async function saveConnectionProfile({
       const saOnlyProfile = { ...existing };
       delete saOnlyProfile.username;
       delete saOnlyProfile.encodedPassword;
+      delete saOnlyProfile.logApiKey;
+      delete saOnlyProfile.encodedLogApiSecret;
+      fileData.connections[saConn] = saOnlyProfile;
+
       const adminOnlyProfile = { ...profile };
       delete adminOnlyProfile.svcacctId;
       delete adminOnlyProfile.encodedSvcacctJwk;
-      fileData.connections[saConn] = saOnlyProfile;
+      delete adminOnlyProfile.logApiKey;
+      delete adminOnlyProfile.encodedLogApiSecret;
       fileData.connections[adminConn] = adminOnlyProfile;
       delete fileData.connections[name];
     } else {
       fileData.connections[name] = profile;
     }
+
+    // split log api creds out
+    if (hasLogApiKey) {
+      const logApiOnlyProfile = { ...profile };
+
+      delete logApiOnlyProfile.username;
+      delete logApiOnlyProfile.encodedPassword;
+      delete logApiOnlyProfile.svcacctId;
+      delete logApiOnlyProfile.encodedSvcacctJwk;
+      delete logApiOnlyProfile.isIGA;
+      delete logApiOnlyProfile.svcacctName;
+
+      fileData.connections[logApiConn] = logApiOnlyProfile;
+    }
+
     fileData.version = CURRENT_CONNECTIONS_FILE_VERSION;
 
     // sort connections by name
@@ -1054,22 +1127,44 @@ export function deleteConnectionProfile({
         return { acc: 'user', base: name.slice(14) };
       return null;
     };
-    const a = getAuthType(profiles[0]?.name ?? '');
-    const b = getAuthType(profiles[1]?.name ?? '');
+
+    // log api credentials should not cause ambiguity errors
+    const authProfiles = profiles.filter(
+      (profile) => !profile.name.startsWith('log-api|')
+    );
+
+    const a = getAuthType(authProfiles[0]?.name ?? '');
+    const b = getAuthType(authProfiles[1]?.name ?? '');
     const matching =
-      profiles.length === 2 && a && b && a.base === b.base && a.acc !== b.acc;
-    if (!matching) {
+      authProfiles.length === 2 &&
+      a &&
+      b &&
+      a.base === b.base &&
+      a.acc !== b.acc;
+    if (!matching && authProfiles.length > 1) {
       throw new AmbiguousConnError(host, profiles);
     }
-    printMessage({
-      message: `There are both service account and user account credentials associated with connection '${host}', deleting both profiles`,
-      type: 'warn',
-      state,
-    });
+
+    if (matching) {
+      printMessage({
+        message: `There are both service account and user account credentials associated with connection '${host}', deleting both profiles`,
+        type: 'warn',
+        state,
+      });
+    }
   }
+
   for (const profile of profiles) {
     delete connectionsData.connections[profile.name];
   }
+  for (const profile of profiles) {
+    if (profile.name.startsWith('service-account|')) {
+      delete connectionsData.connections[`log-api|${profile.name.slice(16)}`];
+    } else if (profile.name.startsWith('admin-account|')) {
+      delete connectionsData.connections[`log-api|${profile.name.slice(14)}`];
+    }
+  }
+
   connectionsData.version = CURRENT_CONNECTIONS_FILE_VERSION;
   fs.writeFileSync(filename, JSON.stringify(connectionsData, null, 2));
 }
