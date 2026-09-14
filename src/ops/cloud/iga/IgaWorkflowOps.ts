@@ -34,6 +34,7 @@ import {
   settlePromises,
   transformScriptArraysToStrings,
   transformScriptStringsToArrays,
+  updateRemote,
 } from '../../../utils/ExportImportUtils';
 import { mergeDeep } from '../../../utils/JsonUtils';
 import {
@@ -112,12 +113,12 @@ export type Workflow = {
    * Update workflow
    * @param {string} workflowId the workflow id
    * @param {WorkflowSkeleton} workflowData the workflow object
-   * @returns {Promise<WorkflowSkeleton>} a promise that resolves to a workflow object
+   * @returns {Promise<WorkflowSkeleton | null>} a promise that resolves to a workflow object if an update is made, or null if no update is made
    */
   updateWorkflow(
     workflowId: string,
     workflowData: WorkflowSkeleton
-  ): Promise<WorkflowSkeleton>;
+  ): Promise<WorkflowSkeleton | null>;
   /**
    * Import workflows
    * @param {string} workflowId The workflow id. If supplied, only the workflow of that id is imported.
@@ -253,7 +254,7 @@ export default (state: State): Workflow => {
     updateWorkflow(
       workflowId: string,
       workflowData: WorkflowSkeleton
-    ): Promise<WorkflowSkeleton> {
+    ): Promise<WorkflowSkeleton | null> {
       return updateWorkflow({
         workflowId,
         workflowData,
@@ -666,7 +667,7 @@ export async function exportWorkflows({
  * Update workflow
  * @param {string} workflowId the workflow id
  * @param {WorkflowSkeleton} workflowData the workflow object
- * @returns {Promise<WorkflowSkeleton>} a promise that resolves to a workflow object
+ * @returns {Promise<WorkflowSkeleton | null>} a promise that resolves to a workflow object if an update is made, or null if no update is made
  */
 export async function updateWorkflow({
   workflowId,
@@ -676,12 +677,24 @@ export async function updateWorkflow({
   workflowId: string;
   workflowData: WorkflowSkeleton;
   state: State;
-}): Promise<WorkflowSkeleton> {
+}): Promise<WorkflowSkeleton | null> {
   try {
     transformScriptArraysToStrings(workflowData);
-    return await (
-      workflowData.status === 'published' ? _publishWorkflow : putWorkflow
-    )({ workflowId, workflowData, state });
+    return await updateRemote({
+      data: workflowData,
+      type: 'workflow',
+      readFn: async () =>
+        await (
+          workflowData.status === 'published'
+            ? readPublishedWorkflow
+            : readDraftWorkflow
+        )({ workflowId, state }),
+      updateFn: async () =>
+        await (
+          workflowData.status === 'published' ? _publishWorkflow : putWorkflow
+        )({ workflowId, workflowData, state }),
+      state,
+    });
   } catch (error) {
     throw new FrodoError(`Error updating workflow '${workflowId}'`, error);
   }
@@ -712,7 +725,7 @@ export async function importWorkflows({
 }): Promise<WorkflowSkeleton[]> {
   debugMessage({ message: `IgaWorkflowOps.importWorkflows: start`, state });
   const errorCallback = getErrorCallback(resultCallback);
-  const response = [];
+  let response = [];
   // Import dependencies first
   if (options.deps) {
     // Import variables
@@ -853,16 +866,20 @@ export async function importWorkflows({
       );
     }
   }
-  // We want to delete any orphaned assignments that could be caused as a result of the import (since relevant nodes could have been deleted from the workflow(s))
-  // Note that if workflowId is undefined, then it will delete all orphaned workflow assignments
-  await deleteOrphanedRequestFormAssignments({
-    workflowId,
-    onlyWorkflow: true,
-    resultCallback: errorCallback,
-    state,
-  });
+  response = response.filter((w) => w);
+  // Only delete orphaned assignments if at least one update was made
+  if (response.length) {
+    // We want to delete any orphaned assignments that could be caused as a result of the import (since relevant nodes could have been deleted from the workflow(s))
+    // Note that if workflowId is undefined, then it will delete all orphaned workflow assignments
+    await deleteOrphanedRequestFormAssignments({
+      workflowId,
+      onlyWorkflow: true,
+      resultCallback: errorCallback,
+      state,
+    });
+  }
   debugMessage({ message: `IgaWorkflowOps.importWorkflows: end`, state });
-  return response.filter((w) => w);
+  return response;
 }
 
 /**

@@ -9,6 +9,7 @@ import {
   autoSetupPolly,
   setupPollyRecordingContext,
 } from '../../utils/AutoSetupPolly';
+import { orderedMatchRequestsBy } from '../../utils/PollyUtils';
 import { stageEmailTemplate, template1 } from './EmailTemplateSetup';
 
 export function getTestCertificationTemplate(
@@ -81,7 +82,14 @@ export function getTestCertificationTemplate(
     escalationOwner: 'managed/user/0f325c99-6965-4f45-b1e4-f9db1fa4dcf6',
     remediationDelay: 1825,
     targetFilter: {
-      type: [],
+      type: [
+        ...(type === 'entitlementComposition' && ['entitlement'] || []),
+        ...(type === 'identity' && ['accountGrant', "AccountGrant"] || []),
+        ...(type === 'entitlement' && ['entitlementGrant','ResourceGrant'] || []),
+        ...(type === 'roleMembership' && ['roleMembership'] || []),
+        ...(type === 'identityProfile' && ['user'] || []),
+        ...(type === 'roleComposition' && ['role'] || [])
+      ] as any[],
       user: {
         operator: 'EQUALS',
         operand: {
@@ -572,20 +580,6 @@ export function getTestCertificationTemplate(
       ],
     }),
   };
-  if (type === 'entitlementComposition') {
-    template.targetFilter.type.push('entitlement');
-  }
-  if (type !== 'entitlement' && type !== 'roleMembership') {
-    template.targetFilter.type.push('accountGrant');
-    template.targetFilter.type.push('AccountGrant');
-  }
-  if (type !== 'entitlement') {
-    template.targetFilter.type.push('roleMembership');
-  }
-  if (type !== 'roleMembership') {
-    template.targetFilter.type.push('entitlementGrant');
-    template.targetFilter.type.push('ResourceGrant');
-  }
   return template;
 }
 
@@ -652,6 +646,16 @@ export const certificationTemplate7: CertificationTemplateSkeleton =
     true
   );
 
+// event certification
+export const certificationTemplate8: CertificationTemplateSkeleton =
+  getTestCertificationTemplate(
+    'df115033-5ecd-4111-83ee-b16a30204570',
+    'test_certification_7',
+    'identity',
+    undefined,
+    true
+  );
+
 const allCertificationTemplates = [
   certificationTemplate1,
   certificationTemplate2,
@@ -660,6 +664,7 @@ const allCertificationTemplates = [
   certificationTemplate5,
   certificationTemplate6,
   certificationTemplate7,
+  certificationTemplate8,
 ];
 
 const oldIds = new Map<string, string>();
@@ -693,9 +698,10 @@ export async function stageCertificationTemplate(
 }
 
 export function setup() {
-  const ctx = autoSetupPolly();
+  const ctx = autoSetupPolly(orderedMatchRequestsBy());
   beforeEach(async () => {
     if (process.env.FRODO_POLLY_MODE === 'record') {
+      state.setForceUpdate(true);
       setupPollyRecordingContext(ctx, [
         {
           pathToObj: [],
@@ -726,6 +732,8 @@ export function setup() {
       await stageCertificationTemplate(certificationTemplate6, true);
       // setup certificationTemplate7 - delete if exists, then create
       await stageCertificationTemplate(certificationTemplate7, true);
+      // setup certificationTemplate8 - delete if exists, then create
+      await stageCertificationTemplate(certificationTemplate8, true);
     }
   });
   // in recording mode, delete test data after recording

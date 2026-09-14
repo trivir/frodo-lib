@@ -19,6 +19,7 @@ import {
   getIGANotificationEmailTemplateDependencies,
   getMetadata,
   getResult,
+  updateRemote,
 } from '../../../utils/ExportImportUtils';
 import {
   EmailTemplateSkeleton,
@@ -86,12 +87,12 @@ export type IgaEvent = {
    * Update event
    * @param {string} eventId The event id
    * @param {EventSkeleton} eventData The event object
-   * @returns {Promise<EventSkeleton>} A promise that resolves to a event object
+   * @returns {Promise<EventSkeleton | null>} A promise that resolves to a event object if an update is made, or null if no update is made
    */
   updateEvent(
     eventId: string,
     eventData: EventSkeleton
-  ): Promise<EventSkeleton>;
+  ): Promise<EventSkeleton | null>;
   /**
    * Import events
    * @param {string} eventId The event id. If supplied, only the event of that id is imported. Takes priority over eventName if it is provided.
@@ -188,7 +189,7 @@ export default (state: State): IgaEvent => {
     updateEvent(
       eventId: string,
       eventData: EventSkeleton
-    ): Promise<EventSkeleton> {
+    ): Promise<EventSkeleton | null> {
       return updateEvent({
         eventId,
         eventData,
@@ -512,7 +513,7 @@ export async function exportEvents({
  * Update event
  * @param {string} eventId the event id
  * @param {EventSkeleton} eventData the event object
- * @returns {Promise<EventSkeleton>} a promise that resolves to a event object
+ * @returns {Promise<EventSkeleton | null>} a promise that resolves to a event object if an update is made, or null if no update is made
  */
 export async function updateEvent({
   eventId,
@@ -522,11 +523,14 @@ export async function updateEvent({
   eventId: string;
   eventData: EventSkeleton;
   state: State;
-}): Promise<EventSkeleton> {
+}): Promise<EventSkeleton | null> {
   try {
-    return await putEvent({
-      eventId,
-      eventData,
+    return await updateRemote({
+      data: eventData,
+      type: 'event',
+      readFn: async () => await readEvent({ eventId, state }),
+      updateFn: async () => await putEvent({ eventId, eventData, state }),
+      ignoreAttributes: ['metadata'],
       state,
     });
   } catch (error) {
@@ -598,46 +602,34 @@ export async function importEvents({
   const response = [];
   for (const existingId of Object.keys(importData.event)) {
     const eventData = importData.event[existingId];
-    try {
-      const shouldNotImport =
-        (eventId && eventId !== eventData.id) ||
-        (eventName && eventName !== eventData.name);
-      if (shouldNotImport) continue;
-      let result;
-      try {
-        result = await putEvent({
-          eventId: eventData.id,
-          eventData,
+    const shouldNotImport =
+      (eventId && eventId !== eventData.id) ||
+      (eventName && eventName !== eventData.name);
+    if (shouldNotImport) continue;
+    response.push(
+      await getResult(
+        resultCallback,
+        `Error importing event '${eventData.name}'`,
+        updateRemote,
+        {
+          data: eventData,
+          type: 'event',
+          readFn: async () => await readEvent({ eventId: eventData.id, state }),
+          updateFn: async () =>
+            await putEvent({ eventId: eventData.id, eventData, state }),
+          createFn: async () => await createEvent({ eventData, state }),
+          notFoundCheck: (error) =>
+            error.response?.status === 404 &&
+            error.response?.data?.message &&
+            error.response.data.message.startsWith('Cannot find event with id'),
+          ignoreAttributes: ['metadata'],
           state,
-        });
-      } catch (error) {
-        if (
-          error.response?.status === 404 &&
-          error.response?.data?.message &&
-          error.response.data.message.startsWith('Cannot find event with id')
-        ) {
-          result = await createEvent({
-            eventData,
-            state,
-          });
-        } else {
-          throw error;
         }
-      }
-      if (resultCallback) {
-        resultCallback(undefined, result);
-      }
-      response.push(result);
-    } catch (e) {
-      if (resultCallback) {
-        resultCallback(e, undefined);
-      } else {
-        throw new FrodoError(`Error importing event '${eventData.name}'`, e);
-      }
-    }
+      )
+    );
   }
   debugMessage({ message: `IgaEventOps.importEvents: end`, state });
-  return response;
+  return response.filter((e) => e);
 }
 
 /**

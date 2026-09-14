@@ -21,6 +21,7 @@ import {
   getIGANotificationEmailTemplateDependencies,
   getMetadata,
   getResult,
+  updateRemote,
 } from '../../../utils/ExportImportUtils';
 import {
   EmailTemplateSkeleton,
@@ -97,12 +98,12 @@ export type CertificationTemplate = {
    * Update certification template
    * @param {string} templateId the certification template id
    * @param {CertificationTemplateSkeleton} templateData the certification template object
-   * @returns {Promise<CertificationTemplateSkeleton>} a promise that resolves to a certification template object
+   * @returns {Promise<CertificationTemplateSkeleton | null>} a promise that resolves to a certification template object if an update is made, or null if no update is made
    */
   updateCertificationTemplate(
     templateId: string,
     templateData: CertificationTemplateSkeleton
-  ): Promise<CertificationTemplateSkeleton>;
+  ): Promise<CertificationTemplateSkeleton | null>;
   /**
    * Import certification templates
    * @param {string} templateId The certification template id. If supplied, only the certification template of that id is imported. Takes priority over templateName if it is provided.
@@ -223,7 +224,7 @@ export default (state: State): CertificationTemplate => {
     updateCertificationTemplate(
       templateId: string,
       templateData: CertificationTemplateSkeleton
-    ): Promise<CertificationTemplateSkeleton> {
+    ): Promise<CertificationTemplateSkeleton | null> {
       return updateCertificationTemplate({
         templateId,
         templateData,
@@ -605,7 +606,7 @@ export async function exportCertificationTemplates({
  * Update certification template
  * @param {string} templateId the certification template id
  * @param {CertificationTemplateSkeleton} templateData the certification template object
- * @returns {Promise<CertificationTemplateSkeleton>} a promise that resolves to a certification template object
+ * @returns {Promise<CertificationTemplateSkeleton | null>} a promise that resolves to a certification template object if an update is made, or null if no update is made
  */
 export async function updateCertificationTemplate({
   templateId,
@@ -615,11 +616,16 @@ export async function updateCertificationTemplate({
   templateId: string;
   templateData: CertificationTemplateSkeleton;
   state: State;
-}): Promise<CertificationTemplateSkeleton> {
+}): Promise<CertificationTemplateSkeleton | null> {
   try {
-    return await putCertificationTemplate({
-      templateId,
-      templateData: templateData,
+    return await updateRemote({
+      data: templateData,
+      type: 'certification template',
+      readFn: async () =>
+        await readCertificationTemplate({ templateId, state }),
+      updateFn: async () =>
+        await putCertificationTemplate({ templateId, templateData, state }),
+      ignoreAttributes: ['metadata'],
       state,
     });
   } catch (error) {
@@ -695,52 +701,48 @@ export async function importCertificationTemplates({
   const response = [];
   for (const existingId of Object.keys(importData.certificationTemplate)) {
     const templateData = importData.certificationTemplate[existingId];
-    try {
-      const shouldNotImport =
-        (templateId && templateId !== templateData.id) ||
-        (templateName && templateName !== templateData.name);
-      if (shouldNotImport) continue;
-      let result;
-      try {
-        result = await putCertificationTemplate({
-          templateId: templateData.id,
-          templateData,
+    const shouldNotImport =
+      (templateId && templateId !== templateData.id) ||
+      (templateName && templateName !== templateData.name);
+    if (shouldNotImport) continue;
+    response.push(
+      await getResult(
+        resultCallback,
+        `Error importing certification template '${templateData.name}'`,
+        updateRemote,
+        {
+          data: templateData,
+          type: 'certification template',
+          readFn: async () =>
+            await readCertificationTemplate({
+              templateId: templateData.id,
+              state,
+            }),
+          updateFn: async () =>
+            await putCertificationTemplate({
+              templateId: templateData.id,
+              templateData,
+              state,
+            }),
+          createFn: async () =>
+            await createCertificationTemplate({ templateData, state }),
+          notFoundCheck: (error) =>
+            error.response?.status === 404 &&
+            error.response?.data?.message &&
+            error.response.data.message.startsWith(
+              'Cannot find template with id'
+            ),
+          ignoreAttributes: ['metadata'],
           state,
-        });
-      } catch (error) {
-        if (
-          error.response?.status === 404 &&
-          error.response?.data?.message &&
-          error.response.data.message.startsWith('Cannot find template with id')
-        ) {
-          result = await createCertificationTemplate({
-            templateData: templateData,
-            state,
-          });
-        } else {
-          throw error;
         }
-      }
-      if (resultCallback) {
-        resultCallback(undefined, result);
-      }
-      response.push(result);
-    } catch (e) {
-      if (resultCallback) {
-        resultCallback(e, undefined);
-      } else {
-        throw new FrodoError(
-          `Error importing certification template '${templateData.name}'`,
-          e
-        );
-      }
-    }
+      )
+    );
   }
   debugMessage({
     message: `IgaCertificationTemplateOps.importCertificationTemplates: end`,
     state,
   });
-  return response;
+  return response.filter((c) => c);
 }
 
 /**

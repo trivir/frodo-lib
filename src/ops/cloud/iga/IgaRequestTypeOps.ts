@@ -17,9 +17,9 @@ import {
   updateProgressIndicator,
 } from '../../../utils/Console';
 import {
-  getErrorCallback,
   getMetadata,
   getResult,
+  updateRemote,
 } from '../../../utils/ExportImportUtils';
 import { FrodoError } from '../../FrodoError';
 import { ExportMetaData, ResultCallback } from '../../OpsTypes';
@@ -83,12 +83,12 @@ export type RequestType = {
    * Update request type
    * @param {string} typeId the request type id
    * @param {RequestTypeSkeleton} typeData the request type object
-   * @returns {Promise<RequestTypeSkeleton>} a promise that resolves to a request type object
+   * @returns {Promise<RequestTypeSkeleton | null>} a promise that resolves to a request type object if an update is made, or null if no update is made
    */
   updateRequestType(
     typeId: string,
     typeData: RequestTypeSkeleton
-  ): Promise<RequestTypeSkeleton>;
+  ): Promise<RequestTypeSkeleton | null>;
   /**
    * Import request types
    * @param {string} typeId The request type id. If supplied, only the request type of that id is imported. Takes priority over typeName if they are all provided.
@@ -194,7 +194,7 @@ export default (state: State): RequestType => {
     updateRequestType(
       typeId: string,
       typeData: RequestTypeSkeleton
-    ): Promise<RequestTypeSkeleton> {
+    ): Promise<RequestTypeSkeleton | null> {
       return updateRequestType({
         typeId,
         typeData,
@@ -519,7 +519,7 @@ export async function exportRequestTypes({
  * Update request type
  * @param {string} typeId the request type id
  * @param {RequestTypeSkeleton} typeData the request type object
- * @returns {Promise<RequestTypeSkeleton>} a promise that resolves to a request type object
+ * @returns {Promise<RequestTypeSkeleton | null>} a promise that resolves to a request type object if an update is made, or null if no update is made
  */
 export async function updateRequestType({
   typeId,
@@ -529,12 +529,20 @@ export async function updateRequestType({
   typeId: string;
   typeData: RequestTypeSkeleton;
   state: State;
-}): Promise<RequestTypeSkeleton> {
+}): Promise<RequestTypeSkeleton | null> {
   try {
     typeData = prepareRequestTypeForImport(typeData);
-    return await putRequestType({
-      typeId,
-      typeData,
+    return await updateRemote({
+      data: typeData,
+      type: 'request type',
+      readFn: async () => await readRequestType({ typeId, state }),
+      updateFn: async () =>
+        await putRequestType({
+          typeId,
+          typeData,
+          state,
+        }),
+      ignoreAttributes: ['metadata'],
       state,
     });
   } catch (error) {
@@ -578,93 +586,79 @@ export async function importRequestTypes({
       (typeName && typeName !== requestType.displayName) ||
       (!typeId && !typeName && options.onlyCustom && !requestType.custom);
     if (shouldNotImport) continue;
-    let result;
-    if (requestType.custom) {
-      // createRequestType can also be used as updateRequestType to replace existing configuration, so we use this method instead since updateRequestType can't be used to create configuration
-      result = await getResult(
+    response.push(
+      await getResult(
         resultCallback,
         `Error importing request type ${requestType.displayName}`,
-        createRequestType,
+        updateRemote,
         {
-          typeData: requestType,
-          state,
-        }
-      );
-    } else if (!options.onlyCustom) {
-      // Check if the request type exists or not first. If not, import it before we attempt to patch it
-      try {
-        await getRequestType({
-          typeId: requestType.id,
-          state,
-        });
-      } catch (e) {
-        if (
-          e.response?.status === 404 &&
-          e.response?.data?.message === "Request Type Id doesn't exist"
-        ) {
-          await getResult(
-            getErrorCallback(resultCallback),
-            `Error creating request type ${requestType.displayName}`,
-            createRequestType,
-            {
+          data: requestType,
+          type: 'request type',
+          readFn: async () =>
+            await readRequestType({
+              typeId: requestType.id,
+              state,
+            }),
+          updateFn: async () => {
+            if (requestType.custom) {
+              return await createRequestType({
+                typeData: requestType,
+                state,
+              });
+            }
+            const ops: PatchOperationInterface[] = [
+              // For some reason the UI will patch customValidation to null during an update on a non-custom request type, so we do the same here just to be safe
+              {
+                operation: 'replace',
+                field: '/customValidation',
+                value: null,
+              },
+              // We want to remove any custom schema if applicable since it's not a custom request type
+              {
+                operation: 'remove',
+                field: '/schemas/custom',
+              },
+              // We want to set the custom field to false since it's not a custom request type (removing the field doesn't work)
+              {
+                operation: 'replace',
+                field: '/custom',
+                value: false,
+              },
+            ];
+            if (requestType.workflow?.id) {
+              ops.push({
+                operation: 'replace',
+                field: '/workflow/id',
+                value: requestType.workflow.id,
+              });
+            }
+            return await patchRequestType({
+              typeId: requestType.id,
+              ops,
+              // Must use low level api to patch non-custom request types
+              useLowLevelApi: true,
+              state,
+            });
+          },
+          createFn: async () =>
+            await createRequestType({
               typeData: requestType,
               state,
-            }
-          );
-        } else if (resultCallback) {
-          resultCallback(e);
-        } else {
-          throw new FrodoError(
-            `Error reading request type ${requestType.displayName}`,
-            e
-          );
-        }
-      }
-      const ops: PatchOperationInterface[] = [
-        // For some reason the UI will patch customValidation to null during an update on a non-custom request type, so we do the same here just to be safe
-        {
-          operation: 'replace',
-          field: '/customValidation',
-          value: null,
-        },
-        // We want to remove any custom schema if applicable since it's not a custom request type
-        {
-          operation: 'remove',
-          field: '/schemas/custom',
-        },
-        // We want to set the custom field to false since it's not a custom request type (removing the field doesn't work)
-        {
-          operation: 'replace',
-          field: '/custom',
-          value: false,
-        },
-      ];
-      if (requestType.workflow?.id) {
-        ops.push({
-          operation: 'replace',
-          field: '/workflow/id',
-          value: requestType.workflow.id,
-        });
-      }
-      result = await getResult(
-        resultCallback,
-        `Error importing request type ${requestType.displayName}`,
-        patchRequestType,
-        {
-          typeId: requestType.id,
-          ops,
-          // Must use low level api to patch non-custom request types
-          useLowLevelApi: true,
+            }),
+          notFoundCheck: (error) =>
+            // Need to check if it's non custom because, if it is custom, it should return false since it already attempted a create.
+            !requestType.custom &&
+            error.response?.status === 404 &&
+            error.response?.data?.message &&
+            error.response.data.message === "Request Type Id doesn't exist",
+          ignoreAttributes: ['metadata'],
           state,
         }
-      );
-    }
-    if (result) {
-      response.push(result);
-    }
+      )
+    );
   }
   debugMessage({ message: `IgaRequestTypeOps.importRequestTypes: end`, state });
-  return response;
+  return response.filter((t) => t);
 }
 
 /**

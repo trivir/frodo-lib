@@ -25,6 +25,7 @@ import {
   getResult,
   transformScriptArraysToStrings,
   transformScriptStringsToArrays,
+  updateRemote,
 } from '../../../utils/ExportImportUtils';
 import { queryApplications } from '../../ApplicationOps';
 import { FrodoError } from '../../FrodoError';
@@ -84,12 +85,12 @@ export type RequestForm = {
    * Update request form
    * @param {string} formId the request form id
    * @param {RequestFormSkeleton} formData the request form object
-   * @returns {Promise<RequestFormSkeleton>} a promise that resolves to a request form object
+   * @returns {Promise<RequestFormSkeleton | null>} a promise that resolves to a request form object if an update is made, or null if no update is made
    */
   updateRequestForm(
     formId: string,
     formData: RequestFormSkeleton
-  ): Promise<RequestFormSkeleton>;
+  ): Promise<RequestFormSkeleton | null>;
   /**
    * Import request forms
    * @param {string} formId The request form id. If supplied, only the request form of that id is imported. Takes priority over formName if it is provided.
@@ -198,7 +199,7 @@ export default (state: State): RequestForm => {
     updateRequestForm(
       formId: string,
       formData: RequestFormSkeleton
-    ): Promise<RequestFormSkeleton> {
+    ): Promise<RequestFormSkeleton | null> {
       return updateRequestForm({
         formId,
         formData,
@@ -524,7 +525,7 @@ export async function exportRequestForms({
  * Update request form
  * @param {string} formId the request form id
  * @param {RequestFormSkeleton} formData the request form object
- * @returns {Promise<RequestFormSkeleton>} a promise that resolves to a request form object
+ * @returns {Promise<RequestFormSkeleton | null>} a promise that resolves to a request form object if an update is made, or null if no update is made
  */
 export async function updateRequestForm({
   formId,
@@ -534,14 +535,18 @@ export async function updateRequestForm({
   formId: string;
   formData: RequestFormSkeleton;
   state: State;
-}): Promise<RequestFormSkeleton> {
+}): Promise<RequestFormSkeleton | null> {
   try {
     const formDataCopy = { ...formData };
     delete formDataCopy.assignments;
     transformScriptArraysToStrings(formDataCopy.form);
-    return await putRequestForm({
-      formId,
-      formData: formDataCopy,
+    return await updateRemote({
+      data: formDataCopy,
+      type: 'request form',
+      readFn: async () => await readRequestForm({ formId, state }),
+      updateFn: async () =>
+        await putRequestForm({ formId, formData: formDataCopy, state }),
+      ignoreAttributes: ['metadata'],
       state,
     });
   } catch (error) {
@@ -605,7 +610,7 @@ export async function importRequestForms({
     const shouldNotImport =
       (formId && formId !== form.id) || (formName && formName !== form.name);
     if (shouldNotImport) continue;
-    const result = await getResult(
+    let result = await getResult(
       resultCallback,
       `Error importing request form ${form.name}`,
       updateRequestForm,
@@ -615,23 +620,44 @@ export async function importRequestForms({
         state,
       }
     );
-    if (!result) continue;
     try {
       // Import assignments
       if (form.assignments && form.assignments.length) {
+        const currentAssignments = state.getForceUpdate()
+          ? []
+          : await getRequestFormAssignments({
+              formId: form.id,
+              state,
+            });
+        let updated = false;
         for (const assignment of form.assignments) {
+          if (
+            currentAssignments.find(
+              (a) =>
+                a.objectId === assignment.objectId &&
+                a.formId === assignment.formId
+            )
+          )
+            continue;
+          updated = true;
           await assignRequestForm({
             formId: assignment.formId,
             objectId: assignment.objectId,
             state,
           });
         }
+        // If assignments are updated, we still want to return the request form
+        if (updated && !result) {
+          result = await readRequestForm({ formId: form.id, state });
+        }
       }
-      // Get all assignments in case there are others not included in the import
-      result.assignments = await getRequestFormAssignments({
-        formId: form.id,
-        state,
-      });
+      if (result) {
+        // Get all assignments in case there are others not included in the import
+        result.assignments = await getRequestFormAssignments({
+          formId: form.id,
+          state,
+        });
+      }
     } catch (e) {
       if (resultCallback) {
         resultCallback(e, undefined);
@@ -645,7 +671,7 @@ export async function importRequestForms({
     response.push(result);
   }
   debugMessage({ message: `IgaRequestFormOps.importRequestForms: end`, state });
-  return response;
+  return response.filter((f) => f);
 }
 
 /**

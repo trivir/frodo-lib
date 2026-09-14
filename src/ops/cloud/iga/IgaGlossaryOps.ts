@@ -14,7 +14,11 @@ import {
   stopProgressIndicator,
   updateProgressIndicator,
 } from '../../../utils/Console';
-import { getMetadata, getResult } from '../../../utils/ExportImportUtils';
+import {
+  getMetadata,
+  getResult,
+  updateRemote,
+} from '../../../utils/ExportImportUtils';
 import { FrodoError } from '../../FrodoError';
 import { ExportMetaData, ResultCallback } from '../../OpsTypes';
 
@@ -79,13 +83,13 @@ export type Glossary = {
   /**
    * Update glossary schema
    * @param {string} glossaryId the glossary schema id
-   * @param {GlossarySchemaItemSkeleton} glossarySchemaData the glossary schema object
-   * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
+   * @param {GlossarySchemaItemSkeleton<any>} glossarySchemaData the glossary schema object
+   * @returns {Promise<GlossarySchemaItemSkeleton<any> | null>} a promise that resolves to a glossary schema object if an update is made, or null if no update is made
    */
   updateGlossarySchema(
     glossaryId: string,
     glossarySchemaData: GlossarySchemaItemSkeleton<any>
-  ): Promise<GlossarySchemaItemSkeleton<any>>;
+  ): Promise<GlossarySchemaItemSkeleton<any> | null>;
   /**
    * Import glossary schemas
    * @param {string} glossaryId The glossary schema id.  If supplied, only the glossary schema of that id is imported. Takes priority over glossaryName/objectType if they are all provided.
@@ -191,7 +195,7 @@ export default (state: State): Glossary => {
     updateGlossarySchema(
       glossaryId: string,
       glossarySchemaData: GlossarySchemaItemSkeleton<any>
-    ): Promise<GlossarySchemaItemSkeleton<any>> {
+    ): Promise<GlossarySchemaItemSkeleton<any> | null> {
       return updateGlossarySchema({
         glossaryId,
         glossarySchemaData,
@@ -530,8 +534,8 @@ export async function exportGlossarySchemas({
 /**
  * Update glossary schema
  * @param {string} glossaryId the glossary schema id
- * @param {GlossarySchemaItemSkeleton} glossarySchemaData the glossary schema object
- * @returns {Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object
+ * @param {GlossarySchemaItemSkeleton<any>} glossarySchemaData the glossary schema object
+ * @returns {Promise<GlossarySchemaItemSkeleton<any> | null>} a promise that resolves to a glossary schema object if an update is made, or null if no update is made
  */
 export async function updateGlossarySchema({
   glossaryId,
@@ -541,11 +545,15 @@ export async function updateGlossarySchema({
   glossaryId: string;
   glossarySchemaData: GlossarySchemaItemSkeleton<any>;
   state: State;
-}): Promise<GlossarySchemaItemSkeleton<any>> {
+}): Promise<GlossarySchemaItemSkeleton<any> | null> {
   try {
-    return await putGlossarySchema({
-      glossaryId,
-      glossarySchemaData,
+    return await updateRemote({
+      data: glossarySchemaData,
+      type: 'glossary schema',
+      readFn: async () => await readGlossarySchema({ glossaryId, state }),
+      updateFn: async () =>
+        await putGlossarySchema({ glossaryId, glossarySchemaData, state }),
+      ignoreAttributes: ['metadata'],
       state,
     });
   } catch (error) {
@@ -589,55 +597,49 @@ export async function importGlossarySchemas({
   });
   const response = [];
   for (const existingId of Object.keys(importData.glossarySchema)) {
-    try {
-      const glossarySchema = importData.glossarySchema[existingId];
-      const shouldNotImport =
-        (glossaryId && glossaryId !== glossarySchema.id) ||
-        (glossaryName &&
-          objectType &&
-          (glossaryName !== glossarySchema.name ||
-            objectType !== glossarySchema.objectType)) ||
-        (!options.includeInternal && glossarySchema.isInternal === true);
-      if (shouldNotImport) continue;
-      let result;
-      try {
-        result = await putGlossarySchema({
-          glossaryId: glossarySchema.id,
-          glossarySchemaData: glossarySchema,
+    const glossarySchema = importData.glossarySchema[existingId];
+    const shouldNotImport =
+      (glossaryId && glossaryId !== glossarySchema.id) ||
+      (glossaryName &&
+        objectType &&
+        (glossaryName !== glossarySchema.name ||
+          objectType !== glossarySchema.objectType)) ||
+      (!options.includeInternal && glossarySchema.isInternal === true);
+    if (shouldNotImport) continue;
+    response.push(
+      await getResult(
+        resultCallback,
+        `Error importing glossary schema '${importData.glossarySchema[existingId].name}'`,
+        updateRemote,
+        {
+          data: glossarySchema,
+          type: 'glossary schema',
+          readFn: async () =>
+            await readGlossarySchema({ glossaryId: glossarySchema.id, state }),
+          updateFn: async () =>
+            await putGlossarySchema({
+              glossaryId: glossarySchema.id,
+              glossarySchemaData: glossarySchema,
+              state,
+            }),
+          createFn: async () =>
+            await createGlossarySchema({
+              glossarySchemaData: glossarySchema,
+              state,
+            }),
+          notFoundCheck: (error) =>
+            // Due to bug in AIC, we get a 500 error when attempting to update non-existing glossary schema as opposed to an expected 200, 201, or 404
+            error.response?.status === 500 &&
+            error.response?.data?.message ===
+              `Cannot read properties of undefined (reading '_source')`,
+          ignoreAttributes: ['metadata'],
           state,
-        });
-      } catch (error) {
-        // Due to bug in AIC, PUT does not allow for creating schema, so if we run into a scenario where the schema doesn't exist, we will attempt to create it
-        if (
-          error.response?.status === 500 &&
-          error.response?.data?.message ===
-            `Cannot read properties of undefined (reading '_source')`
-        ) {
-          result = await createGlossarySchema({
-            glossarySchemaData: glossarySchema,
-            state,
-          });
-        } else {
-          throw error;
         }
-      }
-      if (resultCallback) {
-        resultCallback(undefined, result);
-      }
-      response.push(result);
-    } catch (e) {
-      if (resultCallback) {
-        resultCallback(e, undefined);
-      } else {
-        throw new FrodoError(
-          `Error importing glossary schema '${importData.glossarySchema[existingId].name}'`,
-          e
-        );
-      }
-    }
+      )
+    );
   }
   debugMessage({ message: `IgaGlossaryOps.importGlossarySchemas: end`, state });
-  return response;
+  return response.filter((g) => g);
 }
 
 /**

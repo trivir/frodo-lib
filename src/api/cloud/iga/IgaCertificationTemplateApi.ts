@@ -23,7 +23,9 @@ export type CertificationTemplateType =
   | 'entitlementComposition'
   | 'roleMembership'
   | 'role-definition'
-  | 'application';
+  | 'application'
+  | 'identityProfile'
+  | 'roleComposition';
 
 export interface UserInfo {
   id: string;
@@ -161,6 +163,8 @@ export interface CertificationTemplateSkeleton {
       | 'AccountGrant'
       | 'ResourceGrant'
       | 'entitlement'
+      | 'user'
+      | 'role'
     )[];
     user?: SearchTargetFilterOperation;
     application?: SearchTargetFilterOperation;

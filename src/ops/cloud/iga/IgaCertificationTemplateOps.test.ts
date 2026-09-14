@@ -47,6 +47,7 @@ import * as IgaCertificationTemplateOps from './IgaCertificationTemplateOps';
 import * as TestData from '../../../test/setup/IgaCertificationTemplateSetup';
 import { snapshotResultCallback } from '../../../test/utils/TestUtils';
 import { template1 } from '../../../test/setup/EmailTemplateSetup';
+import { cloneDeep } from '../../../utils/JsonUtils';
 
 describe('IgaCertificationTemplateOps', () => {
 
@@ -250,6 +251,24 @@ describe('IgaCertificationTemplateOps', () => {
         });
         expect(response).toMatchSnapshot();
       });
+
+      test(`2: Do not update certification template if no changes`, async () => {
+        state.setForceUpdate(false);
+        let response = await IgaCertificationTemplateOps.updateCertificationTemplate({
+          templateId: TestData.certificationTemplate8.id,
+          templateData: TestData.certificationTemplate8,
+          state,
+        });
+        expect(response).toBeNull();
+        response = await IgaCertificationTemplateOps.updateCertificationTemplate({
+          templateId: TestData.certificationTemplate8.id,
+          templateData: {...TestData.certificationTemplate8, description: "test new description"},
+          state,
+        });
+        expect(response).not.toBeNull();
+        expect(response.description).toBe("test new description");
+        expect(response).toMatchSnapshot();
+      });
     });
 
     describe('importCertificationTemplates()', () => {
@@ -317,6 +336,49 @@ describe('IgaCertificationTemplateOps', () => {
           resultCallback: snapshotResultCallback,
           state,
         });
+        expect(response).toMatchSnapshot();
+      });
+
+      test('5: Import all changed templates', async () => {
+        state.setForceUpdate(false);
+        await TestData.stageCertificationTemplate(TestData.certificationTemplate3);
+        await TestData.stageCertificationTemplate(TestData.certificationTemplate4);
+        let response = await IgaCertificationTemplateOps.importCertificationTemplates({
+          importData,
+          options: {
+            deps: false
+          },
+          resultCallback: snapshotResultCallback,
+          state,
+        });
+        // Should have two newly created ones, but template5 already exists with no changes
+        expect(response.length).toBe(2);
+        const template3 = response.find(t => t.name === TestData.certificationTemplate3.name);
+        expect(template3).toBeTruthy();
+        const template4 = response.find(t => t.name === TestData.certificationTemplate4.name);
+        expect(template4).toBeTruthy();
+        expect(response).toMatchSnapshot();
+        // Setup import so that only template4 is updated in the next import
+        const updatedImportData = cloneDeep(importData);
+        updatedImportData.certificationTemplate[TestData.certificationTemplate3.id].id = template3.id;
+        updatedImportData.certificationTemplate[TestData.certificationTemplate3.id].scheduleId = template3.scheduleId;
+        delete updatedImportData.certificationTemplate[TestData.certificationTemplate3.id].schedule;
+        updatedImportData.certificationTemplate[TestData.certificationTemplate4.id].id = template4.id;
+        updatedImportData.certificationTemplate[TestData.certificationTemplate4.id].scheduleId = template4.scheduleId;
+        delete updatedImportData.certificationTemplate[TestData.certificationTemplate4.id].schedule;
+        updatedImportData.certificationTemplate[TestData.certificationTemplate4.id].description = "test new description";
+        response = await IgaCertificationTemplateOps.importCertificationTemplates({
+          importData: updatedImportData,
+          options: {
+            deps: false
+          },
+          resultCallback: snapshotResultCallback,
+          state,
+        });
+        // Only 1 change for the new description that was added
+        expect(response.length).toBe(1);
+        expect(response[0].name).toBe(TestData.certificationTemplate4.name);
+        expect(response[0].description).toBe("test new description");
         expect(response).toMatchSnapshot();
       });
     });
