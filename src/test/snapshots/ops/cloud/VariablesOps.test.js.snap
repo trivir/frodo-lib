@@ -278,6 +278,18 @@ exports[`VariablesOps importVariable() 4: Import first variable7 (decoded) 1`] =
 }
 `;
 
+exports[`VariablesOps importVariable() 5: Should not import variable if no changes were made 1`] = `
+{
+  "_id": "esv-frodo-test-variable-20",
+  "description": "description20",
+  "expressionType": "string",
+  "lastChangeDate": "2026-09-10T15:36:31.170917449Z",
+  "lastChangedBy": "Frodo-SA-1783448612033",
+  "loaded": false,
+  "valueBase64": "dGVzdCBuZXcgdmFsdWU=",
+}
+`;
+
 exports[`VariablesOps importVariables() 1: Import all variables 1`] = `
 [
   {
@@ -320,6 +332,20 @@ exports[`VariablesOps importVariables() 2: Import all variables (decoded) 1`] = 
     "lastChangedBy": "Frodo-SA-1701393386423",
     "loaded": false,
     "valueBase64": "dmFsdWUxMQ==",
+  },
+]
+`;
+
+exports[`VariablesOps importVariables() 3: Should import all changed variables 1`] = `
+[
+  {
+    "_id": "esv-frodo-test-variable-2",
+    "description": "description2",
+    "expressionType": "int",
+    "lastChangeDate": "2026-09-10T15:47:41.064458927Z",
+    "lastChangedBy": "Frodo-SA-1783448612033",
+    "loaded": false,
+    "valueBase64": "NDU=",
   },
 ]
 `;
@@ -538,6 +564,18 @@ exports[`VariablesOps updateVariable() 4: Update/create non-existing variable17 
   "lastChangedBy": "Frodo-SA-1701393386423",
   "loaded": false,
   "valueBase64": "dmFsdWUxNw==",
+}
+`;
+
+exports[`VariablesOps updateVariable() 5: Should not update variable if no changes are made 1`] = `
+{
+  "_id": "esv-frodo-test-variable-1",
+  "description": "description1",
+  "expressionType": "string",
+  "lastChangeDate": "2026-09-10T15:36:34.026277185Z",
+  "lastChangedBy": "Frodo-SA-1783448612033",
+  "loaded": false,
+  "valueBase64": "dGVzdCBuZXcgdmFsdWU=",
 }
 `;
 

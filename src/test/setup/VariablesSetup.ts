@@ -140,6 +140,13 @@ export const variable19 = createTestVariable({
   expressionType: 'string',
 });
 
+export const variable20 = createTestVariable({
+  id: 'esv-frodo-test-variable-20',
+  value: 'value20',
+  description: 'description20',
+  expressionType: 'string',
+});
+
 function createTestVariable({
   id,
   description,
@@ -203,6 +210,7 @@ export async function setup() {
 
   // filter out secrets when recording
   beforeEach(async () => {
+    state.setForceUpdate(true);
     if (process.env.FRODO_POLLY_MODE === 'record') {
       ctx.polly.server.any().on('beforePersist', (_req, recording) => {
         filterRecording(recording);
@@ -232,6 +240,7 @@ export async function setup() {
       await stageVariable(variable17, false);
       await stageVariable(variable18);
       await stageVariable(variable19);
+      await stageVariable(variable20);
     }
   });
 
@@ -257,6 +266,7 @@ export async function setup() {
       await stageVariable(variable17, false);
       await stageVariable(variable18, false);
       await stageVariable(variable19, false);
+      await stageVariable(variable20, false);
     }
   });
 }
