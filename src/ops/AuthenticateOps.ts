@@ -1852,7 +1852,11 @@ export async function getTokens({
       state,
     });
     if (usingConnectionProfile) {
-      saveConnectionProfile({ host: state.getHost(), state });
+      saveConnectionProfile({
+        name: state.getName(),
+        host: state.getHost(),
+        state,
+      });
     }
     return withEscalation(tokens);
   }

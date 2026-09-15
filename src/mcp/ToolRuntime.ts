@@ -772,7 +772,7 @@ export function createToolRuntime(
         throw error;
       }
       try {
-        assertRequiredCredential(descriptor, scopedFrodo);
+        await assertRequiredCredential(descriptor, scopedFrodo);
       } catch (error) {
         emitRuntimeTrace(request, options, {
           event: 'credential-rejection',
@@ -952,10 +952,10 @@ function assertDeploymentCompatibility(
  * with an actionable message is preferable to letting the underlying HTTP
  * call surface a bare 401.
  */
-function assertRequiredCredential(
+async function assertRequiredCredential(
   descriptor: McpCapabilityDescriptor,
   scopedFrodo: Frodo
-): void {
+): Promise<void> {
   if (!descriptor.requiredCredential) {
     return;
   }
@@ -964,6 +964,21 @@ function assertRequiredCredential(
     const state = scopedFrodo.state;
     if (state?.getLogApiKey() && state?.getLogApiSecret()) {
       return;
+    }
+    // resolve from apiKeys bucket when not already on state
+    if (state?.getHost() && scopedFrodo.conn?.getApiKeyProfileByHost) {
+      try {
+        const apiKeyProfile = await scopedFrodo.conn.getApiKeyProfileByHost(
+          state.getHost()
+        );
+        if (apiKeyProfile?.logApiKey && apiKeyProfile?.logApiSecret) {
+          state.setLogApiKey(apiKeyProfile.logApiKey);
+          state.setLogApiSecret(apiKeyProfile.logApiSecret);
+          return;
+        }
+      } catch {
+        // fall through to error below
+      }
     }
     throw new FrodoError(
       `MCP runtime error: descriptor '${descriptor.id}' requires a Log API key/secret, which is not configured for this connection. Add logApiKey/logApiSecret to the connection profile (see 'cloud.log.createLogApiKey' to provision one), or set the FRODO_LOG_KEY/FRODO_LOG_SECRET environment variables.`

@@ -1191,6 +1191,16 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "ConnectionProfile",
+    methodName: "getApiKeyProfileByHost",
+    signature: "getApiKeyProfileByHost(host: string): Promise<ConnectionProfileInterface>",
+    description: "Get log API key profile by host",
+    params: [
+      { name: "host", type: "String", description: "connection name, host url, or unique substring of an api key name", required: true },
+    ],
+    returns: "{Object} api key profile or null",
+  },
+  {
+    typeName: "ConnectionProfile",
     methodName: "getConnectionProfile",
     signature: "getConnectionProfile(): Promise<ConnectionProfileInterface>",
     description: "Get connection profile",
