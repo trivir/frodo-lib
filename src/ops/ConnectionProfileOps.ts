@@ -413,7 +413,9 @@ export async function initConnectionProfiles({ state }: { state: State }) {
           (key) => key !== 'version' && key !== 'logins' && key !== 'apiKeys'
         );
         for (const key of rootProfileKeys) {
-          const profile = connectionsData[key] as SecureConnectionProfileInterface & {
+          const profile = connectionsData[
+            key
+          ] as SecureConnectionProfileInterface & {
             alias?: string;
           };
           if (typeof profile !== 'object' || !profile) continue;
@@ -1115,13 +1117,13 @@ export async function saveConnectionProfile({
       fileData.logins[adminConn] = adminOnlyProfile;
       delete fileData.logins[name];
     } else {
-      // login entries never carry log API fields
+      // login entries do not keep log api fields
       delete profile.logApiKey;
       delete profile.encodedLogApiSecret;
       fileData.logins[name] = profile;
     }
 
-    // api keys are stored separately, keyed by tenant URL
+    // api keys are stored separately
     if (hasLogApiKey) {
       const logApiOnlyProfile: SecureConnectionProfileInterface = {
         tenant: host,
@@ -1324,6 +1326,8 @@ export async function addNewServiceAccount({
     });
     state.setServiceAccountId(sa._id);
     state.setServiceAccountJwk(jwkPrivate);
+    state.setUsername(null);
+    state.setPassword(null);
     debugMessage({
       message: `ConnectionProfileOps.addNewServiceAccount: end`,
       state,
