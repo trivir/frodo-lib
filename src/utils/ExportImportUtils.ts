@@ -498,7 +498,7 @@ export function saveJsonToFile({
     );
   }
   if (keysToDelete.length) {
-    deleteDeepByKeys(exportData, keysToDelete);
+    deleteDeepByKeys(exportData, keysToDelete, true);
   }
   return saveTextToFile({
     data: stringify(exportData),

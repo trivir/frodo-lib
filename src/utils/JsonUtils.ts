@@ -8,12 +8,12 @@ export type Json = {
    */
   isEqualJson(obj1: object, obj2: object, ignoreKeys?: string[]): boolean;
   /**
-   * Deep delete keys and their values from an input object. If a key in object contains substring, the key an its value is deleted.
+   * Deep delete keys and their values from an input object. If a key in object contains value, the key an its value is deleted.
    * @param {Object} object input object that needs keys removed
-   * @param {String} substring substring to search for in key
+   * @param {String} value value to search for in key
    * @returns the modified object without the matching keys and their values
    */
-  deleteDeepByKey(object: any, substring: any): any;
+  deleteDeepByKey(object: any, value: any): any;
   /**
    * Deep clone object
    * @param {any} obj object to deep clone
@@ -55,8 +55,8 @@ export default (): Json => {
     ): boolean {
       return isEqualJson(obj1, obj2, ignoreKeys);
     },
-    deleteDeepByKey(object, substring) {
-      return deleteDeepByKey(object, substring);
+    deleteDeepByKey(object, value) {
+      return deleteDeepByKey(object, value);
     },
     cloneDeep(obj: any): any {
       return JSON.parse(JSON.stringify(obj));
@@ -120,33 +120,34 @@ export function isEqualJson(
 }
 
 /**
- * Deep delete keys and their values from an input object. If a key in object contains or equals substring, the key and its value is deleted.
+ * Deep delete keys and their values from an input object. If a key in object contains or equals value, the key and its value is deleted.
  * @param {Object} object input object that needs keys removed
- * @param {String} substring substring to search for in key
+ * @param {String} value value to search for in key
  * @returns the modified object without the matching keys and their values
  */
-export function deleteDeepByKey(object: any, substring: string) {
-  return deleteDeepByKeys(object, [substring]);
+export function deleteDeepByKey(object: any, value: string) {
+  return deleteDeepByKeys(object, [value], false);
 }
 
 /**
- * Deep delete keys and their values from an input object. If a key in object contains or equals a substring of any provided, the key and its value is deleted.
+ * Deep delete keys and their values from an input object. If a key in object contains or equals a value of any provided, the key and its value is deleted.
  * @param {Object} object input object that needs keys removed
- * @param {String[]} substrings substrings to search for in key
+ * @param {String[]} values values to search for in key
+ * @param {boolean} matchString true to match values exactly, false uses values as substrings (default: false)
  * @returns the modified object without the matching keys and their values
  */
-export function deleteDeepByKeys(object: any, substrings: string[]) {
+export function deleteDeepByKeys(object: any, values: string[], matchString: boolean) {
   const obj = object;
   const keys = Object.keys(obj);
   for (const key of keys) {
-    for (const substring of substrings) {
-      if (key.indexOf(substring) > -1) {
+    for (const value of values) {
+      if (matchString ? key === value : key.indexOf(value) > -1) {
         delete obj[key];
         break;
       }
     }
     if (Object(obj[key]) === obj[key]) {
-      obj[key] = deleteDeepByKeys(obj[key], substrings);
+      obj[key] = deleteDeepByKeys(obj[key], values, matchString);
     }
   }
   return obj;
