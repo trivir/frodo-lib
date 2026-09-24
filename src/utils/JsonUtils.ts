@@ -136,7 +136,11 @@ export function deleteDeepByKey(object: any, value: string) {
  * @param {boolean} matchString true to match values exactly, false uses values as substrings (default: false)
  * @returns the modified object without the matching keys and their values
  */
-export function deleteDeepByKeys(object: any, values: string[], matchString: boolean) {
+export function deleteDeepByKeys(
+  object: any,
+  values: string[],
+  matchString: boolean
+) {
   const obj = object;
   const keys = Object.keys(obj);
   for (const key of keys) {
