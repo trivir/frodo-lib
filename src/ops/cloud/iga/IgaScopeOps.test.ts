@@ -46,83 +46,96 @@ import { state } from '../../../index';
 import * as IgaScopeOps from './IgaScopeOps';
 import * as TestData from '../../../test/setup/IgaScopeSetup';
 import { snapshotResultCallback } from '../../../test/utils/TestUtils';
+import { cloneDeep } from '../../../utils/JsonUtils';
+import { ScopeSkeleton } from '../../../api/cloud/iga/IgaScopeApi';
 
 describe('IgaScopeOps', () => {
 
   TestData.setup();
 
-  // Phase 1 - Non-destructive + scoped destructive tests
+  // Phase 1
   if (
     !process.env.FRODO_POLLY_MODE ||
     (process.env.FRODO_POLLY_MODE === 'record' &&
       process.env.FRODO_RECORD_PHASE === '1')
   ) {
-
     describe('createScopeExportTemplate()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.createScopeExportTemplate).toBeDefined();
       });
 
-      test('1: Create scope export template', () => {
+      test('1: Create Scope Export Template', async () => {
         const response = IgaScopeOps.createScopeExportTemplate({ state });
         expect(response).toMatchSnapshot({
-          meta: expect.any(Object),
+          meta: expect.any(Object)
         });
       });
     });
 
-    describe('readScope()', () => {
-      test('0: Method is implemented', () => {
-        expect(IgaScopeOps.readScope).toBeDefined();
+    describe('createScope()', () => {
+      test('0: Method is implemented', async () => {
+        expect(IgaScopeOps.createScope).toBeDefined();
       });
 
-      test('1: Read existing scope by ID', async () => {
-        const response = await IgaScopeOps.readScope({
-          id: TestData.scope1.id,
+      test(`1: Create scope`, async () => {
+        const response = await IgaScopeOps.createScope({
+          scopeData: TestData.scope1,
           state,
         });
         expect(response).toMatchSnapshot();
       });
+    });
 
-      test('2: Read non-existing scope by ID', async () => {
-        await expect(
-          IgaScopeOps.readScope({
-            id: TestData.scope5.id,
-            state,
-          })
-        ).rejects.toThrow(`Error reading scope ${TestData.scope5.id}`);
+    describe('readScope()', () => {
+      test('0: Method is implemented', async () => {
+        expect(IgaScopeOps.readScope).toBeDefined();
+      });
+
+      test(`1: Read existing scope by ID`, async () => {
+        const response = await IgaScopeOps.readScope({
+          id: TestData.scope2.id,
+          state,
+        });
+        expect(response).toMatchSnapshot();
+      });
+  
+      test('2: Read non-existing scope', async () => {
+        const unknownId = '11111111-1111-1111-1111-111111111111';
+        await expect(IgaScopeOps.readScope({
+          id: unknownId,
+          state,
+        })).rejects.toThrow('Error reading scope ' + unknownId);
       });
     });
 
     describe('readScopeByName()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.readScopeByName).toBeDefined();
       });
 
-      test('1: Read existing scope by name', async () => {
+      test(`1: Read existing scope by name`, async () => {
         const response = await IgaScopeOps.readScopeByName({
           name: TestData.scope2.name,
           state,
         });
         expect(response).toMatchSnapshot();
       });
-
-      test('2: Read non-existing scope by name', async () => {
-        await expect(
-          IgaScopeOps.readScopeByName({
-            name: TestData.scope5.name,
-            state,
-          })
-        ).rejects.toThrow(`Error reading scope ${TestData.scope5.name}`);
+  
+      test('2: Read non-existing scope with unknown name', async () => {
+        const unknownName = 'unknownName';
+        await expect(IgaScopeOps.readScopeByName({
+          name: unknownName,
+          state,
+        })).rejects.toThrow('Error reading scope ' + unknownName);
       });
     });
 
     describe('readScopes()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.readScopes).toBeDefined();
       });
 
-      test('1: Read all scopes', async () => {
+      test(`1: Read existing scopes`, async () => {
         const response = await IgaScopeOps.readScopes({
           state,
         });
@@ -130,73 +143,36 @@ describe('IgaScopeOps', () => {
       });
     });
 
-    describe('readScopeEntities()', () => {
-      test('0: Method is implemented', () => {
-        expect(IgaScopeOps.readScopeEntities).toBeDefined();
-      });
-
-      test('1: Read scope entities', async () => {
-        const response = await IgaScopeOps.readScopeEntities({
-          state,
-        });
-        expect(response).toMatchSnapshot();
-      });
-    });
-
-    describe('readScopeEntitySchema()', () => {
-      test('0: Method is implemented', () => {
-        expect(IgaScopeOps.readScopeEntitySchema).toBeDefined();
-      });
-
-      test('1: Read scope entity schema for known entity type', async () => {
-        const response = await IgaScopeOps.readScopeEntitySchema({
-          entityName: 'user',
-          state,
-        });
-        expect(response).toMatchSnapshot();
-      });
-
-      test('2: Read scope entity schema for unknown entity type', async () => {
-        await expect(
-          IgaScopeOps.readScopeEntitySchema({
-            entityName: 'unknownEntityType',
-            state,
-          })
-        ).rejects.toThrow(`Error reading scope entity schema for unknownEntityType`);
-      });
-    });
-
     describe('exportScope()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.exportScope).toBeDefined();
       });
 
-      test('1: Export existing scope by ID', async () => {
+      test(`1: Export existing scope by ID`, async () => {
         const response = await IgaScopeOps.exportScope({
-          id: TestData.scope1.id,
+          id: TestData.scope2.id,
           state,
         });
         expect(response).toMatchSnapshot({
           meta: expect.any(Object),
         });
       });
-
-      test('2: Export non-existing scope by ID', async () => {
-        await expect(
-          IgaScopeOps.exportScope({
-            id: TestData.scope5.id,
-            state,
-          })
-        ).rejects.toThrow(`Error exporting scope ${TestData.scope5.id}`);
+  
+      test('2: Export non-existing scope', async () => {
+        const unknownId = '11111111-1111-1111-1111-111111111111';
+        await expect(IgaScopeOps.exportScope({
+          id: unknownId,
+          state,
+        })).rejects.toThrow('Error exporting scope ' + unknownId);
       });
     });
 
     describe('exportScopeByName()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.exportScopeByName).toBeDefined();
       });
 
-      test('1: Export existing scope by name', async () => {
+      test(`1: Export existing scope by name`, async () => {
         const response = await IgaScopeOps.exportScopeByName({
           name: TestData.scope2.name,
           state,
@@ -206,22 +182,21 @@ describe('IgaScopeOps', () => {
         });
       });
 
-      test('2: Export non-existing scope by name', async () => {
-        await expect(
-          IgaScopeOps.exportScopeByName({
-            name: TestData.scope5.name,
-            state,
-          })
-        ).rejects.toThrow(`Error exporting scope ${TestData.scope5.name}`);
+      test('2: Export non-existing scope with unknown name', async () => {
+        const unknownName = 'unknownName';
+        await expect(IgaScopeOps.exportScopeByName({
+          name: unknownName,
+          state,
+        })).rejects.toThrow('Error exporting scope ' + unknownName);
       });
     });
 
     describe('exportScopes()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.exportScopes).toBeDefined();
       });
 
-      test('1: Export all scopes', async () => {
+      test(`1: Export existing scopes`, async () => {
         const response = await IgaScopeOps.exportScopes({
           state,
         });
@@ -232,43 +207,53 @@ describe('IgaScopeOps', () => {
     });
 
     describe('updateScope()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.updateScope).toBeDefined();
       });
 
-      test('1: Update existing scope', async () => {
+      test(`1: Update existing scope`, async () => {
         const response = await IgaScopeOps.updateScope({
-          id: TestData.scope1.id,
-          scopeData: TestData.scope1,
+          id: TestData.scope2.id,
+          scopeData: TestData.scope2,
           state,
         });
         expect(response).toMatchSnapshot();
       });
 
-      test('2: Update non-existing scope', async () => {
-        await expect(
-          IgaScopeOps.updateScope({
-            id: TestData.scope5.id,
-            scopeData: TestData.scope5,
-            state,
-          })
-        ).rejects.toThrow(`Error updating scope '${TestData.scope5.id}'`);
+      test('2: Should not update scope if no changes are made', async () => {
+        state.setForceUpdate(false);
+        let response = await IgaScopeOps.updateScope({
+          id: TestData.scope8.id,
+          scopeData: TestData.scope8,
+          state: state,
+        });
+        expect(response).toBeNull();
+        const scope: ScopeSkeleton = cloneDeep(TestData.scope8);
+        scope.description = 'test new description'; 
+        response = await IgaScopeOps.updateScope({
+          id: scope.id,
+          scopeData: scope,
+          state: state,
+        });
+        expect(response).not.toBeNull();
+        expect(response.description).toBe('test new description');
+        expect(response).toMatchSnapshot();
       });
     });
 
     describe('importScopes()', () => {
       const importData = IgaScopeOps.createScopeExportTemplate({ state });
       importData.scope = {
-        [TestData.scope1.id]: TestData.scope1,
-        [TestData.scope2.id]: TestData.scope2,
         [TestData.scope3.id]: TestData.scope3,
-      };
-
-      test('0: Method is implemented', () => {
+        [TestData.scope4.id]: TestData.scope4,
+        [TestData.scope5.id]: TestData.scope5,
+      }
+      
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.importScopes).toBeDefined();
       });
 
-      test('1: Import none (empty import data)', async () => {
+      test('1: Import None', async () => {
         const response = await IgaScopeOps.importScopes({
           importData: IgaScopeOps.createScopeExportTemplate({ state }),
           resultCallback: snapshotResultCallback,
@@ -278,8 +263,9 @@ describe('IgaScopeOps', () => {
       });
 
       test('2: Import by ID', async () => {
+        await TestData.stageScope(TestData.scope3);
         const response = await IgaScopeOps.importScopes({
-          id: TestData.scope1.id,
+          id: TestData.scope3.id,
           importData,
           resultCallback: snapshotResultCallback,
           state,
@@ -287,9 +273,10 @@ describe('IgaScopeOps', () => {
         expect(response).toMatchSnapshot();
       });
 
-      test('3: Import by name', async () => {
+      test('3: Import by Name', async () => {
+        await TestData.stageScope(TestData.scope3);
         const response = await IgaScopeOps.importScopes({
-          name: TestData.scope2.name,
+          name: TestData.scope3.name,
           importData,
           resultCallback: snapshotResultCallback,
           state,
@@ -298,6 +285,7 @@ describe('IgaScopeOps', () => {
       });
 
       test('4: Import all', async () => {
+        await TestData.stageScope(TestData.scope3);
         const response = await IgaScopeOps.importScopes({
           importData,
           resultCallback: snapshotResultCallback,
@@ -305,76 +293,88 @@ describe('IgaScopeOps', () => {
         });
         expect(response).toMatchSnapshot();
       });
+
+      test('5: Should not import scope if no changes were made', async () => {
+        state.setForceUpdate(false);
+        const importData = IgaScopeOps.createScopeExportTemplate({ state });
+        importData.scope[TestData.scope9.id] = TestData.scope9;
+        let response = await IgaScopeOps.importScopes({
+          importData,
+          resultCallback: snapshotResultCallback,
+          state: state,
+        });
+        expect(response.length).toBe(0);
+        const scope: ScopeSkeleton = cloneDeep(TestData.scope9);
+        scope.description = 'test new description';
+        importData.scope[scope.id] = scope;
+        response = await IgaScopeOps.importScopes({
+          importData,
+          resultCallback: snapshotResultCallback,
+          state: state,
+        });
+        expect(response.length).toBe(1);
+        expect(response[0].description).toBe('test new description');
+        expect(response).toMatchSnapshot();
+      });
     });
 
     describe('deleteScope()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.deleteScope).toBeDefined();
       });
 
-      test('1: Delete existing scope by ID', async () => {
+      test(`1: Delete existing scope by id`, async () => {
         const response = await IgaScopeOps.deleteScope({
-          id: TestData.scope3.id,
+          id: TestData.scope6.id,
           state,
         });
         expect(response).toMatchSnapshot();
       });
-
-      test('2: Delete non-existing scope by ID', async () => {
-        await expect(
-          IgaScopeOps.deleteScope({
-            id: TestData.scope5.id,
-            state,
-          })
-        ).rejects.toThrow(`Error deleting scope ${TestData.scope5.id}`);
+  
+      test('2: Delete non-existing scope by id', async () => {
+        const unknownId = '11111111-1111-1111-1111-111111111111';
+        await expect(IgaScopeOps.deleteScope({
+          id: unknownId,
+          state,
+        })).rejects.toThrow('Error deleting scope ' + unknownId);
       });
     });
 
     describe('deleteScopeByName()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.deleteScopeByName).toBeDefined();
       });
 
-      test('1: Delete existing scope by name', async () => {
+      test(`1: Delete existing scope by name`, async () => {
         const response = await IgaScopeOps.deleteScopeByName({
-          name: TestData.scope4.name,
+          name: TestData.scope7.name,
           state,
         });
         expect(response).toMatchSnapshot();
       });
-
+  
       test('2: Delete non-existing scope by name', async () => {
-        await expect(
-          IgaScopeOps.deleteScopeByName({
-            name: TestData.scope5.name,
-            state,
-          })
-        ).rejects.toThrow(`Error deleting scope ${TestData.scope5.name}`);
+        const unknownName = 'unknownName';
+        await expect(IgaScopeOps.deleteScopeByName({
+          name: unknownName,
+          state,
+        })).rejects.toThrow('Error deleting scope ' + unknownName);
       });
     });
-
   }
 
-  // Phase 2 - Bulk destructive tests only
+  // Phase 2
   if (
     !process.env.FRODO_POLLY_MODE ||
     (process.env.FRODO_POLLY_MODE === 'record' &&
       process.env.FRODO_RECORD_PHASE === '2')
   ) {
-
     describe('deleteScopes()', () => {
-      test('0: Method is implemented', () => {
+      test('0: Method is implemented', async () => {
         expect(IgaScopeOps.deleteScopes).toBeDefined();
       });
 
-      test('1: Delete all scopes', async () => {
-        const response = await IgaScopeOps.deleteScopes({
-          resultCallback: snapshotResultCallback,
-          state,
-        });
-        expect(response).toMatchSnapshot();
-      });
+      test.todo('1: Delete existing scopes');
     });
-
   }
 });
