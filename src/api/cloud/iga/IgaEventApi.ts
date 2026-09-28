@@ -4,7 +4,7 @@ import Constants from '../../../shared/Constants';
 import { State } from '../../../shared/State';
 import { getApiSearchAll } from '../../../utils/ExportImportUtils';
 import { getHostOnlyUrl } from '../../../utils/ForgeRockUtils';
-import { Metadata } from '../../ApiTypes';
+import { Condition, Metadata } from '../../ApiTypes';
 import { generateGovernanceApi } from '../../BaseApi';
 import { CertificationTemplateSkeleton } from './IgaCertificationTemplateApi';
 
@@ -22,37 +22,6 @@ const getApiConfig = () => {
 
 export type EventType = 'certification' | 'orchestration';
 
-export type ConditionGroupOperator = 'and' | 'or';
-
-export type ConditionOperator =
-  | 'contains'
-  | 'not_contains'
-  | 'equals'
-  | 'not_equals'
-  | 'starts_with'
-  | 'ends_with'
-  | 'gte'
-  | 'gt'
-  | 'lt'
-  | 'lte';
-
-export type ConditionFilter = {
-  [k in ConditionGroupOperator]?: (
-    | ConditionFilter
-    | {
-        [k in ConditionOperator]?: {
-          left?: string | { literal: string | number };
-          right?: string | { literal: string | number };
-          search_string?: string | { literal: string | number };
-          in_string?: string | { literal: string | number };
-          prefix?: string | { literal: string | number };
-          suffix?: string | { literal: string | number };
-          value?: string | { literal: string | number };
-        };
-      }
-  )[];
-};
-
 export interface EventOwner {
   id: string;
   userName: string;
@@ -67,10 +36,7 @@ export interface EventSkeleton {
   owners: EventOwner[];
   entityType: 'user';
   mutationType: 'create' | 'update';
-  condition: {
-    version?: string;
-    filter?: ConditionFilter;
-  };
+  condition: Condition;
   action: {
     type: EventType;
     // For certification types. These are just a certification template. If the certification template gets deleted for the event, only the id of it remains.
