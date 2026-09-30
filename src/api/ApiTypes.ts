@@ -97,3 +97,39 @@ export interface PatchOperationInterface {
   value?: any;
   from?: string;
 }
+
+export type ConditionGroupOperator = 'and' | 'or';
+
+export type ConditionOperator =
+  | 'contains'
+  | 'not_contains'
+  | 'equals'
+  | 'not_equals'
+  | 'starts_with'
+  | 'ends_with'
+  | 'gte'
+  | 'gt'
+  | 'lt'
+  | 'lte';
+
+export type ConditionFilter = {
+  [k in ConditionGroupOperator]?: (
+    | ConditionFilter
+    | {
+        [k in ConditionOperator]?: {
+          left?: string | { literal: string | number | boolean };
+          right?: string | { literal: string | number | boolean };
+          search_string?: string | { literal: string | number };
+          in_string?: string | { literal: string | number };
+          prefix?: string | { literal: string | number };
+          suffix?: string | { literal: string | number };
+          value?: string | { literal: string | number };
+        };
+      }
+  )[];
+};
+
+export interface Condition {
+  version?: string;
+  filter?: ConditionFilter;
+}
