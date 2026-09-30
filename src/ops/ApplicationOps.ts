@@ -35,8 +35,8 @@ import {
   updateCircleOfTrust,
 } from './CirclesOfTrustOps';
 import {
-  deleteGlossarySchemaByNameAndObjectType,
-  exportGlossarySchemaByNameAndObjectType,
+  deleteGlossarySchemaByName,
+  exportGlossarySchemaByName,
   GlossarySchemaExportInterface,
   importGlossarySchemas,
 } from './cloud/iga/IgaGlossaryOps';
@@ -785,7 +785,7 @@ async function exportDependencies({
       for (const glossaryName of names) {
         exportData = mergeDeep(
           exportData,
-          await exportGlossarySchemaByNameAndObjectType({
+          await exportGlossarySchemaByName({
             glossaryName,
             objectType: constants.GLOSSARY_APPLICATION_OBJECT_TYPE,
             state,
@@ -1089,7 +1089,7 @@ async function deleteDependencies({
       const names = getGlossarySchemaNames(applicationData);
       for (const glossaryName of names) {
         try {
-          await deleteGlossarySchemaByNameAndObjectType({
+          await deleteGlossarySchemaByName({
             glossaryName,
             objectType: constants.GLOSSARY_APPLICATION_OBJECT_TYPE,
             state,

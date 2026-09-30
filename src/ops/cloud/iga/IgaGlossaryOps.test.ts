@@ -105,13 +105,13 @@ describe('IgaGlossaryOps', () => {
       });
     });
 
-    describe('readGlossarySchemaByNameAndObjectType()', () => {
+    describe('readGlossarySchemaByName()', () => {
       test('0: Method is implemented', async () => {
-        expect(IgaGlossaryOps.readGlossarySchemaByNameAndObjectType).toBeDefined();
+        expect(IgaGlossaryOps.readGlossarySchemaByName).toBeDefined();
       });
 
       test(`1: Read existing glossary schema by name and objectype`, async () => {
-        const response = await IgaGlossaryOps.readGlossarySchemaByNameAndObjectType({
+        const response = await IgaGlossaryOps.readGlossarySchemaByName({
           glossaryName: TestData.glossary1.name,
           objectType: TestData.glossary1.objectType,
           state,
@@ -121,7 +121,7 @@ describe('IgaGlossaryOps', () => {
   
       test('2: Read non-existing glossary schema with unknown name', async () => {
         const unknownName = 'unknownName';
-        await expect(IgaGlossaryOps.readGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.readGlossarySchemaByName({
           glossaryName: unknownName,
           objectType: TestData.glossary1.objectType,
           state,
@@ -130,7 +130,7 @@ describe('IgaGlossaryOps', () => {
 
       test('3: Read non-existing glossary schema with unknown object type', async () => {
         const unknownObjectType = 'unknownObjectType';
-        await expect(IgaGlossaryOps.readGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.readGlossarySchemaByName({
           glossaryName: TestData.glossary1.name,
           // @ts-expect-error since we are doing an unknown object type
           objectType: unknownObjectType,
@@ -176,13 +176,13 @@ describe('IgaGlossaryOps', () => {
       });
     });
 
-    describe('exportGlossarySchemaByNameAndObjectType()', () => {
+    describe('exportGlossarySchemaByName()', () => {
       test('0: Method is implemented', async () => {
-        expect(IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType).toBeDefined();
+        expect(IgaGlossaryOps.exportGlossarySchemaByName).toBeDefined();
       });
 
       test(`1: Export existing glossary schema by name and objectype`, async () => {
-        const response = await IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType({
+        const response = await IgaGlossaryOps.exportGlossarySchemaByName({
           glossaryName: TestData.glossary1.name,
           objectType: TestData.glossary1.objectType,
           state,
@@ -194,7 +194,7 @@ describe('IgaGlossaryOps', () => {
   
       test('2: Export non-existing glossary schema with unknown name', async () => {
         const unknownName = 'unknownName';
-        await expect(IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.exportGlossarySchemaByName({
           glossaryName: unknownName,
           objectType: TestData.glossary1.objectType,
           state,
@@ -203,7 +203,7 @@ describe('IgaGlossaryOps', () => {
 
       test('3: Export non-existing glossary schema with unknown object type', async () => {
         const unknownObjectType = 'unknownObjectType';
-        await expect(IgaGlossaryOps.exportGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.exportGlossarySchemaByName({
           glossaryName: TestData.glossary1.name,
           // @ts-expect-error since we are doing an unknown object type
           objectType: unknownObjectType,
@@ -350,13 +350,13 @@ describe('IgaGlossaryOps', () => {
       });
     });
 
-    describe('deleteGlossarySchemaByNameAndObjectType()', () => {
+    describe('deleteGlossarySchemaByName()', () => {
       test('0: Method is implemented', async () => {
-        expect(IgaGlossaryOps.deleteGlossarySchemaByNameAndObjectType).toBeDefined();
+        expect(IgaGlossaryOps.deleteGlossarySchemaByName).toBeDefined();
       });
 
       test(`1: Delete existing glossary schema by name`, async () => {
-        const response = await IgaGlossaryOps.deleteGlossarySchemaByNameAndObjectType({
+        const response = await IgaGlossaryOps.deleteGlossarySchemaByName({
           glossaryName: TestData.glossary6.name,
           objectType: TestData.glossary6.objectType,
           state,
@@ -366,7 +366,7 @@ describe('IgaGlossaryOps', () => {
   
       test('2: Delete non-existing glossary by unknown name', async () => {
         const unknownName = 'unknownName';
-        await expect(IgaGlossaryOps.deleteGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.deleteGlossarySchemaByName({
           glossaryName: unknownName,
           objectType: TestData.glossary1.objectType,
           state,
@@ -375,7 +375,7 @@ describe('IgaGlossaryOps', () => {
 
       test('3: Delete non-existing glossary by unknown object type', async () => {
         const unknownObjectType = 'unknownObjectType';
-        await expect(IgaGlossaryOps.deleteGlossarySchemaByNameAndObjectType({
+        await expect(IgaGlossaryOps.deleteGlossarySchemaByName({
           glossaryName: TestData.glossary1.name,
           // @ts-expect-error
           objectType: unknownObjectType,

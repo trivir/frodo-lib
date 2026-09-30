@@ -144,7 +144,7 @@ export async function stageGlossary(
   createNew = false
 ) {
   try {
-    await IgaGlossaryOps.deleteGlossarySchemaByNameAndObjectType({
+    await IgaGlossaryOps.deleteGlossarySchemaByName({
       glossaryName: glossary.name,
       objectType: glossary.objectType,
       state,
