@@ -7616,7 +7616,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Read glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name", required: true },
-      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: true },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
     ],
     returns: "{Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object",
   },
@@ -7626,7 +7626,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     signature: "readGlossarySchemas( objectType?: GlossaryObjectType ): Promise<GlossarySchemaItemSkeleton<any>[]>",
     description: "Read all glossary schemas",
     params: [
-      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required:false },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
     ],
     returns: "{Promise<GlossarySchemaItemSkeleton[]>} a promise that resolves to an array of glossary schema objects",
   },
@@ -7647,7 +7647,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Export glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name", required: true },
-      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: true },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
     ],
     returns: "{Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object",
   },
@@ -7658,6 +7658,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Export all glossary schemas",
     params: [
       { name: "options", type: "GlossarySchemaExportOptions", description: "export options", required: false },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
     ],
     returns: "{Promise<GlossarySchemaExportInterface>} a promise that resolves to a glossary schema export object",
   },
@@ -7704,7 +7705,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     description: "Delete glossary schema by its name and object type",
     params: [
       { name: "glossaryName", type: "string", description: "the glossary schema name", required: true },
-      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: true },
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
     ],
     returns: "{Promise<GlossarySchemaItemSkeleton>} a promise that resolves to a glossary schema object",
   },
@@ -7714,6 +7715,7 @@ export const helpMetadata: MethodHelpDoc[] = [
     signature: "deleteGlossarySchemas( objectType?: GlossaryObjectType, resultCallback?: ResultCallback<GlossarySchemaItemSkeleton<any>> ): Promise<GlossarySchemaItemSkeleton<any>[]>",
     description: "Delete glossary schemas",
     params: [
+      { name: "objectType", type: "GlossaryObjectType", description: "the glossary schema object type", required: false },
       { name: "resultCallback", type: "ResultCallback", description: "Optional callback to process individual results", required: false },
     ],
     returns: "{Promise<GlossarySchemaItemSkeleton[]>} promise that resolves to an array of glossary schema objects",
