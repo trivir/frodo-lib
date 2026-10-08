@@ -42,10 +42,14 @@ export type Service = {
    * Deletes the specified service
    * @param {string} serviceId The service to delete
    * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
+   * @param {boolean} deleteSelf true to delete the parent service, false to only delete next descendents
+   * @param {string} nextDescendentName name of secondary configuration to only be deleted
    */
   deleteFullService(
     serviceId: string,
-    globalConfig?: boolean
+    globalConfig?: boolean,
+    deleteSelf?: boolean,
+    nextDescendentName?: string
   ): Promise<AmServiceSkeleton>;
   /**
    * Deletes all services
@@ -118,12 +122,22 @@ export default (state: State): Service => {
      * Deletes the specified service
      * @param {string} serviceId The service to delete
      * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
+     * @param {boolean} deleteSelf true to delete the parent service, false to only delete next descendents
+     * @param {string} nextDescendentName name of secondary configuration to only be deleted
      */
     async deleteFullService(
       serviceId: string,
-      globalConfig = false
+      globalConfig = false,
+      deleteSelf = true,
+      nextDescendentName?: string
     ): Promise<AmServiceSkeleton> {
-      return deleteFullService({ serviceId, globalConfig, state });
+      return deleteFullService({
+        serviceId,
+        globalConfig,
+        deleteSelf,
+        nextDescendentName,
+        state,
+      });
     },
 
     /**
@@ -563,14 +577,20 @@ export async function putFullServices({
  * Deletes the specified service
  * @param {string} serviceId The service to delete
  * @param {boolean} globalConfig true if the global service is the target of the operation, false otherwise. Default: false.
+ * @param {boolean} deleteSelf true to delete the parent service, false to only delete next descendents
+ * @param {string} nextDescendentName name of secondary configuration to only be deleted
  */
 export async function deleteFullService({
   serviceId,
   globalConfig = false,
+  deleteSelf = true,
+  nextDescendentName,
   state,
 }: {
   serviceId: string;
   globalConfig: boolean;
+  deleteSelf?: boolean;
+  nextDescendentName?: string;
   state: State;
 }) {
   try {
@@ -585,19 +605,24 @@ export async function deleteFullService({
     });
 
     await Promise.all(
-      serviceNextDescendentData.map((nextDescendent) =>
-        deleteServiceNextDescendent({
-          serviceId,
-          serviceType: nextDescendent._type._id,
-          serviceNextDescendentId: nextDescendent._id,
-          globalConfig,
-          state,
-        })
-      )
+      serviceNextDescendentData
+        .filter(
+          (nextDescendent) =>
+            !nextDescendentName || nextDescendentName === nextDescendent._id
+        )
+        .map((nextDescendent) =>
+          deleteServiceNextDescendent({
+            serviceId,
+            serviceType: nextDescendent._type._id,
+            serviceNextDescendentId: nextDescendent._id,
+            globalConfig,
+            state,
+          })
+        )
     );
-
     debugMessage({ message: `ServiceOps.deleteFullService: end`, state });
-    return deleteService({ serviceId, globalConfig, state });
+    return deleteSelf ? deleteService({ serviceId, globalConfig, state }) : {};
+    //return deleteService({ serviceId, globalConfig, state });
   } catch (error) {
     throw new FrodoError(
       `Error deleting ${

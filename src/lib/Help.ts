@@ -5091,11 +5091,13 @@ export const helpMetadata: MethodHelpDoc[] = [
   {
     typeName: "Service",
     methodName: "deleteFullService",
-    signature: "deleteFullService( serviceId: string, globalConfig?: boolean ): Promise<AmServiceSkeleton>",
+    signature: "deleteFullService( serviceId: string, globalConfig?: boolean, deleteSelf?: boolean, nextDescendentName?: string ): Promise<AmServiceSkeleton>",
     description: "Deletes the specified service",
     params: [
       { name: "serviceId", type: "string", description: "The service to delete", required: true },
       { name: "globalConfig", type: "boolean", description: "true if the global service is the target of the operation, false otherwise. Default: false.", required: false },
+      { name: "deleteSelf", type: "boolean", description: "true to delete the parent service, false to only delete next descendents", required: false },
+      { name: "nextDescendentName", type: "string", description: "name of secondary configuration to only be deleted", required: false },
     ],
     returns: "",
   },
