@@ -5032,6 +5032,22 @@ export const helpMetadata: MethodHelpDoc[] = [
   },
   {
     typeName: "Service",
+    methodName: "deleteServiceNextDescendent",
+    signature: "deleteServiceNextDescendent( serviceId: string, nextDescendentName: string, globalConfig?: boolean ): Promise<AmServiceSkeleton>",
+    description: "Deletes a single next descendent without deleting the parent service",
+    params: [],
+    returns: "",
+  },
+  {
+    typeName: "Service",
+    methodName: "deleteServiceNextDescendents",
+    signature: "deleteServiceNextDescendents( serviceId: string, globalConfig?: boolean ): Promise<AmServiceSkeleton[]>",
+    description: "Deletes all next descendents without deleting the parent service",
+    params: [],
+    returns: "",
+  },
+  {
+    typeName: "Service",
     methodName: "deleteFullServices",
     signature: "deleteFullServices(globalConfig?: boolean): Promise<AmServiceSkeleton[]>",
     description: "Deletes all services",
