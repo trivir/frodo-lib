@@ -131,7 +131,13 @@ export default (state: State): Service => {
       deleteSelf = true,
       nextDescendentName?: string
     ): Promise<AmServiceSkeleton> {
-      return deleteFullService({ serviceId, globalConfig, deleteSelf, nextDescendentName, state });
+      return deleteFullService({
+        serviceId,
+        globalConfig,
+        deleteSelf,
+        nextDescendentName,
+        state,
+      });
     },
 
     /**
@@ -584,7 +590,7 @@ export async function deleteFullService({
   serviceId: string;
   globalConfig: boolean;
   deleteSelf?: boolean;
-  nextDescendentName? : string;
+  nextDescendentName?: string;
   state: State;
 }) {
   try {
@@ -600,19 +606,22 @@ export async function deleteFullService({
 
     await Promise.all(
       serviceNextDescendentData
-      .filter((nextDescendent) => !nextDescendentName || nextDescendentName === nextDescendent._id)
-      .map((nextDescendent) =>
-        deleteServiceNextDescendent({
-          serviceId,
-          serviceType: nextDescendent._type._id,
-          serviceNextDescendentId: nextDescendent._id,
-          globalConfig,
-          state,
-        })
-      )
+        .filter(
+          (nextDescendent) =>
+            !nextDescendentName || nextDescendentName === nextDescendent._id
+        )
+        .map((nextDescendent) =>
+          deleteServiceNextDescendent({
+            serviceId,
+            serviceType: nextDescendent._type._id,
+            serviceNextDescendentId: nextDescendent._id,
+            globalConfig,
+            state,
+          })
+        )
     );
     debugMessage({ message: `ServiceOps.deleteFullService: end`, state });
-    return deleteSelf ? deleteService({serviceId, globalConfig, state}) : {};
+    return deleteSelf ? deleteService({ serviceId, globalConfig, state }) : {};
     //return deleteService({ serviceId, globalConfig, state });
   } catch (error) {
     throw new FrodoError(
@@ -642,7 +651,7 @@ export async function deleteFullServices({
   });
   try {
     const serviceList = await getListOfServices({ globalConfig, state });
-    
+
     const deleted: AmServiceSkeleton[] = await Promise.all(
       serviceList.map(async (serviceListItem) => {
         try {
