@@ -1,15 +1,14 @@
 import util from 'util';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { getHostOnlyUrl, getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { IdObjectSkeletonInterface } from './ApiTypes';
+import { getHostOnlyUrl } from '../utils/ForgeRockUtils';
 import {
   generateAmApi,
   generateEnvApi,
-  generateIdmApi,
   generateGovernanceApi,
-  generateLogKeysApi,
+  generateIdmApi,
   generateLogApi,
+  generateLogKeysApi,
   generateWSFedApi,
 } from './BaseApi';
 
@@ -86,7 +85,10 @@ export async function getRawIdm({
 }
 
 /**
- *
+ * Retrieves raw IGA data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @param apiVersion - Optional API version used to configure the request.
+ * @returns A promise that resolves to the raw API response data.
  */
 
 export async function getRawIga({
@@ -112,6 +114,11 @@ export async function getRawIga({
   return data;
 }
 
+/**
+ * Retrieves raw log key data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw API response data.
+ */
 export async function getRawKeys({
   endpoint,
   state,
@@ -126,11 +133,16 @@ export async function getRawKeys({
   );
   const { data } = await generateLogKeysApi({
     state,
-  }).get(urlString, { withCredentials: true });
+  }).get(urlString);
 
   return data;
 }
 
+/**
+ * Retrieves raw monitoring log data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw monitoring log response data.
+ */
 export async function getRawMonitoringLogs({
   endpoint,
   state,
@@ -150,6 +162,11 @@ export async function getRawMonitoringLogs({
   return data;
 }
 
+/**
+ * Retrieves raw WS-Federation data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw API response data.
+ */
 export async function getRawWs({
   endpoint,
   state,
@@ -292,6 +309,13 @@ export async function putRawEnv({
   return data;
 }
 
+/**
+ * Updates IGA data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @param apiVersion - Optional API version used to configure the request.
+ * @returns A promise that resolves to the raw API response data.
+ */
 export async function putRawIga({
   endpoint,
   payload,
@@ -317,6 +341,12 @@ export async function putRawIga({
   return data;
 }
 
+/**
+ * Updates log key data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw API response data.
+ */
 export async function putRawKeys({
   endpoint,
   payload,
@@ -338,6 +368,12 @@ export async function putRawKeys({
   return data;
 }
 
+/**
+ * Updates monitoring log data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw monitoring log response data.
+ */
 export async function putRawMonitoringLogs({
   endpoint,
   payload,
@@ -359,6 +395,12 @@ export async function putRawMonitoringLogs({
   return data;
 }
 
+/**
+ * Updates WS-Fed data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw API response data.
+ */
 export async function putRawWs({
   endpoint,
   payload,
