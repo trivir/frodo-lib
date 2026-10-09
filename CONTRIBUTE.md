@@ -17,7 +17,7 @@ OR
 
 ### Prerequisites
 
-- Node.js 18 or later, 20 or 22 recommended
+- Node.js 22 or later (the CI matrix runs 22, 24, and 26)
 - npm (included with Node.js)
 - A GUI editor is highly recommended. The current developers use [VSCode](https://code.visualstudio.com/), but you are welcome to use others, like [Atom](https://atom.io/) or [Sublime](https://www.sublimetext.com/), etc. The repository contains configuration files for VSCode's [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://prettier.io/) add-ons, which will automatically lint the code and apply coding styles when using VSCode. The same files may work for other editors with similar add-ons, but this has not been tested.
 
@@ -35,6 +35,11 @@ npm ci
 npm run build
 ```
 
+For how the build toolchain works — what each tool does and why, bundler
+configuration details (including the axios dts postinstall patch), the
+TypeScript version policy, and dependency-automation mechanics — see
+[BUILD-ENV.md](BUILD-ENV.md).
+
 ### Develop
 
 To automatically build as you develop, use:
@@ -48,7 +53,7 @@ npm run dev
 Before you submit a PR, make sure your code follows the frodo code formatting conventions and all the existing and your new unit tests are passing.
 
 ```console
-npm run lint
+npm run check
 npm test
 ```
 

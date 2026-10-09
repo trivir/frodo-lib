@@ -13,14 +13,20 @@
  * types, simulating two *separate* State objects (standing in for two
  * separate CLI processes) sharing the same cache file on disk.
  */
+import fs from 'fs';
+import { resolve } from 'path';
 import { jest } from '@jest/globals';
 
-const runInteractiveAuthorizationCodeFlow = jest.fn(async (_args?: any): Promise<any> => {
-  throw new Error('runInteractiveAuthorizationCodeFlow mock not configured');
-});
-const startDeviceAuthorizationFlow = jest.fn(async (_args?: any): Promise<any> => {
-  throw new Error('startDeviceAuthorizationFlow mock not configured');
-});
+const runInteractiveAuthorizationCodeFlow = jest.fn(
+  async (_args?: any): Promise<any> => {
+    throw new Error('runInteractiveAuthorizationCodeFlow mock not configured');
+  }
+);
+const startDeviceAuthorizationFlow = jest.fn(
+  async (_args?: any): Promise<any> => {
+    throw new Error('startDeviceAuthorizationFlow mock not configured');
+  }
+);
 const refreshBrowserBearerToken = jest.fn(async (_args?: any): Promise<any> => {
   throw new Error('refreshBrowserBearerToken mock not configured');
 });
@@ -70,7 +76,9 @@ jest.unstable_mockModule('./OAuth2OidcOps', () => ({
   authorize,
 }));
 
-const getAuthenticationSettings = jest.fn(async (_args?: any): Promise<any> => ({}));
+const getAuthenticationSettings = jest.fn(
+  async (_args?: any): Promise<any> => ({})
+);
 
 jest.unstable_mockModule('../api/AuthenticationSettingsApi', () => ({
   getAuthenticationSettings,
@@ -95,13 +103,15 @@ jest.unstable_mockModule('./UserOps', () => ({
   readUser,
 }));
 
-import fs from 'fs';
-import { resolve } from 'path';
-
 const { getTokens } = await import('./AuthenticateOps');
 const { default: StateImpl } = await import('../shared/State');
 
-const TMP_DIR = resolve('.', 'test', 'fs_tmp', 'AuthenticateOps.browserSessionReuse');
+const TMP_DIR = resolve(
+  '.',
+  'test',
+  'fs_tmp',
+  'AuthenticateOps.browserSessionReuse'
+);
 
 function fakeAccessTokenJwt(sub: string): string {
   const encode = (obj: object) =>
@@ -215,8 +225,12 @@ describe('getTokens() reuses a cached browser-login session instead of a fresh i
       universalId: 'id=jdoe,ou=user,o=forgeops',
       realm: '/',
       latestAccessTime: new Date().toISOString(),
-      maxIdleExpirationTime: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-      maxSessionExpirationTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+      maxIdleExpirationTime: new Date(
+        Date.now() + 30 * 60 * 1000
+      ).toISOString(),
+      maxSessionExpirationTime: new Date(
+        Date.now() + 2 * 60 * 60 * 1000
+      ).toISOString(),
       properties: { AMCtxId: 'ctx-1' },
     });
 
@@ -256,8 +270,12 @@ describe('getTokens() reuses a cached browser-login session instead of a fresh i
       universalId: 'id=jdoe,ou=user,o=classic',
       realm: '/',
       latestAccessTime: new Date().toISOString(),
-      maxIdleExpirationTime: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-      maxSessionExpirationTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+      maxIdleExpirationTime: new Date(
+        Date.now() + 30 * 60 * 1000
+      ).toISOString(),
+      maxSessionExpirationTime: new Date(
+        Date.now() + 2 * 60 * 60 * 1000
+      ).toISOString(),
       properties: { AMCtxId: 'ctx-2' },
     });
 

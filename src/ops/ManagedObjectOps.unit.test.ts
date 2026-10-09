@@ -4,22 +4,18 @@ const getManagedObject = jest.fn(async (_args?: any): Promise<any> => ({}));
 const getManagedSystemObject = jest.fn(
   async (_args?: any): Promise<any> => ({})
 );
-const patchManagedObject = jest.fn(
-  async (_args?: any): Promise<any> => ({})
-);
+const patchManagedObject = jest.fn(async (_args?: any): Promise<any> => ({}));
 const createManagedObjectApi = jest.fn(
   async (_args?: any): Promise<any> => ({})
 );
-const queryManagedObjectsApi = jest.fn(
-  async (_args?: any): Promise<any> => ({
-    result: [],
-    resultCount: 0,
-    pagedResultsCookie: null,
-    totalPagedResultsPolicy: 'NONE',
-    totalPagedResults: -1,
-    remainingPagedResults: -1,
-  })
-);
+const queryManagedObjectsApi = jest.fn(async (_args?: any): Promise<any> => ({
+  result: [],
+  resultCount: 0,
+  pagedResultsCookie: null,
+  totalPagedResultsPolicy: 'NONE',
+  totalPagedResults: -1,
+  remainingPagedResults: -1,
+}));
 
 jest.unstable_mockModule('../api/ManagedObjectApi', () => ({
   countManagedObjects: jest.fn(),
@@ -68,7 +64,7 @@ describe('resolveIdentity', () => {
     getManagedSystemObject.mockReset();
   });
 
-  test('resolves a realm-qualified DN as that realm\'s managed user', async () => {
+  test("resolves a realm-qualified DN as that realm's managed user", async () => {
     getManagedObject.mockResolvedValue({
       givenName: 'Amos',
       sn: 'Burton',
@@ -254,7 +250,9 @@ describe('relationship helpers', () => {
   });
 
   test('readRelationship reads the field directly off the object, requesting only that field', async () => {
-    getManagedObject.mockResolvedValue({ manager: { _ref: 'managed/alpha_user/mgr-1' } });
+    getManagedObject.mockResolvedValue({
+      manager: { _ref: 'managed/alpha_user/mgr-1' },
+    });
 
     const result = await readRelationship({
       type: 'alpha_user',
@@ -300,7 +298,7 @@ describe('relationship helpers', () => {
     );
   });
 
-  test('removeRelationship reads the current value first and removes the exact stored element (bare, not array-wrapped, including IDM\'s own _refProperties) — the exact request shape captured from AIC\'s own admin UI, verified live', async () => {
+  test("removeRelationship reads the current value first and removes the exact stored element (bare, not array-wrapped, including IDM's own _refProperties) — the exact request shape captured from AIC's own admin UI, verified live", async () => {
     const storedElement = {
       _ref: 'managed/alpha_role/role-1',
       _refResourceCollection: 'managed/alpha_role',
@@ -318,7 +316,11 @@ describe('relationship helpers', () => {
     });
 
     expect(getManagedObject).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'alpha_user', id: 'user-1', fields: ['roles'] })
+      expect.objectContaining({
+        type: 'alpha_user',
+        id: 'user-1',
+        fields: ['roles'],
+      })
     );
     expect(patchManagedObject).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -344,7 +346,9 @@ describe('relationship helpers', () => {
       _refResourceCollection: 'managed/alpha_role',
       _refResourceId: 'role-2',
     };
-    getManagedObject.mockResolvedValue({ roles: [targetElement, otherElement] });
+    getManagedObject.mockResolvedValue({
+      roles: [targetElement, otherElement],
+    });
 
     await removeRelationship({
       type: 'alpha_user',
@@ -363,7 +367,7 @@ describe('relationship helpers', () => {
     );
   });
 
-  test('removeRelationship throws rather than silently no-op\'ing when the target is not currently a member', async () => {
+  test("removeRelationship throws rather than silently no-op'ing when the target is not currently a member", async () => {
     getManagedObject.mockResolvedValue({ roles: [] });
 
     await expect(

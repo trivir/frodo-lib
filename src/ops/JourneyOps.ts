@@ -1,12 +1,10 @@
 import fs from 'fs';
-
 import axios, { AxiosError } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-
 import {
-  type CircleOfTrustSkeleton,
   createCircleOfTrust,
   updateCircleOfTrust,
+  type CircleOfTrustSkeleton,
 } from '../api/CirclesOfTrustApi';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
 import {
@@ -21,16 +19,16 @@ import {
   getProvider,
   getProviderMetadata,
   queryProviderStubs,
-  type Saml2ProviderSkeleton,
   updateProvider,
+  type Saml2ProviderSkeleton,
 } from '../api/Saml2Api';
 import { type ScriptSkeleton } from '../api/ScriptApi';
 import { type SocialIdpSkeleton } from '../api/SocialIdentityProvidersApi';
 import {
   deleteTree,
   getTree,
-  getTreesCount,
   getTrees,
+  getTreesCount,
   putTree,
   type TreeSkeleton,
 } from '../api/TreeApi';
@@ -66,9 +64,9 @@ import { findInArray } from '../utils/JsonUtils';
 import { readCirclesOfTrust } from './CirclesOfTrustOps';
 import { resolveVariable, updateVariable } from './cloud/VariablesOps';
 import {
-  type EmailTemplateSkeleton,
   readEmailTemplate,
   updateEmailTemplate,
+  type EmailTemplateSkeleton,
 } from './EmailTemplateOps';
 import { FrodoError, isNotFoundError } from './FrodoError';
 import {
@@ -77,17 +75,14 @@ import {
 } from './IdpOps';
 import {
   CustomNodeExportInterface,
+  deleteNode,
   importCustomNodes,
-  isCloudOnlyNode,
-  isCustomNode,
-  isPremiumNode,
   readCustomNode,
   readNode,
   readNodes,
   updateNode,
-  deleteNode,
 } from './NodeOps';
-import { type ExportMetaData, ResultCallback } from './OpsTypes';
+import { ResultCallback, type ExportMetaData } from './OpsTypes';
 import { readSaml2ProviderStubs } from './Saml2Ops';
 import {
   getLibraryScriptNames,
@@ -95,7 +90,7 @@ import {
   readScriptByName,
   updateScript,
 } from './ScriptOps';
-import { readThemes, type ThemeSkeleton, updateThemes } from './ThemeOps';
+import { readThemes, updateThemes, type ThemeSkeleton } from './ThemeOps';
 
 export type Journey = {
   /**
@@ -297,43 +292,6 @@ export type Journey = {
    * @returns {Promise<TreeSkeleton>} the updated tree/journey object
    */
   disableJourney(journeyId: string): Promise<TreeSkeleton>;
-
-  // Deprecated functions - not to be used anymore
-
-  /**
-   * Analyze if a journey contains any custom nodes considering the detected or the overridden version.
-   * @param {SingleTreeExportInterface} journey Journey/tree configuration object
-   * @returns {boolean} True if the journey/tree contains any custom nodes, false otherwise.
-   * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium"
-   */
-  isCustomJourney(journey: SingleTreeExportInterface): boolean;
-  /**
-   * Analyze if a journey contains any premium nodes considering the detected or the overridden version.
-   * @param {SingleTreeExportInterface} journey Journey/tree configuration object
-   * @returns {boolean} True if the journey/tree contains any custom nodes, false otherwise.
-   * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium"
-   */
-  isPremiumJourney(journey: SingleTreeExportInterface): boolean;
-  /**
-   * Analyze if a journey contains any cloud-only nodes considering the detected or the overridden version.
-   * @param {SingleTreeExportInterface} journey Journey/tree configuration object
-   * @returns {boolean} True if the journey/tree contains any cloud-only nodes, false otherwise.
-   * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium"
-   */
-  isCloudOnlyJourney(journey: SingleTreeExportInterface): boolean;
-  /**
-   * Get a journey's classifications, which can be one or multiple of:
-   * - standard: can run on any instance of a ForgeRock platform
-   * - cloud: utilize nodes, which are exclusively available in the ForgeRock Identity Cloud
-   * - premium: utilizes nodes, which come at a premium
-   * - custom: utilizes nodes not included in the ForgeRock platform release
-   * @param {SingleTreeExportInterface} journey journey export data
-   * @returns {JourneyClassificationType[]} an array of one or multiple classifications
-   * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium". This function will be removed in a future major release.
-   */
-  getJourneyClassification(
-    journey: SingleTreeExportInterface
-  ): JourneyClassificationType[];
 };
 
 export default (state: State): Journey => {
@@ -464,23 +422,6 @@ export default (state: State): Journey => {
     async disableJourney(journeyId: string): Promise<TreeSkeleton> {
       return disableJourney({ journeyId, state });
     },
-
-    // Deprecated functions - not to be used anymore
-
-    isCustomJourney(journey: SingleTreeExportInterface) {
-      return isCustomJourney({ journey, state });
-    },
-    isPremiumJourney(journey: SingleTreeExportInterface) {
-      return isPremiumJourney(journey);
-    },
-    isCloudOnlyJourney(journey: SingleTreeExportInterface) {
-      return isCloudOnlyJourney(journey);
-    },
-    getJourneyClassification(
-      journey: SingleTreeExportInterface
-    ): JourneyClassificationType[] {
-      return getJourneyClassification({ journey, state });
-    },
   };
 };
 
@@ -535,19 +476,6 @@ export interface SingleTreeExportInterface {
 export interface MultiTreeExportInterface {
   meta?: ExportMetaData;
   trees: Record<string, SingleTreeExportInterface>;
-}
-
-export type JourneyClassificationType =
-  | 'standard'
-  | 'custom'
-  | 'cloud'
-  | 'premium';
-
-export enum JourneyClassification {
-  STANDARD = 'standard',
-  CUSTOM = 'custom',
-  CLOUD = 'cloud',
-  PREMIUM = 'premium',
 }
 
 export interface TreeDependencyMapInterface {
@@ -717,8 +645,7 @@ export async function updateCoordinates({
   }
   const nodeEntries = Object.entries(
     tree[nodesAttributeName] as
-      | NodeRefSkeletonInterface
-      | StaticNodeRefSkeletonInterface
+      NodeRefSkeletonInterface | StaticNodeRefSkeletonInterface
   ).filter(
     ([, nodeInfo]) => nodeInfo.x === undefined || nodeInfo.y === undefined
   );
@@ -2658,7 +2585,6 @@ export async function resolveInnerTreeDependencies({
   resolvedJourneys: string[];
 }> {
   let before = -1;
-  let after = index;
   if (index !== -1) {
     before = index;
   }
@@ -2691,7 +2617,7 @@ export async function resolveInnerTreeDependencies({
       }
     }
   }
-  after = Object.keys(unresolvedJourneys).length;
+  const after = Object.keys(unresolvedJourneys).length;
   if (index !== -1 && after === before) {
     // This is the end, no progress was made since the last recursion
     return {
@@ -2725,7 +2651,6 @@ export async function resolveDependencies(
   index = -1
 ) {
   let before = -1;
-  let after = index;
   if (index !== -1) {
     before = index;
   }
@@ -2767,7 +2692,7 @@ export async function resolveDependencies(
       }
     }
   }
-  after = Object.keys(unresolvedJourneys).length;
+  const after = Object.keys(unresolvedJourneys).length;
   if (index !== -1 && after === before) {
     // This is the end, no progress was made since the last recursion
     // printMessage(
@@ -3537,106 +3462,4 @@ export async function disableJourney({
       error
     );
   }
-}
-
-// Deprecated functions - to be removed in v5.0.0
-
-/**
- * Analyze if a journey contains any custom nodes considering the detected or the overridden version.
- * @param {SingleTreeExportInterface} journey Journey/tree configuration object
- * @returns {boolean} True if the journey/tree contains any custom nodes, false otherwise.
- * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium". This function will be removed in a future major release.
- */
-export function isCustomJourney({
-  journey,
-  state,
-}: {
-  journey: SingleTreeExportInterface;
-  state: State;
-}): boolean {
-  debugMessage({ message: `JourneyOps.isCustomJourney: start`, state });
-  const nodeList = Object.values(journey.nodes).concat(
-    Object.values(journey.innerNodes)
-  );
-  for (const node of nodeList) {
-    if (isCustomNode({ nodeType: node['_type']['_id'], state })) {
-      debugMessage({
-        message: `JourneyOps.isCustomJourney: Custom node: ${node['_type']['_id']}`,
-        state,
-      });
-      return true;
-    }
-  }
-  debugMessage({ message: `JourneyOps.isCustomJourney: end [false]`, state });
-  return false;
-}
-
-/**
- * Analyze if a journey contains any premium nodes considering the detected or the overridden version.
- * @param {SingleTreeExportInterface} journey Journey/tree configuration object
- * @returns {boolean} True if the journey/tree contains any custom nodes, false otherwise.
- * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium". This function will be removed in a future major release.
- */
-export function isPremiumJourney(journey: SingleTreeExportInterface): boolean {
-  const nodeList = Object.values(journey.nodes).concat(
-    Object.values(journey.innerNodes)
-  );
-  for (const node of nodeList) {
-    if (isPremiumNode(node['_type']['_id'])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Analyze if a journey contains any cloud-only nodes considering the detected or the overridden version.
- * @param {SingleTreeExportInterface} journey Journey/tree configuration object
- * @returns {boolean} True if the journey/tree contains any cloud-only nodes, false otherwise.
- * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium". This function will be removed in a future major release.
- */
-export function isCloudOnlyJourney(
-  journey: SingleTreeExportInterface
-): boolean {
-  const nodeList = Object.values(journey.nodes).concat(
-    Object.values(journey.innerNodes)
-  );
-  for (const node of nodeList) {
-    if (isCloudOnlyNode(node['_type']['_id'])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Get a journey's classifications, which can be one or multiple of:
- * - standard: can run on any instance of a ForgeRock platform
- * - cloud: utilize nodes, which are exclusively available in the ForgeRock Identity Cloud
- * - premium: utilizes nodes, which come at a premium
- * - custom: utilizes nodes not included in the ForgeRock platform release
- * @param {SingleTreeExportInterface} journey journey export data
- * @returns {JourneyClassification[]} an array of one or multiple classifications
- * @deprecated since v4.0.0 Frodo no longer classifies journeys as "custom" or "standard" or "cloud-only" or "premium". This function will be removed in a future major release.
- */
-export function getJourneyClassification({
-  journey,
-  state,
-}: {
-  journey: SingleTreeExportInterface;
-  state: State;
-}): JourneyClassificationType[] {
-  const classifications: JourneyClassification[] = [];
-  const premium = isPremiumJourney(journey);
-  const custom = isCustomJourney({ journey, state });
-  const cloud = isCloudOnlyJourney(journey);
-  if (custom) {
-    classifications.push(JourneyClassification.CUSTOM);
-  } else if (cloud) {
-    classifications.push(JourneyClassification.CLOUD);
-  } else {
-    classifications.push(JourneyClassification.STANDARD);
-  }
-  if (premium) classifications.push(JourneyClassification.PREMIUM);
-  return classifications;
 }

@@ -22,10 +22,11 @@ on:
   workflow_dispatch:
     inputs:
       release-type:
-        description: 'Release kind: prerelease | patch | minor | major'
+        description: 'Release kind: prerelease | premajor | patch | minor | major'
         type: choice
         options:
           - prerelease
+          - premajor
           - patch
           - minor
           - major
@@ -111,15 +112,18 @@ jobs:
           npm run doc
 
       - name: Lint
-        run: npm run lint:fix
+        run: npm run check
 
       - name: Security Audit
         run: npm audit fix --audit-level critical
 
       - name: Zip build artifacts
-        run: zip -r build.zip dist mocks package.json package-lock.json snapshotResolve.js types docs
+        # scripts/patch-axios-types.cjs must ride along: package.json's
+        # postinstall (added with the tsdown migration) needs it during the
+        # artifact-only npm ci in the release jobs.
+        run: zip -r build.zip dist mocks package.json package-lock.json snapshotResolve.js types docs scripts/patch-axios-types.cjs
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: build
           path: |
@@ -161,7 +165,7 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }}
           repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: build
 
@@ -309,12 +313,34 @@ jobs:
             src/ops/TokenCacheOps.browserToken.unit.test.ts \
             src/ops/TokenCacheOps.sessionManagement.unit.test.ts
 
-  npm-release:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-    needs: [build, test, test-cross-platform]
+  # Single, non-matrix job so branch protection has ONE stable check name to
+  # require. GitHub matches required status-check contexts by exact name, and
+  # matrix legs register as '<job name> (os)' -- so requiring the matrix job's
+  # name directly never matches and leaves every PR permanently blocked from a
+  # plain merge (admin bypass was the only way through). Mirrors the CLI's
+  # `test-gate` job. Point the main-branch-protection ruleset at
+  # 'Cross-Platform gate', not at the matrix job name.
+  test-cross-platform-gate:
+    name: 'Cross-Platform gate'
+    needs: [test-cross-platform]
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v7
+      - name: Fail if any cross-platform matrix leg did not succeed
+        run: |
+          result='${{ needs.test-cross-platform.result }}'
+          echo "test-cross-platform matrix result: ${result}"
+          if [ "${result}" != "success" ]; then
+            echo "::error::Not all cross-platform matrix legs succeeded"
+            exit 1
+          fi
+
+  npm-release:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: [build, test, test-cross-platform, test-cross-platform-gate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
         with:
           name: build
 
@@ -393,8 +419,14 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          # Push the release commit with the org-wide FRODO_CI_PAT instead of
+          # GITHUB_TOKEN: the main-branch ruleset's required status checks
+          # reject github-actions[bot] pushes (the Actions app cannot be a
+          # bypass actor), while PAT-attributed pushes from a repository
+          # admin are covered by the ruleset's bypass. See PIPELINE.md.
+          token: ${{ secrets.FRODO_CI_PAT }}
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: build
 
@@ -425,8 +457,16 @@ jobs:
       - name: Commit updated changelog, version, and docs
         id: commit-changelog
         if: ${{ !inputs.dry-run }}
+        env:
+          FRODO_CI_PAT: ${{ secrets.FRODO_CI_PAT }}
         run: |
           set -euo pipefail
+          # Refuse to run on an unauthenticated PAT (e.g. fork runs) instead
+          # of silently pushing with GITHUB_TOKEN and tripping the ruleset.
+          if [ -z "${FRODO_CI_PAT}" ]; then
+            echo "::error::FRODO_CI_PAT secret is not set; cannot push the release commit"
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md package.json package-lock.json docs
@@ -459,7 +499,7 @@ jobs:
 
       - name: Release
         if: ${{ !inputs.dry-run }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: Frodo Library ${{ needs.build.outputs.newVersion }}
           tag_name: ${{ needs.build.outputs.newTag }}
@@ -487,16 +527,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: build
       # need -o to overwrite package.json
       - name: Unzip build artifact
         run: unzip -o build.zip
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           # Upload docs directory
           path: './docs'

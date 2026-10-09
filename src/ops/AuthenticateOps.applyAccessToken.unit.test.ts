@@ -19,12 +19,16 @@
  */
 import { jest } from '@jest/globals';
 
-const runInteractiveAuthorizationCodeFlow = jest.fn(async (_args?: any): Promise<any> => {
-  throw new Error('runInteractiveAuthorizationCodeFlow mock not configured');
-});
-const startDeviceAuthorizationFlow = jest.fn(async (_args?: any): Promise<any> => {
-  throw new Error('startDeviceAuthorizationFlow mock not configured');
-});
+const runInteractiveAuthorizationCodeFlow = jest.fn(
+  async (_args?: any): Promise<any> => {
+    throw new Error('runInteractiveAuthorizationCodeFlow mock not configured');
+  }
+);
+const startDeviceAuthorizationFlow = jest.fn(
+  async (_args?: any): Promise<any> => {
+    throw new Error('startDeviceAuthorizationFlow mock not configured');
+  }
+);
 const refreshBrowserBearerToken = jest.fn(async (_args?: any): Promise<any> => {
   throw new Error('refreshBrowserBearerToken mock not configured');
 });
@@ -39,7 +43,9 @@ const exchangeTokenForScope = jest.fn(async (_args?: any): Promise<any> => ({
 // browser/interactive-obtained one (test 3 relies on the exchange path
 // actually running). Test 7 overrides this to `undefined` to exercise the
 // BYOT (bring-your-own-token) fallback instead.
-const readMayActClientId = jest.fn((_jwt: string): string | undefined => 'AICMCPExchangeClient');
+const readMayActClientId = jest.fn(
+  (_jwt: string): string | undefined => 'AICMCPExchangeClient'
+);
 
 jest.unstable_mockModule('./BrowserAuthenticateOps', () => ({
   runInteractiveAuthorizationCodeFlow,
@@ -116,10 +122,7 @@ async function getUnderlyingError(promise: Promise<unknown>): Promise<Error> {
     await promise;
   } catch (error) {
     let current = error;
-    while (
-      current instanceof FrodoError &&
-      current.originalErrors.length > 0
-    ) {
+    while (current instanceof FrodoError && current.originalErrors.length > 0) {
       current = current.originalErrors[0];
     }
     return current as Error;

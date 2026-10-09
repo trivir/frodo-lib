@@ -1,5 +1,4 @@
 import { randomUUID } from 'crypto';
-
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -8,7 +7,6 @@ import axios, {
 } from 'axios';
 import axiosRetry from 'axios-retry';
 import { ProxyAgent, ProxyAgentOptions } from 'proxy-agent';
-
 import _curlirize from '../ext/axios-curlirize/curlirize';
 import { FrodoError } from '../ops/FrodoError';
 import {
@@ -28,9 +26,7 @@ export type RetryNothingStrategy = 'nothing';
 export type RetryNetworkStrategy = 'network';
 export type RetryEverythingStrategy = 'everything';
 export type RetryStrategy =
-  | RetryNothingStrategy
-  | RetryNetworkStrategy
-  | RetryEverythingStrategy;
+  RetryNothingStrategy | RetryNetworkStrategy | RetryEverythingStrategy;
 
 if (process.env.FRODO_MOCK) {
   setupPollyForFrodoLib({ state: StateImpl({}) });

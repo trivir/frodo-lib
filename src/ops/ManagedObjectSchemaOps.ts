@@ -3,9 +3,9 @@ import {
   deleteManagedObjectSchemaProperty as _deleteManagedObjectSchemaProperty,
   getManagedObjectSchema as _getManagedObjectSchema,
   getManagedObjectSchemaProperty as _getManagedObjectSchemaProperty,
+  putManagedObjectSchemaProperty as _putManagedObjectSchemaProperty,
   type ManagedObjectSchema,
   type ManagedObjectSchemaProperty,
-  putManagedObjectSchemaProperty as _putManagedObjectSchemaProperty,
 } from '../api/ManagedObjectApi';
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
@@ -1191,8 +1191,7 @@ function assertRelationshipPropertiesExist(
   for (const name of relationshipNames) {
     const candidate = schema.properties?.[name];
     const core = (candidate?.type === 'array' ? candidate.items : candidate) as
-      | Record<string, unknown>
-      | undefined;
+      Record<string, unknown> | undefined;
     if (!candidate || core?.type !== 'relationship') {
       throw new FrodoError(
         `"${name}" is not a relationship property on managed object type "${type}"; deriveFromRelationship must name an existing relationship property.`
@@ -1794,8 +1793,7 @@ export function extractManagedObjectSchemaRelationshipPropertyFields(
     rel.resourceCollection as Array<Record<string, unknown>>
   )?.[0];
   const query = resourceCollection?.query as
-    | Record<string, unknown>
-    | undefined;
+    Record<string, unknown> | undefined;
   const path = resourceCollection?.path as string | undefined;
   return {
     targetObject: path?.startsWith('managed/')

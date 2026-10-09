@@ -1,14 +1,18 @@
 import util from 'util';
-
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
-import { getHostOnlyUrl, getIdmBaseUrl } from '../utils/ForgeRockUtils';
-import { generateAmApi, generateEnvApi, generateIdmApi } from './BaseApi';
-import { IdObjectSkeletonInterface } from './ApiTypes';
+import { getHostOnlyUrl } from '../utils/ForgeRockUtils';
+import {
+  generateAmApi,
+  generateEnvApi,
+  generateGovernanceApi,
+  generateIdmApi,
+  generateLogApi,
+  generateLogKeysApi,
+  generateWSFedApi,
+} from './BaseApi';
 
-const amTemplate: string = '%s/%s';
-const idmTemplate: string = '%s/%s';
-const envTemplate: string = '%s/environment/%s';
+const urlTemplate: string = '%s/%s';
 
 export type ApiVersion = {
   protocol: string;
@@ -28,7 +32,7 @@ function getApiConfig(
 
 /**
  * Performs a get request against the specified AM endpoint
- * @param {string} endpoint The AM endpoint (e.g. if full URL is https://<tenant-host>/am/<endpoint>, <endpoint> is the value to pass in)
+ * @param {string} endpoint The AM endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
@@ -41,7 +45,11 @@ export async function getRawAm({
   apiVersion?: ApiVersion;
   state: State;
 }): Promise<any> {
-  const urlString = util.format(amTemplate, state.getHost(), endpoint);
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
   const { data } = await generateAmApi({
     resource: getApiConfig(apiVersion),
     requiredScopes: [Constants.AVAILABLE_SCOPES.AmFullScope],
@@ -53,7 +61,7 @@ export async function getRawAm({
 
 /**
  * Performs a get request against the specified IDM endpoint
- * @param {string} endpoint The IDM endpoint (e.g. if full URL is https://<tenant-host>/openidm/<endpoint>, <endpoint> is the value to pass in)
+ * @param {string} endpoint The IDM endpoint
  * @returns {Promise<any>} The response data from the endpoint
  */
 export async function getRawIdm({
@@ -63,7 +71,11 @@ export async function getRawIdm({
   endpoint: string;
   state: State;
 }): Promise<any> {
-  const urlString = util.format(idmTemplate, getIdmBaseUrl(state), endpoint);
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
     state,
@@ -73,8 +85,111 @@ export async function getRawIdm({
 }
 
 /**
+ * Retrieves raw IGA data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @param apiVersion - Optional API version used to configure the request.
+ * @returns A promise that resolves to the raw API response data.
+ */
+
+export async function getRawIga({
+  endpoint,
+  apiVersion,
+  state,
+}: {
+  endpoint: string;
+  apiVersion?: ApiVersion;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateGovernanceApi({
+    resource: getApiConfig(apiVersion),
+    requiredScopes: [Constants.AVAILABLE_SCOPES.IGAFullScope],
+    state,
+  }).get(urlString, { withCredentials: true });
+
+  return data;
+}
+
+/**
+ * Retrieves raw log key data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw API response data.
+ */
+export async function getRawKeys({
+  endpoint,
+  state,
+}: {
+  endpoint: string;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateLogKeysApi({
+    state,
+  }).get(urlString);
+
+  return data;
+}
+
+/**
+ * Retrieves raw monitoring log data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw monitoring log response data.
+ */
+export async function getRawMonitoringLogs({
+  endpoint,
+  state,
+}: {
+  endpoint: string;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateLogApi({
+    state,
+  }).get(urlString, { withCredentials: true });
+
+  return data;
+}
+
+/**
+ * Retrieves raw WS-Federation data from the specified endpoint.
+ * @param endpoint - The endpoint to send the GET request to.
+ * @returns A promise that resolves to the raw API response data.
+ */
+export async function getRawWs({
+  endpoint,
+  state,
+}: {
+  endpoint: string;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateWSFedApi({
+    requiredScopes: [Constants.AVAILABLE_SCOPES.WSFedAdminScope],
+    state,
+  }).get(urlString, { withCredentials: true });
+
+  return data;
+}
+
+/**
  * Performs a get request against the specified Environment endpoint
- * @param {string} endpoint The Environment endpoint (e.g. if full URL is https://<tenant-host>/environment/<endpoint>, <endpoint> is the value to pass in)
+ * @param {string} endpoint The Environment endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
@@ -88,7 +203,7 @@ export async function getRawEnv({
   state: State;
 }): Promise<any> {
   const urlString = util.format(
-    envTemplate,
+    urlTemplate,
     getHostOnlyUrl(state.getHost()),
     endpoint
   );
@@ -105,8 +220,8 @@ export async function getRawEnv({
 
 /**
  * Performs a put request against the specified AM endpoint
- * @param {string} endpoint The AM endpoint (e.g. if full URL is https://<tenant-host>/am/<endpoint>, <endpoint> is the value to pass in)
- * @param {IdObjectSkeletonInterface} payload The AM object data to write to the specified endpoint
+ * @param {string} endpoint The AM endpoint
+ * @param {object} payload The AM object data to write to the specified endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
@@ -117,11 +232,15 @@ export async function putRawAm({
   state,
 }: {
   endpoint: string;
-  payload: IdObjectSkeletonInterface;
+  payload: object;
   apiVersion?: ApiVersion;
   state: State;
 }): Promise<any> {
-  const urlString = util.format(amTemplate, state.getHost(), endpoint);
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
   const { data } = await generateAmApi({
     resource: getApiConfig(apiVersion),
     requiredScopes: [Constants.AVAILABLE_SCOPES.AmFullScope],
@@ -132,8 +251,8 @@ export async function putRawAm({
 
 /**
  * Performs a put request against the specified IDM endpoint
- * @param {string} endpoint The IDM endpoint (e.g. if full URL is https://<tenant-host>/openidm/<endpoint>, <endpoint> is the value to pass in)
- * @param {IdObjectSkeletonInterface} payload The IDM object data to write to the specified endpoint
+ * @param {string} endpoint The IDM endpoint
+ * @param {object} payload The IDM object data to write to the specified endpoint
  * @returns {Promise<any>} The response data from the endpoint
  */
 export async function putRawIdm({
@@ -142,10 +261,14 @@ export async function putRawIdm({
   state,
 }: {
   endpoint: string;
-  payload: IdObjectSkeletonInterface;
+  payload: object;
   state: State;
 }): Promise<any> {
-  const urlString = util.format(idmTemplate, getIdmBaseUrl(state), endpoint);
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
     state,
@@ -155,8 +278,8 @@ export async function putRawIdm({
 
 /**
  * Performs a put request against the specified Environment endpoint
- * @param {string} endpoint The Environment endpoint (e.g. if full URL is https://<tenant-host>/environment/<endpoint>, <endpoint> is the value to pass in)
- * @param {IdObjectSkeletonInterface} payload The object data to write to the specified endpoint
+ * @param {string} endpoint The Environment endpoint
+ * @param {object} payload The object data to write to the specified endpoint
  * @param {ApiVersion} apiVersion The API version to use. Defaults to 2.0 for protocol and 1.0 for resource.
  * @returns {Promise<any>} The response data from the endpoint
  */
@@ -167,12 +290,12 @@ export async function putRawEnv({
   state,
 }: {
   endpoint: string;
-  payload: IdObjectSkeletonInterface;
+  payload: object;
   apiVersion?: ApiVersion;
   state: State;
 }): Promise<any> {
   const urlString = util.format(
-    envTemplate,
+    urlTemplate,
     getHostOnlyUrl(state.getHost()),
     endpoint
   );
@@ -183,5 +306,119 @@ export async function putRawEnv({
     requiredScopes: [],
     state,
   }).put(urlString, payload, { withCredentials: true });
+  return data;
+}
+
+/**
+ * Updates IGA data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @param apiVersion - Optional API version used to configure the request.
+ * @returns A promise that resolves to the raw API response data.
+ */
+export async function putRawIga({
+  endpoint,
+  payload,
+  apiVersion,
+  state,
+}: {
+  endpoint: string;
+  payload: object;
+  apiVersion?: ApiVersion;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateGovernanceApi({
+    resource: getApiConfig(apiVersion),
+    requiredScopes: [Constants.AVAILABLE_SCOPES.IGAFullScope],
+    state,
+  }).put(urlString, payload, { withCredentials: true });
+
+  return data;
+}
+
+/**
+ * Updates log key data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw API response data.
+ */
+export async function putRawKeys({
+  endpoint,
+  payload,
+  state,
+}: {
+  endpoint: string;
+  payload: object;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateLogKeysApi({
+    state,
+  }).put(urlString, payload, { withCredentials: true });
+
+  return data;
+}
+
+/**
+ * Updates monitoring log data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw monitoring log response data.
+ */
+export async function putRawMonitoringLogs({
+  endpoint,
+  payload,
+  state,
+}: {
+  endpoint: string;
+  payload: object;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateLogApi({
+    state,
+  }).put(urlString, payload, { withCredentials: true });
+
+  return data;
+}
+
+/**
+ * Updates WS-Fed data at the specified endpoint using a PUT request.
+ * @param endpoint - The endpoint to send the PUT request to.
+ * @param payload - The data to include in the request body.
+ * @returns A promise that resolves to the raw API response data.
+ */
+export async function putRawWs({
+  endpoint,
+  payload,
+  state,
+}: {
+  endpoint: string;
+  payload: object;
+  state: State;
+}): Promise<any> {
+  const urlString = util.format(
+    urlTemplate,
+    getHostOnlyUrl(state.getHost()),
+    endpoint
+  );
+  const { data } = await generateWSFedApi({
+    requiredScopes: [Constants.AVAILABLE_SCOPES.WSFedAdminScope],
+    state,
+  }).put(urlString, payload, { withCredentials: true });
+
   return data;
 }

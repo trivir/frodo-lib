@@ -1,7 +1,5 @@
 import util from 'util';
-
 import { AxiosRequestConfig } from 'axios';
-
 import { Callback } from '../ops/CallbackOps';
 import { State } from '../shared/State';
 import { getRealmPath } from '../utils/ForgeRockUtils';
@@ -37,9 +35,7 @@ export type AuthenticateErrorResponse = {
 };
 
 export type AuthenticateResponse =
-  | AuthenticateStep
-  | AuthenticateSuccessResponse
-  | AuthenticateErrorResponse;
+  AuthenticateStep | AuthenticateSuccessResponse | AuthenticateErrorResponse;
 
 /**
  * Performs an authentication step using the service's authenticate endpoint

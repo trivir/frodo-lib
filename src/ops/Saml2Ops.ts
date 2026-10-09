@@ -6,10 +6,10 @@ import {
   getProviderMetadataUrl as _getProviderMetadataUrl,
   getProviderStubs as _getProviderStubs,
   queryProviderStubs as _queryProviderStubs,
+  updateProvider as _updateProvider,
   type Saml2ProiderLocation,
   type Saml2ProviderSkeleton,
   type Saml2ProviderStub,
-  updateProvider as _updateProvider,
 } from '../api/Saml2Api';
 import { getScript, type ScriptSkeleton } from '../api/ScriptApi';
 import { State } from '../shared/State';
@@ -791,16 +791,12 @@ export async function exportSaml2Providers({
         }
         fileData.saml[stub.location][providerData._id] = providerData;
       } catch (error) {
-        if (
-          !(
-            // operation is not available in PingOne Advanced Identity Cloud
-            (
-              error.httpStatus === 403 &&
-              error.httpMessage ===
-                'This operation is not available in PingOne Advanced Identity Cloud.'
-            )
-          )
-        ) {
+        if (!(
+          // operation is not available in PingOne Advanced Identity Cloud
+          error.httpStatus === 403 &&
+          error.httpMessage ===
+            'This operation is not available in PingOne Advanced Identity Cloud.'
+        )) {
           errors.push(
             new FrodoError(
               `Error exporting ${getCurrentRealmName(state) + ' realm'} saml2 provider ${stub._id}`,
@@ -981,7 +977,7 @@ export async function importSaml2Provider({
   state: State;
 }): Promise<Saml2ProviderSkeleton> {
   debugMessage({ message: `Saml2Ops.importSaml2Provider: start`, state });
-  let response = null;
+  let response;
   try {
     const entityId64 = encode(entityId, false);
     const location = getLocation(entityId64, importData);

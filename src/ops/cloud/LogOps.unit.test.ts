@@ -217,8 +217,18 @@ describe('searchEvents', () => {
   test('keeps events with no transaction id (e.g. debug-source raw log lines) rather than collapsing them together', async () => {
     fetch.mockResolvedValue({
       result: [
-        { payload: 'raw debug line 1', timestamp: 't', type: 'text/plain', source: 'am-core' },
-        { payload: 'raw debug line 2', timestamp: 't', type: 'text/plain', source: 'am-core' },
+        {
+          payload: 'raw debug line 1',
+          timestamp: 't',
+          type: 'text/plain',
+          source: 'am-core',
+        },
+        {
+          payload: 'raw debug line 2',
+          timestamp: 't',
+          type: 'text/plain',
+          source: 'am-core',
+        },
       ],
       resultCount: 2,
       pagedResultsCookie: null,

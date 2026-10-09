@@ -26,9 +26,8 @@ jest.unstable_mockModule('../api/OAuth2OIDCApi', () => ({
   clientCredentialsGrant,
 }));
 
-const { clientCredentialsGrant: clientCredentialsGrantOp } = await import(
-  './OAuth2OidcOps'
-);
+const { clientCredentialsGrant: clientCredentialsGrantOp } =
+  await import('./OAuth2OidcOps');
 const { default: StateImpl } = await import('../shared/State');
 
 describe('OAuth2OidcOps.clientCredentialsGrant', () => {

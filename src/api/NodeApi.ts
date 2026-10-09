@@ -1,9 +1,9 @@
 import util from 'util';
-
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { getCurrentRealmPath } from '../utils/ForgeRockUtils';
 import { deleteDeepByKey } from '../utils/JsonUtils';
+import { eq, gt } from '../utils/SemverUtils';
 import {
   AmConfigEntityInterface,
   type IdObjectSkeletonInterface,
@@ -12,7 +12,6 @@ import {
   type QueryResult,
 } from './ApiTypes';
 import { generateAmApi } from './BaseApi';
-import { eq, gt } from '../utils/SemverUtils';
 
 const queryAllNodeTypesURLTemplate =
   '%s/json%s/realm-config/authentication/authenticationtrees/nodes?_action=getAllTypes';
@@ -71,12 +70,7 @@ export type CustomNodeProperty = {
   type: 'NUMBER' | 'STRING' | 'OBJECT' | 'BOOLEAN';
   required: boolean;
   defaultValue?:
-    | string
-    | number
-    | boolean
-    | Record<string, string>
-    | string[]
-    | number[];
+    string | number | boolean | Record<string, string> | string[] | number[];
   multivalued: boolean;
   options?: Record<string, string>;
 };

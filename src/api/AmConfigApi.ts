@@ -1,5 +1,5 @@
-import Constants from '../shared/Constants';
 import { FrodoError } from '../ops/FrodoError';
+import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { getRealmPathGlobal } from '../utils/ForgeRockUtils';
 import { AmConfigEntityInterface, PagedResult } from './ApiTypes';
@@ -67,9 +67,7 @@ export type EntitySubInfo = {
 };
 
 export type ConfigEntitySkeleton =
-  | PagedResult<AmConfigEntityInterface>
-  | AmConfigEntityInterface
-  | undefined;
+  PagedResult<AmConfigEntityInterface> | AmConfigEntityInterface | undefined;
 
 /**
  * Gets a single am config entity at the given realm and path

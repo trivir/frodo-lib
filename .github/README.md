@@ -1,6 +1,6 @@
 <!-- README.md for GitHub; the one for NPM is ../README.md. -->
 
-# Frodo Library 4.x - @rockcarver/frodo-lib
+# Frodo Library 5.x - @rockcarver/frodo-lib
 
 A hybrid (ESM and CJS) library to manage PingOne Advanced Identity Cloud environments, ForgeOps deployments, and classic deployments.
 
@@ -8,247 +8,152 @@ Frodo-lib powers [frodo-cli](https://github.com/rockcarver/frodo-cli), the comma
 
 ## Quick Nav
 
-- [New 4.x](#new-in-4x)
+- [New In 5.x](#new-in-5x)
 - [About](#about)
 - [Considerations](#considerations)
 - [Installing](#installing)
 - [Using the library](#using-the-library)
 - [Recording and replaying HTTP traffic](#recording-and-replaying-http-traffic)
 - [Library API docs](#library-api-docs)
+- [Migration guide](https://github.com/rockcarver/frodo-lib/blob/main/MIGRATION.md)
 - [Request features or report issues](#feature-requests)
 - [Contributing](#contributing)
 - [Maintaining](#maintaining)
 
-## New In 4.x
+## New In 5.x
 
-Frodo Library 4.0 adds support for [Custom Nodes](https://docs.pingidentity.com/pingoneaic/journeys/node-designer.html), `fr-config-manager` and the latest Node.js versions.
+### Root-entry type exports
 
-### Custom Nodes - Node Designer
-
-2.x introduces breaking changes to support multiple instances of the library to run concurrently and connect to multiple different Ping Identity Platform instances at the same time. [1.x](https://github.com/rockcarver/frodo-lib/tree/1.x) operates using a global singleton, making it impossible to connect to more than one platform instance at a time.
-
-### FR-Config-Manager
-
-Removing the singleton pattern and introducing multi-instantiability forced a radical redesign of the core library functions while striving to maintain the basic usage pattern. The library is now exposing two main types describing its modules ([Frodo](https://rockcarver.github.io/frodo-lib/types/Reference.Frodo.html)) and state ([State](https://rockcarver.github.io/frodo-lib/types/Reference.State.html)). Each module in turn exports all its collection of functions as a type as well. Exposing the library structure as types enables auto-completion for both JS and TS developers with properly configured IDEs like Visual Studio Code or other and also serves as an abstraction layer between what the library exposes vs what and how it's implemented.
+Since 4.12.0, all 120 data-model types (skeletons, export/import option
+interfaces, shared model types) are exported from the root entry — see
+[Using the library](#using-the-library) for the TypeScript import pattern.
+The per-file `./types/*` deep-import subpath is deprecated.
 
 ### Node.js Versions
 
-- Added support for Node.js 24 and 25/26.
-- Dropped support for Node.js 18 and 20.
+- 5.x (current): tested against Node.js 22, 24, and 26 (the CI matrix).
+- 4.x: added support for Node.js 22, 24, and 26; dropped support for
+  Node.js 18 and 20.
 
-### Breaking changes
+### Breaking changes and migration
 
-- Removed all deprecated (since v2.0.0) functions from:
-  - `frodo.admin`: 
-    - `listOAuth2CustomClients`
-    - `listOAuth2AdminClients`
-    - `listNonOAuth2AdminStaticUserMappings`
-    - `addAutoIdStaticUserMapping`
-    - `grantOAuth2ClientAdminPrivileges`
-    - `revokeOAuth2ClientAdminPrivileges`
-    - `createOAuth2ClientWithAdminPrivileges`
-    - `createLongLivedToken`
-    - `removeStaticUserMapping`
-    - `hideGenericExtensionAttributes`
-    - `showGenericExtensionAttributes`
-    - `repairOrgModel`
-  - `frodo.login`:
-    - `getAccessTokenForServiceAccount` (added function `validateServiceAccount` with same input and output to `frodo.cloud.serviceAccount`)
-  - `frodo.agent`:
-    - `getAgents`
-    - `getAgent`
-    - `getAgentByTypeAndId`
-    - `getIdentityGatewayAgents`
-    - `getIdentityGatewayAgent`
-    - `putIdentityGatewayAgent`
-    - `getJavaAgents`
-    - `getJavaAgent`
-    - `putJavaAgent`
-    - `getWebAgents`
-    - `getWebAgent`
-    - `putWebAgent`
-  - `frodo.saml2.circlesOfTrust`:
-    - `getCirclesOfTrust`
-    - `getCircleOfTrust`
-  - `frodo.email.template`:
-    - `getEmailTemplates`
-    - `getEmailTemplate`
-    - `putEmailTemplate`
-  - `frodo.idm.config`:
-    - `getConfigEntityTypes`
-    - `getConfigEntityTypes`
-    - `getConfigEntitiesByType`
-    - `getConfigEntity`
-    - `putConfigEntity`
-    - `testConnectorServers`
-  - `frodo.oauth2oidc.external`:
-    - `getSocialIdentityProviders`
-    - `getSocialProvider`
-    - `putProviderByTypeAndId`
-    - `deleteSocialProvider`
-    - `exportSocialProvider`
-    - `exportSocialProviders`
-    - `importSocialProvider`
-    - `importFirstSocialProvider`
-    - `importSocialProviders`
-  - `frodo.authn.journey`:
-    - `getJourneys`
-    - `getJourney`
-    - `importAllJourneys`
-    - `findOrphanedNodes`
-    - `removeOrphanedNodes`
-  - `frodo.oauth2oidc.client`:
-    - `getOAuth2Clients`
-    - `getOAuth2Client`
-    - `putOAuth2Client`
-  - `frodo.oauth2oidc.provider`:
-    - `getOAuth2Provider`
-  - `frodo.oauth2oidc.issuer`:
-    - `getOAuth2TrustedJwtIssuers`
-    - `getOAuth2TrustedJwtIssuer`
-    - `putOAuth2TrustedJwtIssuer`
-  - `frodo.idm.organization`:
-    - `getOrganizations`
-  - `frodo.authz.policy`:
-    - `getPolicies`
-    - `getPoliciesByPolicySet`
-    - `getPolicy`
-    - `putPolicy`
-  - `frodo.authz.policySet`:
-    - `getPolicySets`
-    - `getPolicySet`
-  - `frodo.realm`:
-    - `getRealms`
-    - `getRealmByName`
-    - `putRealm`
-  - `frodo.authz.resourceType`:
-    - `getResourceType`
-    - `getResourceTypes`
-    - `getResourceTypeByName`
-  - `frodo.saml2.entityProvider`:
-    - `getSaml2ProviderStubs`
-    - `getProviderMetadataUrl`
-    - `getProviderMetadata`
-    - `getSaml2ProviderStub`
-    - `getSaml2Provider`
-  - `frodo.script`:
-    - `getScripts`
-    - `getScript`
-    - `getScriptByName`
-    - `putScript`
-  - `frodo.theme`:
-    - `getThemes`
-    - `getTheme`
-    - `getThemeByName`
-    - `putTheme`
-    - `putThemeByName`
-    - `putThemes`
-  - `frodo.cloud.adminFed`:
-    - `getAdminFederationProviders`
-    - `getAdminFederationProvider`
-    - `putProviderByTypeAndId`
-  - `frodo.cloud.secret`:
-    - `getSecrets`
-    - `getSecret`
-    - `putSecret`
-    - `setSecretDescription`
-    - `getSecretVersions`
-    - `createNewVersionOfSecret`
-    - `getVersionOfSecret`
-    - `setStatusOfVersionOfSecret`
-  - `frodo.cloud.variable`:
-    - `getVariable`
-    - `getVariables`
-    - `putVariable`
-    - `setVariableDescription`
+Full migration guidance — every removed and deprecated function per major
+version, with replacements — is maintained in the
+[Migration Guide](../MIGRATION.md). Summary:
+
+- **4.0.0** removed all functions deprecated since v2.0.0 (the legacy
+  `get*`/`put*` naming, replaced by `read*`/`update*`/`create*`/
+  `delete*` equivalents on the same module). Four deprecated
+  `frodo.cloud.variable` functions and the journey/node classification
+  functions were overlooked; **5.0.0** removes them.
+- **5.0.0** removes the four deprecated `frodo.cloud.variable` functions
+  (`getVariable`, `getVariables`, `putVariable`, `setVariableDescription`;
+  replaced by `readVariable`, `readVariables`, `createVariable`/
+  `updateVariable`, `updateVariableDescription`) and the journey/node
+  classification functions deprecated in 4.0.0: `frodo.authn.journey`
+  (`isCustomJourney`, `isPremiumJourney`, `isCloudOnlyJourney`,
+  `getJourneyClassification`, `JourneyClassificationType`,
+  `JourneyClassification`) and `frodo.authn.node` (`isPremiumNode`,
+  `isCloudOnlyNode`, `isCloudExcludedNode`, `isDeprecatedNode`,
+  `isCustomNode`, `getNodeClassification`, `NodeClassificationType`,
+  `NodeClassification`) — removed without replacement, as the product no
+  longer classifies journeys or nodes.
+- **5.x** deprecates the `./types/*` deep-import subpath (see
+  [Using the library](#using-the-library)).
 
 ### Deprecations
 
-- Deprecated all journey classificatino functions in `frodo.authn.journey`:
-  - `isCustomJourney`
-  - `isPremiumJourney`
-  - `isCloudOnlyJourney`
-  - `getJourneyClassification`
-- Deprecated all node classification functions in `frodo.authn.node`:
-  - `isPremiumNode`
-  - `isCloudOnlyNode`
-  - `isCloudExcludedNode`
-  - `isDeprecatedNode`,
-  - `isCustomNode`
-  - `getNodeClassification`.
+- Deprecated the `@rockcarver/frodo-lib/types/<module>` deep-import
+  subpath since 4.12.0: it only resolves under the legacy
+  `moduleResolution: node` mode, which TypeScript 6 deprecates and 7
+  removes. Migrate to root imports — see
+  [Using the library](#using-the-library). Planned for removal in a
+  future major.
 
 ## About
+
+### How Frodo Works
+
+The library is multi-instantiable: each `frodo` instance connects to one Ping Identity Platform instance at a time, and multiple instances can run concurrently — e.g. to synchronize configuration between a source and a target environment. (Frodo Library 1.x operated using a global singleton, making it impossible to connect to more than one platform instance at a time.)
+
+The library exposes two main types describing its modules ([Frodo](https://rockcarver.github.io/frodo-lib/types/Reference.Frodo.html)) and state ([State](https://rockcarver.github.io/frodo-lib/types/Reference.State.html)). Each module in turn exports its collection of functions as a type as well. Exposing the library structure as types enables auto-completion for both JS and TS developers with properly configured IDEs like Visual Studio Code and also serves as an abstraction layer between what the library exposes vs what and how it's implemented.
+
+The `frodo` default instance (and each factory-created instance) organizes functionality into modules — see the module table below — and every module function takes the instance's `state` (connection details, tokens, and settings) implicitly, so calls stay concise. A default singleton-style instance is available as `frodo` for quick scripts; use the `createInstance*` factory functions when you need concurrent connections to more than one instance.
 
 ### Modules
 
 List of modules that have been updated and/or added by version:
 
-| Module                     | Since | Capabilities |
-| -------------------------- | ----- | ------------ |
-| frodo.admin                | 1.0.0 | Library of common and complex admin tasks. |
-| frodo.agent                | 1.0.0 | Manage web, java, and gateway agents. |
-| frodo.am.config            | 3.0.1 | Manage all AM entities that are not otherwise managed in Frodo (chains, modules, tree config, servers, webhooks, etc.) |
-| frodo.app                  | 2.0.0 | Manage platform applications and dependencies. |
-| frodo.authn.journey        | 1.0.0 | Manage authentication journeys. |
-| frodo.authn.node           | 1.0.0 | Manage authentication nodes. |
-| frodo.authn.settings       | 2.0.0 | Manage realm-wide authentication settings. |
-| frodo.authz.policy         | 1.0.0 | Manage authorization policies and dependencies. |
-| frodo.authz.policySet      | 1.0.0 | Manage policy sets and dependencies. |
-| frodo.authz.resourceType   | 1.0.0 | Manage resource types and dependencies. |
-| frodo.cache                | 2.0.0 | Token cache management exposed through the library but primarily used internally. |
-| frodo.cloud.adminFed       | 1.0.0 | Manage PingOne Advanced Identity Cloud admin federation. |
-| frodo.cloud.env            | 2.0.3 | Manage PingOne Advanced Identity Cloud environment settings (custom domains, cookie domains, federation enforcement, release, SSO cookie config, etc.). |
-| frodo.cloud.env.cert       | 2.0.3 | Manage certificates in PingOne Advanced Identity Cloud |
-| frodo.cloud.env.csr        | 2.0.3 | Manage certificate signing requests in PingOne Advanced Identity Cloud |
-| frodo.cloud.env.promotion  | 2.0.3 | Manage promotions in PingOne Advanced Identity Cloud |
-| frodo.cloud.feature        | 1.0.0 | Obtain info on PingOne Advanced Identity Cloud features. |
-| frodo.cloud.idmFeature     | 4.6.0 | Read, validate, and install IDM tenant-configuration features (distinct from `frodo.cloud.feature`, which covers AM-side platform features). |
-| frodo.cloud.log            | 1.0.0 | Access PingOne Advanced Identity Cloud debug and audit logs. |
-| frodo.cloud.secret         | 1.0.0 | Mange secrets in PingOne Advanced Identity Cloud. |
-| frodo.cloud.serviceAccount | 1.0.0 | Manage service accounts in PingOne Advanced Identity Cloud. |
-| frodo.cloud.startup        | 1.0.0 | Apply changes to secrets and variables and restart services in PingOne Advanced Identity Cloud. |
-| frodo.cloud.variable       | 1.0.0 | Manage variables in PingOne Advanced Identity Cloud. |
-| frodo.config               | 2.0.0 | Manage the whole platform configuration. |
-| frodo.conn                 | 1.0.0 | Manage connection profiles. |
-| frodo.email.template       | 1.0.0 | Manage email templates (IDM). |
-| frodo.idm.config           | 2.0.0 | Manage any IDM configuration object. |
-| frodo.idm.connector        | 2.0.0 | Manage IDM connector configuration. |
-| frodo.idm.crypto.          | 2.0.0 | Manage IDM connector configuration. |
-| frodo.idm.managed          | 1.0.0 | Manage IDM managed object schema (managed.json). |
-| frodo.idm.managed.schema   | 4.6.0 | Manage individual managed-object schema properties. Relationship-property CRUD (`readManagedObjectSchemaProperty`/`updateManagedObjectSchemaProperty`/`removeManagedObjectSchemaProperty`) via IDM's dedicated v2 schema API requires IDM 7.5+ (Cloud always qualifies; not reachable on classic, which has no IDM at all); also supports auto-creating a bidirectional relationship's reverse side in the same write. |
-| frodo.idm.managedSystem    | 4.6.0 | Manage managed-system-object (`svcacct`, `teammember`) records. Read-only for schema (see `frodo.idm.managedSystem.schema`). |
-| frodo.idm.managedSystem.schema | 4.6.0 | Read managed-system-object schema (`svcacct`, `teammember`). Read-only -- these are Ping-owned system types, not user-customizable. |
-| frodo.idm.mapping          | 2.0.0 | Manage IDM mappings (sync.json). |
-| frodo.idm.organization     | 1.0.0 | Limited Org Model management exposed through the library but primarily used internally. |
-| frodo.idm.recon            | 2.0.0 | Read, start, cancel IDM recons. |
-| frodo.idm.script           | 2.0.0 | Compile and evaluate IDM scripts. |
-| frodo.idm.system           | 2.0.0 | Manage data in connected systems. |
-| frodo.info                 | 1.0.0 | Obtain information about the connected instance and authenticated identity. |
-| frodo.login                | 1.0.0 | Authenticate and obtain necessary tokens. |
-| frodo.oauth2oidc.client    | 1.0.0 | Manage OAuth 2.0 clients. |
-| frodo.oauth2oidc.endpoint  | 2.0.0 | Limited OAuth 2.0 grant flows exposed through the library but primarily used internally. |
-| frodo.oauth2oidc.external  | 1.0.0 | Manage external OAuth 2.0/OIDC 1.0 (social) identity providers. |
-| frodo.oauth2oidc.issuer    | 2.0.0 | Manage trusted OAuth 2.0 JWT issuers. |
-| frodo.oauth2oidc.provider  | 1.0.0 | Manage the realm OAuth 2.0 provider. |
-| frodo.rawConfig            | 4.0.0 | Export raw IDM configuration. |
-| frodo.realm                | 1.0.0 | Manage realms. |
-| frodo.role                 | 3.0.1 | Manage Internal Roles. |
-| frodo.saml.circlesOfTrust  | 1.0.0 | Manage SAML 2.0 circles of trust. |
-| frodo.saml.entityProvider  | 1.0.0 | Manage SAML 2.0 entity providers. |
-| frodo.script               | 1.0.0 | Manage access management scripts. |
-| frodo.scriptType           | 3.0.1 | Manage access management script types. Since 4.6.0, also introspects the bindings (available objects/APIs) exposed to scripts running in a given scripting context via `readScriptBindings`. |
-| frodo.secretStore          | 3.0.1 | Manage access management secret stores in classic and forgeops deployments. |
-| frodo.server               | 3.0.1 | Manage access management servers in classic and forgeops deployments. |
-| frodo.service              | 1.0.0 | Manage access management services. |
-| frodo.session              | 2.0.0 | Limited session management exposed through the library but primarily used internally. |
-| frodo.site                 | 3.0.1 | Manage access management sites in classic and forgeops deployments. |
-| frodo.state                | 1.0.0 | Manage library state. |
-| frodo.theme                | 1.0.0 | Manage platform themes (hosted pages). |
-| frodo.user                 | 3.0.1 | Manage access management users in classic deployments. |
-| frodo.utils.constants      | 1.0.0 | Access relevant library constants. |
-| frodo.utils.jose           | 1.0.0 | Jose utility functions exposed through the library but primarily used internally. |
-| frodo.utils.json           | 1.0.0 | JSON utility functions exposed through the library but primarily used internally. |
-| frodo.utils.version        | 1.0.0 | Utility functions to obtain current library version and available released versions. |
+| Module                         | Since | Capabilities                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------------ | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| frodo.admin                    | 1.0.0 | Library of common and complex admin tasks.                                                                                                                                                                                                                                                                                                                                                                             |
+| frodo.agent                    | 1.0.0 | Manage web, java, and gateway agents.                                                                                                                                                                                                                                                                                                                                                                                  |
+| frodo.am.config                | 3.0.1 | Manage all AM entities that are not otherwise managed in Frodo (chains, modules, tree config, servers, webhooks, etc.)                                                                                                                                                                                                                                                                                                 |
+| frodo.app                      | 2.0.0 | Manage platform applications and dependencies.                                                                                                                                                                                                                                                                                                                                                                         |
+| frodo.authn.journey            | 1.0.0 | Manage authentication journeys.                                                                                                                                                                                                                                                                                                                                                                                        |
+| frodo.authn.node               | 1.0.0 | Manage authentication nodes.                                                                                                                                                                                                                                                                                                                                                                                           |
+| frodo.authn.settings           | 2.0.0 | Manage realm-wide authentication settings.                                                                                                                                                                                                                                                                                                                                                                             |
+| frodo.authz.policy             | 1.0.0 | Manage authorization policies and dependencies.                                                                                                                                                                                                                                                                                                                                                                        |
+| frodo.authz.policySet          | 1.0.0 | Manage policy sets and dependencies.                                                                                                                                                                                                                                                                                                                                                                                   |
+| frodo.authz.resourceType       | 1.0.0 | Manage resource types and dependencies.                                                                                                                                                                                                                                                                                                                                                                                |
+| frodo.cache                    | 2.0.0 | Token cache management exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                                      |
+| frodo.cloud.adminFed           | 1.0.0 | Manage PingOne Advanced Identity Cloud admin federation.                                                                                                                                                                                                                                                                                                                                                               |
+| frodo.cloud.env                | 2.0.3 | Manage PingOne Advanced Identity Cloud environment settings (custom domains, cookie domains, federation enforcement, release, SSO cookie config, etc.).                                                                                                                                                                                                                                                                |
+| frodo.cloud.env.cert           | 2.0.3 | Manage certificates in PingOne Advanced Identity Cloud                                                                                                                                                                                                                                                                                                                                                                 |
+| frodo.cloud.env.csr            | 2.0.3 | Manage certificate signing requests in PingOne Advanced Identity Cloud                                                                                                                                                                                                                                                                                                                                                 |
+| frodo.cloud.env.promotion      | 2.0.3 | Manage promotions in PingOne Advanced Identity Cloud                                                                                                                                                                                                                                                                                                                                                                   |
+| frodo.cloud.esvCount           | 2.0.2 | Obtain environment secrets and variables (ESV) count information for PingOne Advanced Identity Cloud.                                                                                                                                                                                                                                                                                                                  |
+| frodo.cloud.feature            | 1.0.0 | Obtain info on PingOne Advanced Identity Cloud features.                                                                                                                                                                                                                                                                                                                                                               |
+| frodo.cloud.idmFeature         | 4.6.0 | Read, validate, and install IDM tenant-configuration features (distinct from `frodo.cloud.feature`, which covers AM-side platform features).                                                                                                                                                                                                                                                                           |
+| frodo.cloud.iga                | 4.0.0 | Manage Identity Governance (IGA) configuration: workflows, certification templates, events, glossary, request forms, and request types.                                                                                                                                                                                                                                                                                |
+| frodo.cloud.iga.workflow       | 4.0.0 | Export, import, and delete IGA workflows.                                                                                                                                                                                                                                                                                                                                                                              |
+| frodo.cloud.log                | 1.0.0 | Access PingOne Advanced Identity Cloud debug and audit logs.                                                                                                                                                                                                                                                                                                                                                           |
+| frodo.cloud.secret             | 1.0.0 | Manage secrets in PingOne Advanced Identity Cloud.                                                                                                                                                                                                                                                                                                                                                                     |
+| frodo.cloud.serviceAccount     | 1.0.0 | Manage service accounts in PingOne Advanced Identity Cloud.                                                                                                                                                                                                                                                                                                                                                            |
+| frodo.cloud.startup            | 1.0.0 | Apply changes to secrets and variables and restart services in PingOne Advanced Identity Cloud.                                                                                                                                                                                                                                                                                                                        |
+| frodo.cloud.variable           | 1.0.0 | Manage variables in PingOne Advanced Identity Cloud.                                                                                                                                                                                                                                                                                                                                                                   |
+| frodo.cloud.wsfed              | 4.0.0 | Manage WS-Federation in PingOne Advanced Identity Cloud (SP connections, IdP adapters, authentication policies, signing keys, federation info, virtual host names).                                                                                                                                                                                                                                                    |
+| frodo.config                   | 2.0.0 | Manage the whole platform configuration.                                                                                                                                                                                                                                                                                                                                                                               |
+| frodo.conn                     | 1.0.0 | Manage connection profiles.                                                                                                                                                                                                                                                                                                                                                                                            |
+| frodo.email.template           | 1.0.0 | Manage email templates (IDM).                                                                                                                                                                                                                                                                                                                                                                                          |
+| frodo.idm.config               | 2.0.0 | Manage any IDM configuration object.                                                                                                                                                                                                                                                                                                                                                                                   |
+| frodo.idm.connector            | 2.0.0 | Manage IDM connector configuration.                                                                                                                                                                                                                                                                                                                                                                                    |
+| frodo.idm.crypto               | 2.0.0 | Encrypt and decrypt IDM configuration values (attribute-level encryption for sensitive configuration data).                                                                                                                                                                                                                                                                                                            |
+| frodo.idm.managed              | 1.0.0 | Manage IDM managed object schema (managed.json).                                                                                                                                                                                                                                                                                                                                                                       |
+| frodo.idm.managed.schema       | 4.6.0 | Manage individual managed-object schema properties. Relationship-property CRUD (`readManagedObjectSchemaProperty`/`updateManagedObjectSchemaProperty`/`removeManagedObjectSchemaProperty`) via IDM's dedicated v2 schema API requires IDM 7.5+ (Cloud always qualifies; not reachable on classic, which has no IDM at all); also supports auto-creating a bidirectional relationship's reverse side in the same write. |
+| frodo.idm.managedSystem        | 4.6.0 | Manage managed-system-object (`svcacct`, `teammember`) records. Read-only for schema (see `frodo.idm.managedSystem.schema`).                                                                                                                                                                                                                                                                                           |
+| frodo.idm.managedSystem.schema | 4.6.0 | Read managed-system-object schema (`svcacct`, `teammember`). Read-only -- these are Ping-owned system types, not user-customizable.                                                                                                                                                                                                                                                                                    |
+| frodo.idm.mapping              | 2.0.0 | Manage IDM mappings (sync.json).                                                                                                                                                                                                                                                                                                                                                                                       |
+| frodo.idm.organization         | 1.0.0 | Limited Org Model management exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                                |
+| frodo.idm.recon                | 2.0.0 | Read, start, cancel IDM recons.                                                                                                                                                                                                                                                                                                                                                                                        |
+| frodo.idm.script               | 2.0.0 | Compile and evaluate IDM scripts.                                                                                                                                                                                                                                                                                                                                                                                      |
+| frodo.idm.system               | 2.0.0 | Manage data in connected systems.                                                                                                                                                                                                                                                                                                                                                                                      |
+| frodo.info                     | 1.0.0 | Obtain information about the connected instance and authenticated identity.                                                                                                                                                                                                                                                                                                                                            |
+| frodo.login                    | 1.0.0 | Authenticate and obtain necessary tokens.                                                                                                                                                                                                                                                                                                                                                                              |
+| frodo.oauth2oidc.client        | 1.0.0 | Manage OAuth 2.0 clients.                                                                                                                                                                                                                                                                                                                                                                                              |
+| frodo.oauth2oidc.endpoint      | 2.0.0 | Limited OAuth 2.0 grant flows exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                               |
+| frodo.oauth2oidc.external      | 1.0.0 | Manage external OAuth 2.0/OIDC 1.0 (social) identity providers.                                                                                                                                                                                                                                                                                                                                                        |
+| frodo.oauth2oidc.issuer        | 2.0.0 | Manage trusted OAuth 2.0 JWT issuers.                                                                                                                                                                                                                                                                                                                                                                                  |
+| frodo.oauth2oidc.provider      | 1.0.0 | Manage the realm OAuth 2.0 provider.                                                                                                                                                                                                                                                                                                                                                                                   |
+| frodo.rawConfig                | 4.0.0 | Export raw IDM configuration.                                                                                                                                                                                                                                                                                                                                                                                          |
+| frodo.realm                    | 1.0.0 | Manage realms.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| frodo.role                     | 3.0.1 | Manage Internal Roles.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| frodo.saml.circlesOfTrust      | 1.0.0 | Manage SAML 2.0 circles of trust.                                                                                                                                                                                                                                                                                                                                                                                      |
+| frodo.saml.entityProvider      | 1.0.0 | Manage SAML 2.0 entity providers.                                                                                                                                                                                                                                                                                                                                                                                      |
+| frodo.script                   | 1.0.0 | Manage access management scripts.                                                                                                                                                                                                                                                                                                                                                                                      |
+| frodo.scriptType               | 3.0.1 | Manage access management script types. Since 4.6.0, also introspects the bindings (available objects/APIs) exposed to scripts running in a given scripting context via `readScriptBindings`.                                                                                                                                                                                                                           |
+| frodo.secretStore              | 3.0.1 | Manage access management secret stores in classic and forgeops deployments.                                                                                                                                                                                                                                                                                                                                            |
+| frodo.server                   | 3.0.1 | Manage access management servers in classic and forgeops deployments.                                                                                                                                                                                                                                                                                                                                                  |
+| frodo.service                  | 1.0.0 | Manage access management services.                                                                                                                                                                                                                                                                                                                                                                                     |
+| frodo.session                  | 2.0.0 | Limited session management exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                                  |
+| frodo.site                     | 3.0.1 | Manage access management sites in classic and forgeops deployments.                                                                                                                                                                                                                                                                                                                                                    |
+| frodo.state                    | 1.0.0 | Manage library state.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| frodo.theme                    | 1.0.0 | Manage platform themes (hosted pages).                                                                                                                                                                                                                                                                                                                                                                                 |
+| frodo.user                     | 3.0.1 | Manage access management users in classic deployments.                                                                                                                                                                                                                                                                                                                                                                 |
+| frodo.utils.constants          | 1.0.0 | Access relevant library constants.                                                                                                                                                                                                                                                                                                                                                                                     |
+| frodo.utils.jose               | 1.0.0 | Jose utility functions exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                                      |
+| frodo.utils.json               | 1.0.0 | JSON utility functions exposed through the library but primarily used internally.                                                                                                                                                                                                                                                                                                                                      |
+| frodo.utils.version            | 1.0.0 | Utility functions to obtain current library version and available released versions.                                                                                                                                                                                                                                                                                                                                   |
 
 ### Secure Token Caching
 
@@ -261,16 +166,19 @@ The library automatically refreshes session and access tokens before they expire
 
 ### Node.js Versions
 
-| Node.js |      frodo-lib 1.x |      frodo-lib 2.x | frodo-lib 3.x.     | ***frodo-lib 4.x*** |      frodo-lib 5.x |
-| :-----: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-|   14    | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: |
-|   16    | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: |
-|   18    | :white_check_mark: | :white_check_mark: | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: |
-|   20    | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: |
-|   22    | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :heavy_minus_sign: |
-|   24    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: |
-|   26    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: |
-|   28    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :white_check_mark: |
+| Node.js |   frodo-lib 1.x    |   frodo-lib 2.x    |   frodo-lib 3.x.   | _**frodo-lib 4.x**_ |   frodo-lib 5.x    |
+| :-----: | :----------------: | :----------------: | :----------------: | :-----------------: | :----------------: |
+|   14    | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign:  | :heavy_minus_sign: |
+|   16    | :white_check_mark: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign:  | :heavy_minus_sign: |
+|   18    | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: | :heavy_minus_sign:  | :heavy_minus_sign: |
+|   20    | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: | :heavy_minus_sign:  | :heavy_minus_sign: |
+|   22    | :heavy_minus_sign: | :white_check_mark: | :white_check_mark: | :white_check_mark:  | :white_check_mark: |
+|   24    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :white_check_mark:  | :white_check_mark: |
+|   26    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :white_check_mark:  | :white_check_mark: |
+|   28    | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign: | :heavy_minus_sign:  | :heavy_minus_sign: |
+
+The table reflects the Node.js versions each release line was tested
+against. The test matrix currently runs Node 22, 24, and 26.
 
 ## Considerations
 
@@ -290,7 +198,7 @@ Frodo supports exporting and importing of ESV secret values. To leave stuartship
 
 For those who want to contribute or are just curious about the build process.
 
-- Make sure you have **Node.js 20** or newer (**24** preferred) and npm installed.
+- Make sure you have **Node.js 22** or newer (**26** preferred — the CI matrix runs 22, 24, and 26) and npm installed.
 - Clone this repo
   ```console
   git clone https://github.com/rockcarver/frodo-lib.git
@@ -337,6 +245,26 @@ const {
   state,
 } = require('@rockcarver/frodo-lib');
 ```
+
+### Import data-model types (TypeScript)
+
+All 120 data-model types (skeletons, export/import option interfaces,
+shared model types — e.g. `TreeSkeleton`, `ScriptExportInterface`,
+`IdObjectSkeletonInterface`) are exported from the root entry and work
+under every TypeScript `moduleResolution` mode:
+
+```typescript
+import {
+  frodo,
+  type FullExportInterface,
+  type TreeSkeleton,
+} from '@rockcarver/frodo-lib';
+```
+
+The per-file `@rockcarver/frodo-lib/types/<module>` deep-import subpath is
+**deprecated** (it only resolves under the legacy `moduleResolution: node`
+mode, which TypeScript 6 deprecates and TypeScript 7 removes) and will be
+removed in a future major release. Use root imports instead.
 
 ### Use the library
 
@@ -568,4 +496,4 @@ If you would like to contribute to frodo, please refer to the [contributing inst
 
 ## Maintaining
 
-If you are a maintainer of this repository, please refer to the [pipeline and release process instructions](https://github.com/rockcarver/frodo-lib/blob/main/PIPELINE.md).
+If you are a maintainer of this repository, please refer to the [pipeline and release process instructions](https://github.com/rockcarver/frodo-lib/blob/main/PIPELINE.md), the [build environment documentation](https://github.com/rockcarver/frodo-lib/blob/main/BUILD-ENV.md) (toolchain, bundler details, dependency policy), and the [migration guide](https://github.com/rockcarver/frodo-lib/blob/main/MIGRATION.md) (breaking changes per major — keep it updated when removing or deprecating public functions).

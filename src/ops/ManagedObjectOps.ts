@@ -6,14 +6,14 @@ import {
 import {
   countManagedObjects as _countManagedObjects,
   createManagedObject as _createManagedObject,
-  DEFAULT_PAGE_SIZE,
   deleteManagedObject as _deleteManagedObject,
   getManagedObject as _getManagedObject,
   patchManagedObject as _patchManagedObject,
   putManagedObject as _putManagedObject,
-  queryAllManagedObjectsByType,
   queryManagedObjects as _queryManagedObjects,
   queryRelatedManagedObjects as _queryRelatedManagedObjects,
+  DEFAULT_PAGE_SIZE,
+  queryAllManagedObjectsByType,
 } from '../api/ManagedObjectApi';
 import { getManagedSystemObject as _getManagedSystemObject } from '../api/ManagedSystemObjectApi';
 import Constants from '../shared/Constants';
@@ -1041,11 +1041,7 @@ export async function resolveFullName({
 
 /** What kind of principal a resolved identity turned out to be. */
 export type ResolvedIdentityKind =
-  | 'user'
-  | 'service'
-  | 'admin'
-  | 'admin-unconfirmed'
-  | 'unknown';
+  'user' | 'service' | 'admin' | 'admin-unconfirmed' | 'unknown';
 
 export type ResolvedIdentity = {
   /** The uuid that was resolved (extracted from the DN, if one was given). */

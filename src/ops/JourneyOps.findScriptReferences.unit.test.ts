@@ -15,9 +15,6 @@ jest.unstable_mockModule('../api/TreeApi', () => ({
 
 jest.unstable_mockModule('./NodeOps', () => ({
   importCustomNodes: jest.fn(),
-  isCloudOnlyNode: jest.fn(() => false),
-  isCustomNode: jest.fn(() => false),
-  isPremiumNode: jest.fn(() => false),
   readCustomNode: jest.fn(),
   readNode: jest.fn(),
   readNodes: readNodesMock,
@@ -48,7 +45,9 @@ describe('findScriptReferences', () => {
   });
 
   test('returns an empty array, not an error, when nothing references the script', async () => {
-    readNodesMock.mockResolvedValue([{ _id: 'node-1', script: 'other-script' }]);
+    readNodesMock.mockResolvedValue([
+      { _id: 'node-1', script: 'other-script' },
+    ]);
     getTrees.mockResolvedValue({
       result: [tree('Login', { 'node-1': nodeRef('ScriptedDecisionNode') })],
     });
@@ -93,8 +92,16 @@ describe('findScriptReferences', () => {
       {
         _id: 'page-node-1',
         nodes: [
-          { _id: 'inner-node-1', displayName: 'Username', nodeType: 'UsernameCollectorNode' },
-          { _id: 'inner-node-2', displayName: 'Check risk', nodeType: 'ScriptedDecisionNode' },
+          {
+            _id: 'inner-node-1',
+            displayName: 'Username',
+            nodeType: 'UsernameCollectorNode',
+          },
+          {
+            _id: 'inner-node-2',
+            displayName: 'Check risk',
+            nodeType: 'ScriptedDecisionNode',
+          },
         ],
       },
       { _id: 'inner-node-2', script: 'target-script' },
@@ -152,7 +159,10 @@ describe('findScriptReferences', () => {
       ),
     });
 
-    await findScriptReferences({ scriptId: 'target-script', state: mockState() });
+    await findScriptReferences({
+      scriptId: 'target-script',
+      state: mockState(),
+    });
 
     expect(readNodesMock).toHaveBeenCalledTimes(1);
     expect(getTrees).toHaveBeenCalledTimes(1);

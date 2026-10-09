@@ -12,8 +12,12 @@
 import { jest } from '@jest/globals';
 
 const getConnectionProfile = jest.fn(async (_args?: any): Promise<any> => ({}));
-const loadConnectionProfile = jest.fn(async (_args?: any): Promise<any> => false);
-const saveConnectionProfile = jest.fn(async (_args?: any): Promise<any> => true);
+const loadConnectionProfile = jest.fn(
+  async (_args?: any): Promise<any> => false
+);
+const saveConnectionProfile = jest.fn(
+  async (_args?: any): Promise<any> => true
+);
 
 jest.unstable_mockModule('./ConnectionProfileOps', () => ({
   getConnectionProfile,
@@ -46,8 +50,13 @@ jest.unstable_mockModule('../api/AuthenticateApi', () => ({
   step,
 }));
 
-let sessionInfoResponse: { maxIdleExpirationTime: string; maxSessionExpirationTime: string };
-const getSessionInfo = jest.fn(async (_args?: any): Promise<any> => sessionInfoResponse);
+let sessionInfoResponse: {
+  maxIdleExpirationTime: string;
+  maxSessionExpirationTime: string;
+};
+const getSessionInfo = jest.fn(
+  async (_args?: any): Promise<any> => sessionInfoResponse
+);
 
 jest.unstable_mockModule('./SessionOps', () => ({
   getSessionInfo,

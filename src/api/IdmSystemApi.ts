@@ -1,5 +1,4 @@
 import util from 'util';
-
 import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
@@ -333,13 +332,7 @@ export async function putSystemObject({
 
 export interface SystemObjectPatchOperationInterface {
   operation:
-    | 'add'
-    | 'copy'
-    | 'increment'
-    | 'move'
-    | 'remove'
-    | 'replace'
-    | 'transform';
+    'add' | 'copy' | 'increment' | 'move' | 'remove' | 'replace' | 'transform';
   field: string;
   value?: any;
   from?: string;

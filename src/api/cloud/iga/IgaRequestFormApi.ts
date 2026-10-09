@@ -1,5 +1,4 @@
 import util from 'util';
-
 import Constants from '../../../shared/Constants';
 import { State } from '../../../shared/State';
 import { getApiSearchAll } from '../../../utils/ExportImportUtils';
@@ -37,11 +36,7 @@ export type FieldType =
   | 'section'
   | 'formText';
 export type SelectFieldObjectType =
-  | 'entitlement'
-  | 'application'
-  | 'organization'
-  | 'role'
-  | 'user';
+  'entitlement' | 'application' | 'organization' | 'role' | 'user';
 
 export interface RequestFormEvent {
   type?: 'script';

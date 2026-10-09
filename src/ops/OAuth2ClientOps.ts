@@ -3,8 +3,8 @@ import {
   deleteOAuth2Client as _deleteOAuth2Client,
   getOAuth2Client as _getOAuth2Client,
   getOAuth2Clients as _getOAuth2Clients,
-  type OAuth2ClientSkeleton,
   putOAuth2Client as _putOAuth2Client,
+  type OAuth2ClientSkeleton,
 } from '../api/OAuth2ClientApi';
 import { type ScriptSkeleton } from '../api/ScriptApi';
 import { State } from '../shared/State';
@@ -531,13 +531,11 @@ async function exportOAuth2ClientDependencies(
               );
             exportData.script[scriptId] = scriptData;
           } catch (error) {
-            if (
-              !(
-                (error as FrodoError).httpStatus === 403 &&
-                (error as FrodoError).httpMessage ===
-                  'This operation is not available in PingOne Advanced Identity Cloud.'
-              )
-            ) {
+            if (!(
+              (error as FrodoError).httpStatus === 403 &&
+              (error as FrodoError).httpMessage ===
+                'This operation is not available in PingOne Advanced Identity Cloud.'
+            )) {
               throw new FrodoError(
                 `Error retrieving ${getCurrentRealmName(state) + ' realm'} script ${scriptId} referenced by ${key} key in client ${clientData['_id']}`,
                 error
