@@ -13,6 +13,7 @@ import {
   putRawKeys,
   putRawMonitoringLogs,
   putRawWs,
+  ApiVersion
 } from '../api/RawConfigApi';
 import { State } from '../shared/State';
 import { FrodoError } from './FrodoError';
@@ -30,39 +31,33 @@ export type RawConfig = {
    * @param {object} payload the import payload that will be pushed
    * @returns {Promise<object>} The raw configuration JSON object at the specified path
    */
-  importRawConfig(
-    endpoint: string,
-    payload: object
-  ): Promise<object>;
+  importRawConfig(endpoint: string, payload: object): Promise<object>;
 };
 
 export default (state: State): RawConfig => {
   return {
-    async exportRawConfig(
-      endpoint: string
-    ): Promise<object> {
+    async exportRawConfig(endpoint: string): Promise<object> {
       return exportRawConfig({ endpoint, state });
     },
-    async importRawConfig(
-      endpoint: string,
-      payload: object
-    ): Promise<object> {
+    async importRawConfig(endpoint: string, payload: object): Promise<object> {
       return importRawConfig({ endpoint, payload, state });
     },
   };
 };
 
-
 /**
  * Exports raw configuration
  * @param {string} endpoint The path to the resource
+ * @param {ApiVersion} apiVersion Optional API version used to configure IGA requests
  * @returns {Promise<object>} The raw configuration JSON object at the specified path
  */
 export async function exportRawConfig({
   endpoint,
+  apiVersion,
   state,
 }: {
   endpoint: string;
+  apiVersion?: ApiVersion;
   state: State;
 }): Promise<object> {
   try {
@@ -78,7 +73,7 @@ export async function exportRawConfig({
       case 'environment':
         return await getRawEnv({ endpoint, state });
       case 'iga':
-        return await getRawIga({ endpoint, state });
+        return await getRawIga({ endpoint, apiVersion, state });
       case 'keys':
         return await getRawKeys({ endpoint, state });
       case 'monitoring':
@@ -103,16 +98,19 @@ export async function exportRawConfig({
 /**
  * Imports raw configuration
  * @param {string} endpoint The path to the resource
- * @param {object} payload the import payload that will be pushed
+ * @param {object} payload The import payload that will be pushed
+ * @param {ApiVersion} apiVersion Optional API version used to configure IGA requests
  * @returns {Promise<object>} The raw configuration JSON object at the specified path
  */
 export async function importRawConfig({
   endpoint,
   payload,
+  apiVersion,
   state,
 }: {
   endpoint: string;
-  payload: Object;
+  payload: object;
+  apiVersion?: ApiVersion;
   state: State;
 }): Promise<object> {
   try {
@@ -139,6 +137,7 @@ export async function importRawConfig({
         return await putRawIga({
           endpoint,
           payload,
+          apiVersion,
           state,
         });
       case 'keys':

@@ -6,10 +6,10 @@
  *    To record and update ESM snapshots, you must call the test:record
  *    script and override all the connection state variables required
  *    to connect to the env to record from:
- *        
+ *
  *        phase 1
  *        FRODO_DEBUG=1 FRODO_RECORD_PHASE=1 FRODO_HOST=https://openam-frodo-dev.forgeblocks.com/am npm run test:record RawConfigOps
- * 
+ *
  *        phase 2
  *        FRODO_DEBUG=1 FRODO_RECORD_PHASE=2 FRODO_HOST=https://openam-frodo-dev.forgeblocks.com/am npm run test:record RawConfigOps
  *    The above command assumes that you have a connection profile for
@@ -34,11 +34,10 @@
  */
 import { state } from '../index';
 import { template1, template2 } from '../test/setup/EmailTemplateSetup';
-import { customNode1, customNode2 } from '../test/setup/NodeSetup';
-import { variable1, variable2 } from '../test/setup/VariablesSetup';
 import { requestType1, requestType3 } from '../test/setup/IgaRequestTypeSetup';
+import { customNode1, customNode2 } from '../test/setup/NodeSetup';
 import * as TestData from '../test/setup/RawConfigSetup';
-import { variable1, variable2 } from '../test/setup/VariablesSetup';
+import {  variable1, variable2} from '../test/setup/VariablesSetup';
 import { encode } from '../utils/Base64Utils';
 import { EMAIL_TEMPLATE_TYPE } from './EmailTemplateOps';
 import * as RawConfigOps from './RawConfigOps';
@@ -125,24 +124,25 @@ describe('RawConfigOps', () => {
       process.env.FRODO_RECORD_PHASE === '2')
   ) {
     describe('IGA Tests', () => {
-      describe('exportRawConfig()', () => {      
+      describe('exportRawConfig()', () => {
         test('4: Export raw config iga', async () => {
-        const response = await RawConfigOps.exportRawConfig({
-          endpoint: `/iga/governance/requestTypes/${requestType1.id}`,
-          state,
+          const response = await RawConfigOps.exportRawConfig({
+            endpoint: `/iga/governance/requestTypes/${requestType1.id}`,
+            state,
+          });
+          expect(response).toMatchSnapshot();
         });
-        expect(response).toMatchSnapshot();
       });
-    });
-      describe('importRawConfig()', () => {test(`4: importRawConfig iga`, async () => {
-        const response = await RawConfigOps.importRawConfig({
-          endpoint: `/iga/governance/requestTypes/${requestType3.id}`,
-          payload: requestType3,
-          state,
+      describe('importRawConfig()', () => {
+        test(`4: importRawConfig iga`, async () => {
+          const response = await RawConfigOps.importRawConfig({
+            endpoint: `/iga/governance/requestTypes/${requestType3.id}`,
+            payload: requestType3,
+            state,
+          });
+          expect(response).toMatchSnapshot();
         });
-        expect(response).toMatchSnapshot();
       });
-    });  
     });
   }
 });
