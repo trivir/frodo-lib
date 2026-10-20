@@ -76,6 +76,7 @@ describe('ConfigOps', () => {
     describe('Cloud Tests', () => {
       beforeEach(() => {
         setDefaultState();
+        state.setAmVersion(undefined);
       });
       describe('exportFullConfiguration()', () => {
         test('0: Method is implemented', async () => {
@@ -186,6 +187,77 @@ describe('ConfigOps', () => {
             meta: expect.any(Object),
           });
         });
+
+        test('6: Export only static configurations', async () => {
+          // This test was recording on a newer AM version of cloud, so in order for the journeys to export correctly the version needs to be set explicitly
+          state.setAmVersion('8.1.0');
+          const response = await ConfigOps.exportFullConfiguration({
+            options: {
+              useStringArrays: true,
+              noDecode: false,
+              coords: true,
+              includeDefault: true,
+              includeActiveValues: true,
+              includeReadOnly: true,
+              onlyRealm: false,
+              onlyGlobal: false,
+              onlyCustom: false,
+              includeStatic: true,
+              includeDynamic: false,
+            },
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          expect(response).toMatchSnapshot({
+            meta: expect.any(Object),
+          });
+        });
+
+        test('7: Export only dynamic configurations', async () => {
+          const response = await ConfigOps.exportFullConfiguration({
+            options: {
+              useStringArrays: true,
+              noDecode: false,
+              coords: true,
+              includeDefault: true,
+              includeActiveValues: true,
+              includeReadOnly: true,
+              onlyRealm: false,
+              onlyGlobal: false,
+              onlyCustom: false,
+              includeStatic: false,
+              includeDynamic: true,
+            },
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          expect(response).toMatchSnapshot({
+            meta: expect.any(Object),
+          });
+        });
+
+        test('8: Do not export static or dynamic configurations', async () => {
+          const response = await ConfigOps.exportFullConfiguration({
+            options: {
+              useStringArrays: true,
+              noDecode: false,
+              coords: true,
+              includeDefault: true,
+              includeActiveValues: true,
+              includeReadOnly: true,
+              onlyRealm: false,
+              onlyGlobal: false,
+              onlyCustom: false,
+              includeStatic: false,
+              includeDynamic: false,
+            },
+            resultCallback: snapshotResultCallback,
+            state,
+          });
+          expect(response).toMatchSnapshot({
+            meta: expect.any(Object),
+          });
+        });
       });
 
       describe('importFullConfiguration()', () => {
@@ -208,7 +280,7 @@ describe('ConfigOps', () => {
         setDefaultState(Constants.CLASSIC_DEPLOYMENT_TYPE_KEY);
       });
       describe('exportFullConfiguration()', () => {
-        test('6: Export everything with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
+        test('9: Export everything with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
           const response = await ConfigOps.exportFullConfiguration({
             options: {
               useStringArrays: true,
@@ -229,7 +301,7 @@ describe('ConfigOps', () => {
           });
         });
 
-        test('7: Export everything without string arrays, decoding variables, excluding journey coordinates and default scripts', async () => {
+        test('10: Export everything without string arrays, decoding variables, excluding journey coordinates and default scripts', async () => {
           const response = await ConfigOps.exportFullConfiguration({
             options: {
               useStringArrays: false,
@@ -250,7 +322,7 @@ describe('ConfigOps', () => {
           });
         });
 
-        test('8: Export only importable with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
+        test('11: Export only importable with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
           const response = await ConfigOps.exportFullConfiguration({
             options: {
               useStringArrays: true,
@@ -271,7 +343,7 @@ describe('ConfigOps', () => {
           });
         });
 
-        test('9: Export only root realm config with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
+        test('12: Export only root realm config with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
           const response = await ConfigOps.exportFullConfiguration({
             options: {
               useStringArrays: true,
@@ -292,7 +364,7 @@ describe('ConfigOps', () => {
           });
         });
 
-        test('10: Export only global config with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
+        test('13: Export only global config with string arrays, decoding variables, including journey coordinates and default scripts', async () => {
           const response = await ConfigOps.exportFullConfiguration({
             options: {
               useStringArrays: true,
