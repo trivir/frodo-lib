@@ -50,6 +50,7 @@ import IgaCertificationTemplateOps, {
 } from '../ops/cloud/iga/IgaCertificationTemplateOps';
 import IgaEventOps, { IgaEvent } from '../ops/cloud/iga/IgaEventOps';
 import IgaGlossaryOps, { Glossary } from '../ops/cloud/iga/IgaGlossaryOps';
+import IgaConfigOps, { IgaConfig } from '../ops/cloud/iga/IgaConfigOps'
 import IgaRequestFormOps, {
   RequestForm,
 } from '../ops/cloud/iga/IgaRequestFormOps';
@@ -184,6 +185,7 @@ export type Frodo = {
       requestForm: RequestForm;
       requestType: RequestType;
       workflow: Workflow;
+      config: IgaConfig
     };
     log: Log;
     secret: Secret;
@@ -457,6 +459,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
         requestForm: IgaRequestFormOps(state),
         requestType: IgaRequestTypeOps(state),
         workflow: IgaWorkflowOps(state),
+        config: IgaConfigOps(state)
       },
       log: LogOps(state),
       secret: SecretsOps(state),
