@@ -1,0 +1,5841 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`IgaScopeOps createScope() 1: Create scope 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: testScope1",
+  "id": "797f225c-5143-47ae-9349-f6e6ed67ac85",
+  "name": "testScope1",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps createScopeExportTemplate() 1: Create Scope Export Template 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {},
+}
+`;
+
+exports[`IgaScopeOps deleteScope() 1: Delete existing scope by id 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: testScope6",
+  "id": "9035fc62-91e3-44af-b84b-c745699ba09b",
+  "metadata": {
+    "createdDate": "2026-09-30T16:12:47.124647293Z",
+    "modifiedDate": "2026-09-30T16:12:47.124648193Z",
+  },
+  "name": "testScope6",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps deleteScopeByName() 1: Delete existing scope by name 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: testScope7",
+  "id": "b4c4d0cc-6e9f-4f2e-9ccf-719bac6d78e6",
+  "metadata": {
+    "createdDate": "2026-09-30T16:16:51.874913071Z",
+    "modifiedDate": "2026-09-30T16:16:51.874914271Z",
+  },
+  "name": "testScope7",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScope() 1: Export existing scope by ID 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "9db2e5b6-e9e1-483e-886a-53e2c47f8d74": {
+      "_rev": 1,
+      "description": "Test scope: testScope2",
+      "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:38.052656573Z",
+        "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+      },
+      "name": "testScope2",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScopeByName() 1: Export existing scope by name 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "9db2e5b6-e9e1-483e-886a-53e2c47f8d74": {
+      "_rev": 1,
+      "description": "Test scope: testScope2",
+      "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:38.052656573Z",
+        "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+      },
+      "name": "testScope2",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps exportScopes() 1: Export existing scopes 1`] = `
+{
+  "meta": Any<Object>,
+  "scope": {
+    "767e6a29-353a-4a99-9f99-84c8925cf20e": {
+      "_rev": 1,
+      "description": "Test scope: testScope8",
+      "id": "767e6a29-353a-4a99-9f99-84c8925cf20e",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:54.837797998Z",
+        "modifiedDate": "2026-09-30T16:12:54.837799608Z",
+      },
+      "name": "testScope8",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "797f225c-5143-47ae-9349-f6e6ed67ac85": {
+      "_rev": 1,
+      "description": "Test scope: testScope1",
+      "id": "797f225c-5143-47ae-9349-f6e6ed67ac85",
+      "metadata": {
+        "createdDate": "2026-09-30T16:13:02.978086483Z",
+        "modifiedDate": "2026-09-30T16:13:02.978087814Z",
+      },
+      "name": "testScope1",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "8fc1769e-94ed-42bd-ab6d-e87f0521a72c": {
+      "_rev": 1,
+      "description": "Test scope: testScope9",
+      "id": "8fc1769e-94ed-42bd-ab6d-e87f0521a72c",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:59.167492785Z",
+        "modifiedDate": "2026-09-30T16:12:59.167493795Z",
+      },
+      "name": "testScope9",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "9035fc62-91e3-44af-b84b-c745699ba09b": {
+      "_rev": 1,
+      "description": "Test scope: testScope6",
+      "id": "9035fc62-91e3-44af-b84b-c745699ba09b",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:47.124647293Z",
+        "modifiedDate": "2026-09-30T16:12:47.124648193Z",
+      },
+      "name": "testScope6",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "94a84b27-3de7-4f15-93b3-713a15bce479": {
+      "_rev": 3,
+      "description": "",
+      "id": "94a84b27-3de7-4f15-93b3-713a15bce479",
+      "metadata": {
+        "createdDate": "2026-09-28T19:42:30.475592965Z",
+        "modifiedDate": "2026-09-30T15:30:46.408Z",
+      },
+      "name": "Test Empty",
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "",
+                  },
+                  "value": "user.after.",
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "inactive",
+      "targetCondition": {},
+    },
+    "9db2e5b6-e9e1-483e-886a-53e2c47f8d74": {
+      "_rev": 1,
+      "description": "Test scope: testScope2",
+      "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:38.052656573Z",
+        "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+      },
+      "name": "testScope2",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "b4c4d0cc-6e9f-4f2e-9ccf-719bac6d78e6": {
+      "_rev": 1,
+      "description": "Test scope: testScope7",
+      "id": "b4c4d0cc-6e9f-4f2e-9ccf-719bac6d78e6",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:50.913904101Z",
+        "modifiedDate": "2026-09-30T16:12:50.913905141Z",
+      },
+      "name": "testScope7",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "cfef12ab-88e8-4d40-9553-27e50501d699": {
+      "_rev": 1,
+      "description": "Test scope: testScope5",
+      "id": "cfef12ab-88e8-4d40-9553-27e50501d699",
+      "metadata": {
+        "createdDate": "2026-09-30T16:12:43.028713979Z",
+        "modifiedDate": "2026-09-30T16:12:43.028715229Z",
+      },
+      "name": "testScope5",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+    "e1ebfb09-d0e3-459f-bcc2-6555ef8adf2c": {
+      "_rev": 3,
+      "description": "Test Scope",
+      "id": "e1ebfb09-d0e3-459f-bcc2-6555ef8adf2c",
+      "metadata": {
+        "createdDate": "2026-09-28T19:40:16.430594532Z",
+        "modifiedDate": "2026-09-28T19:41:50.073Z",
+      },
+      "name": "Test",
+      "permissions": {
+        "createEntitlement": true,
+        "createRole": true,
+        "createUser": true,
+        "deleteRole": true,
+        "deleteUser": true,
+        "modifyEntitlement": true,
+        "modifyRole": true,
+        "modifyUser": true,
+        "publishRole": true,
+        "viewGrants": true,
+        "viewUserAccess": true,
+      },
+      "sourceCondition": {
+        "user": {
+          "filter": {
+            "and": [
+              {
+                "contains": {
+                  "in_string": "user._id",
+                  "search_string": {
+                    "literal": "1",
+                  },
+                },
+              },
+              {
+                "not_contains": {
+                  "in_string": "user.accountStatus",
+                  "search_string": {
+                    "literal": "2",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "gte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 1,
+                      },
+                    },
+                  },
+                  {
+                    "gt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 2,
+                      },
+                    },
+                  },
+                  {
+                    "lte": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 3,
+                      },
+                    },
+                  },
+                  {
+                    "lt": {
+                      "left": "user.frIndexedInteger1",
+                      "right": {
+                        "literal": 4,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                "and": [
+                  {
+                    "equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "3",
+                      },
+                    },
+                  },
+                  {
+                    "not_equals": {
+                      "left": "user.accountStatus",
+                      "right": {
+                        "literal": "4",
+                      },
+                    },
+                  },
+                  {
+                    "or": [
+                      {
+                        "starts_with": {
+                          "prefix": {
+                            "literal": "5",
+                          },
+                          "value": "user.city",
+                        },
+                      },
+                      {
+                        "ends_with": {
+                          "suffix": {
+                            "literal": "6",
+                          },
+                          "value": "user.country",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+      "status": "active",
+      "targetCondition": {
+        "application": {
+          "filter": {},
+          "version": "v2",
+        },
+        "entitlement": {
+          "filter": {},
+          "version": "v2",
+        },
+        "role": {
+          "filter": {
+            "or": [
+              {
+                "starts_with": {
+                  "prefix": {
+                    "literal": "1",
+                  },
+                  "value": "catalog.role._id",
+                },
+              },
+              {
+                "equals": {
+                  "left": "catalog.role.glossary.Test Boolean",
+                  "right": {
+                    "literal": false,
+                  },
+                },
+              },
+            ],
+          },
+          "version": "v2",
+        },
+        "user": {
+          "filter": {
+            "or": [
+              {
+                "not_equals": {
+                  "left": "user.city",
+                  "right": {
+                    "literal": "a",
+                  },
+                },
+              },
+              {
+                "and": [
+                  {
+                    "not_equals": {
+                      "left": "user.country",
+                      "right": {
+                        "literal": "b",
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          "version": "v2",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps importScopes() 1: Import None 1`] = `[]`;
+
+exports[`IgaScopeOps importScopes() 2: Import by ID 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope3",
+    "id": "6255155a-c9bc-47be-91f2-e042cfe35ddc",
+    "name": "testScope3",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps importScopes() 3: Import by Name 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope3",
+    "id": "7f066583-bc52-4082-8326-e0d21e48ea34",
+    "name": "testScope3",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps importScopes() 4: Import all 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope3",
+    "id": "0f037856-76cf-412c-af23-b03048f675c2",
+    "name": "testScope3",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope4",
+    "id": "c2dfcde9-956c-4023-acfa-10b0d0e359a0",
+    "name": "testScope4",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 2,
+    "description": "Test scope: testScope5",
+    "id": "cfef12ab-88e8-4d40-9553-27e50501d699",
+    "metadata": null,
+    "name": "testScope5",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps importScopes() 5: Should not import scope if no changes were made 1`] = `
+[
+  {
+    "_rev": 2,
+    "description": "test new description",
+    "id": "8fc1769e-94ed-42bd-ab6d-e87f0521a72c",
+    "metadata": null,
+    "name": "testScope9",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps readScope() 1: Read existing scope by ID 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: testScope2",
+  "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+  "metadata": {
+    "createdDate": "2026-09-30T16:12:38.052656573Z",
+    "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+  },
+  "name": "testScope2",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps readScopeByName() 1: Read existing scope by name 1`] = `
+{
+  "_rev": 1,
+  "description": "Test scope: testScope2",
+  "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+  "metadata": {
+    "createdDate": "2026-09-30T16:12:38.052656573Z",
+    "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+  },
+  "name": "testScope2",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps readScopes() 1: Read existing scopes 1`] = `
+[
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope6",
+    "id": "9035fc62-91e3-44af-b84b-c745699ba09b",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:47.124647293Z",
+      "modifiedDate": "2026-09-30T16:12:47.124648193Z",
+    },
+    "name": "testScope6",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope8",
+    "id": "767e6a29-353a-4a99-9f99-84c8925cf20e",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:54.837797998Z",
+      "modifiedDate": "2026-09-30T16:12:54.837799608Z",
+    },
+    "name": "testScope8",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope5",
+    "id": "cfef12ab-88e8-4d40-9553-27e50501d699",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:43.028713979Z",
+      "modifiedDate": "2026-09-30T16:12:43.028715229Z",
+    },
+    "name": "testScope5",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope1",
+    "id": "797f225c-5143-47ae-9349-f6e6ed67ac85",
+    "metadata": {
+      "createdDate": "2026-09-30T16:13:02.978086483Z",
+      "modifiedDate": "2026-09-30T16:13:02.978087814Z",
+    },
+    "name": "testScope1",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope7",
+    "id": "b4c4d0cc-6e9f-4f2e-9ccf-719bac6d78e6",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:50.913904101Z",
+      "modifiedDate": "2026-09-30T16:12:50.913905141Z",
+    },
+    "name": "testScope7",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 3,
+    "description": "",
+    "id": "94a84b27-3de7-4f15-93b3-713a15bce479",
+    "metadata": {
+      "createdDate": "2026-09-28T19:42:30.475592965Z",
+      "modifiedDate": "2026-09-30T15:30:46.408Z",
+    },
+    "name": "Test Empty",
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "",
+                },
+                "value": "user.after.",
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "inactive",
+    "targetCondition": {},
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope9",
+    "id": "8fc1769e-94ed-42bd-ab6d-e87f0521a72c",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:59.167492785Z",
+      "modifiedDate": "2026-09-30T16:12:59.167493795Z",
+    },
+    "name": "testScope9",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 3,
+    "description": "Test Scope",
+    "id": "e1ebfb09-d0e3-459f-bcc2-6555ef8adf2c",
+    "metadata": {
+      "createdDate": "2026-09-28T19:40:16.430594532Z",
+      "modifiedDate": "2026-09-28T19:41:50.073Z",
+    },
+    "name": "Test",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+  {
+    "_rev": 1,
+    "description": "Test scope: testScope2",
+    "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+    "metadata": {
+      "createdDate": "2026-09-30T16:12:38.052656573Z",
+      "modifiedDate": "2026-09-30T16:12:38.052658143Z",
+    },
+    "name": "testScope2",
+    "permissions": {
+      "createEntitlement": true,
+      "createRole": true,
+      "createUser": true,
+      "deleteRole": true,
+      "deleteUser": true,
+      "modifyEntitlement": true,
+      "modifyRole": true,
+      "modifyUser": true,
+      "publishRole": true,
+      "viewGrants": true,
+      "viewUserAccess": true,
+    },
+    "sourceCondition": {
+      "user": {
+        "filter": {
+          "and": [
+            {
+              "contains": {
+                "in_string": "user._id",
+                "search_string": {
+                  "literal": "1",
+                },
+              },
+            },
+            {
+              "not_contains": {
+                "in_string": "user.accountStatus",
+                "search_string": {
+                  "literal": "2",
+                },
+              },
+            },
+            {
+              "or": [
+                {
+                  "gte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 1,
+                    },
+                  },
+                },
+                {
+                  "gt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 2,
+                    },
+                  },
+                },
+                {
+                  "lte": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 3,
+                    },
+                  },
+                },
+                {
+                  "lt": {
+                    "left": "user.frIndexedInteger1",
+                    "right": {
+                      "literal": 4,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "and": [
+                {
+                  "equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "3",
+                    },
+                  },
+                },
+                {
+                  "not_equals": {
+                    "left": "user.accountStatus",
+                    "right": {
+                      "literal": "4",
+                    },
+                  },
+                },
+                {
+                  "or": [
+                    {
+                      "starts_with": {
+                        "prefix": {
+                          "literal": "5",
+                        },
+                        "value": "user.city",
+                      },
+                    },
+                    {
+                      "ends_with": {
+                        "suffix": {
+                          "literal": "6",
+                        },
+                        "value": "user.country",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+    "status": "active",
+    "targetCondition": {
+      "application": {
+        "filter": {},
+        "version": "v2",
+      },
+      "entitlement": {
+        "filter": {},
+        "version": "v2",
+      },
+      "role": {
+        "filter": {
+          "or": [
+            {
+              "starts_with": {
+                "prefix": {
+                  "literal": "1",
+                },
+                "value": "catalog.role._id",
+              },
+            },
+            {
+              "equals": {
+                "left": "catalog.role.glossary.Test Boolean",
+                "right": {
+                  "literal": false,
+                },
+              },
+            },
+          ],
+        },
+        "version": "v2",
+      },
+      "user": {
+        "filter": {
+          "or": [
+            {
+              "not_equals": {
+                "left": "user.city",
+                "right": {
+                  "literal": "a",
+                },
+              },
+            },
+            {
+              "and": [
+                {
+                  "not_equals": {
+                    "left": "user.country",
+                    "right": {
+                      "literal": "b",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "version": "v2",
+      },
+    },
+  },
+]
+`;
+
+exports[`IgaScopeOps updateScope() 1: Update existing scope 1`] = `
+{
+  "_rev": 2,
+  "description": "Test scope: testScope2",
+  "id": "9db2e5b6-e9e1-483e-886a-53e2c47f8d74",
+  "metadata": null,
+  "name": "testScope2",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;
+
+exports[`IgaScopeOps updateScope() 2: Should not update scope if no changes are made 1`] = `
+{
+  "_rev": 2,
+  "description": "test new description",
+  "id": "767e6a29-353a-4a99-9f99-84c8925cf20e",
+  "metadata": null,
+  "name": "testScope8",
+  "permissions": {
+    "createEntitlement": true,
+    "createRole": true,
+    "createUser": true,
+    "deleteRole": true,
+    "deleteUser": true,
+    "modifyEntitlement": true,
+    "modifyRole": true,
+    "modifyUser": true,
+    "publishRole": true,
+    "viewGrants": true,
+    "viewUserAccess": true,
+  },
+  "sourceCondition": {
+    "user": {
+      "filter": {
+        "and": [
+          {
+            "contains": {
+              "in_string": "user._id",
+              "search_string": {
+                "literal": "1",
+              },
+            },
+          },
+          {
+            "not_contains": {
+              "in_string": "user.accountStatus",
+              "search_string": {
+                "literal": "2",
+              },
+            },
+          },
+          {
+            "or": [
+              {
+                "gte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 1,
+                  },
+                },
+              },
+              {
+                "gt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 2,
+                  },
+                },
+              },
+              {
+                "lte": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 3,
+                  },
+                },
+              },
+              {
+                "lt": {
+                  "left": "user.frIndexedInteger1",
+                  "right": {
+                    "literal": 4,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            "and": [
+              {
+                "equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "3",
+                  },
+                },
+              },
+              {
+                "not_equals": {
+                  "left": "user.accountStatus",
+                  "right": {
+                    "literal": "4",
+                  },
+                },
+              },
+              {
+                "or": [
+                  {
+                    "starts_with": {
+                      "prefix": {
+                        "literal": "5",
+                      },
+                      "value": "user.city",
+                    },
+                  },
+                  {
+                    "ends_with": {
+                      "suffix": {
+                        "literal": "6",
+                      },
+                      "value": "user.country",
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+  "status": "active",
+  "targetCondition": {
+    "application": {
+      "filter": {},
+      "version": "v2",
+    },
+    "entitlement": {
+      "filter": {},
+      "version": "v2",
+    },
+    "role": {
+      "filter": {
+        "or": [
+          {
+            "starts_with": {
+              "prefix": {
+                "literal": "1",
+              },
+              "value": "catalog.role._id",
+            },
+          },
+          {
+            "equals": {
+              "left": "catalog.role.glossary.Test Boolean",
+              "right": {
+                "literal": false,
+              },
+            },
+          },
+        ],
+      },
+      "version": "v2",
+    },
+    "user": {
+      "filter": {
+        "or": [
+          {
+            "not_equals": {
+              "left": "user.city",
+              "right": {
+                "literal": "a",
+              },
+            },
+          },
+          {
+            "and": [
+              {
+                "not_equals": {
+                  "left": "user.country",
+                  "right": {
+                    "literal": "b",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      "version": "v2",
+    },
+  },
+}
+`;

@@ -57,6 +57,7 @@ import IgaRequestTypeOps, {
   RequestType,
 } from '../ops/cloud/iga/IgaRequestTypeOps';
 import IgaWorkflowOps, { Workflow } from '../ops/cloud/iga/IgaWorkflowOps';
+import IgaScopeOps, { Scope } from '../ops/cloud/iga/IgaScopeOps';
 import LogOps, { Log } from '../ops/cloud/LogOps';
 import SecretsOps, { Secret } from '../ops/cloud/SecretsOps';
 import ServiceAccountOps, {
@@ -183,6 +184,7 @@ export type Frodo = {
       glossary: Glossary;
       requestForm: RequestForm;
       requestType: RequestType;
+      scope: Scope;
       workflow: Workflow;
     };
     log: Log;
@@ -456,6 +458,7 @@ const FrodoLib = (config: StateInterface = {}): Frodo => {
         glossary: IgaGlossaryOps(state),
         requestForm: IgaRequestFormOps(state),
         requestType: IgaRequestTypeOps(state),
+        scope: IgaScopeOps(state),
         workflow: IgaWorkflowOps(state),
       },
       log: LogOps(state),
