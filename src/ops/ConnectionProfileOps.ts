@@ -1238,6 +1238,7 @@ export async function addNewServiceAccount({
   state: State;
 }): Promise<IdObjectSkeletonInterface> {
   try {
+    console.log('ENTERED addNewServiceAccount');
     debugMessage({
       message: `ConnectionProfileOps.addNewServiceAccount: start`,
       state,
@@ -1252,9 +1253,25 @@ export async function addNewServiceAccount({
       flatten: true,
       state,
     })) as string[];
-    const scope = SERVICE_ACCOUNT_DEFAULT_SCOPES.filter((scope) =>
-      availableScopes.includes(scope)
-    );
+
+console.log(
+  'Available telemetry:',
+  availableScopes.filter((s) => s.includes('telemetry'))
+);
+
+console.log(
+  'Default telemetry:',
+  SERVICE_ACCOUNT_DEFAULT_SCOPES.filter((s) => s.includes('telemetry'))
+);
+
+const scope = SERVICE_ACCOUNT_DEFAULT_SCOPES.filter((scope) =>
+  availableScopes.includes(scope)
+);
+
+console.log(
+  'Selected telemetry:',
+  scope.filter((s) => s.includes('telemetry'))
+);
     const jwkPrivate = await createJwkRsa();
     const jwkPublic = await getJwkRsaPublic(jwkPrivate);
     const jwks = createJwks(jwkPublic);
