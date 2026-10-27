@@ -835,19 +835,22 @@ async function importDependencies({
       state,
     });
     // oauth2clients
-    if (isOidcApplication(applicationData)) {
-      const clientId = getOAuth2ClientId(applicationData);
-      try {
-        await importOAuth2Client({
-          clientId,
-          importData: importData as OAuth2ClientExportInterface,
-          options: { deps: true },
-          state,
-        });
-      } catch (error) {
-        errors.push(error);
-      }
+if (isOidcApplication(applicationData)) {
+  const clientId = getOAuth2ClientId(applicationData);
+
+  if (clientId && importData.application?.[clientId]) {
+    try {
+      await importOAuth2Client({
+        clientId,
+        importData: importData as OAuth2ClientExportInterface,
+        options: { deps: true },
+        state,
+      });
+    } catch (error) {
+      errors.push(error);
     }
+  }
+}
     // saml entity providers and circles of trust
     if (isSaml2Application(applicationData)) {
       // saml IDPs
