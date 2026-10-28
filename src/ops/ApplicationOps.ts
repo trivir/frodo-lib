@@ -835,27 +835,27 @@ async function importDependencies({
       state,
     });
     // oauth2clients
-if (isOidcApplication(applicationData)) {
-  const clientId = getOAuth2ClientId(applicationData);
+    if (isOidcApplication(applicationData)) {
+      const clientId = getOAuth2ClientId(applicationData);
 
-  if (clientId && importData.application?.[clientId]) {
-    try {
-      await importOAuth2Client({
-        clientId,
-        importData: importData as OAuth2ClientExportInterface,
-        options: { deps: true },
-        state,
-      });
-    } catch (error) {
-      errors.push(error);
+      if (clientId && importData.application?.[clientId]) {
+        try {
+          await importOAuth2Client({
+            clientId,
+            importData: importData as OAuth2ClientExportInterface,
+            options: { deps: true },
+            state,
+          });
+        } catch (error) {
+          errors.push(error);
+        }
+      }
     }
-  }
-}
     // saml entity providers and circles of trust
     if (isSaml2Application(applicationData)) {
       // saml IDPs
       const saml2IdpId = getSaml2IdpEntityId(applicationData);
-      if (saml2IdpId) {
+      if (saml2IdpId && importData.saml) {
         try {
           await importSaml2Provider({
             entityId: saml2IdpId,
@@ -869,7 +869,7 @@ if (isOidcApplication(applicationData)) {
       }
       // saml SPs
       const saml2SpId = getSaml2SpEntityId(applicationData);
-      if (saml2SpId) {
+      if (saml2SpId && importData.saml) {
         try {
           await importSaml2Provider({
             entityId: saml2SpId,
@@ -882,14 +882,16 @@ if (isOidcApplication(applicationData)) {
         }
       }
       // circles of trust
-      try {
-        await importCirclesOfTrust({
-          entityProviders: [saml2IdpId, saml2SpId],
-          importData: importData as CirclesOfTrustExportInterface,
-          state,
-        });
-      } catch (error) {
-        errors.push(error);
+      if (importData.saml?.cot) {
+        try {
+          await importCirclesOfTrust({
+            entityProviders: [saml2IdpId, saml2SpId],
+            importData: importData as CirclesOfTrustExportInterface,
+            state,
+          });
+        } catch (error) {
+          errors.push(error);
+        }
       }
     }
     // connectors and mappings
