@@ -1126,7 +1126,7 @@ export function generateIdmApi({
         'Content-Type': 'application/json',
         ...state.getAuthenticationHeaderOverrides(),
         ...state.getConfigurationHeaderOverrides(),
-        ...(resource.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
+        ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
       },
       ...(process.env.FRODO_MOCK !== 'record' &&
         process.env.FRODO_POLLY_MODE !== 'record' && {
@@ -1247,7 +1247,7 @@ export function generateLogKeysApi({
     // only add authorization header if we have a bearer token
     ...(state.getBearerToken() && {
       Authorization: `Bearer ${state.getBearerToken()}`,
-    ...(resource.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
     }),
   };
   const requestConfig = mergeDeep(
@@ -1303,7 +1303,7 @@ export function generateLogApi({
     'User-Agent': userAgent,
     'X-API-Key': state.getLogApiKey(),
     'X-API-Secret': state.getLogApiSecret(),
-    ...(resource.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
     
   };
   const requestConfig = mergeDeep(
@@ -1523,7 +1523,7 @@ export function generateWSFedApi({
     'x-xsrf-header': 'PingFederate',
     ...state.getAuthenticationHeaderOverrides(),
     ...state.getConfigurationHeaderOverrides(),
-    ...(resource.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
   };
   const requestConfig = mergeDeep(
     {
