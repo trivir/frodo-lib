@@ -38,6 +38,10 @@ import {
 import { setupPollyForFrodoLib } from '../utils/SetupPollyForFrodoLib';
 
 export type ResourceConfig = { apiVersion?: string };
+export type ApiVersion = {
+  protocol: string;
+  resource: string;
+};
 
 export type RetryNothingStrategy = 'nothing';
 export type RetryNetworkStrategy = 'network';
@@ -841,6 +845,21 @@ function curlirizeRequests(request: AxiosInstance, state: State) {
  */
 function curlirizeResponses(request: AxiosInstance, state: State) {
   _curlirizeResponses(request, curlirizeCallback(state, { secrets: false }));
+}
+/**
+ * Generates the API version configuration used in the Accept-API-Version header.
+ * @param {ApiVersion} apiVersion - The protocol and resource API versions. Defaults to protocol 2.0 and resource 1.0.
+ * @returns {ResourceConfig} An object containing the formatted API version string.
+ */
+export function getApiConfig(
+  apiVersion: ApiVersion = {
+    protocol: '2.0',
+    resource: '1.0',
+  }
+): ResourceConfig {
+  return {
+    apiVersion: `protocol=${apiVersion.protocol},resource=${apiVersion.resource}`,
+  };
 }
 
 /**

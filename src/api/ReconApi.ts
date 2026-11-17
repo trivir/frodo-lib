@@ -3,10 +3,13 @@ import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { getIdmBaseUrl } from '../utils/ForgeRockUtils';
 import { IdObjectSkeletonInterface } from './ApiTypes';
-import { generateIdmApi } from './BaseApi';
+import { generateIdmApi, getApiConfig } from './BaseApi';
 
-const apiVersion = 'resource=1.0';
-const apiConfig = { headers: { 'Accept-API-Version': apiVersion } };
+;
+const apiConfig = { 
+  resource: '1.0',
+  protocol: '2.1'
+ };
 
 const reconUrlTemplate = '%s/recon';
 const reconByIdUrlTemplate = '%s/recon/%s';
@@ -155,7 +158,7 @@ export async function getRecons({
   const urlString = util.format(reconUrlTemplate, getIdmBaseUrl(state));
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
-    requestOverride: apiConfig,
+    resource: getApiConfig(apiConfig),
     state,
   }).get(urlString);
   return data;
@@ -175,7 +178,7 @@ export async function getRecon({
   );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
-    requestOverride: apiConfig,
+    resource: getApiConfig(apiConfig),
     state,
   }).get(urlString);
   return data;
@@ -195,7 +198,7 @@ export async function startRecon({
   );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
-    requestOverride: apiConfig,
+    resource: getApiConfig(apiConfig),
     state,
   }).post(urlString);
   return data;
@@ -218,7 +221,7 @@ export async function startReconById({
   );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
-    requestOverride: apiConfig,
+    resource: getApiConfig(apiConfig),
     state,
   }).post(urlString);
   return data;
@@ -238,7 +241,7 @@ export async function cancelRecon({
   );
   const { data } = await generateIdmApi({
     requiredScopes: [Constants.AVAILABLE_SCOPES.IdmFullScope],
-    requestOverride: apiConfig,
+    resource: getApiConfig(apiConfig),
     state,
   }).post(urlString);
   return data;

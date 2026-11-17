@@ -13,8 +13,8 @@ import {
   putRawKeys,
   putRawMonitoringLogs,
   putRawWs,
-  ApiVersion
 } from '../api/RawConfigApi';
+import { ApiVersion } from '../api/BaseApi';
 import { State } from '../shared/State';
 import { FrodoError } from './FrodoError';
 

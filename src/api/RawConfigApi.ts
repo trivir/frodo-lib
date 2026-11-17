@@ -3,6 +3,8 @@ import Constants from '../shared/Constants';
 import { State } from '../shared/State';
 import { getHostOnlyUrl } from '../utils/ForgeRockUtils';
 import {
+  getApiConfig,
+  ApiVersion,
   generateAmApi,
   generateEnvApi,
   generateGovernanceApi,
@@ -14,21 +16,6 @@ import {
 
 const urlTemplate: string = '%s/%s';
 
-export type ApiVersion = {
-  protocol: string;
-  resource: string;
-};
-
-function getApiConfig(
-  apiVersion: ApiVersion = {
-    protocol: '2.0',
-    resource: '1.0',
-  }
-): { apiVersion: string } {
-  return {
-    apiVersion: `protocol=${apiVersion.protocol},resource=${apiVersion.resource}`,
-  };
-}
 
 /**
  * Performs a get request against the specified AM endpoint
