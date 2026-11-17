@@ -38,6 +38,10 @@ import {
 import { setupPollyForFrodoLib } from '../utils/SetupPollyForFrodoLib';
 
 export type ResourceConfig = { apiVersion?: string };
+export type ApiVersion = {
+  protocol: string;
+  resource: string;
+};
 
 export type RetryNothingStrategy = 'nothing';
 export type RetryNetworkStrategy = 'network';
@@ -842,6 +846,21 @@ function curlirizeRequests(request: AxiosInstance, state: State) {
 function curlirizeResponses(request: AxiosInstance, state: State) {
   _curlirizeResponses(request, curlirizeCallback(state, { secrets: false }));
 }
+/**
+ * Generates the API version configuration used in the Accept-API-Version header.
+ * @param {ApiVersion} apiVersion - The protocol and resource API versions. Defaults to protocol 2.0 and resource 1.0.
+ * @returns {ResourceConfig} An object containing the formatted API version string.
+ */
+export function getApiConfig(
+  apiVersion: ApiVersion = {
+    protocol: '2.0',
+    resource: '1.0',
+  }
+): ResourceConfig {
+  return {
+    apiVersion: `protocol=${apiVersion.protocol},resource=${apiVersion.resource}`,
+  };
+}
 
 /**
  * Generates an AM Axios API instance specifically for AM configuration endpoints
@@ -1087,10 +1106,12 @@ export function generateOauth2Api({
  * @returns {AxiosInstance} Returns a reaady to use Axios instance
  */
 export function generateIdmApi({
+  resource,
   requestOverride = {},
   requiredScopes,
   state,
 }: {
+  resource?: ResourceConfig;
   requestOverride?: AxiosRequestConfig;
   requiredScopes: string[];
   state: State;
@@ -1105,6 +1126,7 @@ export function generateIdmApi({
         'Content-Type': 'application/json',
         ...state.getAuthenticationHeaderOverrides(),
         ...state.getConfigurationHeaderOverrides(),
+        ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
       },
       ...(process.env.FRODO_MOCK !== 'record' &&
         process.env.FRODO_POLLY_MODE !== 'record' && {
@@ -1210,9 +1232,11 @@ export function generateIdmSystemApi({
  * @returns {AxiosInstance} Returns a reaady to use Axios instance
  */
 export function generateLogKeysApi({
+  resource,
   requestOverride = {},
   state,
 }: {
+  resource?: ResourceConfig;
   requestOverride?: AxiosRequestConfig;
   state: State;
 }): AxiosInstance {
@@ -1223,6 +1247,7 @@ export function generateLogKeysApi({
     // only add authorization header if we have a bearer token
     ...(state.getBearerToken() && {
       Authorization: `Bearer ${state.getBearerToken()}`,
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
     }),
   };
   const requestConfig = mergeDeep(
@@ -1264,10 +1289,12 @@ export function generateLogKeysApi({
  * @returns {AxiosInstance} Returns a reaady to use Axios instance
  */
 export function generateLogApi({
+  resource,
   requestOverride = {},
   waitOnRateLimit = true,
   state,
 }: {
+  resource?: ResourceConfig
   requestOverride?: AxiosRequestConfig;
   waitOnRateLimit?: boolean;
   state: State;
@@ -1276,6 +1303,8 @@ export function generateLogApi({
     'User-Agent': userAgent,
     'X-API-Key': state.getLogApiKey(),
     'X-API-Secret': state.getLogApiSecret(),
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
+    
   };
   const requestConfig = mergeDeep(
     {
@@ -1478,10 +1507,12 @@ export function generateGovernanceApi({
  * @returns {AxiosInstance} Returns a reaady to use Axios instance
  */
 export function generateWSFedApi({
+  resource,
   requestOverride = {},
   requiredScopes,
   state,
 }: {
+  resource?: ResourceConfig;
   requestOverride?: AxiosRequestConfig;
   requiredScopes: string[];
   state: State;
@@ -1492,6 +1523,7 @@ export function generateWSFedApi({
     'x-xsrf-header': 'PingFederate',
     ...state.getAuthenticationHeaderOverrides(),
     ...state.getConfigurationHeaderOverrides(),
+    ...(resource?.apiVersion && { 'Accept-API-Version': resource.apiVersion }),
   };
   const requestConfig = mergeDeep(
     {
