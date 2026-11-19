@@ -23,7 +23,14 @@ import {
 } from '../../../utils/ExportImportUtils';
 import { FrodoError } from '../../FrodoError';
 import { ExportMetaData, ResultCallback } from '../../OpsTypes';
-import { deleteOrphanedRequestFormAssignments } from './IgaRequestFormOps';
+import {
+  deleteOrphanedRequestFormAssignments,
+  exportRequestForm,
+} from './IgaRequestFormOps';
+import {
+  getRequestFormAssignments,
+  RequestFormSkeleton,
+} from '../../../api/cloud/iga/IgaRequestFormApi';
 
 export type RequestType = {
   /**
@@ -243,6 +250,7 @@ export default (state: State): RequestType => {
 export interface RequestTypeExportInterface {
   meta?: ExportMetaData;
   requestType: Record<string, RequestTypeSkeleton>;
+  requestForm: Record<string, RequestFormSkeleton>;
 }
 
 /**
@@ -282,6 +290,7 @@ export function createRequestTypeExportTemplate({
   return {
     meta: getMetadata({ state }),
     requestType: {},
+    requestForm: {},
   };
 }
 
@@ -395,7 +404,7 @@ export async function exportRequestType({
       typeId,
       state,
     });
-    const exportData = prepareRequestTypeForExport({
+    const exportData = await prepareRequestTypeForExport({
       typeData: type,
       options,
       state,
@@ -430,19 +439,15 @@ export async function exportRequestTypeByName({
       message: `IgaRequestTypeOps.exportRequestTypeByName: start`,
       state,
     });
-    const exportData = createRequestTypeExportTemplate({ state });
     const type = await readRequestTypeByName({
       typeName,
       state,
     });
-    if (
-      options.useStringArrays &&
-      type.validation &&
-      typeof type.validation.source === 'string'
-    ) {
-      type.validation.source = type.validation.source.split('\n');
-    }
-    exportData.requestType[type.id] = type;
+    const exportData = await prepareRequestTypeForExport({
+      typeData: type,
+      options,
+      state,
+    });
     debugMessage({
       message: `IgaRequestTypeOps.exportRequestTypeByName: end`,
       state,
@@ -486,12 +491,13 @@ export async function exportRequestTypes({
         message: `Exporting request type ${requestType.displayName}...`,
         state,
       });
-      const typeExport = prepareRequestTypeForExport({
+      const typeExport = await prepareRequestTypeForExport({
         typeData: requestType,
         options,
         state,
       });
       Object.assign(exportData.requestType, typeExport.requestType);
+      Object.assign(exportData.requestForm, typeExport.requestForm);
     }
     stopProgressIndicator({
       id: indicatorId,
@@ -753,7 +759,7 @@ export async function deleteRequestTypes({
  * @param {RequestTypeExportOptions} options export options
  * @returns {RequestTypeExportInterface} the request type export object
  */
-function prepareRequestTypeForExport({
+async function prepareRequestTypeForExport({
   typeData,
   options,
   state,
@@ -761,7 +767,7 @@ function prepareRequestTypeForExport({
   typeData: RequestTypeSkeleton;
   options: RequestTypeExportOptions;
   state: State;
-}): RequestTypeExportInterface {
+}): Promise<RequestTypeExportInterface> {
   const exportData = createRequestTypeExportTemplate({ state });
   if (
     options.useStringArrays &&
@@ -771,9 +777,31 @@ function prepareRequestTypeForExport({
     typeData.validation.source = typeData.validation.source.split('\n');
   }
   exportData.requestType[typeData.id] = typeData;
+
+  const assignments = await getRequestFormAssignments({
+    requestTypeId: typeData.id,
+    state,
+  });
+
+  const forms = await Promise.all(
+    [...new Set(assignments.map((a) => a.formId))].map((formId) =>
+      exportRequestForm({
+        formId,
+        options: {
+          deps: false,
+          useStringArrays: options.useStringArrays,
+        },
+        state,
+      })
+    )
+  );
+
+  for (const form of forms) {
+    Object.assign(exportData.requestForm, form.requestForm);
+  }
+
   return exportData;
 }
-
 /**
  * Helper that prepares a request type for import
  * @param {RequestTypeSkeleton} typeData the request type data
