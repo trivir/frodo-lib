@@ -9,6 +9,7 @@ import { EventSkeleton } from '../api/cloud/iga/IgaEventApi';
 import { GlossarySchemaItemSkeleton } from '../api/cloud/iga/IgaGlossaryApi';
 import { RequestFormSkeleton } from '../api/cloud/iga/IgaRequestFormApi';
 import { RequestTypeSkeleton } from '../api/cloud/iga/IgaRequestTypeApi';
+import { ScopeSkeleton } from '../api/cloud/iga/IgaScopeApi';
 import { SecretSkeleton } from '../api/cloud/SecretsApi';
 import { TelemetryExporters } from '../api/cloud/TelemetryApi';
 import { VariableSkeleton } from '../api/cloud/VariablesApi';
@@ -90,6 +91,7 @@ import {
   exportRequestTypes,
   importRequestTypes,
 } from './cloud/iga/IgaRequestTypeOps';
+import { exportScopes, importScopes } from './cloud/iga/IgaScopeOps';
 import {
   exportWorkflows,
   importWorkflows,
@@ -383,6 +385,7 @@ export interface FullGlobalExportInterface extends AmConfigEntitiesInterface {
   realm: Record<string, RealmSkeleton> | undefined;
   requestForm: Record<string, RequestFormSkeleton> | undefined;
   requestType: Record<string, RequestTypeSkeleton> | undefined;
+  scope: Record<string, ScopeSkeleton> | undefined;
   scripttype: Record<string, ScriptTypeExportSkeleton> | undefined;
   secret: Record<string, SecretSkeleton> | undefined;
   secretstore: Record<string, SecretStoreExportSkeleton> | undefined;
@@ -679,6 +682,15 @@ export async function exportFullConfiguration({
           !!state.getIsIGA() && includeDynamic
         )
       )?.requestType,
+      scope: (
+        await exportWithErrorHandling(
+          exportScopes,
+          stateObj,
+          'Scopes',
+          resultCallback,
+          !!state.getIsIGA()
+        )
+      )?.scope,
       scripttype: (
         await exportWithErrorHandling(
           exportScriptTypes,
@@ -1130,7 +1142,7 @@ export async function importFullConfiguration({
   const errorCallback = getErrorCallback(resultCallback);
   // Import to global
   let indicatorId = createProgressIndicator({
-    total: 22,
+    total: 23,
     message: `Importing everything for global...`,
     state,
   });
@@ -1458,6 +1470,20 @@ export async function importFullConfiguration({
       'Events',
       resultCallback,
       !!state.getIsIGA() && includeDynamic && !!importData.global.event
+    )
+  );
+  response.push(
+    await importWithErrorHandling(
+      importScopes,
+      {
+        importData: importData.global,
+        resultCallback: errorCallback,
+        state,
+      },
+      indicatorId,
+      'Scopes',
+      resultCallback,
+      !!state.getIsIGA() && !!importData.global.scope
     )
   );
   response.push(
